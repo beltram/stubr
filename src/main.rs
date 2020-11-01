@@ -1,5 +1,6 @@
 use std::env;
 use std::path::PathBuf;
+use std::time::Duration;
 
 use stubr::server::StubrServer;
 
@@ -14,7 +15,9 @@ async fn main() -> anyhow::Result<()> {
         server.register_stub(stubs).await?;
     }
     server.init_log();
-    loop {}
+    loop {
+        std::thread::sleep(Duration::from_millis(1))
+    }
 }
 
 fn stub_path(arg: &str) -> Option<PathBuf> {
