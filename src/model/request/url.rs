@@ -35,7 +35,9 @@ impl TryFrom<&HttpUrl> for PathExactMatcher {
     type Error = anyhow::Error;
 
     fn try_from(http_url: &HttpUrl) -> Result<Self, Self::Error> {
-        http_url.url_path.as_ref()
+        http_url
+            .url_path
+            .as_ref()
             .map(|it| path(it.as_str()))
             .ok_or_else(|| anyhow::Error::msg("No 'urlPath'"))
     }
@@ -45,7 +47,9 @@ impl TryFrom<&HttpUrl> for PathRegexMatcher {
     type Error = anyhow::Error;
 
     fn try_from(http_url: &HttpUrl) -> Result<Self, Self::Error> {
-        http_url.url_path_pattern.as_ref()
+        http_url
+            .url_path_pattern
+            .as_ref()
             .map(|it| path_regex(it.as_str()))
             .ok_or_else(|| anyhow::Error::msg("No 'urlPathPattern'"))
     }

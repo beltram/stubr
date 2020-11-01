@@ -1,8 +1,8 @@
 use std::convert::TryFrom;
 
 use serde::Deserialize;
-use wiremock::{Mock, MockBuilder};
 use wiremock::matchers::{method, MethodExactMatcher};
+use wiremock::{Mock, MockBuilder};
 
 use url::HttpUrl;
 

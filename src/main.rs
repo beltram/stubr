@@ -5,7 +5,8 @@ use stubr::server::StubrServer;
 
 #[async_std::main]
 async fn main() -> anyhow::Result<()> {
-    let maybe_stub = env::args().collect::<Vec<String>>()
+    let maybe_stub = env::args()
+        .collect::<Vec<String>>()
         .get(1)
         .and_then(|it| stub_path(it));
     let server = StubrServer::start().await;
@@ -17,6 +18,7 @@ async fn main() -> anyhow::Result<()> {
 }
 
 fn stub_path(arg: &str) -> Option<PathBuf> {
-    env::current_dir().ok()
+    env::current_dir()
+        .ok()
         .map(|it| it.join(PathBuf::from(arg)))
 }

@@ -12,7 +12,7 @@ pub struct StubrServer {
 impl StubrServer {
     pub async fn start() -> Self {
         Self {
-            instance: MockServer::start().await
+            instance: MockServer::start().await,
         }
     }
 
