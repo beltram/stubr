@@ -1,0 +1,26 @@
+{
+  "id": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e",
+  "request": {
+    "urlPath": "/api/quizzes/5c235e338521b819587801ba/questions/5c86d46cdf7cd157ac050c25",
+    "method": "GET",
+    "headers": {
+      "Authorization": {
+        "equalTo": "Bearer TENANT_USER"
+      },
+      "Content-Type": {
+        "equalTo": "application/json"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": "{\"label\":\"What is an immutable object\",\"level\":\"NOVICE\",\"answerOptions\":[{\"label\":\"An immutable object can be changed once it is created\",\"valid\":false,\"id\":\"5d680c5272bc809c3fafc3cc\"},{\"label\":\"An immutable object can't be changed once it is created\",\"valid\":true,\"id\":\"5d680c5272bc809c3fafc3cd\"},{\"label\":\" An immutable object is an instance of an abstract class\",\"valid\":false,\"id\":\"5d680c5272bc809c3fafc3ce\"},{\"label\":\"None of the above\",\"valid\":false,\"id\":\"5d680c5272bc809c3fafc3cf\"}],\"explanation\":\"Immutable objects cannot be changed once created. String, Integer or LocalDate are immutable objects. Hence thread safe\",\"configuration\":{\"duration\":\"PT30S\",\"code\":false,\"shuffle\":false},\"results\":[],\"id\":\"5c86d46cdf7cd157ac050c25\"}",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  },
+  "uuid": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e"
+}
