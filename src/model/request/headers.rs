@@ -1,11 +1,14 @@
 use std::convert::TryFrom;
 
+use itertools::Itertools;
 use serde::Deserialize;
-use serde_json::{Map, Value};
+use serde_json::{from_value, Map, Value};
 use wiremock::matchers::{header, HeaderExactMatcher};
 use wiremock::MockBuilder;
 
-use crate::model::request::MockRegistrable;
+use super::super::request::MockRegistrable;
+use super::header_insensitive_case::HeaderCaseInsensitiveMatcher;
+use super::header_value::HeaderValue;
 
 #[derive(Deserialize, Debug, Default)]
 pub struct HttpReqHeaders {
@@ -15,30 +18,62 @@ pub struct HttpReqHeaders {
 
 impl MockRegistrable for HttpReqHeaders {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
-        if let Some(headers) = &self.headers {
-            let headers = headers
-                .iter()
-                .map(|it| Header::try_from(it))
-                .map(|it| it.and_then(|m| HeaderExactMatcher::try_from(&m)).ok())
-                .collect::<Vec<Option<HeaderExactMatcher>>>();
-            for maybe_header_matcher in headers {
-                if let Some(header_matcher) = maybe_header_matcher {
-                    mock = mock.and(header_matcher);
-                }
-            }
+        for exact in self.exact_matchers() {
+            mock = mock.and(exact);
+        }
+        for case_insensitive in self.case_insensitive_matchers() {
+            mock = mock.and(case_insensitive);
         }
         mock
     }
 }
 
+impl HttpReqHeaders {
+    fn exact_matchers(&self) -> Vec<HeaderExactMatcher> {
+        if let Some(headers) = &self.headers {
+            headers
+                .iter()
+                .map(|it| Header::try_from(it))
+                .flatten()
+                .filter(|h| !h.is_case_insensitive())
+                .map(|it| HeaderExactMatcher::try_from(&it))
+                .flatten()
+                .collect_vec()
+        } else {
+            vec![]
+        }
+    }
+
+    fn case_insensitive_matchers(&self) -> Vec<HeaderCaseInsensitiveMatcher> {
+        if let Some(headers) = &self.headers {
+            headers
+                .iter()
+                .map(|it| Header::try_from(it))
+                .flatten()
+                .filter(|h| h.is_case_insensitive())
+                .map(|it| HeaderCaseInsensitiveMatcher::try_from(&it))
+                .flatten()
+                .collect_vec()
+        } else {
+            vec![]
+        }
+    }
+}
+
 #[derive(Deserialize, Debug, Default)]
-#[serde(rename_all = "camelCase")]
-struct Header {
-    key: String,
-    // matches a header value exactly
-    equal_to: Option<String>,
-    // should header exact matching be case insensitive
-    case_insensitive: Option<bool>,
+pub struct Header {
+    // header key e.g. 'Content-Type'
+    pub key: String,
+    pub value: Option<HeaderValue>,
+}
+
+impl Header {
+    fn is_case_insensitive(&self) -> bool {
+        self.value
+            .as_ref()
+            .and_then(|v| v.case_insensitive)
+            .map_or(false, |case| case)
+    }
 }
 
 impl TryFrom<(&String, &Value)> for Header {
@@ -47,12 +82,7 @@ impl TryFrom<(&String, &Value)> for Header {
     fn try_from((k, v): (&String, &Value)) -> anyhow::Result<Self> {
         Ok(Self {
             key: k.to_owned(),
-            equal_to: v
-                .as_object()
-                .and_then(|it| it.get("equalTo"))
-                .and_then(|it| it.as_str())
-                .map(|it| it.to_owned()),
-            ..Default::default()
+            value: from_value(v.to_owned()).ok(),
         })
     }
 }
@@ -61,10 +91,11 @@ impl TryFrom<&Header> for HeaderExactMatcher {
     type Error = anyhow::Error;
 
     fn try_from(header_matcher: &Header) -> anyhow::Result<Self> {
-        if let Some(exact) = &header_matcher.equal_to {
-            Ok(header(header_matcher.key.as_str(), exact.as_str()))
-        } else {
-            Err(anyhow::Error::msg("Cannot make into matcher"))
-        }
+        header_matcher
+            .value
+            .as_ref()
+            .and_then(|it| it.equal_to.as_ref())
+            .map(|exact| header(header_matcher.key.as_str(), exact.as_str()))
+            .ok_or_else(|| anyhow::Error::msg("No exact header matcher found"))
     }
 }
