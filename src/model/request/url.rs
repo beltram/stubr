@@ -4,23 +4,23 @@ use serde::Deserialize;
 use wiremock::matchers::{path, path_regex, PathExactMatcher, PathRegexMatcher};
 use wiremock::MockBuilder;
 
+use crate::model::request::MockRegistrable;
+
 #[derive(Deserialize, Debug, Default)]
+#[serde(rename_all = "camelCase")]
 pub struct HttpUrl {
     // exact match on path only
-    #[serde(rename(deserialize = "urlPath"))]
     url_path: Option<String>,
     // regex match on path only
-    #[serde(rename(deserialize = "urlPathPattern"))]
     url_path_pattern: Option<String>,
     // exact match on path and query
     url: Option<String>,
     // regex match on path and query
-    #[serde(rename(deserialize = "urlPattern"))]
     url_pattern: Option<String>,
 }
 
-impl HttpUrl {
-    pub fn register(&self, mut mock: MockBuilder) -> MockBuilder {
+impl MockRegistrable for HttpUrl {
+    fn register(&self, mut mock: MockBuilder) -> MockBuilder {
         if let Ok(exact) = PathExactMatcher::try_from(self) {
             mock = mock.and(exact);
         }
@@ -34,7 +34,7 @@ impl HttpUrl {
 impl TryFrom<&HttpUrl> for PathExactMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(http_url: &HttpUrl) -> Result<Self, Self::Error> {
+    fn try_from(http_url: &HttpUrl) -> anyhow::Result<Self> {
         http_url
             .url_path
             .as_ref()
@@ -46,7 +46,7 @@ impl TryFrom<&HttpUrl> for PathExactMatcher {
 impl TryFrom<&HttpUrl> for PathRegexMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(http_url: &HttpUrl) -> Result<Self, Self::Error> {
+    fn try_from(http_url: &HttpUrl) -> anyhow::Result<Self> {
         http_url
             .url_path_pattern
             .as_ref()

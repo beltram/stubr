@@ -16,7 +16,7 @@ async fn main() -> anyhow::Result<()> {
     }
     server.init_log();
     loop {
-        std::thread::sleep(Duration::from_millis(1))
+        async_std::task::sleep(Duration::from_millis(1)).await;
     }
 }
 

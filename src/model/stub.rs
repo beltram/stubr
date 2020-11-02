@@ -16,7 +16,6 @@ impl TryFrom<Stub> for Mock {
     type Error = anyhow::Error;
 
     fn try_from(stub: Stub) -> Result<Self, Self::Error> {
-        let builder: MockBuilder = stub.request.try_into()?;
-        Ok(builder.respond_with(stub.response.try_into()?))
+        Ok(MockBuilder::try_from(stub.request)?.respond_with(stub.response.try_into()?))
     }
 }
