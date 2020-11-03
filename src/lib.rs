@@ -1,4 +1,3 @@
-#![allow(clippy::redundant_closure)]
 use crate::server::StubrServer;
 
 pub mod mapper;
