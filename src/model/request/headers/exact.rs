@@ -8,8 +8,8 @@ use super::{Header, HttpReqHeaders};
 impl From<&HttpReqHeaders> for Vec<HeaderExactMatcher> {
     fn from(headers: &HttpReqHeaders) -> Self {
         headers.get_headers().iter()
-            .filter(|h| !h.is_case_insensitive())
-            .map(|it| HeaderExactMatcher::try_from(it)).flatten()
+            .filter(|h| h.is_exact_match())
+            .map(HeaderExactMatcher::try_from).flatten()
             .collect_vec()
     }
 }

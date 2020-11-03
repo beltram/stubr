@@ -7,6 +7,7 @@ use wiremock::matchers::HeaderExactMatcher;
 use wiremock::MockBuilder;
 
 use case_insensitive::HeaderCaseInsensitiveMatcher;
+use contains::HeaderContainsMatcher;
 use value::HeaderValue;
 
 use super::super::request::MockRegistrable;
@@ -14,6 +15,7 @@ use super::super::request::MockRegistrable;
 pub mod value;
 pub mod case_insensitive;
 pub mod exact;
+pub mod contains;
 
 #[derive(Deserialize, Debug, Default)]
 pub struct HttpReqHeaders {
@@ -28,6 +30,9 @@ impl MockRegistrable for HttpReqHeaders {
         }
         for case_insensitive in Vec::<HeaderCaseInsensitiveMatcher>::from(self) {
             mock = mock.and(case_insensitive);
+        }
+        for contains in Vec::<HeaderContainsMatcher>::from(self) {
+            mock = mock.and(contains);
         }
         mock
     }
@@ -50,10 +55,28 @@ pub struct Header {
 }
 
 impl Header {
+    fn is_exact_match(&self) -> bool {
+        self.is_equal_to() && !self.is_case_insensitive() && !self.is_contains()
+    }
+
+    fn is_equal_to(&self) -> bool {
+        self.value.as_ref()
+            .and_then(|v| v.equal_to.as_ref())
+            .map(|it| !it.is_empty())
+            .unwrap_or_default()
+    }
+
     fn is_case_insensitive(&self) -> bool {
         self.value.as_ref()
             .and_then(|v| v.case_insensitive)
-            .map_or(false, |case| case)
+            .unwrap_or_default()
+    }
+
+    fn is_contains(&self) -> bool {
+        self.value.as_ref()
+            .and_then(|v| v.contains.as_ref())
+            .map(|it| !it.is_empty())
+            .unwrap_or_default()
     }
 }
 
