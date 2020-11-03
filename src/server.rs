@@ -27,7 +27,7 @@ impl StubrServer {
         let stub: StubrMock = stub_file.try_into()?;
         self.instance.register(stub.0).await;
         if let Some(file_name) = file_name {
-            println!(" - mounted {:?}", file_name);
+            println!(" - mounted stub {:?}", file_name);
         }
         Ok(())
     }

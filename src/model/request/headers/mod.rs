@@ -6,9 +6,12 @@ use serde_json::{from_value, Map, Value};
 use wiremock::matchers::{header, HeaderExactMatcher};
 use wiremock::MockBuilder;
 
+use header_insensitive_case::HeaderCaseInsensitiveMatcher;
+use header_value::HeaderValue;
 use super::super::request::MockRegistrable;
-use super::header_insensitive_case::HeaderCaseInsensitiveMatcher;
-use super::header_value::HeaderValue;
+
+pub mod header_value;
+pub mod header_insensitive_case;
 
 #[derive(Deserialize, Debug, Default)]
 pub struct HttpReqHeaders {

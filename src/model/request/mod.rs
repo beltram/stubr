@@ -7,8 +7,6 @@ use wiremock::{Mock, MockBuilder};
 use headers::HttpReqHeaders;
 use url::HttpUrl;
 
-mod header_insensitive_case;
-mod header_value;
 pub mod headers;
 pub mod url;
 
