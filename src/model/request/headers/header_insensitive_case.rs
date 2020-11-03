@@ -14,17 +14,12 @@ pub struct HeaderCaseInsensitiveMatcher(String, String);
 
 impl Match for HeaderCaseInsensitiveMatcher {
     fn matches(&self, request: &Request) -> bool {
-        if let Ok(key) = HeaderName::from_str(self.0.as_str()) {
-            if let Some(values) = request.headers.get(&key) {
-                values
-                    .iter()
+        HeaderName::from_str(self.0.as_str()).ok()
+            .and_then(|key| request.headers.get(&key))
+            .map_or(false, |header_values| {
+                header_values.iter()
                     .any(|it| it.to_string().eq_ignore_ascii_case(&self.1))
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+            })
     }
 }
 
