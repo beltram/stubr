@@ -29,7 +29,26 @@ fn should_not_map_when_incorrect_string_value() {
 }
 
 #[test]
-fn should_map_request_exact_int_query() {
+fn should_map_request_many_exact_string_query() {
+    let server = mount("req/query/equal/string-many");
+    let uri = format!("{}?age=young&city=paris", server.uri());
+    let response = block_on(surf::get(&uri)).unwrap();
+    assert_eq!(response.status().as_u16(), 200);
+}
+
+#[test]
+fn should_not_map_request_many_exact_string_value_when_one_of_does_not_match() {
+    let server = mount("req/query/equal/string-many");
+    let uri = format!("{}?age=old&city=paris", server.uri());
+    let response = block_on(surf::get(&uri)).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+    let uri = format!("{}?age=young&city=lyon", server.uri());
+    let response = block_on(surf::get(&uri)).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+}
+
+#[test]
+fn should_map_request_exact_int_value() {
     let server = mount("req/query/equal/int");
     let uri = format!("{}?age=42", server.uri());
     let response = block_on(surf::get(&uri)).unwrap();
@@ -53,7 +72,7 @@ fn should_not_map_when_not_an_int_value() {
 }
 
 #[test]
-fn should_map_request_exact_bool_query() {
+fn should_map_request_exact_bool_value() {
     let server = mount("req/query/equal/bool");
     let uri = format!("{}?age=true", server.uri());
     let response = block_on(surf::get(&uri)).unwrap();
