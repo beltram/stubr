@@ -3,58 +3,59 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use serde::Deserialize;
 use serde_json::{Map, Value};
-use wiremock::matchers::HeaderExactMatcher;
+use wiremock::matchers::QueryParamExactMatcher;
 use wiremock::MockBuilder;
 
-use case::HeaderCaseInsensitiveMatcher;
-use contains::HeaderContainsMatcher;
-use value::HeaderValue;
+use case::QueryCaseInsensitiveMatcher;
+use contains::QueryContainsMatcher;
+use value::QueryValue;
 
 use super::super::request::MockRegistrable;
 
-pub mod value;
-pub mod case;
-pub mod exact;
-pub mod contains;
+mod value;
+mod exact;
+mod case;
+mod contains;
 
 #[derive(Deserialize, Debug, Default)]
-pub struct HttpReqHeaders {
+#[serde(rename_all = "camelCase")]
+pub struct HttpQueryParams {
     // matches all request http headers
-    headers: Option<Map<String, Value>>,
+    query_parameters: Option<Map<String, Value>>,
 }
 
-impl MockRegistrable for HttpReqHeaders {
+impl MockRegistrable for HttpQueryParams {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
-        for exact in Vec::<HeaderExactMatcher>::from(self) {
+        for exact in Vec::<QueryParamExactMatcher>::from(self) {
             mock = mock.and(exact);
         }
-        for case_insensitive in Vec::<HeaderCaseInsensitiveMatcher>::from(self) {
-            mock = mock.and(case_insensitive);
+        for case in Vec::<QueryCaseInsensitiveMatcher>::from(self) {
+            mock = mock.and(case);
         }
-        for contains in Vec::<HeaderContainsMatcher>::from(self) {
+        for contains in Vec::<QueryContainsMatcher>::from(self) {
             mock = mock.and(contains);
         }
         mock
     }
 }
 
-impl HttpReqHeaders {
-    fn get_headers(&self) -> Vec<Header> {
-        self.headers.as_ref()
-            .map(|h| h.iter().map(Header::try_from))
+impl HttpQueryParams {
+    fn get_queries(&self) -> Vec<Query> {
+        self.query_parameters.as_ref()
+            .map(|h| h.iter().map(Query::try_from))
             .map(|it| it.flatten().collect_vec())
             .unwrap_or_default()
     }
 }
 
 #[derive(Deserialize, Debug, Default)]
-pub struct Header {
-    // header key e.g. 'Content-Type'
+pub struct Query {
+    // query key e.g. 'age='
     pub key: String,
-    pub value: Option<HeaderValue>,
+    pub value: Option<QueryValue>,
 }
 
-impl Header {
+impl Query {
     fn is_exact_match(&self) -> bool {
         self.is_equal_to() && !self.is_case_insensitive() && !self.is_contains()
     }
@@ -62,8 +63,7 @@ impl Header {
     fn is_equal_to(&self) -> bool {
         self.value.as_ref()
             .and_then(|v| v.equal_to.as_ref())
-            .map(|it| !it.is_empty())
-            .unwrap_or_default()
+            .is_some()
     }
 
     fn is_case_insensitive(&self) -> bool {
@@ -78,9 +78,19 @@ impl Header {
             .map(|it| !it.is_empty())
             .unwrap_or_default()
     }
+
+    fn equal_to_as_str(&self) -> Option<String> {
+        self.value.as_ref()
+            .and_then(|it| it.equal_to.as_ref())
+            .and_then(|v| {
+                v.as_str().map(|s| s.to_string())
+                    .or_else(|| v.as_bool().map(|b| b.to_string()))
+                    .or_else(|| v.as_i64().map(|i| i.to_string()))
+            })
+    }
 }
 
-impl TryFrom<(&String, &Value)> for Header {
+impl TryFrom<(&String, &Value)> for Query {
     type Error = anyhow::Error;
 
     fn try_from((k, v): (&String, &Value)) -> anyhow::Result<Self> {

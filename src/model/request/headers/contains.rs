@@ -19,9 +19,7 @@ impl Match for HeaderContainsMatcher {
     fn matches(&self, request: &Request) -> bool {
         HeaderName::from_str(self.0.as_str()).ok()
             .and_then(|key| request.headers.get(&key))
-            .map(|values| {
-                values.iter().any(|it| it.to_string().contains(&self.1))
-            })
+            .map(|values| values.iter().any(|it| it.to_string().contains(&self.1)))
             .unwrap_or_default()
     }
 }

@@ -5,9 +5,11 @@ use wiremock::{Mock, MockBuilder};
 use wiremock::matchers::{method, MethodExactMatcher};
 
 use headers::HttpReqHeaders;
+use query::HttpQueryParams;
 use url::HttpUrl;
 
 pub mod headers;
+pub mod query;
 pub mod url;
 
 #[derive(Deserialize, Debug, Default)]
@@ -20,7 +22,9 @@ pub struct Request {
     #[serde(flatten)]
     url: HttpUrl,
     #[serde(flatten)]
-    header: HttpReqHeaders,
+    headers: HttpReqHeaders,
+    #[serde(flatten)]
+    queries: HttpQueryParams,
 }
 
 impl TryFrom<Request> for MockBuilder {
@@ -30,7 +34,8 @@ impl TryFrom<Request> for MockBuilder {
         let method: MethodExactMatcher = request.method.into();
         let mut mock = Mock::given(method);
         mock = request.url.register(mock);
-        mock = request.header.register(mock);
+        mock = request.headers.register(mock);
+        mock = request.queries.register(mock);
         Ok(mock)
     }
 }
@@ -41,6 +46,7 @@ impl From<HttpMethod> for MethodExactMatcher {
     }
 }
 
+/// Normalizes appending a struct into a Mock
 trait MockRegistrable {
     fn register(&self, mock: MockBuilder) -> MockBuilder;
 }
