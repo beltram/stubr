@@ -62,6 +62,14 @@ fn should_fail_when_one_of_does_not_contains() {
             .set_header("Accept", "application/xml")
         ).unwrap();
     assert_eq!(response.status().as_u16(), 404);
+    let response =
+        block_on(surf::get(&server.uri())
+            .set_header("Content-Type", "application/json")).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+    let response =
+        block_on(surf::get(&server.uri())
+            .set_header("Accept", "application/json")).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
 }
 
 #[test]

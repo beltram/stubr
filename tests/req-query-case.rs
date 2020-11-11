@@ -54,6 +54,12 @@ fn should_not_map_request_many_case_insensitive_string_value_when_one_of_does_no
     let uri = format!("{}?age=young&city=lyon", server.uri());
     let response = block_on(surf::get(&uri)).unwrap();
     assert_eq!(response.status().as_u16(), 404);
+    let uri = format!("{}?age=young", server.uri());
+    let response = block_on(surf::get(&uri)).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+    let uri = format!("{}?city=paris", server.uri());
+    let response = block_on(surf::get(&uri)).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
 }
 
 #[test]
