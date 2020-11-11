@@ -9,17 +9,13 @@ use crate::model::request::headers::Header;
 
 use super::HttpReqHeaders;
 
-fn header_contains(key: String, value: String) -> HeaderContainsMatcher {
-    HeaderContainsMatcher(key, value)
-}
-
 pub struct HeaderContainsMatcher(String, String);
 
 impl Match for HeaderContainsMatcher {
     fn matches(&self, request: &Request) -> bool {
         HeaderName::from_str(self.0.as_str()).ok()
             .and_then(|key| request.headers.get(&key))
-            .map(|values| values.iter().any(|it| it.to_string().contains(&self.1)))
+            .map(|values| values.iter().any(|it| it.to_string().contains(self.1.as_str())))
             .unwrap_or_default()
     }
 }
@@ -36,11 +32,11 @@ impl From<&HttpReqHeaders> for Vec<HeaderContainsMatcher> {
 impl TryFrom<&Header> for HeaderContainsMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(header_matcher: &Header) -> anyhow::Result<Self> {
-        header_matcher.value.as_ref()
-            .filter(|_| header_matcher.is_contains())
+    fn try_from(header: &Header) -> anyhow::Result<Self> {
+        header.value.as_ref()
+            .filter(|_| header.is_contains())
             .and_then(|it| it.contains.as_ref())
-            .map(|contains| header_contains(header_matcher.key.to_string(), contains.to_string()))
-            .ok_or_else(|| anyhow::Error::msg("No contains header matcher found"))
+            .map(|contains| HeaderContainsMatcher(header.key.to_string(), contains.to_string()))
+            .ok_or_else(|| anyhow::Error::msg("No header contains matcher found"))
     }
 }

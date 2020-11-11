@@ -9,17 +9,13 @@ use crate::model::request::headers::Header;
 
 use super::HttpReqHeaders;
 
-fn header_case_insensitive(key: String, value: String) -> HeaderCaseInsensitiveMatcher {
-    HeaderCaseInsensitiveMatcher(key, value)
-}
-
 pub struct HeaderCaseInsensitiveMatcher(String, String);
 
 impl Match for HeaderCaseInsensitiveMatcher {
     fn matches(&self, request: &Request) -> bool {
         HeaderName::from_str(self.0.as_str()).ok()
             .and_then(|key| request.headers.get(&key))
-            .map(|values| values.iter().any(|it| it.to_string().eq_ignore_ascii_case(&self.1)))
+            .map(|values| values.iter().any(|it| it.to_string().eq_ignore_ascii_case(self.1.as_str())))
             .unwrap_or_default()
     }
 }
@@ -36,11 +32,11 @@ impl From<&HttpReqHeaders> for Vec<HeaderCaseInsensitiveMatcher> {
 impl TryFrom<&Header> for HeaderCaseInsensitiveMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(header_matcher: &Header) -> anyhow::Result<Self> {
-        header_matcher.value.as_ref()
-            .filter(|_| header_matcher.is_case_insensitive())
+    fn try_from(header: &Header) -> anyhow::Result<Self> {
+        header.value.as_ref()
+            .filter(|_| header.is_case_insensitive())
             .and_then(|it| it.equal_to.as_ref())
-            .map(|case| header_case_insensitive(header_matcher.key.to_string(), case.to_string()))
+            .map(|case| HeaderCaseInsensitiveMatcher(header.key.to_string(), case.to_string()))
             .ok_or_else(|| anyhow::Error::msg("No case insensitive header matcher found"))
     }
 }

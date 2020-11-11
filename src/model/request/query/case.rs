@@ -5,10 +5,6 @@ use wiremock::{Match, Request};
 
 use super::{HttpQueryParams, Query};
 
-fn query_case_insensitive(key: String, value: String) -> QueryCaseInsensitiveMatcher {
-    QueryCaseInsensitiveMatcher(key, value)
-}
-
 pub struct QueryCaseInsensitiveMatcher(String, String);
 
 impl Match for QueryCaseInsensitiveMatcher {
@@ -32,10 +28,10 @@ impl From<&HttpQueryParams> for Vec<QueryCaseInsensitiveMatcher> {
 impl TryFrom<&Query> for QueryCaseInsensitiveMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(query_matcher: &Query) -> anyhow::Result<Self> {
-        query_matcher.equal_to_as_str()
-            .filter(|_| query_matcher.is_case_insensitive())
-            .map(|it| query_case_insensitive(query_matcher.key.to_string(), it))
+    fn try_from(query: &Query) -> anyhow::Result<Self> {
+        query.equal_to_as_str()
+            .filter(|_| query.is_case_insensitive())
+            .map(|it| QueryCaseInsensitiveMatcher(query.key.to_string(), it))
             .ok_or_else(|| anyhow::Error::msg("No case insensitive query matcher found"))
     }
 }

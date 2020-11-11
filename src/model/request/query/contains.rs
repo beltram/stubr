@@ -5,10 +5,6 @@ use wiremock::{Match, Request};
 
 use super::{HttpQueryParams, Query};
 
-fn query_contains(key: String, value: String) -> QueryContainsMatcher {
-    QueryContainsMatcher(key, value)
-}
-
 pub struct QueryContainsMatcher(String, String);
 
 impl Match for QueryContainsMatcher {
@@ -32,11 +28,11 @@ impl From<&HttpQueryParams> for Vec<QueryContainsMatcher> {
 impl TryFrom<&Query> for QueryContainsMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(query_matcher: &Query) -> anyhow::Result<Self> {
-        query_matcher.value.as_ref()
-            .filter(|_| query_matcher.is_contains())
+    fn try_from(query: &Query) -> anyhow::Result<Self> {
+        query.value.as_ref()
+            .filter(|_| query.is_contains())
             .and_then(|it| it.contains.as_ref())
-            .map(|it| query_contains(query_matcher.key.to_string(), it.to_string()))
-            .ok_or_else(|| anyhow::Error::msg("No case insensitive query matcher found"))
+            .map(|it| QueryContainsMatcher(query.key.to_string(), it.to_string()))
+            .ok_or_else(|| anyhow::Error::msg("No query contains matcher found"))
     }
 }
