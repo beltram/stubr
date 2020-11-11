@@ -3,7 +3,8 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::{HttpQueryParams, Query};
+use super::HttpQueryParams;
+use super::super::matcher::RequestMatcherDto;
 
 pub struct QueryCaseInsensitiveMatcher(String, String);
 
@@ -25,10 +26,10 @@ impl From<&HttpQueryParams> for Vec<QueryCaseInsensitiveMatcher> {
     }
 }
 
-impl TryFrom<&Query> for QueryCaseInsensitiveMatcher {
+impl TryFrom<&RequestMatcherDto> for QueryCaseInsensitiveMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(query: &Query) -> anyhow::Result<Self> {
+    fn try_from(query: &RequestMatcherDto) -> anyhow::Result<Self> {
         query.equal_to_as_str()
             .filter(|_| query.is_case_insensitive())
             .map(|it| QueryCaseInsensitiveMatcher(query.key.to_string(), it))

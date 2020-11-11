@@ -3,7 +3,8 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use wiremock::matchers::{header, HeaderExactMatcher};
 
-use super::{Header, HttpReqHeaders};
+use super::HttpReqHeaders;
+use super::super::matcher::RequestMatcherDto;
 
 impl From<&HttpReqHeaders> for Vec<HeaderExactMatcher> {
     fn from(headers: &HttpReqHeaders) -> Self {
@@ -14,12 +15,11 @@ impl From<&HttpReqHeaders> for Vec<HeaderExactMatcher> {
     }
 }
 
-impl TryFrom<&Header> for HeaderExactMatcher {
+impl TryFrom<&RequestMatcherDto> for HeaderExactMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(header_matcher: &Header) -> anyhow::Result<Self> {
-        header_matcher.value.as_ref()
-            .and_then(|it| it.equal_to.as_ref())
+    fn try_from(header_matcher: &RequestMatcherDto) -> anyhow::Result<Self> {
+        header_matcher.equal_to_as_str()
             .map(|exact| header(header_matcher.key.as_str(), exact.as_str()))
             .ok_or_else(|| anyhow::Error::msg("No exact header matcher found"))
     }

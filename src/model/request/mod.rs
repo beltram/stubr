@@ -11,6 +11,7 @@ use url::HttpUrl;
 pub mod headers;
 pub mod query;
 pub mod url;
+pub mod matcher;
 
 #[derive(Deserialize, Debug, Default)]
 struct HttpMethod(String);

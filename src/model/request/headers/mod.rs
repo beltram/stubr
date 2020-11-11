@@ -8,11 +8,10 @@ use wiremock::MockBuilder;
 
 use case::HeaderCaseInsensitiveMatcher;
 use contains::HeaderContainsMatcher;
-use value::HeaderValue;
 
+use super::matcher::RequestMatcherDto;
 use super::super::request::MockRegistrable;
 
-pub mod value;
 pub mod case;
 pub mod exact;
 pub mod contains;
@@ -39,54 +38,10 @@ impl MockRegistrable for HttpReqHeaders {
 }
 
 impl HttpReqHeaders {
-    fn get_headers(&self) -> Vec<Header> {
+    fn get_headers(&self) -> Vec<RequestMatcherDto> {
         self.headers.as_ref()
-            .map(|h| h.iter().map(Header::try_from))
+            .map(|h| h.iter().map(RequestMatcherDto::try_from))
             .map(|it| it.flatten().collect_vec())
             .unwrap_or_default()
-    }
-}
-
-#[derive(Deserialize, Debug, Default)]
-pub struct Header {
-    // header key e.g. 'Content-Type'
-    pub key: String,
-    pub value: Option<HeaderValue>,
-}
-
-impl Header {
-    fn is_exact_match(&self) -> bool {
-        self.is_equal_to() && !self.is_case_insensitive() && !self.is_contains()
-    }
-
-    fn is_equal_to(&self) -> bool {
-        self.value.as_ref()
-            .and_then(|v| v.equal_to.as_ref())
-            .map(|it| !it.is_empty())
-            .unwrap_or_default()
-    }
-
-    fn is_case_insensitive(&self) -> bool {
-        self.value.as_ref()
-            .and_then(|v| v.case_insensitive)
-            .unwrap_or_default()
-    }
-
-    fn is_contains(&self) -> bool {
-        self.value.as_ref()
-            .and_then(|v| v.contains.as_ref())
-            .map(|it| !it.is_empty())
-            .unwrap_or_default()
-    }
-}
-
-impl TryFrom<(&String, &Value)> for Header {
-    type Error = anyhow::Error;
-
-    fn try_from((k, v): (&String, &Value)) -> anyhow::Result<Self> {
-        Ok(Self {
-            key: k.to_owned(),
-            value: serde_json::from_value(v.to_owned()).ok(),
-        })
     }
 }

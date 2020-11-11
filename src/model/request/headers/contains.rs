@@ -5,9 +5,8 @@ use http_types::headers::HeaderName;
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use crate::model::request::headers::Header;
-
 use super::HttpReqHeaders;
+use super::super::matcher::RequestMatcherDto;
 
 pub struct HeaderContainsMatcher(String, String);
 
@@ -29,10 +28,10 @@ impl From<&HttpReqHeaders> for Vec<HeaderContainsMatcher> {
     }
 }
 
-impl TryFrom<&Header> for HeaderContainsMatcher {
+impl TryFrom<&RequestMatcherDto> for HeaderContainsMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(header: &Header) -> anyhow::Result<Self> {
+    fn try_from(header: &RequestMatcherDto) -> anyhow::Result<Self> {
         header.value.as_ref()
             .filter(|_| header.is_contains())
             .and_then(|it| it.contains.as_ref())
