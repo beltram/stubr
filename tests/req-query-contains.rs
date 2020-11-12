@@ -37,6 +37,13 @@ fn should_fail_when_invalid_key() {
 }
 
 #[test]
+fn should_fail_when_missing() {
+    let server = mount("req/query/contains/single");
+    let response = block_on(surf::get(&server.uri())).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+}
+
+#[test]
 fn should_support_many_contains() {
     let server = mount("req/query/contains/many");
     let uri = format!("{}?age=young&city=paris", server.uri());

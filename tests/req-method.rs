@@ -69,7 +69,7 @@ fn should_map_request_method_trace() {
 }
 
 #[test]
-fn should_not_match_when_invalid_method() {
+fn should_fail_when_invalid_method() {
     let server = mount("req/method/get");
     let response = block_on(surf::post(&server.uri())).unwrap();
     assert_eq!(response.status().as_u16(), 404);

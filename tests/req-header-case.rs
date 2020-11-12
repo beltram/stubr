@@ -40,6 +40,13 @@ fn insensitive_should_fail_when_invalid_key() {
 }
 
 #[test]
+fn insensitive_should_fail_when_missing() {
+    let server = mount("req/headers/case/insensitive");
+    let response = block_on(surf::get(&server.uri())).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+}
+
+#[test]
 fn should_support_many_case_insensitive() {
     let server = mount("req/headers/case/insensitive-many");
     let response = block_on(surf::get(&server.uri())
@@ -60,7 +67,7 @@ fn should_support_many_case_insensitive() {
 }
 
 #[test]
-fn should_not_map_request_many_case_insensitive_string_value_when_one_of_does_not_match() {
+fn should_fail_with_many_case_insensitive_string_value_when_one_of_does_not_match() {
     let server = mount("req/headers/case/insensitive-many");
     let response = block_on(surf::get(&server.uri())
         .set_header("Content-Type", "application/xml")
@@ -104,5 +111,12 @@ fn sensitive_should_fail_when_invalid_key() {
     let server = mount("req/headers/case/sensitive");
     let response = block_on(surf::get(&server.uri())
         .set_header("Not-Content-Type", "application/json")).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+}
+
+#[test]
+fn sensitive_should_fail_when_missing() {
+    let server = mount("req/headers/case/sensitive");
+    let response = block_on(surf::get(&server.uri())).unwrap();
     assert_eq!(response.status().as_u16(), 404);
 }

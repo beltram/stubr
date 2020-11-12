@@ -32,6 +32,13 @@ fn insensitive_should_fail_when_invalid_key() {
 }
 
 #[test]
+fn insensitive_should_fail_when_missing() {
+    let server = mount("req/query/case/insensitive");
+    let response = block_on(surf::get(&server.uri())).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+}
+
+#[test]
 fn should_support_many_case_insensitive() {
     let server = mount("req/query/case/insensitive-many");
     let uri = format!("{}?age=YOUNG&city=PARIS", server.uri());
@@ -46,7 +53,7 @@ fn should_support_many_case_insensitive() {
 }
 
 #[test]
-fn should_not_map_request_many_case_insensitive_string_value_when_one_of_does_not_match() {
+fn should_fail_with_many_case_insensitive_string_value_when_one_of_does_not_match() {
     let server = mount("req/query/case/insensitive-many");
     let uri = format!("{}?age=old&city=paris", server.uri());
     let response = block_on(surf::get(&uri)).unwrap();
@@ -78,5 +85,12 @@ fn sensitive_should_fail_when_invalid_key() {
     let server = mount("req/query/case/sensitive");
     let uri = format!("{}?not-age=young", server.uri());
     let response = block_on(surf::get(&uri)).unwrap();
+    assert_eq!(response.status().as_u16(), 404);
+}
+
+#[test]
+fn sensitive_should_fail_when_missing() {
+    let server = mount("req/query/case/sensitive");
+    let response = block_on(surf::get(&server.uri())).unwrap();
     assert_eq!(response.status().as_u16(), 404);
 }
