@@ -25,7 +25,7 @@ impl TryFrom<&HttpUrl> for Url {
         http_url.url.as_ref()
             .map(|it| format!("http://localhost{}", it))
             .and_then(|it| Url::parse(&it).ok())
-            .ok_or(anyhow::Error::msg("No 'url'"))
+            .ok_or_else(|| anyhow::Error::msg("No 'url'"))
     }
 }
 
