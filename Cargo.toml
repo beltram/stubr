@@ -15,7 +15,7 @@ version = "1.0.117"
 features = ["derive"]
 
 [dependencies.async-std]
-version = "1.6.5"
+version = "1.7.0"
 features = ["attributes"]
 
 [dev-dependencies]
