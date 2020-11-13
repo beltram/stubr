@@ -1,8 +1,10 @@
 #![allow(dead_code)]
 
 use std::path::PathBuf;
+use std::str::FromStr;
 
 use async_std::task::block_on;
+use http_types::headers::{HeaderName, HeaderValue};
 use surf::Response;
 
 use stubr::server::StubrServer;
@@ -47,13 +49,29 @@ impl UriAndQuery for StubrServer {
 }
 
 pub trait ResponseAsserter {
-    fn assert_status_eq(&self, status: u16);
-    fn assert_ok(&self) { self.assert_status_eq(200) }
-    fn assert_not_found(&self) { self.assert_status_eq(404) }
+    fn assert_status_eq(&mut self, status: u16) -> &mut Self;
+    fn assert_ok(&mut self) -> &mut Self { self.assert_status_eq(200) }
+    fn assert_not_found(&mut self) -> &mut Self { self.assert_status_eq(404) }
+    fn assert_body(&mut self, body: &str) -> &mut Self;
+    fn assert_body_empty(&mut self) -> &mut Self { self.assert_body("") }
+    fn assert_header(&mut self, key: &str, value: &str) -> &mut Self;
 }
 
 impl ResponseAsserter for Response {
-    fn assert_status_eq(&self, status: u16) {
+    fn assert_status_eq(&mut self, status: u16) -> &mut Self {
         assert_eq!(u16::from(self.status()), status);
+        self
+    }
+
+    fn assert_body(&mut self, body: &str) -> &mut Self {
+        assert_eq!(block_on(self.body_string()).unwrap(), body);
+        self
+    }
+
+    fn assert_header(&mut self, key: &str, value: &str) -> &mut Self {
+        let key = HeaderName::from_str(key).unwrap();
+        let value = HeaderValue::from_str(value).unwrap();
+        assert_eq!(self.header(key).unwrap().last(), &value);
+        self
     }
 }

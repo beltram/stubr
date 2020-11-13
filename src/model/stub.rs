@@ -4,12 +4,12 @@ use serde::Deserialize;
 use wiremock::{Mock, MockBuilder};
 
 use super::request::Request;
-use super::response::Response;
+use super::response::ResponseDto;
 
 #[derive(Deserialize, Debug)]
 pub struct Stub {
     request: Request,
-    response: Response,
+    response: ResponseDto,
 }
 
 impl TryFrom<Stub> for Mock {
