@@ -19,4 +19,4 @@ version = "1.7.0"
 features = ["attributes"]
 
 [dev-dependencies]
-surf = "1.0.3"
+surf = "2.1.0"

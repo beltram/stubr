@@ -54,6 +54,6 @@ pub trait ResponseAsserter {
 
 impl ResponseAsserter for Response {
     fn assert_status_eq(&self, status: u16) {
-        assert_eq!(self.status().as_u16(), status);
+        assert_eq!(u16::from(self.status()), status);
     }
 }

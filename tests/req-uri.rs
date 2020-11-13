@@ -1,4 +1,3 @@
-use async_std::task::block_on;
 use surf::get;
 
 use crate::utils::*;
