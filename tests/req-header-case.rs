@@ -1,122 +1,98 @@
-use async_std::task::block_on;
+use surf::get;
 
 use crate::utils::*;
 
 mod utils;
 
-#[test]
-fn should_default_to_case_sensitive() {
-    let server = mount("req/headers/equal/string");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "Application/Json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn should_default_to_case_sensitive() {
+    let srv = given("req/headers/equal/string");
+    get(&srv.uri()).set_header("Content-Type", "Application/Json").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_support_case_insensitive() {
-    let server = mount("req/headers/case/insensitive");
-    let response_upper = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "Application/Json")).unwrap();
-    assert_eq!(response_upper.status().as_u16(), 200);
-    let response_lower = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/json")).unwrap();
-    assert_eq!(response_lower.status().as_u16(), 200);
+#[async_std::test]
+async fn should_support_case_insensitive() {
+    let srv = given("req/headers/case/insensitive");
+    get(&srv.uri()).set_header("Content-Type", "Application/Json").await.unwrap().assert_ok();
+    get(&srv.uri()).set_header("Content-Type", "application/json").await.unwrap().assert_ok();
 }
 
-#[test]
-fn insensitive_should_fail_when_invalid_value() {
-    let server = mount("req/headers/case/insensitive");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/xml")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn insensitive_should_fail_when_invalid_value() {
+    let srv = given("req/headers/case/insensitive");
+    get(&srv.uri()).set_header("Content-Type", "application/xml").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn insensitive_should_fail_when_invalid_key() {
-    let server = mount("req/headers/case/insensitive");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Not-Content-Type", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn insensitive_should_fail_when_invalid_key() {
+    let srv = given("req/headers/case/insensitive");
+    get(&srv.uri()).set_header("Not-Content-Type", "application/json").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn insensitive_should_fail_when_missing() {
-    let server = mount("req/headers/case/insensitive");
-    let response = block_on(surf::get(&server.uri())).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn insensitive_should_fail_when_missing() {
+    let srv = given("req/headers/case/insensitive");
+    get(&srv.uri()).await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_support_many_case_insensitive() {
-    let server = mount("req/headers/case/insensitive-many");
-    let response = block_on(surf::get(&server.uri())
+#[async_std::test]
+async fn should_support_many_case_insensitive() {
+    let srv = given("req/headers/case/insensitive-many");
+    get(&srv.uri())
         .set_header("Content-Type", "Application/Json")
         .set_header("Accept", "Application/Json")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 200);
-    let response = block_on(surf::get(&server.uri())
+        .await.unwrap()
+        .assert_ok();
+    get(&srv.uri())
         .set_header("Content-Type", "application/json")
         .set_header("Accept", "Application/Json")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 200);
-    let response = block_on(surf::get(&server.uri())
+        .await.unwrap()
+        .assert_ok();
+    get(&srv.uri())
         .set_header("Content-Type", "application/json")
         .set_header("Accept", "application/json")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 200);
+        .await.unwrap()
+        .assert_ok();
 }
 
-#[test]
-fn should_fail_with_many_case_insensitive_string_value_when_one_of_does_not_match() {
-    let server = mount("req/headers/case/insensitive-many");
-    let response = block_on(surf::get(&server.uri())
+#[async_std::test]
+async fn should_fail_with_many_case_insensitive_string_value_when_one_of_does_not_match() {
+    let srv = given("req/headers/case/insensitive-many");
+    get(&srv.uri())
         .set_header("Content-Type", "application/xml")
         .set_header("Accept", "application/json")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
-    let response = block_on(surf::get(&server.uri())
+        .await.unwrap()
+        .assert_not_found();
+    get(&srv.uri())
         .set_header("Content-Type", "application/json")
         .set_header("Accept", "application/xml")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Accept", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+        .await.unwrap()
+        .assert_not_found();
+    get(&srv.uri()).set_header("Content-Type", "application/json").await.unwrap().assert_not_found();
+    get(&srv.uri()).set_header("Accept", "application/json").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_support_explicit_case_sensitive() {
-    let server = mount("req/headers/case/sensitive");
-    let response_upper = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "Application/Json")).unwrap();
-    assert_eq!(response_upper.status().as_u16(), 404);
-    let response_lower = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/json")).unwrap();
-    assert_eq!(response_lower.status().as_u16(), 200);
+#[async_std::test]
+async fn should_support_explicit_case_sensitive() {
+    let srv = given("req/headers/case/sensitive");
+    get(&srv.uri()).set_header("Content-Type", "Application/Json").await.unwrap().assert_not_found();
+    get(&srv.uri()).set_header("Content-Type", "application/json").await.unwrap().assert_ok();
 }
 
-#[test]
-fn sensitive_should_fail_when_invalid_value() {
-    let server = mount("req/headers/case/sensitive");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/xml")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn sensitive_should_fail_when_invalid_value() {
+    let srv = given("req/headers/case/sensitive");
+    get(&srv.uri()).set_header("Content-Type", "application/xml").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn sensitive_should_fail_when_invalid_key() {
-    let server = mount("req/headers/case/sensitive");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Not-Content-Type", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn sensitive_should_fail_when_invalid_key() {
+    let srv = given("req/headers/case/sensitive");
+    get(&srv.uri()).set_header("Not-Content-Type", "application/json").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn sensitive_should_fail_when_missing() {
-    let server = mount("req/headers/case/sensitive");
-    let response = block_on(surf::get(&server.uri())).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn sensitive_should_fail_when_missing() {
+    let srv = given("req/headers/case/sensitive");
+    get(&srv.uri()).await.unwrap().assert_not_found();
 }

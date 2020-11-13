@@ -1,125 +1,102 @@
-use async_std::task::block_on;
+use surf::get;
 
 use crate::utils::*;
 
 mod utils;
 
-#[test]
-fn should_map_request_exact_string_value() {
-    let server = mount("req/headers/equal/string");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 200);
+#[async_std::test]
+async fn should_map_request_exact_string_value() {
+    let srv = given("req/headers/equal/string");
+    get(&srv.uri()).set_header("Content-Type", "application/json").await.unwrap().assert_ok();
 }
 
-#[test]
-fn should_fail_when_incorrect_string_value() {
-    let server = mount("req/headers/equal/string");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/xml")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn should_fail_when_incorrect_string_value() {
+    let srv = given("req/headers/equal/string");
+    get(&srv.uri()).set_header("Content-Type", "application/xml").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_fail_when_invalid_key() {
-    let server = mount("req/headers/equal/string");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Not-Content-Type", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn should_fail_when_invalid_key() {
+    let srv = given("req/headers/equal/string");
+    get(&srv.uri()).set_header("Not-Content-Type", "application/json").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_fail_when_missing() {
-    let server = mount("req/headers/equal/string");
-    let response = block_on(surf::get(&server.uri())).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn should_fail_when_missing() {
+    let srv = given("req/headers/equal/string");
+    get(&srv.uri()).await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_map_request_many_exact_string_value() {
-    let server = mount("req/headers/equal/string-many");
-    let response = block_on(surf::get(&server.uri())
+#[async_std::test]
+async fn should_map_request_many_exact_string_value() {
+    let srv = given("req/headers/equal/string-many");
+    get(&srv.uri())
         .set_header("Content-Type", "application/json")
         .set_header("Accept", "application/json")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 200);
+        .await.unwrap()
+        .assert_ok();
 }
 
-#[test]
-fn should_fail_with_many_exact_string_value_when_one_of_does_not_match() {
-    let server = mount("req/headers/equal/string-many");
-    let response = block_on(surf::get(&server.uri())
+#[async_std::test]
+async fn should_fail_with_many_exact_string_value_when_one_of_does_not_match() {
+    let srv = given("req/headers/equal/string-many");
+    get(&srv.uri())
         .set_header("Content-Type", "application/xml")
         .set_header("Accept", "application/json")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
-    let response = block_on(surf::get(&server.uri())
+        .await.unwrap()
+        .assert_not_found();
+    get(&srv.uri())
         .set_header("Content-Type", "application/json")
         .set_header("Accept", "application/xml")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Accept", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+        .await.unwrap()
+        .assert_not_found();
+    get(&srv.uri()).set_header("Content-Type", "application/json").await.unwrap().assert_not_found();
+    get(&srv.uri()).set_header("Accept", "application/json").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_map_request_exact_int_value() {
-    let server = mount("req/headers/equal/int");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "42")).unwrap();
-    assert_eq!(response.status().as_u16(), 200);
+#[async_std::test]
+async fn should_map_request_exact_int_value() {
+    let srv = given("req/headers/equal/int");
+    get(&srv.uri()).set_header("Content-Type", "42").await.unwrap().assert_ok();
 }
 
-#[test]
-fn should_fail_when_incorrect_int_value() {
-    let server = mount("req/headers/equal/int");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "43")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn should_fail_when_incorrect_int_value() {
+    let srv = given("req/headers/equal/int");
+    get(&srv.uri()).set_header("Content-Type", "43").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_fail_when_not_an_int_value() {
-    let server = mount("req/headers/equal/int");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn should_fail_when_not_an_int_value() {
+    let srv = given("req/headers/equal/int");
+    get(&srv.uri()).set_header("Content-Type", "application/json").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_map_request_exact_bool_value() {
-    let server = mount("req/headers/equal/bool");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "true")).unwrap();
-    assert_eq!(response.status().as_u16(), 200);
+#[async_std::test]
+async fn should_map_request_exact_bool_value() {
+    let srv = given("req/headers/equal/bool");
+    get(&srv.uri()).set_header("Content-Type", "true").await.unwrap().assert_ok();
 }
 
-#[test]
-fn should_fail_when_incorrect_bool_value() {
-    let server = mount("req/headers/equal/bool");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "false")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn should_fail_when_incorrect_bool_value() {
+    let srv = given("req/headers/equal/bool");
+    get(&srv.uri()).set_header("Content-Type", "false").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_fail_when_not_an_bool_value() {
-    let server = mount("req/headers/equal/bool");
-    let response = block_on(surf::get(&server.uri())
-        .set_header("Content-Type", "application/json")).unwrap();
-    assert_eq!(response.status().as_u16(), 404);
+#[async_std::test]
+async fn should_fail_when_not_an_bool_value() {
+    let srv = given("req/headers/equal/bool");
+    get(&srv.uri()).set_header("Content-Type", "application/json").await.unwrap().assert_not_found();
 }
 
-#[test]
-fn should_map_request_many_exact_string_and_int_value() {
-    let server = mount("req/headers/equal/string-int");
-    let response = block_on(surf::get(&server.uri())
+#[async_std::test]
+async fn should_map_request_many_exact_string_and_int_value() {
+    let srv = given("req/headers/equal/string-int");
+    get(&srv.uri())
         .set_header("Content-Type", "application/json")
         .set_header("Accept", "true")
-    ).unwrap();
-    assert_eq!(response.status().as_u16(), 200);
+        .await.unwrap()
+        .assert_ok();
 }

@@ -1,25 +1,23 @@
-use std::convert::TryInto;
+use surf::get;
 
-use stubr::mapper::StubrMock;
-
-use crate::utils::stub;
+use crate::utils::*;
 
 mod utils;
 
-#[test]
-fn should_map_response_status_200() {
-    let mock: StubrMock = stub("resp/status/200").try_into().unwrap();
-    assert_eq!(mock.0.response().status(), 200);
+#[async_std::test]
+async fn should_map_response_status_200() {
+    let srv = given("resp/status/200");
+    get(&srv.uri()).await.unwrap().assert_status_eq(200);
 }
 
-#[test]
-fn should_map_response_status_400() {
-    let mock: StubrMock = stub("resp/status/400").try_into().unwrap();
-    assert_eq!(mock.0.response().status(), 400);
+#[async_std::test]
+async fn should_map_response_status_400() {
+    let srv = given("resp/status/400");
+    get(&srv.uri()).await.unwrap().assert_status_eq(400);
 }
 
-#[test]
-fn should_map_response_status_500() {
-    let mock: StubrMock = stub("resp/status/500").try_into().unwrap();
-    assert_eq!(mock.0.response().status(), 500);
+#[async_std::test]
+async fn should_map_response_status_500() {
+    let srv = given("resp/status/500");
+    get(&srv.uri()).await.unwrap().assert_status_eq(500);
 }
