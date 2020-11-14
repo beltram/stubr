@@ -5,7 +5,7 @@ use wiremock::{Mock, MockBuilder};
 use wiremock::matchers::MethodExactMatcher;
 
 use headers::HttpReqHeadersDto;
-use method::HttpMethodDto;
+use method::{HttpMethodDto, MethodAnyMatcher};
 use query::HttpQueryParamsDto;
 use url::HttpUrlDto;
 
@@ -31,8 +31,9 @@ impl TryFrom<Request> for MockBuilder {
     type Error = anyhow::Error;
 
     fn try_from(request: Request) -> Result<Self, Self::Error> {
-        let method = MethodExactMatcher::from(request.method);
-        let mut mock = Mock::given(method);
+        let mut mock = MethodExactMatcher::try_from(request.method)
+            .map(|it| Mock::given(it))
+            .unwrap_or_else(|_| Mock::given(MethodAnyMatcher));
         mock = request.url.register(mock);
         mock = request.headers.register(mock);
         mock = request.queries.register(mock);
