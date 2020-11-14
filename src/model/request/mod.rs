@@ -1,11 +1,10 @@
 use std::convert::TryFrom;
 
 use serde::Deserialize;
-use wiremock::{Mock, MockBuilder};
-use wiremock::matchers::MethodExactMatcher;
+use wiremock::MockBuilder;
 
 use headers::HttpReqHeadersDto;
-use method::{HttpMethodDto, MethodAnyMatcher};
+use method::HttpMethodDto;
 use query::HttpQueryParamsDto;
 use url::HttpUrlDto;
 
@@ -31,9 +30,7 @@ impl TryFrom<Request> for MockBuilder {
     type Error = anyhow::Error;
 
     fn try_from(request: Request) -> Result<Self, Self::Error> {
-        let mut mock = MethodExactMatcher::try_from(request.method)
-            .map(|it| Mock::given(it))
-            .unwrap_or_else(|_| Mock::given(MethodAnyMatcher));
+        let mut mock = MockBuilder::from(request.method);
         mock = request.url.register(mock);
         mock = request.headers.register(mock);
         mock = request.queries.register(mock);

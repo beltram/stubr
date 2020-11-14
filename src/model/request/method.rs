@@ -1,7 +1,7 @@
 use std::convert::TryFrom;
 
 use serde::Deserialize;
-use wiremock::{Match, Request};
+use wiremock::{Match, Mock, MockBuilder, Request};
 use wiremock::matchers::{method, MethodExactMatcher};
 
 const METHOD_ANY: &str = "ANY";
@@ -22,7 +22,15 @@ impl TryFrom<HttpMethodDto> for MethodExactMatcher {
     }
 }
 
-pub struct MethodAnyMatcher;
+impl From<HttpMethodDto> for MockBuilder {
+    fn from(method: HttpMethodDto) -> Self {
+        MethodExactMatcher::try_from(method)
+            .map(|it| Mock::given(it))
+            .unwrap_or_else(|_| Mock::given(MethodAnyMatcher))
+    }
+}
+
+struct MethodAnyMatcher;
 
 impl Match for MethodAnyMatcher {
     fn matches(&self, _: &Request) -> bool {
