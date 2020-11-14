@@ -3,6 +3,7 @@ use std::convert::TryFrom;
 use serde::Deserialize;
 use wiremock::MockBuilder;
 
+use body::BodyPatternDto;
 use headers::HttpReqHeadersDto;
 use method::HttpMethodDto;
 use query::HttpQueryParamsDto;
@@ -13,9 +14,10 @@ mod query;
 mod url;
 mod matcher;
 mod method;
+mod body;
 
 #[derive(Deserialize, Debug, Default)]
-#[serde(default)]
+#[serde(default, rename_all = "camelCase")]
 pub struct RequestDto {
     method: HttpMethodDto,
     #[serde(flatten)]
@@ -24,6 +26,7 @@ pub struct RequestDto {
     headers: HttpReqHeadersDto,
     #[serde(flatten)]
     queries: HttpQueryParamsDto,
+    body_patterns: Vec<BodyPatternDto>,
 }
 
 impl TryFrom<RequestDto> for MockBuilder {
@@ -34,6 +37,7 @@ impl TryFrom<RequestDto> for MockBuilder {
         mock = request.url.register(mock);
         mock = request.headers.register(mock);
         mock = request.queries.register(mock);
+        mock = request.body_patterns.register(mock);
         Ok(mock)
     }
 }
