@@ -5,7 +5,7 @@ use http_types::headers::HeaderName;
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::HttpReqHeaders;
+use super::HttpReqHeadersDto;
 use super::super::matcher::RequestMatcherDto;
 
 pub struct HeaderContainsMatcher(String, String);
@@ -19,8 +19,8 @@ impl Match for HeaderContainsMatcher {
     }
 }
 
-impl From<&HttpReqHeaders> for Vec<HeaderContainsMatcher> {
-    fn from(headers: &HttpReqHeaders) -> Self {
+impl From<&HttpReqHeadersDto> for Vec<HeaderContainsMatcher> {
+    fn from(headers: &HttpReqHeadersDto) -> Self {
         headers.get_headers().iter()
             .filter(|h| h.is_contains())
             .map(HeaderContainsMatcher::try_from).flatten()

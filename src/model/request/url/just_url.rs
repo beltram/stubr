@@ -4,24 +4,24 @@ use http_types::Url;
 use itertools::Itertools;
 use wiremock::matchers::{path, PathExactMatcher, query_param, QueryParamExactMatcher};
 
-use super::HttpUrl;
+use super::HttpUrlDto;
 
 pub struct ExactPathAndQueryMatcher(pub PathExactMatcher, pub Vec<QueryParamExactMatcher>);
 
-impl TryFrom<&HttpUrl> for ExactPathAndQueryMatcher {
+impl TryFrom<&HttpUrlDto> for ExactPathAndQueryMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(http_url: &HttpUrl) -> anyhow::Result<Self> {
+    fn try_from(http_url: &HttpUrlDto) -> anyhow::Result<Self> {
         Url::try_from(http_url)
             .map(Self::from)
             .map_err(anyhow::Error::msg)
     }
 }
 
-impl TryFrom<&HttpUrl> for Url {
+impl TryFrom<&HttpUrlDto> for Url {
     type Error = anyhow::Error;
 
-    fn try_from(http_url: &HttpUrl) -> anyhow::Result<Self> {
+    fn try_from(http_url: &HttpUrlDto) -> anyhow::Result<Self> {
         http_url.url.as_ref()
             .map(|it| format!("http://localhost{}", it))
             .and_then(|it| Url::parse(&it).ok())

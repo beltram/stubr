@@ -2,10 +2,10 @@ use serde::Deserialize;
 use wiremock::matchers::{method, MethodExactMatcher};
 
 #[derive(Deserialize, Debug, Default)]
-pub struct HttpMethod(String);
+pub struct HttpMethodDto(String);
 
-impl From<HttpMethod> for MethodExactMatcher {
-    fn from(http_method: HttpMethod) -> Self {
+impl From<HttpMethodDto> for MethodExactMatcher {
+    fn from(http_method: HttpMethodDto) -> Self {
         method(http_method.0.as_str())
     }
 }

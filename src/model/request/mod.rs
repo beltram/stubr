@@ -4,10 +4,10 @@ use serde::Deserialize;
 use wiremock::{Mock, MockBuilder};
 use wiremock::matchers::MethodExactMatcher;
 
-use headers::HttpReqHeaders;
-use method::HttpMethod;
-use query::HttpQueryParams;
-use url::HttpUrl;
+use headers::HttpReqHeadersDto;
+use method::HttpMethodDto;
+use query::HttpQueryParamsDto;
+use url::HttpUrlDto;
 
 mod headers;
 mod query;
@@ -18,13 +18,13 @@ mod method;
 #[derive(Deserialize, Debug, Default)]
 #[serde(default)]
 pub struct Request {
-    method: HttpMethod,
+    method: HttpMethodDto,
     #[serde(flatten)]
-    url: HttpUrl,
+    url: HttpUrlDto,
     #[serde(flatten)]
-    headers: HttpReqHeaders,
+    headers: HttpReqHeadersDto,
     #[serde(flatten)]
-    queries: HttpQueryParams,
+    queries: HttpQueryParamsDto,
 }
 
 impl TryFrom<Request> for MockBuilder {

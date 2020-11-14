@@ -5,7 +5,7 @@ use http_types::headers::HeaderName;
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::HttpReqHeaders;
+use super::HttpReqHeadersDto;
 use super::super::matcher::RequestMatcherDto;
 
 pub struct HeaderCaseInsensitiveMatcher(String, String);
@@ -19,8 +19,8 @@ impl Match for HeaderCaseInsensitiveMatcher {
     }
 }
 
-impl From<&HttpReqHeaders> for Vec<HeaderCaseInsensitiveMatcher> {
-    fn from(headers: &HttpReqHeaders) -> Self {
+impl From<&HttpReqHeadersDto> for Vec<HeaderCaseInsensitiveMatcher> {
+    fn from(headers: &HttpReqHeadersDto) -> Self {
         headers.get_headers().iter()
             .filter(|h| h.is_case_insensitive())
             .map(HeaderCaseInsensitiveMatcher::try_from).flatten()

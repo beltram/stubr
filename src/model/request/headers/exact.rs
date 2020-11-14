@@ -3,11 +3,11 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use wiremock::matchers::{header, HeaderExactMatcher};
 
-use super::HttpReqHeaders;
+use super::HttpReqHeadersDto;
 use super::super::matcher::RequestMatcherDto;
 
-impl From<&HttpReqHeaders> for Vec<HeaderExactMatcher> {
-    fn from(headers: &HttpReqHeaders) -> Self {
+impl From<&HttpReqHeadersDto> for Vec<HeaderExactMatcher> {
+    fn from(headers: &HttpReqHeadersDto) -> Self {
         headers.get_headers().iter()
             .filter(|h| h.is_exact_match())
             .map(HeaderExactMatcher::try_from).flatten()

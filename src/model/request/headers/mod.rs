@@ -17,12 +17,12 @@ pub mod exact;
 pub mod contains;
 
 #[derive(Deserialize, Debug, Default)]
-pub struct HttpReqHeaders {
+pub struct HttpReqHeadersDto {
     // matches all request http headers
     headers: Option<Map<String, Value>>,
 }
 
-impl MockRegistrable for HttpReqHeaders {
+impl MockRegistrable for HttpReqHeadersDto {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
         for exact in Vec::<HeaderExactMatcher>::from(self) {
             mock = mock.and(exact);
@@ -37,7 +37,7 @@ impl MockRegistrable for HttpReqHeaders {
     }
 }
 
-impl HttpReqHeaders {
+impl HttpReqHeadersDto {
     fn get_headers(&self) -> Vec<RequestMatcherDto> {
         self.headers.as_ref()
             .map(|h| h.iter().map(RequestMatcherDto::try_from))

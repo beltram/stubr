@@ -14,7 +14,7 @@ mod just_url;
 
 #[derive(Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
-pub struct HttpUrl {
+pub struct HttpUrlDto {
     // exact match on path only
     url_path: Option<String>,
     // regex match on path only
@@ -25,7 +25,7 @@ pub struct HttpUrl {
     url_pattern: Option<String>,
 }
 
-impl MockRegistrable for HttpUrl {
+impl MockRegistrable for HttpUrlDto {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
         if let Ok(exact) = PathExactMatcher::try_from(self) {
             mock = mock.and(exact);

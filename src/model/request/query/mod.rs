@@ -18,12 +18,12 @@ mod contains;
 
 #[derive(Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
-pub struct HttpQueryParams {
+pub struct HttpQueryParamsDto {
     // matches all request http headers
     query_parameters: Option<Map<String, Value>>,
 }
 
-impl MockRegistrable for HttpQueryParams {
+impl MockRegistrable for HttpQueryParamsDto {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
         for exact in Vec::<QueryParamExactMatcher>::from(self) {
             mock = mock.and(exact);
@@ -38,7 +38,7 @@ impl MockRegistrable for HttpQueryParams {
     }
 }
 
-impl HttpQueryParams {
+impl HttpQueryParamsDto {
     fn get_queries(&self) -> Vec<RequestMatcherDto> {
         self.query_parameters.as_ref()
             .map(|h| h.iter().map(RequestMatcherDto::try_from))

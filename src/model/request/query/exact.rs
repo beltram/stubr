@@ -3,11 +3,11 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use wiremock::matchers::{query_param, QueryParamExactMatcher};
 
-use super::HttpQueryParams;
+use super::HttpQueryParamsDto;
 use super::super::matcher::RequestMatcherDto;
 
-impl From<&HttpQueryParams> for Vec<QueryParamExactMatcher> {
-    fn from(queries: &HttpQueryParams) -> Self {
+impl From<&HttpQueryParamsDto> for Vec<QueryParamExactMatcher> {
+    fn from(queries: &HttpQueryParamsDto) -> Self {
         queries.get_queries().iter()
             .filter(|q| q.is_exact_match())
             .map(QueryParamExactMatcher::try_from).flatten()

@@ -3,7 +3,7 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::HttpQueryParams;
+use super::HttpQueryParamsDto;
 use super::super::matcher::RequestMatcherDto;
 
 pub struct QueryContainsMatcher(String, String);
@@ -17,8 +17,8 @@ impl Match for QueryContainsMatcher {
     }
 }
 
-impl From<&HttpQueryParams> for Vec<QueryContainsMatcher> {
-    fn from(queries: &HttpQueryParams) -> Self {
+impl From<&HttpQueryParamsDto> for Vec<QueryContainsMatcher> {
+    fn from(queries: &HttpQueryParamsDto) -> Self {
         queries.get_queries().iter()
             .filter(|h| h.is_contains())
             .map(QueryContainsMatcher::try_from).flatten()
