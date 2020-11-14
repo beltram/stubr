@@ -25,7 +25,7 @@ impl TryFrom<HttpMethodDto> for MethodExactMatcher {
 impl From<HttpMethodDto> for MockBuilder {
     fn from(method: HttpMethodDto) -> Self {
         MethodExactMatcher::try_from(method)
-            .map(|it| Mock::given(it))
+            .map(Mock::given)
             .unwrap_or_else(|_| Mock::given(MethodAnyMatcher))
     }
 }
