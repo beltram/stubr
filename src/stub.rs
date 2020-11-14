@@ -12,7 +12,7 @@ pub struct StubrMock(pub Mock);
 impl TryFrom<PathBuf> for StubrMock {
     type Error = anyhow::Error;
 
-    fn try_from(file: PathBuf) -> Result<Self, Self::Error> {
+    fn try_from(file: PathBuf) -> anyhow::Result<Self> {
         let file = OpenOptions::new().read(true).open(file)?;
         let stub: Stub = serde_json::from_reader(file)?;
         Ok(Self {

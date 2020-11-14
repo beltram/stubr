@@ -6,22 +6,22 @@ use stubr::server::StubrServer;
 
 #[async_std::main]
 async fn main() -> anyhow::Result<()> {
-    let maybe_stub = env::args()
-        .collect::<Vec<String>>()
-        .get(1)
-        .and_then(|it| stub_path(it));
+    let maybe_stubs = maybe_path_arg().and_then(|it| maybe_stubs(it));
     let server = StubrServer::start().await;
-    if let Some(stubs) = maybe_stub {
-        server.register_stub(stubs).await?;
+    if let Some(stubs) = maybe_stubs {
+        server.register_stubs(stubs).await?;
     }
     server.init_log();
     loop {
-        async_std::task::sleep(Duration::from_millis(1)).await;
+        async_std::task::sleep(Duration::from_millis(1000)).await;
     }
 }
 
-fn stub_path(arg: &str) -> Option<PathBuf> {
-    env::current_dir()
-        .ok()
+fn maybe_path_arg() -> Option<String> {
+    env::args().collect::<Vec<String>>().get(1).map(|it| it.to_string())
+}
+
+fn maybe_stubs(arg: String) -> Option<PathBuf> {
+    env::current_dir().ok()
         .map(|it| it.join(PathBuf::from(arg)))
 }

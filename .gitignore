@@ -17,4 +17,3 @@ target/
 
 deps/
 incremental/
-tests/stubs/real/

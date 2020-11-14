@@ -1,6 +1,6 @@
 use crate::server::StubrServer;
 
-pub mod mapper;
+pub mod stub;
 pub mod model;
 pub mod server;
 

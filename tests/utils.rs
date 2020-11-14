@@ -13,7 +13,7 @@ use stubr::server::StubrServer;
 
 pub fn given(name: &str) -> StubrServer {
     let server = block_on(StubrServer::start());
-    block_on(server.register_stub(stub(name))).unwrap();
+    block_on(server.register_stubs(stub(name))).unwrap();
     server
 }
 

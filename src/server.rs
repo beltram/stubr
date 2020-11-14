@@ -1,9 +1,10 @@
-use std::convert::TryInto;
+use std::convert::TryFrom;
 use std::path::PathBuf;
 
+use itertools::Itertools;
 use wiremock::MockServer;
 
-use crate::mapper::StubrMock;
+use crate::stub::StubrMock;
 
 pub struct StubrServer {
     instance: MockServer,
@@ -22,14 +23,34 @@ impl StubrServer {
         println!("--------------------------------------------------");
     }
 
-    pub async fn register_stub(&self, stub_file: PathBuf) -> anyhow::Result<()> {
-        let file_name = stub_file.file_name().map(|it| it.to_owned());
-        let stub: StubrMock = stub_file.try_into()?;
-        self.instance.register(stub.0).await;
-        if let Some(file_name) = file_name {
-            println!(" - mounted stub {:?}", file_name);
+    pub async fn register_stubs(&self, stub_folder: PathBuf) -> anyhow::Result<()> {
+        let stubs = self.get_all_stubs(stub_folder);
+        stubs.iter()
+            .flat_map(|it| it.file_name())
+            .for_each(|it| println!(" - mounted stub {:?}", it));
+        let mocks = stubs.into_iter()
+            .flat_map(|it| StubrMock::try_from(it))
+            .map(|it| it.0)
+            .collect_vec();
+        for mock in mocks {
+            self.instance.register(mock).await;
         }
         Ok(())
+    }
+
+    fn get_all_stubs(&self, from: PathBuf) -> Vec<PathBuf> {
+        if from.is_file() {
+            vec![from]
+        } else {
+            from.read_dir()
+                .map(|dir| {
+                    dir.into_iter()
+                        .flat_map(|it| it)
+                        .map(|it| it.path())
+                        .collect_vec()
+                })
+                .unwrap_or_default()
+        }
     }
 
     pub fn uri(&self) -> String {
