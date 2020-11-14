@@ -3,12 +3,12 @@ use std::convert::{TryFrom, TryInto};
 use serde::Deserialize;
 use wiremock::{Mock, MockBuilder};
 
-use super::request::Request;
+use super::request::RequestDto;
 use super::response::ResponseDto;
 
 #[derive(Deserialize, Debug)]
 pub struct Stub {
-    request: Request,
+    request: RequestDto,
     response: ResponseDto,
 }
 

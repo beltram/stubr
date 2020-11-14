@@ -16,7 +16,7 @@ mod method;
 
 #[derive(Deserialize, Debug, Default)]
 #[serde(default)]
-pub struct Request {
+pub struct RequestDto {
     method: HttpMethodDto,
     #[serde(flatten)]
     url: HttpUrlDto,
@@ -26,10 +26,10 @@ pub struct Request {
     queries: HttpQueryParamsDto,
 }
 
-impl TryFrom<Request> for MockBuilder {
+impl TryFrom<RequestDto> for MockBuilder {
     type Error = anyhow::Error;
 
-    fn try_from(request: Request) -> Result<Self, Self::Error> {
+    fn try_from(request: RequestDto) -> Result<Self, Self::Error> {
         let mut mock = MockBuilder::from(request.method);
         mock = request.url.register(mock);
         mock = request.headers.register(mock);
