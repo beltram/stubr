@@ -58,6 +58,7 @@ pub trait ResponseAsserter {
     fn assert_body_json<T>(&mut self, body: T) -> &mut Self where T: DeserializeOwned + PartialEq + Debug;
     fn assert_body_empty(&mut self) -> &mut Self { self.assert_body_text("") }
     fn assert_header(&mut self, key: &str, value: &str) -> &mut Self;
+    fn assert_no_header(&mut self, key: &str) -> &mut Self;
 }
 
 impl ResponseAsserter for Response {
@@ -80,6 +81,12 @@ impl ResponseAsserter for Response {
         let key = HeaderName::from_str(key).unwrap();
         let value = HeaderValue::from_str(value).unwrap();
         assert_eq!(self.header(key).unwrap().last(), &value);
+        self
+    }
+
+    fn assert_no_header(&mut self, key: &str) -> &mut Self {
+        let key = HeaderName::from_str(key).unwrap();
+        assert_eq!(self.header(key).is_none(), true);
         self
     }
 }

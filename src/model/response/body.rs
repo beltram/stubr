@@ -2,6 +2,8 @@ use serde::Deserialize;
 use serde_json::Value;
 use wiremock::ResponseTemplate;
 
+use super::ResponseAppender;
+
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct BodyDto {
@@ -11,8 +13,8 @@ pub struct BodyDto {
     pub json_body: Option<Value>,
 }
 
-impl BodyDto {
-    pub fn add_to_response(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
+impl ResponseAppender for BodyDto {
+    fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
         if let Some(text) = self.body.as_ref() {
             resp = resp.set_body_string(text);
         }
