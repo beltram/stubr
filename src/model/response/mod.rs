@@ -23,9 +23,9 @@ pub struct ResponseDto {
 impl From<&StubDto> for ResponseTemplate {
     fn from(stub: &StubDto) -> Self {
         let mut template = ResponseTemplate::new(stub.response.status);
+        template = WiremockIsoResponse(stub).add(template);
         template = stub.response.body.add(template);
         template = stub.response.headers.add(template);
-        template = WiremockIsoResponse(stub).add(template);
         template
     }
 }

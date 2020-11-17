@@ -28,3 +28,11 @@ async fn should_not_return_header_when_absent() {
         .assert_ok()
         .assert_no_header("X-Header-1");
 }
+
+#[async_std::test]
+async fn user_defined_server_header_should_have_precedence_over_default_one() {
+    let srv = given("resp/headers/server");
+    get(&srv.uri()).await.unwrap()
+        .assert_ok()
+        .assert_header("Server", "my-app");
+}
