@@ -6,7 +6,7 @@ use stubr::server::StubrServer;
 
 #[async_std::main]
 async fn main() -> anyhow::Result<()> {
-    let maybe_stubs = maybe_path_arg().and_then(|it| maybe_stubs(it));
+    let maybe_stubs = maybe_path_arg().and_then(maybe_stubs);
     let server = StubrServer::start().await;
     if let Some(stubs) = maybe_stubs {
         server.register_stubs(stubs).await?;

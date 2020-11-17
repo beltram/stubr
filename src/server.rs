@@ -29,7 +29,7 @@ impl StubrServer {
             .flat_map(|it| it.file_name())
             .for_each(|it| println!(" - mounted stub {:?}", it));
         let mocks = stubs.into_iter()
-            .flat_map(|it| StubrMock::try_from(it))
+            .flat_map(StubrMock::try_from)
             .map(|it| it.0)
             .collect_vec();
         for mock in mocks {
@@ -43,12 +43,7 @@ impl StubrServer {
             vec![from]
         } else {
             from.read_dir()
-                .map(|dir| {
-                    dir.into_iter()
-                        .flat_map(|it| it)
-                        .map(|it| it.path())
-                        .collect_vec()
-                })
+                .map(|dir| dir.into_iter().flatten().map(|it| it.path()).collect_vec())
                 .unwrap_or_default()
         }
     }
