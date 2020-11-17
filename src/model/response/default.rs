@@ -3,7 +3,7 @@ use wiremock::ResponseTemplate;
 
 use super::ResponseAppender;
 
-const STUBR_VERSION: &'static str = env!("CARGO_PKG_VERSION");
+const STUBR_VERSION: &str = env!("CARGO_PKG_VERSION");
 const SERVER_HEADER: &str = concatcp!("stubr(", STUBR_VERSION, ")");
 
 pub struct WiremockIsoResponse;
