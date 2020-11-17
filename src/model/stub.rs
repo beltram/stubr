@@ -1,21 +1,23 @@
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryFrom;
 
 use serde::Deserialize;
-use wiremock::{Mock, MockBuilder};
+use wiremock::{Mock, MockBuilder, ResponseTemplate};
 
 use super::request::RequestDto;
 use super::response::ResponseDto;
 
 #[derive(Deserialize, Debug)]
-pub struct Stub {
+pub struct StubDto {
+    pub uuid: Option<String>,
     request: RequestDto,
-    response: ResponseDto,
+    pub response: ResponseDto,
 }
 
-impl TryFrom<Stub> for Mock {
+impl TryFrom<StubDto> for Mock {
     type Error = anyhow::Error;
 
-    fn try_from(stub: Stub) -> Result<Self, Self::Error> {
-        Ok(MockBuilder::try_from(stub.request)?.respond_with(stub.response.try_into()?))
+    fn try_from(stub: StubDto) -> Result<Self, Self::Error> {
+        let response = ResponseTemplate::from(&stub);
+        Ok(MockBuilder::try_from(stub.request)?.respond_with(response))
     }
 }

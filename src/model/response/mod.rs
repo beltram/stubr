@@ -5,6 +5,8 @@ use body::BodyDto;
 use default::WiremockIsoResponse;
 use headers::HttpRespHeadersDto;
 
+use super::stub::StubDto;
+
 mod body;
 mod headers;
 mod default;
@@ -18,12 +20,12 @@ pub struct ResponseDto {
     headers: HttpRespHeadersDto,
 }
 
-impl From<ResponseDto> for ResponseTemplate {
-    fn from(resp: ResponseDto) -> Self {
-        let mut template = ResponseTemplate::new(resp.status);
-        template = resp.body.add(template);
-        template = resp.headers.add(template);
-        template = WiremockIsoResponse.add(template);
+impl From<&StubDto> for ResponseTemplate {
+    fn from(stub: &StubDto) -> Self {
+        let mut template = ResponseTemplate::new(stub.response.status);
+        template = stub.response.body.add(template);
+        template = stub.response.headers.add(template);
+        template = WiremockIsoResponse(stub).add(template);
         template
     }
 }
