@@ -15,16 +15,3 @@ scenario() {
   stubr_test "$path" 60 200
   wiremock_test "$path" 60 200
 }
-
-#echo "BEGIN Wiremock bench"
-#echo ""
-#/usr/local/bin/wiremock \
-#  --no-request-journal \
-#  --disable-banner \
-#  --disable-gzip \
-#  --port 8001 \
-#  --root-dir bench &
-#WIREMOCK_PID=$!
-#sleep 5
-#wrk -d $DURATION -c $VU -t $VU http://localhost:8001
-#kill "$WIREMOCK_PID"

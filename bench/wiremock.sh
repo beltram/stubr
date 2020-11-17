@@ -9,7 +9,7 @@ wiremock_test() {
     --disable-banner \
     --disable-gzip \
     --port 8001 \
-    --root-dir bench &
+    --root-dir bench &>/dev/null &
   PID=$!
   sleep 5
   scenario="| wiremock-${path} (${duration}s / ${vu}) | "
