@@ -2,10 +2,12 @@ use serde::Deserialize;
 use wiremock::ResponseTemplate;
 
 use body::BodyDto;
+use default::WiremockIsoResponse;
 use headers::HttpRespHeadersDto;
 
 mod body;
 mod headers;
+mod default;
 
 #[derive(Deserialize, Debug)]
 pub struct ResponseDto {
@@ -21,6 +23,7 @@ impl From<ResponseDto> for ResponseTemplate {
         let mut template = ResponseTemplate::new(resp.status);
         template = resp.body.add(template);
         template = resp.headers.add(template);
+        template = WiremockIsoResponse.add(template);
         template
     }
 }
