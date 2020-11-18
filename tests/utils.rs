@@ -54,11 +54,14 @@ pub trait ResponseAsserter {
     fn assert_status_eq(&mut self, status: u16) -> &mut Self;
     fn assert_ok(&mut self) -> &mut Self { self.assert_status_eq(200) }
     fn assert_not_found(&mut self) -> &mut Self { self.assert_status_eq(404) }
+    fn assert_error(&mut self) -> &mut Self { self.assert_status_eq(500) }
     fn assert_body_text(&mut self, body: &str) -> &mut Self;
     fn assert_body_json<T>(&mut self, body: T) -> &mut Self where T: DeserializeOwned + PartialEq + Debug;
     fn assert_body_empty(&mut self) -> &mut Self { self.assert_body_text("") }
     fn assert_header(&mut self, key: &str, value: &str) -> &mut Self;
     fn assert_no_header(&mut self, key: &str) -> &mut Self;
+    fn assert_content_type_json(&mut self) -> &mut Self { self.assert_header("Content-Type", "application/json") }
+    fn assert_content_type_text(&mut self) -> &mut Self { self.assert_header("Content-Type", "text/plain") }
 }
 
 impl ResponseAsserter for Response {
