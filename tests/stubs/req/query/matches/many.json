@@ -1,0 +1,18 @@
+{
+  "id": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e",
+  "request": {
+    "method": "GET",
+    "queryParameters": {
+      "age": {
+        "matches": "([A-Za-z]+)"
+      },
+      "city": {
+        "matches": "([A-Za-z]+)"
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  },
+  "uuid": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e"
+}

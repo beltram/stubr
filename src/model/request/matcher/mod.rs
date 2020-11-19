@@ -1,5 +1,7 @@
 use std::convert::TryFrom;
+use std::str::FromStr;
 
+use regex::Regex;
 use serde::Deserialize;
 use serde_json::Value;
 
@@ -15,23 +17,21 @@ pub struct MatcherValueDto {
     pub equal_to: Option<Value>,
     pub case_insensitive: Option<bool>,
     pub contains: Option<String>,
+    pub matches: Option<Value>,
+    pub does_not_match: Option<Value>,
 }
 
 impl RequestMatcherDto {
     pub fn is_exact_match(&self) -> bool {
-        self.is_equal_to() && !self.is_case_insensitive() && !self.is_contains()
+        self.is_equal_to() && !self.is_case_insensitive() && !self.is_contains() && !self.is_by_regex()
     }
 
     pub fn is_equal_to(&self) -> bool {
-        self.value.as_ref()
-            .and_then(|v| v.equal_to.as_ref())
-            .is_some()
+        self.value.as_ref().and_then(|v| v.equal_to.as_ref()).is_some()
     }
 
     pub fn is_case_insensitive(&self) -> bool {
-        self.value.as_ref()
-            .and_then(|v| v.case_insensitive)
-            .unwrap_or_default()
+        self.value.as_ref().and_then(|v| v.case_insensitive).unwrap_or_default()
     }
 
     pub fn is_contains(&self) -> bool {
@@ -41,14 +41,40 @@ impl RequestMatcherDto {
             .unwrap_or_default()
     }
 
+    pub fn is_by_regex(&self) -> bool {
+        self.is_matches() || self.is_does_not_matches()
+    }
+
+    pub fn is_matches(&self) -> bool {
+        self.value.as_ref().and_then(|v| v.matches.as_ref()).is_some()
+    }
+
+    pub fn is_does_not_matches(&self) -> bool {
+        self.value.as_ref().and_then(|v| v.does_not_match.as_ref()).is_some()
+    }
+
     pub fn equal_to_as_str(&self) -> Option<String> {
         self.value.as_ref()
             .and_then(|it| it.equal_to.as_ref())
             .and_then(|v| {
-                v.as_str().map(|s| s.to_string())
+                v.as_str().map(ToString::to_string)
                     .or_else(|| v.as_bool().map(|b| b.to_string()))
                     .or_else(|| v.as_i64().map(|i| i.to_string()))
             })
+    }
+
+    pub fn matches_as_regex(&self) -> Option<Regex> {
+        self.value.as_ref()
+            .and_then(|it| it.matches.as_ref())
+            .and_then(|v| v.as_str())
+            .and_then(|it| Regex::from_str(it).ok())
+    }
+
+    pub fn does_not_match_as_regex(&self) -> Option<Regex> {
+        self.value.as_ref()
+            .and_then(|it| it.does_not_match.as_ref())
+            .and_then(|v| v.as_str())
+            .and_then(|it| Regex::from_str(it).ok())
     }
 }
 

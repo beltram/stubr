@@ -8,6 +8,7 @@ use wiremock::MockBuilder;
 
 use case::QueryCaseInsensitiveMatcher;
 use contains::QueryContainsMatcher;
+use matches::QueryRegexMatcher;
 
 use super::matcher::RequestMatcherDto;
 use super::super::request::MockRegistrable;
@@ -15,6 +16,7 @@ use super::super::request::MockRegistrable;
 mod exact;
 mod case;
 mod contains;
+mod matches;
 
 #[derive(Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
@@ -33,6 +35,9 @@ impl MockRegistrable for HttpQueryParamsDto {
         }
         for contains in Vec::<QueryContainsMatcher>::from(self) {
             mock = mock.and(contains);
+        }
+        for regex in Vec::<QueryRegexMatcher>::from(self) {
+            mock = mock.and(regex);
         }
         mock
     }
