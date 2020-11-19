@@ -23,7 +23,7 @@ pub struct MatcherValueDto {
 
 impl RequestMatcherDto {
     pub fn is_exact_match(&self) -> bool {
-        self.is_equal_to() && !self.is_case_insensitive() && !self.is_contains() && !self.is_by_regex()
+        self.is_equal_to() && !self.is_case_insensitive() && !self.is_contains()
     }
 
     pub fn is_equal_to(&self) -> bool {
@@ -39,10 +39,11 @@ impl RequestMatcherDto {
             .and_then(|v| v.contains.as_ref())
             .map(|it| !it.is_empty())
             .unwrap_or_default()
+            && !self.is_equal_to()
     }
 
     pub fn is_by_regex(&self) -> bool {
-        self.is_matches() || self.is_does_not_matches()
+        !self.is_exact_match() && (self.is_matches() || self.is_does_not_matches())
     }
 
     pub fn is_matches(&self) -> bool {
