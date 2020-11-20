@@ -1,4 +1,5 @@
 use std::convert::TryFrom;
+use std::ops::Not;
 use std::str::FromStr;
 
 use regex::Regex;
@@ -43,7 +44,10 @@ impl RequestMatcherDto {
     }
 
     pub fn is_by_regex(&self) -> bool {
-        !self.is_exact_match() && (self.is_matches() || self.is_does_not_matches())
+        let by_regex = self.is_matches() || self.is_does_not_matches();
+        let by_equality = self.is_equal_to() || self.is_case_insensitive();
+        let by_contains = self.is_contains();
+        by_regex && by_equality.not() && by_contains.not()
     }
 
     pub fn is_matches(&self) -> bool {
