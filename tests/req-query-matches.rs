@@ -8,6 +8,7 @@ mod utils;
 async fn should_map_request_when_query_matches() {
     let srv = given("req/query/matches/single");
     get(&srv.query("age", "string")).await.unwrap().assert_ok();
+    get(&srv.query("age", "any")).await.unwrap().assert_ok();
 }
 
 #[async_std::test]

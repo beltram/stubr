@@ -8,6 +8,7 @@ use wiremock::MockBuilder;
 
 use case::HeaderCaseInsensitiveMatcher;
 use contains::HeaderContainsMatcher;
+use matches::HeaderRegexMatcher;
 
 use super::matcher::RequestMatcherDto;
 use super::super::request::MockRegistrable;
@@ -15,6 +16,7 @@ use super::super::request::MockRegistrable;
 pub mod case;
 pub mod exact;
 pub mod contains;
+pub mod matches;
 
 #[derive(Deserialize, Debug, Default)]
 pub struct HttpReqHeadersDto {
@@ -32,6 +34,9 @@ impl MockRegistrable for HttpReqHeadersDto {
         }
         for contains in Vec::<HeaderContainsMatcher>::from(self) {
             mock = mock.and(contains);
+        }
+        for matches in Vec::<HeaderRegexMatcher>::from(self) {
+            mock = mock.and(matches);
         }
         mock
     }
