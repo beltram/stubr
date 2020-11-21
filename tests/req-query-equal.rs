@@ -8,6 +8,7 @@ mod utils;
 async fn should_map_request_exact_string_query() {
     let srv = given("req/query/equal/string");
     get(&srv.query("age", "young")).await.unwrap().assert_ok();
+    get(&srv.query("age", "young")).await.unwrap().assert_ok();
 }
 
 #[async_std::test]

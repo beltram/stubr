@@ -9,12 +9,23 @@ use serde::de::DeserializeOwned;
 use serde::export::fmt::Debug;
 use surf::Response;
 
-use stubr::server::StubrServer;
+pub use stubr::server::{StubrServer, StubServer};
 
-pub fn given(name: &str) -> StubrServer {
+#[cfg(feature = "iso")]
+use self::wiremock::Wiremock;
+
+mod wiremock;
+
+#[cfg(not(feature = "iso"))]
+pub fn given(name: &str) -> impl StubServer {
     let server = block_on(StubrServer::start());
     block_on(server.register_stubs(stub(name))).unwrap();
     server
+}
+
+#[cfg(feature = "iso")]
+pub fn given(name: &str) -> impl StubServer {
+    Wiremock::start(stub(name))
 }
 
 fn stub(name: &str) -> PathBuf {
@@ -24,30 +35,30 @@ fn stub(name: &str) -> PathBuf {
 }
 
 pub trait UriAndQuery {
-    fn uri(&self) -> String;
+    fn get_uri(&self) -> String;
 
     fn path(&self, path: &str) -> String {
-        format!("{}{}", self.uri(), path)
+        format!("{}{}", self.get_uri(), path)
     }
 
     fn path_query(&self, path: &str, key: &str, value: &str) -> String {
-        format!("{}{}?{}={}", self.uri(), path, key, value)
+        format!("{}{}?{}={}", self.get_uri(), path, key, value)
     }
 
     fn query(&self, key: &str, value: &str) -> String {
-        format!("{}?{}={}", self.uri(), key, value)
+        format!("{}?{}={}", self.get_uri(), key, value)
     }
 
     fn path_queries(&self, path: &str, q1: (&str, &str), q2: (&str, &str)) -> String {
-        format!("{}{}?{}={}&{}={}", self.uri(), path, q1.0, q1.1, q2.0, q2.1)
+        format!("{}{}?{}={}&{}={}", self.get_uri(), path, q1.0, q1.1, q2.0, q2.1)
     }
     fn queries(&self, q1: (&str, &str), q2: (&str, &str)) -> String {
-        format!("{}?{}={}&{}={}", self.uri(), q1.0, q1.1, q2.0, q2.1)
+        format!("{}?{}={}&{}={}", self.get_uri(), q1.0, q1.1, q2.0, q2.1)
     }
 }
 
-impl UriAndQuery for StubrServer {
-    fn uri(&self) -> String { self.uri() }
+impl<S: StubServer> UriAndQuery for S {
+    fn get_uri(&self) -> String { self.uri() }
 }
 
 pub trait ResponseAsserter {

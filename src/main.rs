@@ -2,7 +2,7 @@ use std::env;
 use std::path::PathBuf;
 use std::time::Duration;
 
-use stubr::server::StubrServer;
+use stubr::server::{StubrServer, StubServer};
 
 #[async_std::main]
 async fn main() -> anyhow::Result<()> {
