@@ -64,7 +64,13 @@ impl<S: StubServer> UriAndQuery for S {
 pub trait ResponseAsserter {
     fn assert_status_eq(&mut self, status: u16) -> &mut Self;
     fn assert_ok(&mut self) -> &mut Self { self.assert_status_eq(200) }
+
+    #[cfg(not(feature = "iso"))]
     fn assert_not_found(&mut self) -> &mut Self { self.assert_status_eq(404) }
+
+    #[cfg(feature = "iso")]
+    fn assert_not_found(&mut self) -> &mut Self;
+
     fn assert_error(&mut self) -> &mut Self { self.assert_status_eq(500) }
     fn assert_body_text(&mut self, body: &str) -> &mut Self;
     fn assert_body_json<T>(&mut self, body: T) -> &mut Self where T: DeserializeOwned + PartialEq + Debug;
@@ -78,6 +84,16 @@ pub trait ResponseAsserter {
 impl ResponseAsserter for Response {
     fn assert_status_eq(&mut self, status: u16) -> &mut Self {
         assert_eq!(u16::from(self.status()), status);
+        self
+    }
+
+    #[cfg(feature = "iso")]
+    fn assert_not_found(&mut self) -> &mut Self {
+        let status = u16::from(self.status());
+        if status != 403 || status != 404 {
+            println!("Failed because status was {} where either 404 or 403 was expected", status);
+            assert_eq!(true, false)
+        }
         self
     }
 
