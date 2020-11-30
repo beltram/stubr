@@ -17,8 +17,8 @@ impl QueryRegexMatcher {
 }
 
 impl Match for QueryRegexMatcher {
-    fn matches(&self, request: &Request) -> bool {
-        request.url.query_pairs()
+    fn matches(&self, req: &Request) -> bool {
+        req.url.query_pairs()
             .find(|(k, _)| k == self.0.as_str())
             .map(|(_, v)| self.matches(v.as_ref()))
             .unwrap_or_default()

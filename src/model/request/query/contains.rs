@@ -9,8 +9,8 @@ use super::super::matcher::RequestMatcherDto;
 pub struct QueryContainsMatcher(String, String);
 
 impl Match for QueryContainsMatcher {
-    fn matches(&self, request: &Request) -> bool {
-        request.url.query_pairs()
+    fn matches(&self, req: &Request) -> bool {
+        req.url.query_pairs()
             .find(|(k, _)| k == self.0.as_str())
             .map(|(_, v)| v.contains(self.1.as_str()))
             .unwrap_or_default()

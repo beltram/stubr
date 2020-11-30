@@ -19,9 +19,9 @@ impl HeaderRegexMatcher {
 }
 
 impl Match for HeaderRegexMatcher {
-    fn matches(&self, request: &Request) -> bool {
+    fn matches(&self, req: &Request) -> bool {
         HeaderName::from_str(self.0.as_str()).ok()
-            .and_then(|key| request.headers.get(&key))
+            .and_then(|key| req.headers.get(&key))
             .map(|values| self.matches(values.as_str()))
             .unwrap_or_default()
     }

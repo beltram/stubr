@@ -1,3 +1,5 @@
+use std::convert::TryFrom;
+
 use serde::Deserialize;
 use serde_json::Value;
 use wiremock::matchers::BodyExactMatcher;
@@ -17,7 +19,7 @@ pub struct BodyPatternDto {
 impl MockRegistrable for Vec<BodyPatternDto> {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
         for body_pattern in self {
-            if let Some(exact_json) = Option::<BodyExactMatcher>::from(body_pattern) {
+            if let Ok(exact_json) = BodyExactMatcher::try_from(body_pattern) {
                 mock = mock.and(exact_json)
             }
         }

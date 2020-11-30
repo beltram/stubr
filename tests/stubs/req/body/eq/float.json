@@ -1,0 +1,17 @@
+{
+  "id": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e",
+  "request": {
+    "method": "POST",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "pi": 3.14
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  },
+  "uuid": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e"
+}
