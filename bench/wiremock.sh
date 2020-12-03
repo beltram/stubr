@@ -1,6 +1,6 @@
 source ./bench/wrk.sh
 
-wiremock_test() {
+wiremock_bench() {
   path=$1
   duration=$2
   vu=$3
@@ -14,6 +14,6 @@ wiremock_test() {
   sleep 5
   scenario="| wiremock-${path} (${duration}s / ${vu}) | "
   uri="http://localhost:8001/${path}"
-  wrk_test "$uri" "$scenario" "$duration" "$vu"
+  wrk_test "$uri" "$scenario" "$duration" "$vu" "$PID"
   kill "$PID"
 }

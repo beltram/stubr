@@ -1,8 +1,4 @@
 source ./bench/scenario.sh
-# wrk options
-export DURATION=1
-export VU=10
-
 # metadata
 export OUTPUT=bench/report.md
 
@@ -13,6 +9,6 @@ echo "# Benchmark
 * wiremock
   * java version: $(java --version | grep openjdk)
   * wiremock version: $(readlink /usr/local/bin/wiremock | sed 's/.*standalone\///' | sed 's/\/bin.*//')
-" > $OUTPUT
+" >$OUTPUT
 
-scenario "ping"
+scenario "ping" 60

@@ -1,6 +1,6 @@
 source ./bench/wrk.sh
 
-stubr_test() {
+stubr_bench() {
   path=$1
   duration=$2
   vu=$3
@@ -10,10 +10,10 @@ stubr_test() {
   sleep 2
   addr="$(cat $tmp | grep 'stubr' | sed 's/.*stubr server on //')"
   PID=$!
-  sleep 5
+  sleep 2
   scenario="| stubr-${path} (${duration}s / ${vu}) | "
   uri="${addr}/${path}"
-  wrk_test "$uri" "$scenario" "$duration" "$vu"
+  wrk_test "$uri" "$scenario" "$duration" "$vu" "$PID"
   kill "$PID"
   rm $tmp
 }
