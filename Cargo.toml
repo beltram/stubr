@@ -9,7 +9,7 @@ wiremock = "0.4.0-alpha.2"
 anyhow = "1.0.34"
 http-types = "2.8.0"
 itertools = "0.9.0"
-const_format = "0.2.8"
+const_format = "0.2.10"
 regex = "1.4.2"
 async-trait = "0.1.42"
 
