@@ -2,7 +2,7 @@ use std::convert::TryFrom;
 
 use wiremock::matchers::{body_json, BodyExactMatcher};
 
-use crate::model::request::body::BodyPatternDto;
+use super::BodyPatternDto;
 
 impl TryFrom<&BodyPatternDto> for BodyExactMatcher {
     type Error = anyhow::Error;

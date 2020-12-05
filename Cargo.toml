@@ -12,6 +12,7 @@ itertools = "0.9.0"
 const_format = "0.2.10"
 regex = "1.4.2"
 async-trait = "0.1.42"
+jsonpath_lib = "0.2.5"
 
 [dependencies.tokio]
 version = "0.2.23"

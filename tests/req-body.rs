@@ -5,7 +5,6 @@ use crate::utils::*;
 
 mod utils;
 
-
 #[async_std::test]
 async fn should_map_req_body_equal_to_json_string() {
     let srv = given("req/body/eq/string");
