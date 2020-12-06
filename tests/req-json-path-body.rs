@@ -33,3 +33,10 @@ async fn should_fail_when_one_of_many_does_not_match() {
     post(&srv.uri()).body(json!({"age": 42})).await.unwrap().assert_not_found();
     post(&srv.uri()).body(json!({})).await.unwrap().assert_not_found();
 }
+
+#[async_std::test]
+async fn equality_should_have_precedence_over_json_path() {
+    let srv = given("req/body/precedence/simple");
+    post(&srv.uri()).body(json!({"name": "bob"})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"name": "alice"})).await.unwrap().assert_not_found();
+}
