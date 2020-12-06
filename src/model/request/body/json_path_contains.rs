@@ -27,7 +27,7 @@ impl TryFrom<&BodyPatternDto> for JsonPathContainsMatcher {
 
     fn try_from(body: &BodyPatternDto) -> anyhow::Result<Self> {
         if body.is_by_json_path_contains() {
-            body.matches_json_path.as_ref()
+            body.expression.as_ref()
                 .and_then(|path| body.contains.as_ref().map(|contains| (path, contains)))
                 .map(|(path, contains)| JsonPathContainsMatcher(path.to_string(), contains.to_owned()))
                 .ok_or_else(|| anyhow::Error::msg("No json path with contains matcher found"))

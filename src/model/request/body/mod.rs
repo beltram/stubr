@@ -22,25 +22,27 @@ pub struct BodyPatternDto {
     equal_to_json: Option<Value>,
     /// json path matcher
     matches_json_path: Option<String>,
+    /// json path matcher when combined with 'equal_to_json' or 'contains'
+    expression: Option<String>,
     /// if matched json path also contains given string
     contains: Option<String>,
 }
 
 impl BodyPatternDto {
     fn is_by_json_equality(&self) -> bool {
-        self.equal_to_json.is_some() && self.matches_json_path.is_none()
+        self.equal_to_json.is_some() && self.matches_json_path.is_none() && self.expression.is_none()
     }
 
     fn is_by_json_path(&self) -> bool {
-        self.matches_json_path.is_some() && self.equal_to_json.is_none()
+        self.matches_json_path.is_some() && self.equal_to_json.is_none() && self.expression.is_none()
     }
 
     fn is_by_json_path_eq(&self) -> bool {
-        self.matches_json_path.is_some() && self.equal_to_json.is_some()
+        self.expression.is_some() && self.equal_to_json.is_some()
     }
 
     fn is_by_json_path_contains(&self) -> bool {
-        self.matches_json_path.is_some() && self.contains.is_some()
+        self.expression.is_some() && self.contains.is_some()
     }
 }
 

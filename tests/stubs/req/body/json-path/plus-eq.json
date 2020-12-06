@@ -4,7 +4,7 @@
     "method": "POST",
     "bodyPatterns": [
       {
-        "matchesJsonPath": "$.person",
+        "expression": "$.person",
         "equalToJson": {
           "name": "bob"
         }
