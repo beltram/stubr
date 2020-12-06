@@ -40,3 +40,32 @@ async fn equality_should_have_precedence_over_json_path() {
     post(&srv.uri()).body(json!({"name": "bob"})).await.unwrap().assert_ok();
     post(&srv.uri()).body(json!({"name": "alice"})).await.unwrap().assert_not_found();
 }
+
+#[async_std::test]
+async fn should_map_req_body_by_json_path_eq() {
+    let srv = given("req/body/json-path/eq");
+    post(&srv.uri()).body(json!({"consoles": [ { "id": "xbox" } ]})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"consoles": [ { "id": "xbox" }, { "id": "playstation" } ]})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"consoles": [ { "id": "playstation" }, { "id": "xbox" } ]})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"consoles": [ { "id": "playstation" }, { "id": "xbox" }, { "id": "switch" } ]})).await.unwrap().assert_ok();
+}
+
+#[async_std::test]
+async fn should_fail_when_json_path_not_equals() {
+    let srv = given("req/body/json-path/eq");
+    post(&srv.uri()).body(json!({"consoles": [ { "id": "playstation" } ]})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"consoles": [ {} ]})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"consoles": []})).await.unwrap().assert_not_found();
+}
+
+#[async_std::test]
+async fn should_map_req_body_by_json_path_greater_than() {
+    let srv = given("req/body/json-path/gt");
+    post(&srv.uri()).body(json!({"consoles": [ { "price": 201 } ]})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"consoles": [ { "price": 200 } ]})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"consoles": [ { "price": 199 } ]})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"consoles": [ { "price": 201 }, { "price": 199 } ]})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"consoles": [ { "price": 199 }, { "price": 199 } ]})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"consoles": [ { } ]})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"consoles": [ ]})).await.unwrap().assert_not_found();
+}
