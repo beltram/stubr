@@ -15,7 +15,7 @@ impl Match for JsonPathContainsMatcher {
             .and_then(|it| matches_json_path(it, &self.0).ok())
             .filter(|matched| !matched.is_empty())
             .filter(|matched| {
-                matched.into_iter()
+                matched.iter()
                     .all(|it| it.as_str().map(|c| c.contains(self.1.as_str())).unwrap_or_default())
             })
             .is_some()
