@@ -35,10 +35,17 @@ async fn should_fail_when_one_of_many_does_not_match() {
 }
 
 #[async_std::test]
-async fn equality_should_have_precedence_over_json_path() {
-    let srv = given("req/body/precedence/simple");
-    post(&srv.uri()).body(json!({"name": "bob"})).await.unwrap().assert_ok();
-    post(&srv.uri()).body(json!({"name": "alice"})).await.unwrap().assert_not_found();
+async fn can_be_combined_with_eq() {
+    let srv = given("req/body/json-path/json-path-eq");
+    post(&srv.uri()).body(json!({"person": { "name": "bob" }})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"person": { "name": "bob" }, "person": { "name": "bob" }})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"person": { "name": "bob" }, "notPerson": { "name": "bob" }})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"person": { "name": "bob" }, "person": { "name": "alice" }})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"person": { "name": "alice" }})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"person": { "notName": "bob" }})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"notPerson": { "name": "bob" }})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"person": { }})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({})).await.unwrap().assert_not_found();
 }
 
 #[async_std::test]

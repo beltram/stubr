@@ -4,10 +4,10 @@
     "method": "POST",
     "bodyPatterns": [
       {
+        "matchesJsonPath": "$.person",
         "equalToJson": {
           "name": "bob"
-        },
-        "matchesJsonPath": "$.name"
+        }
       }
     ]
   },

@@ -23,6 +23,7 @@ impl TryFrom<&BodyPatternDto> for JsonPathMatcher {
 
     fn try_from(body: &BodyPatternDto) -> anyhow::Result<Self> {
         body.matches_json_path.as_ref()
+            .filter(|_| body.is_by_json_path())
             .map(|it| JsonPathMatcher(it.to_string()))
             .ok_or_else(|| anyhow::Error::msg("No json path matcher found"))
     }
