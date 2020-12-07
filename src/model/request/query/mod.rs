@@ -6,6 +6,7 @@ use serde_json::{Map, Value};
 use wiremock::matchers::QueryParamExactMatcher;
 use wiremock::MockBuilder;
 
+use absent::QueryAbsentMatcher;
 use case::QueryCaseInsensitiveMatcher;
 use contains::QueryContainsMatcher;
 use matches::QueryRegexMatcher;
@@ -17,6 +18,7 @@ mod exact;
 mod case;
 mod contains;
 mod matches;
+mod absent;
 
 #[derive(Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
@@ -38,6 +40,9 @@ impl MockRegistrable for HttpQueryParamsDto {
         }
         for regex in Vec::<QueryRegexMatcher>::from(self) {
             mock = mock.and(regex);
+        }
+        for absent in Vec::<QueryAbsentMatcher>::from(self) {
+            mock = mock.and(absent);
         }
         mock
     }
