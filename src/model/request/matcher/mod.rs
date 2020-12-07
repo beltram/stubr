@@ -15,11 +15,18 @@ pub struct RequestMatcherDto {
 #[derive(Deserialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct MatcherValueDto {
-    pub equal_to: Option<Value>,
-    pub case_insensitive: Option<bool>,
+    /// matches by strict equality
+    equal_to: Option<Value>,
+    /// matches by strict case insensitive (when true) equality
+    case_insensitive: Option<bool>,
+    /// matches when string contains once or more this value
     pub contains: Option<String>,
-    pub matches: Option<Value>,
-    pub does_not_match: Option<Value>,
+    /// matches when matches the regex
+    matches: Option<Value>,
+    /// matches when does not matches the regex
+    does_not_match: Option<Value>,
+    /// when true matches when parameter is not present in request
+    pub absent: Option<bool>,
 }
 
 impl RequestMatcherDto {
@@ -80,6 +87,10 @@ impl RequestMatcherDto {
             .and_then(|it| it.does_not_match.as_ref())
             .and_then(|v| v.as_str())
             .and_then(|it| Regex::from_str(it).ok())
+    }
+
+    pub fn is_absent(&self) -> bool {
+        self.value.as_ref().map(|v| v.absent.is_some()).unwrap_or_default()
     }
 }
 

@@ -6,6 +6,7 @@ use serde_json::{Map, Value};
 use wiremock::matchers::HeaderExactMatcher;
 use wiremock::MockBuilder;
 
+use absent::HeaderAbsentMatcher;
 use case::HeaderCaseInsensitiveMatcher;
 use contains::HeaderContainsMatcher;
 use matches::HeaderRegexMatcher;
@@ -13,10 +14,11 @@ use matches::HeaderRegexMatcher;
 use super::matcher::RequestMatcherDto;
 use super::super::request::MockRegistrable;
 
-pub mod case;
-pub mod exact;
-pub mod contains;
-pub mod matches;
+mod case;
+mod exact;
+mod contains;
+mod matches;
+mod absent;
 
 #[derive(Deserialize, Debug, Default)]
 pub struct HttpReqHeadersDto {
@@ -37,6 +39,9 @@ impl MockRegistrable for HttpReqHeadersDto {
         }
         for matches in Vec::<HeaderRegexMatcher>::from(self) {
             mock = mock.and(matches);
+        }
+        for absent in Vec::<HeaderAbsentMatcher>::from(self) {
+            mock = mock.and(absent);
         }
         mock
     }
