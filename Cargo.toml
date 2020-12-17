@@ -19,7 +19,7 @@ version = "0.2.23"
 features = ["rt-core", "rt-util"]
 
 [dependencies.serde]
-version = "1.0.117"
+version = "1.0.118"
 features = ["derive"]
 
 [dependencies.async-std]
