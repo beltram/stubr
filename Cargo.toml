@@ -4,14 +4,14 @@ version = "0.0.1"
 edition = "2018"
 
 [dependencies]
-serde_json = "1.0.60"
 wiremock = "0.4.2"
 anyhow = "1.0.36"
+async-trait = "0.1.42"
+serde_json = "1.0.60"
 http-types = "2.9.0"
 itertools = "0.9.0"
 const_format = "0.2.10"
 regex = "1.4.2"
-async-trait = "0.1.42"
 jsonpath_lib = "0.2.6"
 
 [dependencies.serde]
