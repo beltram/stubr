@@ -1,0 +1,23 @@
+name: dev
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Swatinem/rust-cache@v1
+      - name: cargo/check
+        run: cargo check
+      - name: cargo/test
+        run: cargo test
+      - name: cargo/clippy
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: cargo clippy
