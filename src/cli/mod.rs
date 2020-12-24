@@ -2,12 +2,11 @@ use std::env::current_dir;
 use std::ffi::OsStr;
 use std::fs::DirEntry;
 use std::path::PathBuf;
-use std::time::Duration;
 
 use clap::{AppSettings, Clap, ValueHint};
 
 use completion::Shell;
-use stubr::server::{StubrServer, StubServer};
+use stubr::server::StubrServer;
 
 mod completion;
 
@@ -46,18 +45,17 @@ enum Commands {
 impl Cli {
     // Runs stubr forever until process exits
     pub async fn run(&self) -> anyhow::Result<()> {
-        let server = StubrServer::start().await;
-        if let Some(stubs) = self.stubs_dir() {
-            server.register_stubs(stubs).await?;
-        }
-        server.init_log();
-        loop {
-            async_std::task::sleep(Duration::from_millis(1000)).await;
+        if let Some(_) = self.cmd.as_ref() {
+            panic!("Not yet implemented !")
+        } else {
+            StubrServer::run(self.stubs_dir()).await
         }
     }
 
-    fn stubs_dir(&self) -> Option<PathBuf> {
-        self.dir().or_else(|| self.root_dir())
+    fn stubs_dir(&self) -> PathBuf {
+        self.dir()
+            .or_else(|| self.root_dir())
+            .expect("Could not find stub directory")
     }
 
     fn dir(&self) -> Option<PathBuf> {
@@ -101,13 +99,13 @@ mod cli_test {
     fn stubs_dir_should_append_dir_to_current_dir() {
         let dir = PathBuf::from("tests/stubs/cli");
         let cli = Cli { dir: Some(dir.clone()), ..Default::default() };
-        assert_eq!(cli.stubs_dir().unwrap(), current_dir().unwrap().join(dir))
+        assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(dir))
     }
 
     #[test]
     fn stubs_dir_should_default_to_current_dir() {
         let cli = Cli { dir: None, ..Default::default() };
-        assert_eq!(cli.stubs_dir().unwrap(), current_dir().unwrap())
+        assert_eq!(cli.stubs_dir(), current_dir().unwrap())
     }
 
     #[test]
@@ -128,6 +126,6 @@ mod cli_test {
         let dir = PathBuf::from("tests/stubs");
         let root_dir = PathBuf::from("tests/stubs/cli");
         let cli = Cli { dir: Some(dir.clone()), root_dir: Some(root_dir), ..Default::default() };
-        assert_eq!(cli.stubs_dir().unwrap(), current_dir().unwrap().join(dir))
+        assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(dir))
     }
 }

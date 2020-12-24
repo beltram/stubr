@@ -1,5 +1,6 @@
 use std::convert::TryFrom;
 use std::path::PathBuf;
+use std::time::Duration;
 
 use async_trait::async_trait;
 use itertools::Itertools;
@@ -19,7 +20,6 @@ pub struct StubrServer {
 
 #[async_trait]
 impl StubServer for StubrServer {
-
     async fn register_stubs(&self, stub_folder: PathBuf) -> anyhow::Result<()> {
         let stubs = self.get_all_stubs(stub_folder);
         stubs.iter()
@@ -41,6 +41,14 @@ impl StubServer for StubrServer {
 }
 
 impl StubrServer {
+    const SLEEP_DURATION: Duration = Duration::from_millis(1000);
+
+    pub async fn run(stubs: PathBuf) -> anyhow::Result<()> {
+        let server = StubrServer::start().await;
+        server.register_stubs(stubs).await?;
+        server.init_log();
+        loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
+    }
     pub async fn start() -> Self {
         Self { instance: MockServer::start().await }
     }
