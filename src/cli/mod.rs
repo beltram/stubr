@@ -65,7 +65,7 @@ impl Cli {
             .and_then(|current| {
                 self.dir.as_ref()
                     .map(|d| current.join(d))
-                    .or_else(|| Some(current))
+                    .or(Some(current))
             })
     }
 
