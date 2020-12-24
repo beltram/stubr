@@ -19,6 +19,7 @@ pub struct StubrServer {
 
 #[async_trait]
 impl StubServer for StubrServer {
+
     async fn register_stubs(&self, stub_folder: PathBuf) -> anyhow::Result<()> {
         let stubs = self.get_all_stubs(stub_folder);
         stubs.iter()
