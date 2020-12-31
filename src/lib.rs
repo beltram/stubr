@@ -1,13 +1,5 @@
-use crate::server::StubrServer;
+mod stub;
+mod model;
+mod server;
 
-pub mod stub;
-pub mod model;
-pub mod server;
-
-pub struct Stubr {}
-
-impl Stubr {
-    pub async fn start() {
-        StubrServer::start().await;
-    }
-}
+pub use server::{StubrServer, StubServer};

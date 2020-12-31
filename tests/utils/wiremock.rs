@@ -9,7 +9,7 @@ use std::time::Duration;
 use async_trait::async_trait;
 use tempfile::tempdir;
 
-use stubr::server::StubServer;
+use stubr::StubServer;
 
 pub struct Wiremock {
     pub process: Child,

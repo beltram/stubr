@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use clap::{AppSettings, Clap, ValueHint};
 
 use completion::Shell;
-use stubr::server::StubrServer;
+use stubr::StubrServer;
 
 mod completion;
 
@@ -29,6 +29,11 @@ pub struct Cli {
     /// Expects a 'mappings' folder under this directory which contains stub files
     #[clap(long = "root-dir", parse(from_os_str), value_hint = ValueHint::DirPath)]
     root_dir: Option<PathBuf>,
+    /// port number the server is listening on
+    ///
+    /// When absent, defaults to a random one
+    #[clap(short = 'p', long = "port")]
+    port: Option<u16>,
     #[clap(subcommand)]
     cmd: Option<Commands>,
 }
@@ -48,7 +53,7 @@ impl Cli {
         if let Some(_) = self.cmd.as_ref() {
             panic!("Not yet implemented !")
         } else {
-            StubrServer::run(self.stubs_dir()).await
+            StubrServer::run(self.stubs_dir(), self.port).await
         }
     }
 

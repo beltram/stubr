@@ -9,7 +9,7 @@ use serde::de::DeserializeOwned;
 use serde::export::fmt::Debug;
 use surf::Response;
 
-pub use stubr::server::{StubrServer, StubServer};
+pub use stubr::{StubrServer, StubServer};
 
 #[cfg(feature = "iso")]
 use self::wiremock::Wiremock;
@@ -18,7 +18,7 @@ mod wiremock;
 
 #[cfg(not(feature = "iso"))]
 pub fn given(name: &str) -> impl StubServer {
-    let server = block_on(StubrServer::start());
+    let server = block_on(StubrServer::start(None));
     block_on(server.register_stubs(stub(name))).unwrap();
     server
 }
