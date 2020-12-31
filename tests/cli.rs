@@ -10,7 +10,7 @@ use crate::utils::*;
 
 mod utils;
 
-static PORT: AtomicU16 = AtomicU16::new(8000);
+static PORT: AtomicU16 = AtomicU16::new(60_000);
 
 fn port() -> String {
     PORT.fetch_add(1, Ordering::SeqCst).to_string()
