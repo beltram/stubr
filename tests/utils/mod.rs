@@ -15,6 +15,7 @@ pub use stubr::{StubrServer, StubServer};
 use self::wiremock::Wiremock;
 
 mod wiremock;
+pub mod cli;
 
 #[cfg(not(feature = "iso"))]
 pub fn given(name: &str) -> impl StubServer {
