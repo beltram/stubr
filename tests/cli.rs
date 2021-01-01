@@ -1,10 +1,12 @@
-use std::process::{Child, Command};
-use std::sync::atomic::{AtomicU16, Ordering};
-use std::thread::sleep;
-use std::time::Duration;
+use std::{
+    process::{Child, Command},
+    sync::atomic::{AtomicU16, Ordering},
+    thread::sleep,
+    time::Duration,
+};
 
 use assert_cmd::prelude::*;
-use surf::get;
+use surf::{get,post};
 
 use crate::utils::*;
 
@@ -47,4 +49,5 @@ impl Drop for StubrCli {
 async fn should_serve_stubs_under_dir() {
     let stubr = StubrCli::new(&["tests/stubs/cli"]);
     get(&stubr.addr).await.unwrap().assert_ok();
+    post(&stubr.addr).await.unwrap().assert_not_found();
 }
