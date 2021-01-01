@@ -1,7 +1,9 @@
-use std::env::current_dir;
-use std::ffi::OsStr;
-use std::fs::DirEntry;
-use std::path::PathBuf;
+use std::{
+    env::current_dir,
+    ffi::OsStr,
+    fs::DirEntry,
+    path::PathBuf,
+};
 
 use clap::{AppSettings, Clap, ValueHint};
 
@@ -48,6 +50,8 @@ enum Commands {
 }
 
 impl Cli {
+    const MAPPINGS_FOLDER: &'static str = "mappings";
+
     // Runs stubr forever until process exits
     pub async fn run(&self) -> anyhow::Result<()> {
         if let Some(_) = self.cmd.as_ref() {
@@ -58,8 +62,8 @@ impl Cli {
     }
 
     fn stubs_dir(&self) -> PathBuf {
-        self.dir()
-            .or_else(|| self.root_dir())
+        self.root_dir()
+            .or_else(|| self.dir())
             .expect("Could not find stub directory")
     }
 
@@ -77,7 +81,8 @@ impl Cli {
             .and_then(|current| {
                 self.root_dir.as_ref()
                     .filter(|&it| Self::does_contains_mappings_folder(it))
-                    .map(|d| current.join(d))
+                    .map(|it| it.join(Self::MAPPINGS_FOLDER))
+                    .map(|it| current.join(it))
             })
     }
 
@@ -89,7 +94,7 @@ impl Cli {
 
     fn is_mappings_folder(folder: DirEntry) -> bool {
         let path = folder.path();
-        path.is_dir() && path.file_name() == Some(OsStr::new("mappings"))
+        path.is_dir() && path.file_name() == Some(OsStr::new(Self::MAPPINGS_FOLDER))
     }
 }
 
@@ -123,14 +128,14 @@ mod cli_test {
     fn root_dir_should_be_appended_to_current_dir() {
         let root_dir = PathBuf::from("tests/stubs/cli");
         let cli = Cli { root_dir: Some(root_dir.clone()), ..Default::default() };
-        assert_eq!(cli.root_dir().unwrap(), current_dir().unwrap().join(root_dir))
+        assert_eq!(cli.root_dir().unwrap(), current_dir().unwrap().join(root_dir.join("mappings")))
     }
 
     #[test]
-    fn dir_should_have_precedence_over_root_dir() {
+    fn root_dir_should_have_precedence_over_dir() {
         let dir = PathBuf::from("tests/stubs");
         let root_dir = PathBuf::from("tests/stubs/cli");
-        let cli = Cli { dir: Some(dir.clone()), root_dir: Some(root_dir), ..Default::default() };
-        assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(dir))
+        let cli = Cli { dir: Some(dir), root_dir: Some(root_dir.clone()), ..Default::default() };
+        assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(root_dir.join("mappings")))
     }
 }
