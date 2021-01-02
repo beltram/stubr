@@ -2,4 +2,4 @@ mod stub;
 mod model;
 mod server;
 
-pub use server::{StubrServer, StubServer};
+pub use server::{Stubr, StubServer};

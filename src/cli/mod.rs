@@ -8,7 +8,7 @@ use std::{
 use clap::{AppSettings, Clap, ValueHint};
 
 use completion::Shell;
-use stubr::StubrServer;
+use stubr::Stubr;
 
 mod completion;
 
@@ -57,7 +57,7 @@ impl Cli {
         if let Some(_) = self.cmd.as_ref() {
             panic!("Not yet implemented !")
         } else {
-            StubrServer::run(self.stubs_dir(), self.port).await
+            Stubr::run(self.stubs_dir(), self.port).await
         }
     }
 
@@ -100,8 +100,10 @@ impl Cli {
 
 #[cfg(test)]
 mod cli_test {
-    use std::env::current_dir;
-    use std::path::PathBuf;
+    use std::{
+        env::current_dir,
+        path::PathBuf,
+    };
 
     use crate::cli::Cli;
 
