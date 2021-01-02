@@ -1,8 +1,10 @@
 use std::convert::TryFrom;
 
 use serde::Deserialize;
-use wiremock::matchers::{PathExactMatcher, PathRegexMatcher};
-use wiremock::MockBuilder;
+use wiremock::{
+    matchers::{PathExactMatcher, PathRegexMatcher},
+    MockBuilder,
+};
 
 use just_url::ExactPathAndQueryMatcher;
 

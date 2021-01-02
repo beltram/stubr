@@ -1,12 +1,10 @@
-use std::convert::TryFrom;
+use std::{convert::TryFrom, ops::Not};
 
 use itertools::Itertools;
 use regex::Regex;
 use wiremock::{Match, Request};
 
-use super::HttpQueryParamsDto;
-use super::super::matcher::RequestMatcherDto;
-use std::ops::Not;
+use super::{HttpQueryParamsDto, super::matcher::RequestMatcherDto};
 
 pub struct QueryRegexMatcher(String, Regex, bool);
 

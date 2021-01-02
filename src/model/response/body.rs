@@ -4,8 +4,7 @@ use serde::Deserialize;
 use serde_json::Value;
 use wiremock::ResponseTemplate;
 
-use super::body_file::BodyFile;
-use super::ResponseAppender;
+use super::{body_file::BodyFile, ResponseAppender};
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]

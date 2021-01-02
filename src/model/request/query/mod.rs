@@ -3,16 +3,17 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use serde::Deserialize;
 use serde_json::{Map, Value};
-use wiremock::matchers::QueryParamExactMatcher;
-use wiremock::MockBuilder;
+use wiremock::{matchers::QueryParamExactMatcher, MockBuilder};
 
 use absent::QueryAbsentMatcher;
 use case::QueryCaseInsensitiveMatcher;
 use contains::QueryContainsMatcher;
 use matches::QueryRegexMatcher;
 
-use super::matcher::RequestMatcherDto;
-use super::super::request::MockRegistrable;
+use super::{
+    matcher::RequestMatcherDto,
+    super::request::MockRegistrable,
+};
 
 mod exact;
 mod case;

@@ -1,6 +1,4 @@
-use std::convert::TryFrom;
-use std::ops::Not;
-use std::str::FromStr;
+use std::{convert::TryFrom, ops::Not, str::FromStr};
 
 use regex::Regex;
 use serde::Deserialize;

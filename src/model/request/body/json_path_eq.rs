@@ -1,8 +1,7 @@
 use std::convert::TryFrom;
 
 use jsonpath_lib::select as matches_json_path;
-use serde_json::from_slice as deserialize;
-use serde_json::Value;
+use serde_json::{from_slice as deserialize, Value};
 use wiremock::{Match, Request};
 
 use super::BodyPatternDto;

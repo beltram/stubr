@@ -24,7 +24,7 @@ fn port() -> String {
 
 #[async_trait]
 impl StubServer for Wiremock {
-    async fn register_stubs(&self, _stub_folder: PathBuf) -> anyhow::Result<()> { unimplemented!() }
+    async fn register_stubs(&self, _stub_folder: PathBuf) { unimplemented!() }
 
     fn uri(&self) -> String {
         format!("http://localhost:{}", self.port)

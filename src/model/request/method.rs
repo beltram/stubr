@@ -1,8 +1,13 @@
 use std::convert::TryFrom;
 
 use serde::Deserialize;
-use wiremock::{Match, Mock, MockBuilder, Request};
-use wiremock::matchers::{method, MethodExactMatcher};
+use wiremock::{
+    Match,
+    matchers::{method, MethodExactMatcher},
+    Mock,
+    MockBuilder,
+    Request,
+};
 
 const METHOD_ANY: &str = "ANY";
 

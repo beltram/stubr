@@ -1,14 +1,11 @@
-use std::convert::TryFrom;
-use std::ops::Not;
-use std::str::FromStr;
+use std::{convert::TryFrom, ops::Not, str::FromStr};
 
 use http_types::headers::HeaderName;
 use itertools::Itertools;
 use regex::Regex;
 use wiremock::{Match, Request};
 
-use super::HttpReqHeadersDto;
-use super::super::matcher::RequestMatcherDto;
+use super::{HttpReqHeadersDto, super::matcher::RequestMatcherDto};
 
 pub struct HeaderRegexMatcher(String, Regex, bool);
 

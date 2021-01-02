@@ -1,15 +1,13 @@
-use std::{
-    convert::TryFrom,
-    net::TcpListener,
-    path::PathBuf,
-    time::Duration,
-};
+use std::{convert::TryFrom, net::TcpListener, path::PathBuf, time::Duration};
 
-use async_trait::async_trait;
 use itertools::Itertools;
 use wiremock::{Mock, MockServer};
 
-use crate::stub::StubrMock;
+use stub::StubrMock;
+use traits::StubServer;
+
+mod stub;
+pub mod traits;
 
 /// Allows running a Wiremock mock server from Wiremock stubs.
 /// Delegates runtime to wiremock-rs.
@@ -38,7 +36,7 @@ impl Stubr {
         } else {
             Self::start_on_random_port().await
         };
-        server.register_stubs(stubs).await.expect("Failed registering stubs");
+        server.register_stubs(stubs).await;
         server
     }
 
@@ -79,26 +77,6 @@ impl Stubr {
                 it.0
             })
             .collect_vec()
-    }
-}
-
-#[async_trait]
-pub trait StubServer {
-    async fn register_stubs(&self, stub_folder: PathBuf) -> anyhow::Result<()>;
-    fn uri(&self) -> String;
-}
-
-#[async_trait]
-impl StubServer for Stubr {
-    async fn register_stubs(&self, stub_folder: PathBuf) -> anyhow::Result<()> {
-        for mock in self.find_all_mocks(stub_folder) {
-            self.instance.register(mock).await;
-        }
-        Ok(())
-    }
-
-    fn uri(&self) -> String {
-        self.instance.uri()
     }
 }
 

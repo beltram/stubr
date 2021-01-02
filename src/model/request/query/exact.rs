@@ -3,8 +3,7 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use wiremock::matchers::{query_param, QueryParamExactMatcher};
 
-use super::HttpQueryParamsDto;
-use super::super::matcher::RequestMatcherDto;
+use super::{HttpQueryParamsDto, super::matcher::RequestMatcherDto};
 
 impl From<&HttpQueryParamsDto> for Vec<QueryParamExactMatcher> {
     fn from(queries: &HttpQueryParamsDto) -> Self {

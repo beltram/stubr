@@ -1,11 +1,9 @@
-use std::convert::TryFrom;
-use std::ops::{BitXor, Not};
+use std::{convert::TryFrom, ops::{BitXor, Not}};
 
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::HttpQueryParamsDto;
-use super::super::matcher::RequestMatcherDto;
+use super::{HttpQueryParamsDto, super::matcher::RequestMatcherDto};
 
 pub struct QueryAbsentMatcher(String, bool);
 

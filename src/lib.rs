@@ -1,5 +1,4 @@
-mod stub;
+pub use server::{Stubr, traits::StubServer};
+
 mod model;
 mod server;
-
-pub use server::{Stubr, StubServer};

@@ -3,8 +3,7 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::HttpQueryParamsDto;
-use super::super::matcher::RequestMatcherDto;
+use super::{HttpQueryParamsDto, super::matcher::RequestMatcherDto};
 
 pub struct QueryContainsMatcher(String, String);
 

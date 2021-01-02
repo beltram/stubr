@@ -2,8 +2,7 @@ use const_format::concatcp;
 use http_types::headers::SERVER;
 use wiremock::ResponseTemplate;
 
-use super::ResponseAppender;
-use super::StubDto;
+use super::{ResponseAppender, StubDto};
 
 const MATCHED_STUB_ID_HEADER: &str = "Matched-Stub-Id";
 

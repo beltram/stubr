@@ -14,9 +14,12 @@ mod default;
 
 #[derive(Deserialize, Debug)]
 pub struct ResponseDto {
+    /// HTTP response status
     status: u16,
+    /// HTTP response body
     #[serde(flatten)]
     body: BodyDto,
+    /// HTTP response headers
     #[serde(flatten)]
     headers: HttpRespHeadersDto,
 }

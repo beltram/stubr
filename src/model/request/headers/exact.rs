@@ -3,8 +3,7 @@ use std::convert::TryFrom;
 use itertools::Itertools;
 use wiremock::matchers::{header, HeaderExactMatcher};
 
-use super::HttpReqHeadersDto;
-use super::super::matcher::RequestMatcherDto;
+use super::{HttpReqHeadersDto, super::matcher::RequestMatcherDto};
 
 impl From<&HttpReqHeadersDto> for Vec<HeaderExactMatcher> {
     fn from(headers: &HttpReqHeadersDto) -> Self {

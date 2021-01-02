@@ -1,7 +1,4 @@
-use std::convert::TryFrom;
-use std::fs::File;
-use std::io::{BufReader, Read};
-use std::path::PathBuf;
+use std::{convert::TryFrom, fs::File, io::{BufReader, Read}, path::PathBuf};
 
 use serde_json::Value;
 use wiremock::ResponseTemplate;

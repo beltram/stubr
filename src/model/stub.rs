@@ -3,8 +3,7 @@ use std::convert::TryFrom;
 use serde::Deserialize;
 use wiremock::{Mock, MockBuilder, ResponseTemplate};
 
-use super::request::RequestDto;
-use super::response::ResponseDto;
+use super::{request::RequestDto, response::ResponseDto};
 
 #[derive(Deserialize, Debug)]
 pub struct StubDto {

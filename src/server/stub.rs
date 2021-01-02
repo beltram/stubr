@@ -1,11 +1,9 @@
-use std::convert::TryInto;
-use std::fs::OpenOptions;
-use std::path::PathBuf;
+use std::{convert::TryInto, fs::OpenOptions, path::PathBuf};
 
 use serde::export::TryFrom;
 use wiremock::Mock;
 
-use super::model::stub::StubDto;
+use super::super::model::stub::StubDto;
 
 pub struct StubrMock(pub Mock, pub PathBuf);
 

@@ -1,9 +1,4 @@
-use std::{
-    env::current_dir,
-    ffi::OsStr,
-    fs::DirEntry,
-    path::PathBuf,
-};
+use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf};
 
 use clap::{AppSettings, Clap, ValueHint};
 
