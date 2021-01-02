@@ -9,7 +9,7 @@ use std::time::Duration;
 use async_trait::async_trait;
 use tempfile::tempdir;
 
-use stubr::StubServer;
+use stubr::AnyStubServer;
 
 pub struct Wiremock {
     pub process: Child,
@@ -23,7 +23,7 @@ fn port() -> String {
 }
 
 #[async_trait]
-impl StubServer for Wiremock {
+impl AnyStubServer for Wiremock {
     async fn register_stubs(&self, _stub_folder: PathBuf) { unimplemented!() }
 
     fn uri(&self) -> String {

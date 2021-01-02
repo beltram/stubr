@@ -4,7 +4,7 @@ use itertools::Itertools;
 use wiremock::{Mock, MockServer};
 
 use stub::StubrMock;
-use traits::StubServer;
+use traits::AnyStubServer;
 
 mod stub;
 pub mod traits;

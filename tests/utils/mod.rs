@@ -9,7 +9,7 @@ use serde::de::DeserializeOwned;
 use serde::export::fmt::Debug;
 use surf::Response;
 
-pub use stubr::{Stubr, StubServer};
+pub use stubr::{Stubr, AnyStubServer};
 
 #[cfg(feature = "iso")]
 use self::wiremock::Wiremock;
@@ -18,12 +18,12 @@ mod wiremock;
 pub mod cli;
 
 #[cfg(not(feature = "iso"))]
-pub fn given(name: &str) -> impl StubServer {
+pub fn given(name: &str) -> impl AnyStubServer {
     block_on(Stubr::start(stub(name), None))
 }
 
 #[cfg(feature = "iso")]
-pub fn given(name: &str) -> impl StubServer {
+pub fn given(name: &str) -> impl AnyStubServer {
     Wiremock::start(stub(name))
 }
 
@@ -56,7 +56,7 @@ pub trait UriAndQuery {
     }
 }
 
-impl<S: StubServer> UriAndQuery for S {
+impl<S: AnyStubServer> UriAndQuery for S {
     fn get_uri(&self) -> String { self.uri() }
 }
 
