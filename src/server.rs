@@ -55,7 +55,7 @@ impl Stubr {
     }
 
     fn init_log(&self) {
-        println!("Starting stubr server on {}", self.instance.uri());
+        println!("Started stubr server on {}", self.instance.uri());
     }
 
     fn find_all_files(&self, from: PathBuf) -> Vec<PathBuf> {
