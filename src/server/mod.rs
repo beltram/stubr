@@ -6,8 +6,11 @@ use wiremock::{Mock, MockServer};
 use stub::StubrMock;
 use traits::AnyStubServer;
 
+use crate::Config;
+
 mod stub;
 pub mod traits;
+pub mod config;
 
 /// Allows running a Wiremock mock server from Wiremock stubs.
 /// Delegates runtime to wiremock-rs.
@@ -19,10 +22,12 @@ impl Stubr {
     const HOST: &'static str = "127.0.0.1";
     const SLEEP_DURATION: Duration = Duration::from_millis(1000);
 
-    /// Runs the mock server endlessly.
-    /// Mostly used by the cli
-    pub async fn run(stubs: PathBuf, port: Option<u16>) -> anyhow::Result<()> {
-        let server = Self::start(stubs, port).await;
+    /// Runs the mock server endlessly until process exits.
+    /// Mostly used by the cli.
+    /// * `stubs` - folder or file containing the stubs
+    /// * `config` - global server configuration
+    pub async fn run(stubs: PathBuf, config: Config) -> anyhow::Result<()> {
+        let server = Self::start_with(stubs, config).await;
         server.init_log();
         loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
     }
@@ -30,13 +35,23 @@ impl Stubr {
     /// Runs a mock server.
     /// The server is unbinded when the instance is dropped.
     /// Use this in a test context.
-    pub async fn start(stubs: PathBuf, port: Option<u16>) -> Self {
-        let server = if let Some(p) = port {
+    /// * `stubs` - folder or file containing the stubs
+    pub async fn start<T>(stubs: T) -> Self where T: Into<PathBuf> {
+        Self::start_with(stubs, Config::default()).await
+    }
+
+    /// Runs a mock server.
+    /// The server is unbinded when the instance is dropped.
+    /// Use this in a test context.
+    /// * `stubs` - folder or file containing the stubs
+    /// * `config` - global server configuration
+    pub async fn start_with<T>(stubs: T, config: Config) -> Self where T: Into<PathBuf> {
+        let server = if let Some(p) = config.port {
             Self::start_on(p).await
         } else {
             Self::start_on_random_port().await
         };
-        server.register_stubs(stubs).await;
+        server.register_stubs(stubs.into()).await;
         server
     }
 

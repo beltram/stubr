@@ -2,10 +2,11 @@ use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf};
 
 use clap::{AppSettings, Clap, ValueHint};
 
-use completion::Shell;
-use stubr::Stubr;
+use commands::Commands;
+use stubr::{Config, Stubr};
 
 mod completion;
+mod commands;
 
 /// A Rust implementation of Wiremock
 #[derive(Clap, Debug, Default)]
@@ -35,24 +36,15 @@ pub struct Cli {
     cmd: Option<Commands>,
 }
 
-#[derive(Clap, Debug, PartialEq)]
-enum Commands {
-    /// generates & installs completion scripts for the given shell
-    Completion {
-        #[clap(subcommand)]
-        shell: Shell
-    }
-}
-
 impl Cli {
     const MAPPINGS_FOLDER: &'static str = "mappings";
 
     // Runs stubr forever until process exits
     pub async fn run(&self) -> anyhow::Result<()> {
-        if let Some(_) = self.cmd.as_ref() {
-            panic!("Not yet implemented !")
+        if let Some(cmd) = self.cmd.as_ref() {
+            cmd.exec()
         } else {
-            Stubr::run(self.stubs_dir(), self.port).await
+            Stubr::run(self.stubs_dir(), self.into()).await
         }
     }
 
@@ -90,6 +82,12 @@ impl Cli {
     fn is_mappings_folder(folder: DirEntry) -> bool {
         let path = folder.path();
         path.is_dir() && path.file_name() == Some(OsStr::new(Self::MAPPINGS_FOLDER))
+    }
+}
+
+impl From<&Cli> for Config {
+    fn from(cli: &Cli) -> Self {
+        Self { port: cli.port }
     }
 }
 

@@ -19,7 +19,7 @@ pub mod cli;
 
 #[cfg(not(feature = "iso"))]
 pub fn given(name: &str) -> impl AnyStubServer {
-    block_on(Stubr::start(stub(name), None))
+    block_on(Stubr::start(stub(name)))
 }
 
 #[cfg(feature = "iso")]
