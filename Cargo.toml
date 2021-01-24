@@ -16,7 +16,7 @@ jsonpath_lib = "0.2.6"
 clap = "3.0.0-beta.2"
 
 [dependencies.serde]
-version = "1.0.118"
+version = "1.0.121"
 features = ["derive"]
 
 [dependencies.async-std]

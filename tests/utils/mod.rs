@@ -1,12 +1,10 @@
 #![allow(dead_code)]
 
-use std::path::PathBuf;
-use std::str::FromStr;
+use std::{str::FromStr, path::PathBuf, fmt::Debug};
 
 use async_std::task::block_on;
 use http_types::headers::{HeaderName, HeaderValue};
 use serde::de::DeserializeOwned;
-use serde::export::fmt::Debug;
 use surf::Response;
 
 pub use stubr::{Stubr, AnyStubServer};

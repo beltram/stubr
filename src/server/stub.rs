@@ -1,6 +1,9 @@
-use std::{convert::TryInto, fs::OpenOptions, path::PathBuf};
+use std::{
+    convert::{TryFrom, TryInto},
+    fs::OpenOptions,
+    path::PathBuf,
+};
 
-use serde::export::TryFrom;
 use wiremock::Mock;
 
 use super::super::model::stub::StubDto;
