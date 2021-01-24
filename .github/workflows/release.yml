@@ -1,0 +1,74 @@
+name: ci
+
+on: [ push, pull_request ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Swatinem/rust-cache@v1
+      - name: cargo/check
+        run: cargo check
+      - name: cargo/test
+        run: cargo test
+      - name: cargo/clippy
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: cargo clippy
+      - name: cargo/tarpaulin
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        uses: actions-rs/tarpaulin@v0.1
+        with:
+          version: '0.16.0'
+          timeout: '600'
+  release:
+    # runs on tags only
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [check]
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            from-file: ./target/release/stubr
+            to-file: ./target/release/stubr-linux
+            args: --best --lzma
+            strip: true
+          - os: windows-latest
+            from-file: ./target/release/stubr.exe
+            to-file: ./target/release/stubr-windows.exe
+            args: -9
+            strip: false
+          - os: macos-latest
+            from-file: ./target/release/stubr
+            to-file: ./target/release/stubr-macos
+            args: --best
+            strip: true
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: Swatinem/rust-cache@v1
+      - name: cargo/build
+        run: cargo build --release
+      - name: upx
+        uses: svenstaro/upx-action@v2
+        with:
+          file: ${{ matrix.from-file }}
+          args: ${{ matrix.args }}
+          strip: ${{ matrix.strip }}
+      - name: rename-executable
+        run: mv ${{ matrix.from-file }} ${{ matrix.to-file }}
+      - name: release-binary
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: ${{ matrix.to-file }}
+      - uses: katyo/publish-crates@v1
+        with:
+          registry-token: ${{ secrets.STUBR_TOKEN }}

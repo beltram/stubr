@@ -12,7 +12,11 @@ pub enum Commands {
 }
 
 impl Commands {
+    /// Dispatches subcommands
     pub fn exec(&self) -> anyhow::Result<()> {
-        panic!("Not yet implemented !")
+        match self {
+            Commands::Completion { shell } => shell.generate_and_install(),
+        }
+        Ok(())
     }
 }

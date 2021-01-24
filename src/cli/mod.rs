@@ -12,7 +12,9 @@ mod commands;
 #[derive(Clap, Debug, Default)]
 #[clap(
 name = "stubr",
-version = "0.0.1",
+bin_name = "stubr",
+version = "0.1.0",
+about = "rust implementation of Wiremock",
 setting = AppSettings::GlobalVersion,
 )]
 pub struct Cli {
