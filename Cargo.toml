@@ -4,7 +4,7 @@ version = "0.0.1"
 edition = "2018"
 
 [dependencies]
-wiremock = "0.4.3"
+wiremock = "0.4.8"
 anyhow = "1.0.38"
 async-trait = "0.1.42"
 serde_json = "1.0.61"
