@@ -15,7 +15,7 @@ name = "stubr",
 bin_name = "stubr",
 version = "0.1.0",
 about = "rust implementation of Wiremock",
-setting = AppSettings::GlobalVersion,
+rename_all = "kebab-case",
 )]
 pub struct Cli {
     /// stub files directory
@@ -32,7 +32,7 @@ pub struct Cli {
     /// port number the server is listening on
     ///
     /// When absent, defaults to a random one
-    #[clap(short = 'p', long = "port")]
+    #[clap(short, long)]
     port: Option<u16>,
     #[clap(subcommand)]
     cmd: Option<Commands>,
