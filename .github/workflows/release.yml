@@ -71,4 +71,5 @@ jobs:
           files: ${{ matrix.to-file }}
       - uses: katyo/publish-crates@v1
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           registry-token: ${{ secrets.STUBR_TOKEN }}
