@@ -43,7 +43,7 @@ impl Shell {
         };
         if !dir.exists() {
             create_dir_all(&dir)
-                .unwrap_or_else(panic!("Failed creating non-existing directory {:?}", &dir));
+                .unwrap_or_else(|e| panic!("Failed creating non-existing directory {:?} because {:?}", &dir, e));
         }
         dir
     }
