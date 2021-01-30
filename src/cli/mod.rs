@@ -1,6 +1,6 @@
 use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf};
 
-use clap::{AppSettings, Clap, ValueHint};
+use clap::{Clap, ValueHint};
 
 use commands::Commands;
 use stubr::{Config, Stubr};

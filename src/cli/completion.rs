@@ -1,5 +1,6 @@
-use std::path::PathBuf;
 use std::fs::create_dir_all;
+use std::path::PathBuf;
+
 use clap::{App, Clap, IntoApp};
 use clap_generate::{generate_to, Generator, generators::{Bash, Zsh}};
 use directories::UserDirs;
@@ -42,7 +43,7 @@ impl Shell {
         };
         if !dir.exists() {
             create_dir_all(&dir)
-                .expect(&format!("Failed creating non-existing {:?} directory", &dir));
+                .unwrap_or_else(panic!("Failed creating non-existing directory {:?}", &dir));
         }
         dir
     }
