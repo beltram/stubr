@@ -24,7 +24,7 @@ impl TryFrom<&BodyPatternDto> for JsonPathMatcher {
         body.matches_json_path.as_ref()
             .filter(|_| body.is_by_json_path())
             .and_then(|it| jsonpath_lib::Compiled::compile(it.as_str()).ok())
-            .map(|it| JsonPathMatcher(it))
+            .map(JsonPathMatcher)
             .ok_or_else(|| anyhow::Error::msg("No json path matcher found"))
     }
 }

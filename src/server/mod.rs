@@ -86,7 +86,7 @@ impl Stubr {
 
     fn find_all_mocks(&self, from: PathBuf) -> Vec<Mock> {
         self.find_all_files(from).into_iter()
-            .flat_map(|it| StubrMock::try_from(it))
+            .flat_map(StubrMock::try_from)
             .map(|it| {
                 println!("- mounted stub {:?}", it.1);
                 it.0
