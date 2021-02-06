@@ -1,5 +1,6 @@
 # stubr
 
+[![LICENSE](https://img.shields.io/badge/license-Apache_2-blue.svg)](LICENSE)
 [![Build status](https://github.com/beltram/stubr/workflows/ci/badge.svg)](https://github.com/beltram/stubr/actions)
 [![Crates.io](https://img.shields.io/crates/v/stubr.svg)](https://crates.io/crates/stubr)
 [![Docs.rs](https://img.shields.io/badge/docs-latest-blue.svg)](https://docs.rs/stubr)
