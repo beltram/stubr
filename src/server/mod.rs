@@ -26,7 +26,7 @@ impl Stubr {
     /// Mostly used by the cli.
     /// * `stubs` - folder or file containing the stubs
     /// * `config` - global server configuration
-    pub async fn run(stubs: PathBuf, config: Config) -> anyhow::Result<()> {
+    pub async fn run<T>(stubs: T, config: Config) -> anyhow::Result<()> where T: Into<PathBuf> {
         let server = Self::start_with(stubs, config).await;
         server.init_log();
         loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
