@@ -55,7 +55,7 @@ You can enforce server port with `--port` or `-p` arg. By default, stubr starts 
 ###### linux:
 
 ```bash
-curl -L https://github.com/beltram/stubr/releases/download/0.1.0/stubr-linux -o /usr/local/bin/stubr && chmod +x /usr/local/bin/stubr
+curl -L https://github.com/beltram/stubr/releases/download/0.1.1/stubr-linux -o /usr/local/bin/stubr && chmod +x /usr/local/bin/stubr
 ```
 
 ###### macos (Catalina):
@@ -63,7 +63,7 @@ curl -L https://github.com/beltram/stubr/releases/download/0.1.0/stubr-linux -o 
 **NOTE:** Big Sur users are recommended to install [with cargo](#with-cargo) or [from source](#from-source-linux--osx)
 
 ```bash
-curl -L https://github.com/beltram/stubr/releases/download/0.1.0/stubr-macos -o /usr/local/bin/stubr && chmod +x /usr/local/bin/stubr
+curl -L https://github.com/beltram/stubr/releases/download/0.1.1/stubr-macos -o /usr/local/bin/stubr && chmod +x /usr/local/bin/stubr
 ```
 
 #### with cargo
