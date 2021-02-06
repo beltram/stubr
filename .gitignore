@@ -1,4 +1,3 @@
-Cargo.lock
 *.hprof
 .DS_Store
 jmeter.log
