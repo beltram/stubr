@@ -1,11 +1,9 @@
 {
-  "id": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e",
   "request": {
     "url": "/api/url?age=young",
     "method": "GET"
   },
   "response": {
     "status": 200
-  },
-  "uuid": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e"
+  }
 }
