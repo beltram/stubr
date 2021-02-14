@@ -1,0 +1,35 @@
+[package]
+name = "stubr-cli"
+version = "0.1.2"
+edition = "2018"
+authors = ["Beltram Maldant"]
+description = "Wiremock implemented in Rust"
+homepage = "https://github.com/beltram/stubr"
+repository = "https://github.com/beltram/stubr"
+license = "Apache-2.0"
+keywords = ["cli", "mock", "test", "contract", "http"]
+categories = ["command-line-utilities", "development-tools::testing"]
+
+include = [
+    "/Cargo.toml",
+    "/src/*",
+]
+
+[[bin]]
+name = "stubr"
+path = "src/main.rs"
+
+[dependencies]
+stubr = { path = "../lib" }
+anyhow = "1.0.38"
+directories = "3.0.1"
+clap = "3.0.0-beta.2"
+clap_generate = "3.0.0-beta.2"
+
+[dependencies.async-std]
+version = "1.9.0"
+features = ["attributes"]
+
+[dev-dependencies]
+surf = "2.1.0"
+assert_cmd = "1.0.3"

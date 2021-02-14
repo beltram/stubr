@@ -1,10 +1,11 @@
-use std::fs;
-use std::fs::File;
-use std::path::PathBuf;
-use std::process::{Child, Command, Stdio};
-use std::sync::atomic::{AtomicUsize, Ordering};
-use std::thread::sleep;
-use std::time::Duration;
+use std::{
+    fs::{self, File},
+    path::PathBuf,
+    process::{Child, Command, Stdio},
+    sync::atomic::{AtomicUsize, Ordering},
+    thread::sleep,
+    time::Duration,
+};
 
 use async_trait::async_trait;
 use tempfile::tempdir;

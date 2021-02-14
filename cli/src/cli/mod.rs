@@ -5,8 +5,8 @@ use clap::{Clap, ValueHint};
 use commands::Commands;
 use stubr::{Config, Stubr};
 
-mod completion;
 mod commands;
+mod completion;
 
 /// A Rust implementation of Wiremock
 #[derive(Clap, Debug, Default)]
@@ -95,16 +95,13 @@ impl From<&Cli> for Config {
 
 #[cfg(test)]
 mod cli_test {
-    use std::{
-        env::current_dir,
-        path::PathBuf,
-    };
+    use std::{env::current_dir, path::PathBuf};
 
     use crate::cli::Cli;
 
     #[test]
     fn stubs_dir_should_append_dir_to_current_dir() {
-        let dir = PathBuf::from("tests/stubs/cli");
+        let dir = PathBuf::from("tests/stubs");
         let cli = Cli { dir: Some(dir.clone()), ..Default::default() };
         assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(dir))
     }
@@ -117,22 +114,21 @@ mod cli_test {
 
     #[test]
     fn root_dir_should_default_to_none_when_not_provided() {
-        let cli = Cli { root_dir: None, ..Default::default() };
-        assert!(cli.root_dir().is_none())
+        assert!(Cli::default().root_dir().is_none())
     }
 
     #[test]
     fn root_dir_should_be_appended_to_current_dir() {
-        let root_dir = PathBuf::from("tests/stubs/cli");
+        let root_dir = PathBuf::from("tests/stubs");
         let cli = Cli { root_dir: Some(root_dir.clone()), ..Default::default() };
-        assert_eq!(cli.root_dir().unwrap(), current_dir().unwrap().join(root_dir.join("mappings")))
+        assert_eq!(cli.root_dir().unwrap(), current_dir().unwrap().join(root_dir).join("mappings"))
     }
 
     #[test]
     fn root_dir_should_have_precedence_over_dir() {
         let dir = PathBuf::from("tests/stubs");
-        let root_dir = PathBuf::from("tests/stubs/cli");
+        let root_dir = PathBuf::from("tests/stubs");
         let cli = Cli { dir: Some(dir), root_dir: Some(root_dir.clone()), ..Default::default() };
-        assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(root_dir.join("mappings")))
+        assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(root_dir).join("mappings"))
     }
 }

@@ -1,0 +1,42 @@
+[package]
+name = "stubr"
+version = "0.1.2"
+edition = "2018"
+authors = ["Beltram Maldant"]
+description = "Wiremock implemented in Rust"
+homepage = "https://github.com/beltram/stubr"
+repository = "https://github.com/beltram/stubr"
+license = "Apache-2.0"
+keywords = ["cli", "mock", "test", "contract", "http"]
+categories = ["command-line-utilities", "development-tools::testing"]
+
+include = [
+    "/Cargo.toml",
+    "/src/*",
+]
+
+[dependencies]
+wiremock = "0.4.9"
+anyhow = "1.0.38"
+async-trait = "0.1.42"
+serde_json = "1.0.62"
+http-types = "2.10.0"
+itertools = "0.10.0"
+const_format = "0.2.13"
+regex = "1.4.3"
+jsonpath_lib = "0.2.6"
+
+[dependencies.serde]
+version = "1.0.123"
+features = ["derive"]
+
+[dependencies.async-std]
+version = "1.9.0"
+features = ["attributes"]
+
+[dev-dependencies]
+surf = "2.1.0"
+tempfile = "3.2.0"
+
+[features]
+iso = []

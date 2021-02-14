@@ -13,7 +13,6 @@ pub use stubr::{Stubr, AnyStubServer};
 use self::wiremock::Wiremock;
 
 mod wiremock;
-pub mod cli;
 
 #[cfg(not(feature = "iso"))]
 pub fn given(name: &str) -> impl AnyStubServer {
