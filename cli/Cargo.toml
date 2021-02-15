@@ -1,6 +1,6 @@
 [package]
 name = "stubr-cli"
-version = "0.2.0-alpha2"
+version = "0.2.0"
 edition = "2018"
 authors = ["Beltram Maldant"]
 description = "Wiremock implemented in Rust"
@@ -17,7 +17,7 @@ name = "stubr"
 path = "src/main.rs"
 
 [dependencies]
-stubr = { path = "../lib", version = "0.2.0-alpha2" }
+stubr = { path = "../lib", version = "0.2.0" }
 anyhow = "1.0.38"
 directories = "3.0.1"
 clap = "3.0.0-beta.2"
