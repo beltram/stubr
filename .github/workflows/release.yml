@@ -87,8 +87,8 @@ jobs:
       - name: publish lib
         run: |
           cd lib
-          cargo publish ${{ secrets.CRATES_IO_TOKEN }}
+          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
       - name: publish cli
         run: |
           cd cli
-          cargo publish ${{ secrets.CRATES_IO_TOKEN }}
+          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
