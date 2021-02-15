@@ -11,9 +11,9 @@ Adaptation of [wiremock-rs](https://github.com/LukeMathWalker/wiremock-rs) suppo
 Aims at reaching feature parity with [Wiremock](https://github.com/tomakehurst/wiremock) and be a drop-in replacement of
 the latter.
 
-## use it
+# use it
 
-### as a crate
+## as a crate
 
 ```rust
 use stubr::Stubr;
@@ -21,19 +21,17 @@ use stubr::Stubr;
 let srv = Stubr::start("tests/stubs").await;
 // or just mount a single file
 let srv = Stubr::start("tests/stubs/ping.json").await;
+// or configure it (more configurations to come)
+let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080) }).await;
 
 // use '.uri()' method to get server address
 surf::get( & srv.uri()).await;
 ```
 
-### as a cli
+## as a cli
 
 You can use stubr as a cli for serving Wiremock stubs on a local server.  
-To get a list of all available options run
-
-```bash
-stubr --help
-```
+To get a list of all available options run `stubr --help`
 
 The simplest usage is for serving Wiremock stubs under a directory. Example for a project exposing contracts using
 Spring Cloud Contract
@@ -49,17 +47,17 @@ stubr build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings
 You can also specify the directory as wiremock does with the `--root-dir` arg.  
 You can enforce server port with `--port` or `-p` arg. By default, stubr starts on a random port.
 
-## install it
+# install it
 
-#### with precompiled binaries (linux & osx)
+## with precompiled binaries (linux & osx)
 
-###### linux:
+##### linux:
 
 ```bash
 curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-linux -o /usr/local/bin/stubr && chmod +x /usr/local/bin/stubr
 ```
 
-###### macos (Catalina):
+##### macos (Catalina):
 
 **NOTE:** Big Sur users are recommended to install [with cargo](#with-cargo) or [from source](#from-source-linux--osx)
 
@@ -67,13 +65,13 @@ curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-linux -o
 curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-macos -o /usr/local/bin/stubr && chmod +x /usr/local/bin/stubr
 ```
 
-#### with cargo
+## with cargo
 
 ```bash
 cargo install stubr
 ```
 
-#### from source (linux & osx)
+## from source (linux & osx)
 
 ```bash
 git clone --depth 1 https://github.com/beltram/stubr.git && cd stubr && cargo build --release && mv target/release/stubr /usr/local/bin/
@@ -90,6 +88,6 @@ stubr completion zsh
 stubr completion bash
 ```
 
-## benchmark
+# benchmark
 
 A very simple benchmark is available [here](bench/report.md)
