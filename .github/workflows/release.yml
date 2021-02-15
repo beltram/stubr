@@ -91,4 +91,5 @@ jobs:
       - name: publish cli
         run: |
           cd cli
+          sleep 180
           cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
