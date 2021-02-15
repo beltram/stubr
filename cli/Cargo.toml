@@ -10,10 +10,7 @@ license = "Apache-2.0"
 keywords = ["cli", "mock", "test", "contract", "http"]
 categories = ["command-line-utilities", "development-tools::testing"]
 
-include = [
-    "/Cargo.toml",
-    "/src/*",
-]
+include = ["/src/*", "/Cargo.toml"]
 
 [[bin]]
 name = "stubr"

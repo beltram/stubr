@@ -76,6 +76,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: ${{ matrix.to-file }}
+  publish:
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
       - name: publish lib
         uses: katyo/publish-crates@v1
         with:
