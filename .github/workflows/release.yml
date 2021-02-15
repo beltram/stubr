@@ -29,20 +29,23 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
+            file: stubr
             from-file: ./target/release/stubr
-            to-file: ./target/release/stubr-linux
+            to-file: stubr-linux.tar.gz
             args: --best --lzma
             strip: true
-          - os: windows-latest
-            from-file: ./target/release/stubr.exe
-            to-file: ./target/release/stubr-windows.exe
-            args: -9
-            strip: false
           - os: macos-latest
+            file: stubr
             from-file: ./target/release/stubr
-            to-file: ./target/release/stubr-macos
+            to-file: stubr-macos.tar.gz
             args: --best
             strip: true
+          - os: windows-latest
+            file: stubr.exe
+            from-file: ./target/release/stubr.exe
+            to-file: stubr-windows.zip
+            args: -9
+            strip: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2.3.4
@@ -55,15 +58,33 @@ jobs:
           file: ${{ matrix.from-file }}
           args: ${{ matrix.args }}
           strip: ${{ matrix.strip }}
-      - name: rename-executable
-        run: mv ${{ matrix.from-file }} ${{ matrix.to-file }}
+      - name: compression/tar
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
+        run: |
+          cd target/release
+          tar czf ${{ matrix.to-file }} ${{ matrix.file }}
+          mv ${{ matrix.to-file }} ../..
+      - name: compression/zip
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          cd target/release
+          7z a ${{ matrix.to-file }} ${{ matrix.file }}
+          mv ${{ matrix.to-file }} ../..
       - name: release-binary
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           files: ${{ matrix.to-file }}
-      - uses: katyo/publish-crates@v1
+      - name: publish lib
+        uses: katyo/publish-crates@v1
         with:
+          path: './lib'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          registry-token: ${{ secrets.CRATES_IO_TOKEN }}
+      - name: publish cli
+        uses: katyo/publish-crates@v1
+        with:
+          path: './cli'
           token: ${{ secrets.GITHUB_TOKEN }}
           registry-token: ${{ secrets.CRATES_IO_TOKEN }}
