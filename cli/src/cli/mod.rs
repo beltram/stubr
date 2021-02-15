@@ -13,7 +13,7 @@ mod completion;
 #[clap(
 name = "stubr",
 bin_name = "stubr",
-version = "0.2.0-alpha1",
+version = "0.2.0-alpha2",
 about = "rust implementation of Wiremock",
 rename_all = "kebab-case",
 )]
