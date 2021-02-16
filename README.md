@@ -11,83 +11,47 @@ Adaptation of [wiremock-rs](https://github.com/LukeMathWalker/wiremock-rs) suppo
 Aims at reaching feature parity with [Wiremock](https://github.com/tomakehurst/wiremock) and be a drop-in replacement of
 the latter.
 
-# use it
+# usage
 
-## as a crate
+ * [as a crate](lib/README.md)
+ * [as a cli](cli/README.md)
+ * Docker image (incoming)
+ * Helm chart (incoming)
 
-```rust
-use stubr::Stubr;
+# features
 
-let srv = Stubr::start("tests/stubs").await;
-// or just mount a single file
-let srv = Stubr::start("tests/stubs/ping.json").await;
-// or configure it (more configurations to come)
-let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080) }).await;
-
-// use '.uri()' method to get server address
-surf::get( & srv.uri()).await;
-```
-
-## as a cli
-
-You can use stubr as a cli for serving Wiremock stubs on a local server.  
-To get a list of all available options run `stubr --help`
-
-The simplest usage is for serving Wiremock stubs under a directory. Example for a project exposing contracts using
-Spring Cloud Contract
-
-```bash
-./gradlew generateClientStubs
-stubr build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings
- > - mounted stub "./build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings/find-all.json"
- > - mounted stub "./build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings/find-by-id.json"
- > Started stubr server on http://127.0.0.1:49604
-```
-
-You can also specify the directory as wiremock does with the `--root-dir` arg.  
-You can enforce server port with `--port` or `-p` arg. By default, stubr starts on a random port.
-
-# install it
-
-## with precompiled binaries (linux & osx)
-
-##### linux:
-
-```bash
-curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-linux.tar.gz | tar xz - -C /usr/local/bin
-```
-
-##### macos (Catalina):
-
-**NOTE:** Big Sur users are recommended to install [with cargo](#with-cargo) or [from source](#from-source-linux--osx)
-
-```bash
-curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-macos.tar.gz | tar xz - -C /usr/local/bin
-```
-
-## with cargo
-
-```bash
-cargo install stubr-cli
-```
-
-## from source (linux & osx)
-
-```bash
-git clone --depth 1 https://github.com/beltram/stubr.git && cd stubr && cargo build --release && mv target/release/stubr /usr/local/bin/
-```
-
-## then generate completion
-
-Completion files generation is currently supported for `bash` and `zsh`. Stubr cli provides a `completion` command to
-generate and install them in a standard location.
-
-```bash
-stubr completion zsh
-# or
-stubr completion bash
-```
-
-# benchmark
-
-A very simple benchmark is available [here](bench/report.md)
+ * [x] request matching (json)
+   * [x] body
+     * [x] `equalToJson`
+     * [x] `matchesJsonPath`
+     * [ ] `binaryEqualTo`
+   * [x] method (GET, POST etc...)
+   * [x] url
+     * [x] `url`
+     * [x] `urlPath`
+     * [x] `urlPathPattern`
+     * [ ] `urlPattern`
+   * [x] headers
+     * [x] `equalTo`
+     * [x] `contains`
+     * [x] `matches`
+     * [x] `caseInsensitive`
+     * [x] `absent`
+   * [x] query parameters
+     * [x] `equalTo`
+     * [x] `contains`
+     * [x] `matches`
+     * [x] `caseInsensitive`
+     * [x] `absent`
+ * [x] response
+     * [x] `status`
+     * [x] `headers`
+     * [x] `bodyFileName`
+     * [x] `jsonBody`
+     * [x] `body`
+     * [x] `fixedDelayMilliseconds`
+     * [ ] templating
+ * [ ] anything related to xml
+ * [ ] config
+   * [x] custom port
+   * [ ] global delay
