@@ -28,7 +28,7 @@ async fn should_start_server_from_relative_path_as_str() {
 
 #[async_std::test]
 async fn should_start_server_on_dedicated_port() {
-    let cfg = Config { port: Some(59_999) };
+    let cfg = Config { port: Some(59_999), ..Default::default() };
     let srv = Stubr::start_with("tests/stubs/ping.json", cfg).await;
     let expected_uri = "http://127.0.0.1:59999";
     assert_eq!(srv.uri().as_str(), expected_uri);

@@ -10,7 +10,7 @@ use std::{
 use async_trait::async_trait;
 use tempfile::tempdir;
 
-use stubr::AnyStubServer;
+use stubr::{AnyStubServer, Config};
 
 pub struct Wiremock {
     pub process: Child,
@@ -25,7 +25,7 @@ fn port() -> String {
 
 #[async_trait]
 impl AnyStubServer for Wiremock {
-    async fn register_stubs(&self, _stub_folder: PathBuf) { unimplemented!() }
+    async fn register_stubs(&self, _stub_folder: PathBuf, _config: Config) { unimplemented!() }
 
     fn uri(&self) -> String {
         format!("http://localhost:{}", self.port)

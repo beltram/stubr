@@ -102,7 +102,11 @@ impl Cli {
 
 impl From<&Cli> for Config {
     fn from(cli: &Cli) -> Self {
-        Self { port: cli.port }
+        Self {
+            port: cli.port,
+            verbose: Some(true),
+            ..Default::default()
+        }
     }
 }
 
