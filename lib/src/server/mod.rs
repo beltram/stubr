@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, net::TcpListener, path::PathBuf, time::Duration};
+use std::{convert::TryFrom, net::TcpListener, path::PathBuf};
 
 use itertools::Itertools;
 use wiremock::{Mock, MockServer};
@@ -20,17 +20,6 @@ pub struct Stubr {
 
 impl Stubr {
     const HOST: &'static str = "127.0.0.1";
-    const SLEEP_DURATION: Duration = Duration::from_millis(1000);
-
-    /// Runs the mock server endlessly until process exits.
-    /// Mostly used by the cli.
-    /// * `stubs` - folder or file containing the stubs
-    /// * `config` - global server configuration
-    pub async fn run<T>(stubs: T, config: Config) -> anyhow::Result<()> where T: Into<PathBuf> {
-        let server = Self::start_with(stubs, config).await;
-        server.init_log();
-        loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
-    }
 
     /// Runs a mock server.
     /// The server is unbinded when the instance is dropped.
@@ -65,10 +54,6 @@ impl Stubr {
 
     async fn start_on_random_port() -> Self {
         Self { instance: MockServer::start().await }
-    }
-
-    fn init_log(&self) {
-        println!("Started stubr server on {}", self.instance.uri());
     }
 
     fn find_all_files(&self, from: PathBuf) -> Vec<PathBuf> {

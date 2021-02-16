@@ -3,7 +3,8 @@ use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf};
 use clap::{Clap, ValueHint};
 
 use commands::Commands;
-use stubr::{Config, Stubr};
+use stubr::{AnyStubServer, Config, Stubr};
+use std::time::Duration;
 
 mod commands;
 mod completion;
@@ -40,14 +41,25 @@ pub struct Cli {
 
 impl Cli {
     const MAPPINGS_FOLDER: &'static str = "mappings";
+    const SLEEP_DURATION: Duration = Duration::from_millis(1000);
 
     // Runs stubr forever until process exits
     pub async fn run(&self) -> anyhow::Result<()> {
         if let Some(cmd) = self.cmd.as_ref() {
             cmd.exec()
         } else {
-            Stubr::run(self.stubs_dir(), self.into()).await
+            Self::run_server(self.stubs_dir(), self.into()).await
         }
+    }
+
+    /// Runs the mock server endlessly until process exits.
+    /// Mostly used by the cli.
+    /// * `stubs` - folder or file containing the stubs
+    /// * `config` - global server configuration
+    async fn run_server<T>(stubs: T, config: Config) -> anyhow::Result<()> where T: Into<PathBuf> {
+        let server = Stubr::start_with(stubs, config).await;
+        println!("Started stubr server on {}", server.uri());
+        loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
     }
 
     fn stubs_dir(&self) -> PathBuf {
@@ -94,7 +106,7 @@ impl From<&Cli> for Config {
 }
 
 #[cfg(test)]
-mod cli_test {
+mod cli_tests {
     use std::{env::current_dir, path::PathBuf};
 
     use crate::cli::Cli;
