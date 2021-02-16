@@ -1,10 +1,11 @@
 use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf};
+use std::time::Duration;
 
 use clap::{Clap, ValueHint};
+use colored::Colorize;
 
 use commands::Commands;
 use stubr::{AnyStubServer, Config, Stubr};
-use std::time::Duration;
 
 mod commands;
 mod completion;
@@ -58,7 +59,7 @@ impl Cli {
     /// * `config` - global server configuration
     async fn run_server<T>(stubs: T, config: Config) -> anyhow::Result<()> where T: Into<PathBuf> {
         let server = Stubr::start_with(stubs, config).await;
-        println!("Started stubr server on {}", server.uri());
+        println!("Started {} server on {}", "stubr".green().bold(), server.uri());
         loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
     }
 
