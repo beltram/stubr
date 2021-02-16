@@ -37,6 +37,7 @@ the latter.
      * [x] `matches`
      * [x] `caseInsensitive`
      * [x] `absent`
+     * [ ] multivalued
    * [x] query parameters
      * [x] `equalTo`
      * [x] `contains`
