@@ -1,6 +1,6 @@
 use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf, time::Duration};
 
-use clap::{Clap, ValueHint, AppSettings};
+use clap::{AppSettings, Clap, ValueHint};
 use colored::Colorize;
 
 use commands::Commands;
@@ -12,10 +12,9 @@ mod completion;
 /// A Rust implementation of Wiremock
 #[derive(Clap, Debug, Default)]
 #[clap(
+version, about,
 name = "stubr",
 bin_name = "stubr",
-version = "0.2.0",
-about = "rust implementation of Wiremock",
 rename_all = "kebab-case",
 )]
 #[clap(global_setting = AppSettings::ColoredHelp)]
