@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, ops::{BitXor, Not}};
+use std::{convert::TryFrom};
 
 use itertools::Itertools;
 use wiremock::{Match, Request};
@@ -10,7 +10,7 @@ pub struct QueryAbsentMatcher(String, bool);
 impl Match for QueryAbsentMatcher {
     fn matches(&self, req: &Request) -> bool {
         let is_absent = req.url.query_pairs().all(|(k, _)| k.to_string().ne(&self.0));
-        (is_absent.bitxor(self.1)).not()
+        is_absent == self.1
     }
 }
 
