@@ -1,7 +1,6 @@
-use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf};
-use std::time::Duration;
+use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf, time::Duration};
 
-use clap::{Clap, ValueHint};
+use clap::{Clap, ValueHint, AppSettings};
 use colored::Colorize;
 
 use commands::Commands;
@@ -19,6 +18,7 @@ version = "0.2.0",
 about = "rust implementation of Wiremock",
 rename_all = "kebab-case",
 )]
+#[clap(global_setting = AppSettings::ColoredHelp)]
 pub struct Cli {
     /// stub files directory
     ///
