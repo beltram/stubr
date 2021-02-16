@@ -9,7 +9,7 @@ pub struct QueryAbsentMatcher(String, bool);
 
 impl Match for QueryAbsentMatcher {
     fn matches(&self, req: &Request) -> bool {
-        let is_absent = req.url.query_pairs().all(|(k, _)| k.to_string().ne(&self.0));
+        let is_absent = req.url.query_pairs().all(|(k, _)| k.ne(&self.0));
         is_absent == self.1
     }
 }
@@ -18,7 +18,8 @@ impl From<&HttpQueryParamsDto> for Vec<QueryAbsentMatcher> {
     fn from(queries: &HttpQueryParamsDto) -> Self {
         queries.get_queries().iter()
             .filter(|it| it.is_absent())
-            .map(QueryAbsentMatcher::try_from).flatten()
+            .map(QueryAbsentMatcher::try_from)
+            .flatten()
             .collect_vec()
     }
 }
