@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, ops::Not, str::FromStr};
+use std::{convert::TryFrom, str::FromStr};
 
 use http_types::headers::HeaderName;
 use itertools::Itertools;
@@ -11,7 +11,7 @@ pub struct HeaderAbsentMatcher(String, bool);
 impl Match for HeaderAbsentMatcher {
     fn matches(&self, req: &Request) -> bool {
         HeaderName::from_str(self.0.as_str()).ok()
-            .map(|key| ((req.headers.get(&key).is_none()) ^ (self.1)).not())
+            .map(|key| req.headers.get(&key).is_none() == self.1)
             .unwrap_or_default()
     }
 }
@@ -20,7 +20,8 @@ impl From<&HttpReqHeadersDto> for Vec<HeaderAbsentMatcher> {
     fn from(headers: &HttpReqHeadersDto) -> Self {
         headers.get_headers().iter()
             .filter(|h| h.is_absent())
-            .map(HeaderAbsentMatcher::try_from).flatten()
+            .map(HeaderAbsentMatcher::try_from)
+            .flatten()
             .collect_vec()
     }
 }
