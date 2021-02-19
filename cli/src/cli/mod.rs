@@ -1,4 +1,10 @@
-use std::{env::current_dir, ffi::OsStr, fs::DirEntry, path::PathBuf, time::Duration};
+use std::{
+    env::current_dir,
+    ffi::OsStr,
+    fs::DirEntry,
+    path::PathBuf,
+    time::{Duration, Instant}
+};
 
 use clap::{AppSettings, Clap, ValueHint};
 use colored::Colorize;
@@ -44,11 +50,11 @@ impl Cli {
     const SLEEP_DURATION: Duration = Duration::from_millis(1000);
 
     // Runs stubr forever until process exits
-    pub async fn run(&self) -> anyhow::Result<()> {
+    pub async fn run(&self, start_time: Instant) -> anyhow::Result<()> {
         if let Some(cmd) = self.cmd.as_ref() {
             cmd.exec()
         } else {
-            Self::run_server(self.stubs_dir(), self.into()).await
+            Self::run_server(self.stubs_dir(), self.into(), start_time).await
         }
     }
 
@@ -56,9 +62,9 @@ impl Cli {
     /// Mostly used by the cli.
     /// * `stubs` - folder or file containing the stubs
     /// * `config` - global server configuration
-    async fn run_server<T>(stubs: T, config: Config) -> anyhow::Result<()> where T: Into<PathBuf> {
+    async fn run_server<T>(stubs: T, config: Config, start_time: Instant) -> anyhow::Result<()> where T: Into<PathBuf> {
         let server = Stubr::start_with(stubs, config).await;
-        println!("Started {} server on {}", "stubr".green().bold(), server.uri());
+        println!("Started {} in {}ms on {}", "stubr".green().bold(), start_time.elapsed().as_millis(), server.uri());
         loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
     }
 
