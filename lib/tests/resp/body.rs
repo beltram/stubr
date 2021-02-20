@@ -4,8 +4,6 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_map_text_response_body() {
     let srv = given("resp/body/text");

@@ -1,7 +1,5 @@
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_map_request_method_get() {
     let srv = given("req/method/get");

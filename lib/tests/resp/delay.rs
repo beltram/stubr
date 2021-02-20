@@ -5,8 +5,6 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_timeout_with_delay_of_2_seconds() {
     let srv = given("resp/delay/2-seconds");

@@ -2,8 +2,6 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_map_request_when_header_matches() {
     let srv = given("req/headers/matches/single");

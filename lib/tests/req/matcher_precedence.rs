@@ -2,11 +2,8 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 /// tested against query parameters but would work the same way for header parameters
 /// since exact same code is used
-
 #[async_std::test]
 async fn equal_should_have_precedence_over_contains() {
     let srv = given("req/query/precedence/eq-contains");

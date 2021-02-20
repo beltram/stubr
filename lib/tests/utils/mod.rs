@@ -1,13 +1,13 @@
 #![allow(dead_code)]
 
-use std::{str::FromStr, path::PathBuf, fmt::Debug};
+use std::{fmt::Debug, path::PathBuf, str::FromStr};
 
 use async_std::task::block_on;
 use http_types::headers::{HeaderName, HeaderValue};
 use serde::de::DeserializeOwned;
 use surf::Response;
 
-pub use stubr::{Stubr, AnyStubServer};
+pub use stubr::{AnyStubServer, Stubr};
 
 #[cfg(feature = "iso")]
 use self::wiremock::Wiremock;

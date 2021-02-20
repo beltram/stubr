@@ -2,8 +2,6 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_match_when_header_absent() {
     let srv = given("req/query/absence/absent");

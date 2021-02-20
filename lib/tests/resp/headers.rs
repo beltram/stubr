@@ -2,8 +2,6 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_return_single_response_header() {
     let srv = given("resp/headers/single");

@@ -2,8 +2,6 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_not_default_to_contains() {
     let srv = given("req/headers/equal/string");

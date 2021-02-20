@@ -3,8 +3,6 @@ use surf::post;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_map_req_body_when_one_field_matches() {
     let srv = given("req/body/json-path/single");

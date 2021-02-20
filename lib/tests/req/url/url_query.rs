@@ -2,8 +2,6 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_map_request_url_and_query() {
     let srv = given("req/url-query/url-single");
