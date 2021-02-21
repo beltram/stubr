@@ -2,8 +2,6 @@ use serde::Deserialize;
 use wiremock::ResponseTemplate;
 
 use body::BodyDto;
-use default::WiremockIsoResponse;
-use delay::Delay;
 use headers::HttpRespHeadersDto;
 
 use super::stub::StubDto;
@@ -11,35 +9,61 @@ use super::stub::StubDto;
 mod body;
 mod body_file;
 mod headers;
-mod default;
-mod delay;
+pub mod default;
+pub mod delay;
+pub mod template;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Default, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ResponseDto {
     /// HTTP response status
-    status: u16,
+    pub(crate) status: u16,
     /// delay in milliseconds to apply to the response
     fixed_delay_milliseconds: Option<u64>,
     /// HTTP response body
     #[serde(flatten)]
-    body: BodyDto,
+    pub(crate) body: BodyDto,
     /// HTTP response headers
     #[serde(flatten)]
-    headers: HttpRespHeadersDto,
+    pub(crate) headers: HttpRespHeadersDto,
+    /// Mostly used for enabling response templating
+    #[serde(default)]
+    transformers: Vec<String>,
 }
 
-impl From<&StubDto> for ResponseTemplate {
-    fn from(stub: &StubDto) -> Self {
-        let mut template = ResponseTemplate::new(stub.response.status);
-        template = WiremockIsoResponse(stub).add(template);
-        template = stub.response.headers.add(template);
-        template = stub.response.body.add(template);
-        template = Delay(stub).add(template);
-        template
+impl ResponseDto {
+    const RESPONSE_TEMPLATE: &'static str = "response-template";
+
+    pub(crate) fn requires_response_templating(&self) -> bool {
+        self.transformers.iter().any(|it| it == Self::RESPONSE_TEMPLATE)
     }
 }
 
-trait ResponseAppender {
+pub(crate) trait ResponseAppender {
     fn add(&self, resp: ResponseTemplate) -> ResponseTemplate;
+}
+
+#[cfg(test)]
+mod response_dto_tests {
+    use std::ops::Not;
+
+    use super::*;
+
+    #[test]
+    fn requires_response_templating_should_be_true_when_present() {
+        let resp = ResponseDto { transformers: vec![String::from(ResponseDto::RESPONSE_TEMPLATE)], ..Default::default() };
+        assert!(resp.requires_response_templating());
+    }
+
+    #[test]
+    fn requires_response_templating_should_be_false_when_absent() {
+        let resp = ResponseDto { transformers: vec![String::from("other")], ..Default::default() };
+        assert!(resp.requires_response_templating().not());
+    }
+
+    #[test]
+    fn requires_response_templating_should_be_false_when_transformers_empty() {
+        let resp = ResponseDto { transformers: vec![], ..Default::default() };
+        assert!(resp.requires_response_templating().not());
+    }
 }

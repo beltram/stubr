@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{request.headers.x-1}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

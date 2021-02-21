@@ -1,0 +1,16 @@
+{
+  "request": {
+    "urlPath": "/api/path",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "x-1": "{{request.path}}",
+      "x-2": "{{request.method}}"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

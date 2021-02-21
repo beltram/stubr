@@ -1,5 +1,6 @@
 use serde_json::json;
 use surf::post;
+use std::f64::consts::PI;
 
 use crate::utils::*;
 
@@ -78,13 +79,13 @@ async fn should_fail_when_req_body_value_not_equal_to_json_signed_number() {
 #[async_std::test]
 async fn should_map_req_body_equal_to_float() {
     let srv = given("req/body/eq/float");
-    post(&srv.uri()).body(json!({"pi": 3.14})).await.unwrap().assert_ok();
+    post(&srv.uri()).body(json!({"pi": PI})).await.unwrap().assert_ok();
 }
 
 #[async_std::test]
 async fn should_fail_when_req_body_key_not_equal_to_float() {
     let srv = given("req/body/eq/float");
-    post(&srv.uri()).body(json!({"notPi": 3.14})).await.unwrap().assert_not_found();
+    post(&srv.uri()).body(json!({"notPi": PI})).await.unwrap().assert_not_found();
 }
 
 #[async_std::test]

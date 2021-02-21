@@ -48,6 +48,7 @@ pub trait UriAndQuery {
     fn path_queries(&self, path: &str, q1: (&str, &str), q2: (&str, &str)) -> String {
         format!("{}{}?{}={}&{}={}", self.get_uri(), path, q1.0, q1.1, q2.0, q2.1)
     }
+
     fn queries(&self, q1: (&str, &str), q2: (&str, &str)) -> String {
         format!("{}?{}={}&{}={}", self.get_uri(), q1.0, q1.1, q2.0, q2.1)
     }

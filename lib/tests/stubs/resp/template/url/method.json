@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "ANY"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{request.method}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

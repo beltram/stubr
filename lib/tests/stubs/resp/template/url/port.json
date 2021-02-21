@@ -1,0 +1,13 @@
+{
+  "request": {
+    "url": "/api/port",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{request.port}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

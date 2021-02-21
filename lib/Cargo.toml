@@ -22,6 +22,8 @@ itertools = "0.10.0"
 const_format = "0.2.13"
 regex = "1.4.3"
 jsonpath_lib = "0.2.6"
+handlebars = "3.5.3"
+lazy_static = "1.4.0"
 
 [dependencies.serde]
 version = "1.0.123"

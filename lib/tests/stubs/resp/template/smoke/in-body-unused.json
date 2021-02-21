@@ -1,0 +1,13 @@
+{
+  "request": {
+    "urlPath": "/api/path",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "any",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}
