@@ -29,11 +29,11 @@ pub struct RequestDto {
     body_patterns: Vec<BodyPatternDto>,
 }
 
-impl TryFrom<RequestDto> for MockBuilder {
+impl TryFrom<&RequestDto> for MockBuilder {
     type Error = anyhow::Error;
 
-    fn try_from(request: RequestDto) -> Result<Self, Self::Error> {
-        let mut mock = MockBuilder::from(request.method);
+    fn try_from(request: &RequestDto) -> anyhow::Result<Self> {
+        let mut mock = MockBuilder::from(&request.method);
         mock = request.url.register(mock);
         mock = request.headers.register(mock);
         mock = request.queries.register(mock);

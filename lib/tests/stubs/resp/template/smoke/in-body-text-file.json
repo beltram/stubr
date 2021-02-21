@@ -1,0 +1,11 @@
+{
+  "request": {
+    "urlPath": "/api/path",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "tests/stubs/resp/template/smoke/file.txt",
+    "transformers": ["response-template"]
+  }
+}

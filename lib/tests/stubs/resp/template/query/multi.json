@@ -1,0 +1,13 @@
+{
+  "request": {
+    "url": "/api/path?age=1&age=2",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{request.query.age.[0]}}::{{request.query.age.[1]}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

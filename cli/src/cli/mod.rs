@@ -3,7 +3,7 @@ use std::{
     ffi::OsStr,
     fs::DirEntry,
     path::PathBuf,
-    time::{Duration, Instant}
+    time::{Duration, Instant},
 };
 
 use clap::{AppSettings, Clap, ValueHint};
@@ -107,11 +107,7 @@ impl Cli {
 
 impl From<&Cli> for Config {
     fn from(cli: &Cli) -> Self {
-        Self {
-            port: cli.port,
-            verbose: Some(true),
-            ..Default::default()
-        }
+        Self { port: cli.port, verbose: Some(true) }
     }
 }
 

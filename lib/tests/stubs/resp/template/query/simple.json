@@ -1,0 +1,13 @@
+{
+  "request": {
+    "url": "/api/path?one=1&two=2",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{request.query.one}}::{{request.query.two}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

@@ -14,10 +14,10 @@ const METHOD_ANY: &str = "ANY";
 #[derive(Deserialize, Debug, Default)]
 pub struct HttpMethodDto(String);
 
-impl TryFrom<HttpMethodDto> for MethodExactMatcher {
+impl TryFrom<&HttpMethodDto> for MethodExactMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(http_method: HttpMethodDto) -> anyhow::Result<Self> {
+    fn try_from(http_method: &HttpMethodDto) -> anyhow::Result<Self> {
         let m = http_method.0.as_str();
         if m != METHOD_ANY {
             Ok(method(m))
@@ -27,8 +27,8 @@ impl TryFrom<HttpMethodDto> for MethodExactMatcher {
     }
 }
 
-impl From<HttpMethodDto> for MockBuilder {
-    fn from(method: HttpMethodDto) -> Self {
+impl From<&HttpMethodDto> for MockBuilder {
+    fn from(method: &HttpMethodDto) -> Self {
         MethodExactMatcher::try_from(method)
             .map(Mock::given)
             .unwrap_or_else(|_| Mock::given(MethodAnyMatcher))
