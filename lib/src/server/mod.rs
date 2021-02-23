@@ -46,7 +46,9 @@ impl Stubr {
 
     async fn start_on(port: u16) -> Self {
         if let Ok(listener) = TcpListener::bind(format!("{}:{}", Self::HOST, port)) {
-            Self { instance: MockServer::start_on(listener).await }
+            Self {
+                instance: MockServer::builder().listener(listener).start().await
+            }
         } else {
             Self::start_on_random_port().await
         }
