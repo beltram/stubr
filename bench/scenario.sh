@@ -9,10 +9,10 @@ scenario() {
 |:----------------------------:|:-----------------:|:-----------------:|:---------:|:-----------:|:-------:|:-----------------------------:|" >>$OUTPUT
   stubr_bench "$path" "$duration" 1
   wiremock_bench "$path" "$duration" 1
-  stubr_bench "$path" "$duration" 10
-  wiremock_bench "$path" "$duration" 10
-  stubr_bench "$path" "$duration" 100
-  wiremock_bench "$path" "$duration" 100
+  stubr_bench "$path" "$duration" 50
+  wiremock_bench "$path" "$duration" 50
   stubr_bench "$path" "$duration" 200
   wiremock_bench "$path" "$duration" 200
+  stubr_bench "$path" "$duration" 500
+  wiremock_bench "$path" "$duration" 500
 }

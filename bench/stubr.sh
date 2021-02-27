@@ -6,9 +6,9 @@ stubr_bench() {
   vu=$3
   tmp=bench/stubr-out-tmp.txt
   cargo build -q --release
-  cargo run -q --release -- bench/mappings &>$tmp &
+  cargo run -q --release -- bench/mappings -p 10000 &>$tmp &
   sleep 2
-  addr="$(cat $tmp | grep 'stubr' | sed 's/.*stubr server on //')"
+  addr="http://localhost:10000"
   PID=$!
   sleep 2
   scenario="| stubr-${path} (${duration}s / ${vu}) | "
