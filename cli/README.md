@@ -65,4 +65,4 @@ stubr completion bash
 
 # benchmark
 
-A very simple benchmark is available [here](../bench/report.md)
+A very simple benchmark comparing stubr to wiremock is available [here](https://github.com/beltram/stubr/blob/main/bench/report.md)

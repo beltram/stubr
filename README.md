@@ -84,3 +84,7 @@ the latter.
 * [ ] config
     * [x] custom port
     * [ ] global delay
+
+# benchmark
+
+A very simple benchmark comparing stubr to wiremock is available [here](https://github.com/beltram/stubr/blob/main/bench/report.md)
