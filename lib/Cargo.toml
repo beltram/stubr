@@ -32,7 +32,7 @@ version = "1.9.0"
 features = ["attributes"]
 
 [dev-dependencies]
-surf = "2.1.0"
+surf = "2.2.0"
 tempfile = "3.2.0"
 
 [features]
