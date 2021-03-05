@@ -79,7 +79,36 @@ the latter.
     * [x] `jsonBody`
     * [x] `body`
     * [x] `fixedDelayMilliseconds`
-    * [ ] templating
+    * [x] templating
+        * [x] `{{request.url}}`
+        * [x] `{{request.path}}`
+        * [x] `{{request.pathSegments.[<n>]}}`
+        * [x] `{{request.query.<key>}}`
+        * [x] `{{request.query.<key>.[<n>]}}`
+        * [x] `{{request.method}}`
+        * [ ] `{{request.host}}`
+        * [ ] `{{request.scheme}}`
+        * [ ] `{{request.baseUrl}}`
+        * [x] `{{request.headers.<key>}}`
+        * [ ] `{{request.headers.<key>.[<n>]}}`
+        * [ ] `{{request.cookies.<key>}}`
+        * [ ] `{{request.cookies.<key>.[<n>]}}`
+        * [x] `{{request.body}}`
+        * [ ] Handlebars helpers
+        * [ ] Number and assignment helpers
+        * [ ] XPath helpers
+        * [ ] jsonPath helper
+        * [ ] date and time helpers
+        * [ ] Random value helper
+        * [ ] Pick random helper
+        * [ ] String trim helper
+        * [ ] Base64 helper
+        * [ ] URL encoding helper
+        * [ ] Form helper
+        * [ ] Regular expression extract helper
+        * [ ] Size helper
+        * [ ] Hostname helper
+        * [ ] System property helper
 * [ ] anything related to xml
 * [ ] config
     * [x] custom port
