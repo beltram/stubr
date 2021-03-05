@@ -31,6 +31,10 @@
     <img src="https://github.com/beltram/stubr/workflows/ci/badge.svg?style=flat-square"
       alt="ci" />
   </a>
+  <!-- Code coverage -->
+  <a href="https://codecov.io/gh/beltram/stubr">
+    <img src="https://codecov.io/gh/beltram/stubr/branch/main/graph/badge.svg?style=flat-square"/>
+  </a>
 </div>
 <br/>
 
