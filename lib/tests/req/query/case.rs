@@ -25,7 +25,7 @@ async fn insensitive_should_fail_when_invalid_key() {
 #[async_std::test]
 async fn insensitive_should_fail_when_missing() {
     let srv = given("req/query/case/insensitive");
-    get(&srv.uri()).await.unwrap().assert_not_found();
+    get(&srv.url()).await.unwrap().assert_not_found();
 }
 
 #[async_std::test]
@@ -61,5 +61,5 @@ async fn sensitive_should_fail_when_invalid_key() {
 #[async_std::test]
 async fn sensitive_should_fail_when_missing() {
     let srv = given("req/query/case/sensitive");
-    get(&srv.uri()).await.unwrap().assert_not_found();
+    get(&srv.url()).await.unwrap().assert_not_found();
 }

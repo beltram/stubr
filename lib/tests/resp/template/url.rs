@@ -39,13 +39,13 @@ async fn should_template_request_method() {
     let expect = |mut response: Response, body: &str| {
         response.assert_ok().assert_body_text(body).assert_content_type_text();
     };
-    expect(surf::get(&srv.uri()).await.unwrap(), "GET");
-    expect(surf::post(&srv.uri()).await.unwrap(), "POST");
-    expect(surf::put(&srv.uri()).await.unwrap(), "PUT");
-    expect(surf::delete(&srv.uri()).await.unwrap(), "DELETE");
-    expect(surf::patch(&srv.uri()).await.unwrap(), "PATCH");
-    expect(surf::options(&srv.uri()).await.unwrap(), "OPTIONS");
-    expect(surf::trace(&srv.uri()).await.unwrap(), "TRACE");
+    expect(surf::get(&srv.url()).await.unwrap(), "GET");
+    expect(surf::post(&srv.url()).await.unwrap(), "POST");
+    expect(surf::put(&srv.url()).await.unwrap(), "PUT");
+    expect(surf::delete(&srv.url()).await.unwrap(), "DELETE");
+    expect(surf::patch(&srv.url()).await.unwrap(), "PATCH");
+    expect(surf::options(&srv.url()).await.unwrap(), "OPTIONS");
+    expect(surf::trace(&srv.url()).await.unwrap(), "TRACE");
 }
 
 #[async_std::test]

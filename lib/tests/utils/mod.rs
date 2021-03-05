@@ -55,7 +55,7 @@ pub trait UriAndQuery {
 }
 
 impl<S: AnyStubServer> UriAndQuery for S {
-    fn get_uri(&self) -> String { self.uri() }
+    fn get_uri(&self) -> String { self.url() }
 }
 
 pub trait ResponseAsserter {

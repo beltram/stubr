@@ -27,7 +27,7 @@ fn port() -> String {
 impl AnyStubServer for Wiremock {
     async fn register_stubs(&self, _stub_folder: PathBuf, _config: Config) { unimplemented!() }
 
-    fn uri(&self) -> String {
+    fn url(&self) -> String {
         format!("http://localhost:{}", self.port)
     }
 }

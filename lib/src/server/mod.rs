@@ -44,6 +44,11 @@ impl Stubr {
         server
     }
 
+    /// Get running server address
+    pub fn uri(&self) -> String {
+        self.instance.uri()
+    }
+
     async fn start_on(port: u16) -> Self {
         if let Ok(listener) = TcpListener::bind(format!("{}:{}", Self::HOST, port)) {
             Self {

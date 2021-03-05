@@ -17,5 +17,5 @@ async fn should_not_match_when_url_path_not_exact() {
 #[async_std::test]
 async fn should_not_fail_when_no_url() {
     let srv = given("req/url/no-url");
-    get(&srv.uri()).await.unwrap().assert_ok();
+    get(&srv.url()).await.unwrap().assert_ok();
 }

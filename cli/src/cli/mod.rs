@@ -10,7 +10,7 @@ use clap::{AppSettings, Clap, ValueHint};
 use colored::Colorize;
 
 use commands::Commands;
-use stubr::{AnyStubServer, Config, Stubr};
+use stubr::{Config, Stubr};
 
 mod commands;
 mod completion;

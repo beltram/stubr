@@ -11,7 +11,7 @@ use super::{Config, Stubr};
 #[async_trait]
 pub trait AnyStubServer {
     async fn register_stubs(&self, stub_folder: PathBuf, config: Config);
-    fn uri(&self) -> String;
+    fn url(&self) -> String;
 }
 
 #[async_trait]
@@ -30,7 +30,7 @@ impl AnyStubServer for Stubr {
         }
     }
 
-    fn uri(&self) -> String {
-        self.instance.uri()
+    fn url(&self) -> String {
+        self.uri()
     }
 }

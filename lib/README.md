@@ -17,7 +17,7 @@ Also available as a [cli](https://crates.io/crates/stubr-cli).
 # use it
 
 ```rust
-use stubr::Stubr;
+use stubr::{Stubr, Config};
 use surf;
 
 // supply a directory containing json stubs. Invalid files are just ignored
@@ -25,10 +25,10 @@ let srv = Stubr::start("tests/stubs").await;
 // or just mount a single file
 let srv = Stubr::start("tests/stubs/ping.json").await;
 // or configure it (more configurations to come)
-let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080) }).await;
+let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default() }).await;
 
 // use '.uri()' method to get server address
-surf::get(&srv.uri()).await;
+surf::get(srv.uri()).await;
 ```
 
 # wiremock cheat sheet

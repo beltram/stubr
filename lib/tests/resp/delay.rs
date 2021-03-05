@@ -9,7 +9,7 @@ use crate::utils::*;
 async fn should_timeout_with_delay_of_2_seconds() {
     let srv = given("resp/delay/2-seconds");
     let timeout = task::block_on(io::timeout(Duration::from_secs(1), async {
-        get(&srv.uri()).await.unwrap().assert_ok();
+        get(&srv.url()).await.unwrap().assert_ok();
         Ok(())
     }));
     assert!(timeout.is_err());
@@ -19,7 +19,7 @@ async fn should_timeout_with_delay_of_2_seconds() {
 async fn should_not_timeout_with_delay_of_2_seconds() {
     let srv = given("resp/delay/2-seconds");
     let timeout = task::block_on(io::timeout(Duration::from_secs(3), async {
-        get(&srv.uri()).await.unwrap().assert_ok();
+        get(&srv.url()).await.unwrap().assert_ok();
         Ok(())
     }));
     assert!(timeout.is_ok());
@@ -29,7 +29,7 @@ async fn should_not_timeout_with_delay_of_2_seconds() {
 async fn should_not_timeout_with_no_delay() {
     let srv = given("resp/delay/no-delay");
     let timeout = task::block_on(io::timeout(Duration::from_millis(100), async {
-        get(&srv.uri()).await.unwrap().assert_ok();
+        get(&srv.url()).await.unwrap().assert_ok();
         Ok(())
     }));
     assert!(timeout.is_ok());
