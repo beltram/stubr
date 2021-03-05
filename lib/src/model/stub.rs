@@ -10,7 +10,11 @@ use super::{
 };
 
 lazy_static! {
-    pub(crate) static ref HANDLEBARS: RwLock<Handlebars<'static>> = RwLock::new(Handlebars::new());
+    pub(crate) static ref HANDLEBARS: RwLock<Handlebars<'static>> = {
+        let mut handlebars = Handlebars::new();
+        handlebars.source_map_enabled(false);
+        RwLock::new(handlebars)
+    };
 }
 
 #[derive(Deserialize, Debug)]
