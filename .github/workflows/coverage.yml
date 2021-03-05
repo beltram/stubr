@@ -1,0 +1,16 @@
+name: coverage
+
+on: [ push ]
+jobs:
+  test:
+    name: coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: Swatinem/rust-cache@v1
+      - name: Coverage
+        uses: actions-rs/tarpaulin@v0.1
+        with:
+          args: --ignore-tests
+      - name: Upload to codecov.io
+        uses: codecov/codecov-action@v1

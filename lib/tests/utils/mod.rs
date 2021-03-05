@@ -25,9 +25,8 @@ pub fn given(name: &str) -> impl AnyStubServer {
 }
 
 fn stub(name: &str) -> PathBuf {
-    std::env::current_dir()
-        .map(|it| it.join(PathBuf::from(format!("tests/stubs/{}.json", name))))
-        .expect("Unexpected error")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .join(PathBuf::from(format!("tests/stubs/{}.json", name)))
 }
 
 pub trait UriAndQuery {
