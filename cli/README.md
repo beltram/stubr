@@ -22,6 +22,8 @@ stubr build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings
 You can also specify the directory as wiremock does with the `--root-dir` arg.  
 You can enforce server port with `--port` or `-p` arg. By default, stubr starts on a random port.
 
+Also available as a [crate](https://crates.io/crates/stubr).
+
 # install it
 
 ## with precompiled binaries (linux & osx)
