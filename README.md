@@ -32,8 +32,8 @@
       alt="ci" />
   </a>
   <!-- Code coverage -->
-  <a href="https://codecov.io/gh/beltram/stubr">
-    <img src="https://codecov.io/gh/beltram/stubr/branch/main/graph/badge.svg?style=flat-square"/>
+  <a href="https://coveralls.io/github/beltram/stubr?branch=main">
+    <img src="https://coveralls.io/repos/github/beltram/stubr/badge.svg?branch=main" alt="coverage" />
   </a>
 </div>
 <br/>
@@ -120,4 +120,5 @@ the latter.
 
 # benchmark
 
-A very simple benchmark comparing stubr to wiremock is available [here](https://github.com/beltram/stubr/blob/main/bench/report.md)
+A very simple benchmark comparing stubr to wiremock is
+available [here](https://github.com/beltram/stubr/blob/main/bench/report.md)
