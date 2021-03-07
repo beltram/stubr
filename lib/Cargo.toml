@@ -64,4 +64,6 @@ path = "benches/templating.rs"
 harness = false
 
 [features]
+default = []
 iso = []
+cloud = []
