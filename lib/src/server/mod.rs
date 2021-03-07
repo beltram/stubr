@@ -20,6 +20,11 @@ pub struct Stubr {
 }
 
 impl Stubr {
+
+    #[cfg(feature = "cloud")]
+    const HOST: &'static str = "0.0.0.0";
+
+    #[cfg(not(feature = "cloud"))]
     const HOST: &'static str = "127.0.0.1";
 
     /// Runs a mock server.
