@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "queryParameters": {
+      "age": {
+        "equalTo": "young"
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

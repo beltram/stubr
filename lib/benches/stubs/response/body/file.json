@@ -1,0 +1,10 @@
+{
+  "request": {
+    "urlPath": "/api/file",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "benches/stubs/response/body/from-file.json"
+  }
+}

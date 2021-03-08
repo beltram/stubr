@@ -120,5 +120,24 @@ the latter.
 
 # benchmark
 
-A very simple benchmark comparing stubr to wiremock is
-available [here](https://github.com/beltram/stubr/blob/main/bench/report.md)
+Performance matters for `stubr` because it is meant to be a lighter version of [Wiremock](https://github.com/tomakehurst/wiremock).
+
+### comparing to wiremock
+
+A very simple benchmark comparing `stubr` to wiremock is
+available [here](https://github.com/beltram/stubr/blob/main/bench/report.md).  
+
+### cargo bench
+
+A benchmark of `stubr` itself, powered by [criterion](https://crates.io/crates/criterion) is available for each release.
+It aims at tracking down progresses/regressions made.  
+
+I'm still looking for a way to turn this into something more ergonomic, especially I'd like to provide a way to compare
+2 benchmarks. Meanwhile, you can download the latest benchmark with these commands.
+
+```bash
+mkdir stubr-bench &&
+curl -L https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz | tar xz - -C stubr-bench
+```
+
+Then open `./stubr-bench/report/index.html` in your browser.

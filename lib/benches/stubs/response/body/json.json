@@ -1,0 +1,12 @@
+{
+  "request": {
+    "urlPath": "/api/json",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "name": "jdoe"
+    }
+  }
+}
