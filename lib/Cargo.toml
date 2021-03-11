@@ -43,14 +43,17 @@ features = ["async_std", "html_reports"]
 
 [[bench]]
 name = "startup"
+path = "benches/startup.rs"
 harness = false
 
 [[bench]]
 name = "matching"
+path = "benches/matching.rs"
 harness = false
 
 [[bench]]
 name = "response"
+path = "benches/response.rs"
 harness = false
 
 [features]
