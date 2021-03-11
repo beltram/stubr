@@ -14,7 +14,7 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            from-file: target/x86_64-unknown-linux-musl/release/${{ env.BINARY_NAME }}
+            from-file: target/x86_64-unknown-linux-musl/release/stubr
             args: --best --lzma
             strip: true
     runs-on: ${{ matrix.os }}
