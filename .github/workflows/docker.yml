@@ -10,13 +10,28 @@ env:
   BINARY_NAME: stubr
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            file: stubr
+            from-file: ./target/release/stubr
+            to-file: stubr-linux.tar.gz
+            args: --best --lzma
+            strip: true
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v2
     - name: Build-musl
       uses: gmiam/rust-musl-action@master
       with:
         args: cargo build --target $BUILD_TARGET --release
+    - name: upx
+      uses: svenstaro/upx-action@v2
+      with:
+        file: ${{ matrix.from-file }}
+        args: ${{ matrix.args }}
+        strip: ${{ matrix.strip }}
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ env.BINARY_NAME }}
