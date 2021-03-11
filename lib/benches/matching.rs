@@ -1,11 +1,10 @@
-use async_std::task::block_on;
 use criterion::{async_executor::AsyncStdExecutor, black_box, Criterion, criterion_group, criterion_main};
 use surf::get;
 
 use stubr::Stubr;
 
 fn url_bench(c: &mut Criterion) {
-    let srv = block_on(Stubr::start("benches/stubs/matching/url"));
+    let srv = Stubr::start_blocking("benches/stubs/matching/url");
     let url_path = format!("{}{}", srv.uri(), "/api/exact-uri");
     c.bench_function("matching urlPath", |b| {
         b.to_async(AsyncStdExecutor).iter(|| black_box(get(&url_path)))

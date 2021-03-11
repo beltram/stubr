@@ -1,11 +1,10 @@
-use async_std::task::block_on;
 use criterion::{async_executor::AsyncStdExecutor, black_box, Criterion, criterion_group, criterion_main};
 use surf::get;
 
 use stubr::Stubr;
 
 fn body_bench(c: &mut Criterion) {
-    let srv = block_on(Stubr::start("benches/stubs/response/body"));
+    let srv = Stubr::start_blocking("benches/stubs/response/body");
     let json_uri = format!("{}{}", srv.uri(), "/api/json");
     c.bench_function("json response", |b| {
         b.to_async(AsyncStdExecutor).iter(|| black_box(get(&json_uri)))
@@ -21,7 +20,7 @@ fn body_bench(c: &mut Criterion) {
 }
 
 fn header_bench(c: &mut Criterion) {
-    let srv = block_on(Stubr::start("benches/stubs/response/header"));
+    let srv = Stubr::start_blocking("benches/stubs/response/header");
     let single_header_uri = format!("{}{}", srv.uri(), "/api/single-header");
     c.bench_function("single header response", |b| {
         b.to_async(AsyncStdExecutor).iter(|| black_box(get(&single_header_uri)))

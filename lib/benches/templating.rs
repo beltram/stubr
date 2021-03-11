@@ -1,4 +1,3 @@
-use async_std::task::block_on;
 use criterion::{async_executor::AsyncStdExecutor, black_box, Criterion, criterion_group, criterion_main};
 use serde_json::json;
 use surf::post;
@@ -6,7 +5,7 @@ use surf::post;
 use stubr::Stubr;
 
 fn body_templating_bench(c: &mut Criterion) {
-    let srv = block_on(Stubr::start("benches/stubs/templating"));
+    let srv = Stubr::start_blocking("benches/stubs/templating");
     let uri = format!("{}{}", srv.uri(), "/api/json");
     c.bench_function("template request body", |b| {
         b.to_async(AsyncStdExecutor).iter(|| black_box(post(&uri).body(json!({"name": "jdoe"}))))
