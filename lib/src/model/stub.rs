@@ -4,6 +4,8 @@ use handlebars::Handlebars;
 use serde::Deserialize;
 use wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
 
+use crate::Config;
+
 use super::{
     request::RequestDto,
     response::{default::WiremockIsoResponse, delay::Delay, ResponseAppender, ResponseDto, template::{HandlebarTemplatable, StubTemplate}},
@@ -25,10 +27,14 @@ pub struct StubDto {
 }
 
 impl StubDto {
-    pub fn into_respond<'a>(self) -> impl Respond + 'a {
+    pub(crate) fn try_creating_from(self, config: &Config) -> anyhow::Result<Mock> {
+        Ok(MockBuilder::try_from(&self.request)?.respond_with(self.into_respond(config)))
+    }
+
+    pub fn into_respond<'a>(self, config: &Config) -> impl Respond + 'a {
         let mut template = ResponseTemplate::new(self.response.status);
         template = WiremockIsoResponse(&self).add(template);
-        template = Delay(&self).add(template);
+        template = Delay(&self, config).add(template);
         if self.response.requires_response_templating() {
             self.response.headers.register_template();
             self.response.body.register_template();
@@ -38,13 +44,5 @@ impl StubDto {
             template = self.response.body.add(template);
             StubTemplate { template, response: self.response, requires_templating: false }
         }
-    }
-}
-
-impl TryFrom<StubDto> for Mock {
-    type Error = anyhow::Error;
-
-    fn try_from(stub: StubDto) -> anyhow::Result<Self> {
-        Ok(MockBuilder::try_from(&stub.request)?.respond_with(stub.into_respond()))
     }
 }

@@ -107,7 +107,7 @@ impl Cli {
 
 impl From<&Cli> for Config {
     fn from(cli: &Cli) -> Self {
-        Self { port: cli.port, verbose: Some(true) }
+        Self { port: cli.port, verbose: Some(true), global_delay: None }
     }
 }
 

@@ -80,7 +80,7 @@ impl Stubr {
     }
 
     async fn register_stubs(&self, stub_folder: PathBuf, config: Config) {
-        for (mock, file) in self.find_all_mocks(&stub_folder) {
+        for (mock, file) in self.find_all_mocks(&stub_folder, &config) {
             self.instance.register(mock).await;
             if config.verbose.unwrap_or_default() {
                 let maybe_file_name = env::current_dir().ok()
@@ -91,6 +91,11 @@ impl Stubr {
                 }
             }
         }
+    }
+
+    fn find_all_mocks<'a>(&self, from: &PathBuf, config: &'a Config) -> impl Iterator<Item=(Mock, PathBuf)> + 'a {
+        self.find_all_files(from).into_iter()
+            .flat_map(move |path| StubrMock::try_from((&path, config)).map(|mock| (mock.0, path)))
     }
 
     fn find_all_files(&self, from: &PathBuf) -> Vec<PathBuf> {
@@ -104,11 +109,6 @@ impl Stubr {
                     .unwrap_or_default()
             } else { vec![from.to_path_buf()] }
         } else { vec![] }
-    }
-
-    fn find_all_mocks(&self, from: &PathBuf) -> impl Iterator<Item=(Mock, PathBuf)> {
-        self.find_all_files(from).into_iter()
-            .flat_map(|path| StubrMock::try_from(&path).map(|mock| (mock.0, path)))
     }
 }
 
