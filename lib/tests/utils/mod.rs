@@ -7,12 +7,14 @@ use http_types::headers::{HeaderName, HeaderValue};
 use serde::de::DeserializeOwned;
 use surf::Response;
 
-pub use stubr::{AnyStubServer, Stubr};
+pub use stubr::Stubr;
+pub use traits::AnyStubServer;
 
 #[cfg(feature = "iso")]
 use self::wiremock::Wiremock;
 
 mod wiremock;
+mod traits;
 
 #[cfg(not(feature = "iso"))]
 pub fn given(name: &str) -> impl AnyStubServer {

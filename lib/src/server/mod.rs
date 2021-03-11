@@ -1,16 +1,14 @@
-use std::{convert::TryFrom, net::TcpListener, path::PathBuf};
+use std::{convert::TryFrom, env, net::TcpListener, path::PathBuf};
 
 use async_std::task::block_on;
 use itertools::Itertools;
 use wiremock::{Mock, MockServer};
 
 use stub::StubrMock;
-use traits::AnyStubServer;
 
 use crate::Config;
 
 mod stub;
-pub mod traits;
 pub mod config;
 
 /// Allows running a Wiremock mock server from Wiremock stubs.
@@ -79,6 +77,20 @@ impl Stubr {
 
     async fn start_on_random_port() -> Self {
         Self { instance: MockServer::start().await }
+    }
+
+    async fn register_stubs(&self, stub_folder: PathBuf, config: Config) {
+        for (mock, file) in self.find_all_mocks(&stub_folder) {
+            self.instance.register(mock).await;
+            if config.verbose.unwrap_or_default() {
+                let maybe_file_name = env::current_dir().ok()
+                    .and_then(|current| file.strip_prefix(current).ok())
+                    .and_then(|file| file.to_str());
+                if let Some(file_name) = maybe_file_name {
+                    println!("+ mounted '{}'", file_name);
+                }
+            }
+        }
     }
 
     fn find_all_files(&self, from: &PathBuf) -> Vec<PathBuf> {

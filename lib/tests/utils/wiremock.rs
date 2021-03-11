@@ -10,7 +10,9 @@ use std::{
 use async_trait::async_trait;
 use tempfile::tempdir;
 
-use stubr::{AnyStubServer, Config};
+use stubr::Config;
+
+use super::traits::AnyStubServer;
 
 pub struct Wiremock {
     pub process: Child,

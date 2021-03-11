@@ -29,7 +29,7 @@
 #[macro_use]
 extern crate lazy_static;
 
-pub use server::{config::Config, Stubr, traits::AnyStubServer};
+pub use server::{config::Config, Stubr};
 
 mod model;
 mod server;
