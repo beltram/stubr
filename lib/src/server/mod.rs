@@ -19,7 +19,7 @@ pub struct Stubr {
 }
 
 impl Stubr {
-    const HOST: &'static str = "127.0.0.1";
+    const HOST: &'static str = "0.0.0.0";
 
     /// Runs a mock server.
     /// The server is unbinded when the instance is dropped.
