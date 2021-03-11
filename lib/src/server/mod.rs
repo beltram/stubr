@@ -154,31 +154,35 @@ mod server_test {
     #[async_std::test]
     async fn should_find_all_mocks_from_dir() {
         let from = PathBuf::from("tests/stubs/server");
-        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from);
+        let config = Config::default();
+        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from, &config);
         assert_eq!(mocks.count(), 2);
     }
 
     #[async_std::test]
     async fn should_find_all_mocks_from_single_file() {
         let from = PathBuf::from("tests/stubs/server/valid.json");
-        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from);
+        let config = Config::default();
+        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from, &config);
         assert_eq!(mocks.count(), 1);
     }
 
     #[async_std::test]
     async fn should_not_find_any_mock_when_none_valid() {
         let from = PathBuf::from("tests/stubs/server/invalid");
-        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from);
+        let config = Config::default();
+        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from, &config);
         assert_eq!(mocks.count(), 0);
     }
 
     #[async_std::test]
     async fn should_not_find_any_mock_when_path_does_not_exist() {
         let from = PathBuf::from("tests/stubs/server/unknown");
-        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from);
+        let config = Config::default();
+        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from, &config);
         assert_eq!(mocks.count(), 0);
         let from = PathBuf::from("tests/stubs/server/unknown.json");
-        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from);
+        let mocks = Stubr::start_on_random_port().await.find_all_mocks(&from, &config);
         assert_eq!(mocks.count(), 0);
     }
 }
