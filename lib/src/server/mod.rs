@@ -1,5 +1,6 @@
 use std::{convert::TryFrom, net::TcpListener, path::PathBuf};
 
+use async_std::task::block_on;
 use itertools::Itertools;
 use wiremock::{Mock, MockServer};
 
@@ -29,7 +30,15 @@ impl Stubr {
         Self::start_with(stubs, Config::default()).await
     }
 
-    /// Runs a mock server.
+    /// Runs a mock server in a blocking way.
+    /// The server is unbinded when the instance is dropped.
+    /// Use this in a test context.
+    /// * `stubs` - folder or file containing the stubs
+    pub fn start_blocking<T>(stubs: T) -> Self where T: Into<PathBuf> {
+        block_on(Self::start(stubs))
+    }
+
+    /// Runs a mock server with some configuration.
     /// The server is unbinded when the instance is dropped.
     /// Use this in a test context.
     /// * `stubs` - folder or file containing the stubs
@@ -42,6 +51,15 @@ impl Stubr {
         };
         server.register_stubs(stubs.into(), config).await;
         server
+    }
+
+    /// Runs a mock server in a blocking way with some configuration.
+    /// The server is unbinded when the instance is dropped.
+    /// Use this in a test context.
+    /// * `stubs` - folder or file containing the stubs
+    /// * `config` - global server configuration
+    pub fn start_blocking_with<T>(stubs: T, config: Config) -> Self where T: Into<PathBuf> {
+        block_on(Self::start_with(stubs, config))
     }
 
     /// Get running server address

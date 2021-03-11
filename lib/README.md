@@ -26,6 +26,9 @@ let srv = Stubr::start("tests/stubs").await;
 let srv = Stubr::start("tests/stubs/ping.json").await;
 // or configure it (more configurations to come)
 let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default() }).await;
+// can also be used in a blocking way
+let srv = Stubr::start_blocking("tests/stubs");
+let srv = Stubr::start_blocking_with("tests/stubs", Config { port: Some(8080), ..Default::default() });
 
 // use '.uri()' method to get server address
 surf::get(srv.uri()).await;
