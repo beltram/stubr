@@ -56,5 +56,10 @@ name = "response"
 path = "benches/response.rs"
 harness = false
 
+[[bench]]
+name = "templating"
+path = "benches/templating.rs"
+harness = false
+
 [features]
 iso = []

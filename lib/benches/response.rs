@@ -1,6 +1,5 @@
 use async_std::task::block_on;
-use criterion::{black_box, Criterion, criterion_group, criterion_main};
-use criterion::async_executor::AsyncStdExecutor;
+use criterion::{async_executor::AsyncStdExecutor, black_box, Criterion, criterion_group, criterion_main};
 use surf::get;
 
 use stubr::Stubr;
