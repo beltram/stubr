@@ -75,7 +75,8 @@ jobs:
         run: |
           mkdir -p target/criterion
           cd target/criterion
-          curl -L https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz | tar xz - -C .
+#          need to figure out how to get previous version
+          curl -L https://github.com/beltram/stubr/releases/download/0.3.1/bench.tar.gz | tar xz - -C .
           cargo bench
           tar czf ../bench.tar.gz .
       - name: release-assets
