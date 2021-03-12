@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, env, net::TcpListener, path::PathBuf};
+use std::{convert::TryFrom, net::TcpListener, path::PathBuf};
 
 use async_std::task::block_on;
 use itertools::Itertools;
@@ -83,9 +83,7 @@ impl Stubr {
         for (mock, file) in self.find_all_mocks(&stub_folder, &config) {
             self.instance.register(mock).await;
             if config.verbose.unwrap_or_default() {
-                let maybe_file_name = env::current_dir().ok()
-                    .and_then(|current| file.strip_prefix(current).ok())
-                    .and_then(|file| file.to_str());
+                let maybe_file_name = file.strip_prefix(&stub_folder).ok().and_then(|file| file.to_str());
                 if let Some(file_name) = maybe_file_name {
                     println!("+ mounted '{}'", file_name);
                 }
