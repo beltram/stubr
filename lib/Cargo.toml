@@ -24,6 +24,7 @@ regex = "1.4.4"
 jsonpath_lib = "0.2.6"
 handlebars = "3.5.3"
 lazy_static = "1.4.0"
+base64 = "0.13.0"
 
 [dependencies.serde]
 version = "1.0.124"

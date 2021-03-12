@@ -56,7 +56,7 @@ the latter.
     * [x] body
         * [x] `equalToJson`
         * [x] `matchesJsonPath`
-        * [ ] `binaryEqualTo`
+        * [x] `binaryEqualTo`
     * [x] method (GET, POST etc...)
     * [x] url
         * [x] `url`

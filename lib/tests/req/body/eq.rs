@@ -152,3 +152,10 @@ async fn should_fail_when_req_body_value_not_equal_to_array() {
     post(&srv.url()).body(json!({"names": ["bob"]})).await.unwrap().assert_not_found();
     post(&srv.url()).body(json!({"names": []})).await.unwrap().assert_not_found();
 }
+
+#[async_std::test]
+async fn should_match_req_body_equal_to_base64() {
+    let srv = given("req/body/eq/binary");
+    post(&srv.url()).body(vec![1, 2, 3]).await.unwrap().assert_ok();
+    post(&srv.url()).body(vec![3, 2, 1]).await.unwrap().assert_not_found();
+}

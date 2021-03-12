@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "bodyPatterns": [
+      {
+        "binaryEqualTo": "AQID"
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}
