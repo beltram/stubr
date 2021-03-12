@@ -14,13 +14,22 @@ Example for a project exposing contracts using Spring Cloud Contract
 ```bash
 ./gradlew generateClientStubs
 stubr build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings
- > - mounted stub "./build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings/find-all.json"
- > - mounted stub "./build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings/find-by-id.json"
- > Started stubr server on http://127.0.0.1:49604
+ > + mounted "./build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings/find-all.json"
+ > + mounted "./build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings/find-by-id.json"
+ > Started stubr in 50ms on http://127.0.0.1:49604
 ```
 
-You can also specify the directory as wiremock does with the `--root-dir` arg.  
-You can enforce server port with `--port` or `-p` arg. By default, stubr starts on a random port.
+## args/flags/options
+
+| arg | about | examples |
+|-----|:-----:|:-------:|
+| `[dir]` | Folder containing stubs or individual stub. | `stubr ./my-app-stubs` or `stubr ./my-app-stubs/ping.json` |
+| `--root-dir` | Directory containing a `mappings` folder with all stubs. Equivalent to Wiremock's one. Has precedence over `[dir]` | `stubr --root-dir ./my-app-stubs` |
+| `--port` | Server port. Defaults to random port. | `stubr --port 8080` or `stubr -p 8080` |
+| `--delay` | Global delay duration applied to all stubs (supersedes any locally defined delay). | `stubr --delay 2s` or `stubr -d 1m` or `stubr -d 100ms` |
+| `completion` | Generates & installs bash or zsh completion scripts | `stubr completion bash` or `stubr completion zsh` |
+| `--help` | Displays help. | `stubr help` or `stubr -h` for short help. `stubr --help` for long help |
+| `--version` | Displays `stubr` version. | `stubr -V` or `stubr --version` |
 
 Also available as a [crate](https://crates.io/crates/stubr).
 
