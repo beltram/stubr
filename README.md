@@ -114,9 +114,10 @@ the latter.
         * [ ] Hostname helper
         * [ ] System property helper
 * [ ] anything related to xml
-* [ ] config
+* [x] config
     * [x] custom port
-    * [ ] global delay
+    * [x] global delay
+    * [ ] random delay
 
 # benchmark
 
