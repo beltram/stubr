@@ -38,5 +38,5 @@ async fn should_not_timeout_with_global_delay_of_2_seconds() {
         get(&stubr.addr).await.unwrap().status().is_success();
         Ok(())
     }));
-    assert!(timeout.is_err());
+    assert!(timeout.is_ok());
 }
