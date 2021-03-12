@@ -131,6 +131,7 @@ available [here](https://github.com/beltram/stubr/blob/main/bench/report.md).
 ### cargo bench
 
 A benchmark of `stubr` itself, powered by [criterion](https://crates.io/crates/criterion) is available for each release.
+The latest is available [here](https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz).
 It aims at tracking down progresses/regressions made.  
 
 I'm still looking for a way to turn this into something more ergonomic, especially I'd like to provide a way to compare
