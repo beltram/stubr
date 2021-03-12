@@ -1,6 +1,3 @@
-use std::time::Duration;
-
-use async_std::{io, task};
 use surf::get;
 
 use stubr::Config;
