@@ -8,9 +8,9 @@ use std::{
 
 use clap::{AppSettings, Clap, ValueHint};
 use colored::Colorize;
-
 use commands::Commands;
 use stubr::{Config, Stubr};
+use std::convert::TryInto;
 
 mod commands;
 mod completion;
@@ -41,6 +41,11 @@ pub struct Cli {
     /// When absent, defaults to a random one
     #[clap(short, long)]
     port: Option<u16>,
+    /// global delay e.g. 10ms or 2s
+    ///
+    /// supersedes any locally defined delay
+    #[clap(short, long)]
+    delay: Option<String>,
     #[clap(subcommand)]
     cmd: Option<Commands>,
 }
@@ -103,11 +108,21 @@ impl Cli {
         let path = folder.path();
         path.is_dir() && path.file_name() == Some(OsStr::new(Self::MAPPINGS_FOLDER))
     }
+
+    fn global_delay_milliseconds(&self) -> Option<u64> {
+        self.delay.as_ref()
+            .and_then(|it| humantime::parse_duration(it.as_str()).ok())
+            .and_then(|it| it.as_millis().try_into().ok())
+    }
 }
 
 impl From<&Cli> for Config {
     fn from(cli: &Cli) -> Self {
-        Self { port: cli.port, verbose: Some(true), global_delay: None }
+        Self {
+            port: cli.port,
+            verbose: Some(true),
+            global_delay: cli.global_delay_milliseconds(),
+        }
     }
 }
 
