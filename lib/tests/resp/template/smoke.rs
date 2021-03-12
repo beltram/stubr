@@ -99,3 +99,12 @@ async fn should_not_template_in_response_headers_when_no_placeholder() {
         .assert_ok()
         .assert_header("x-req-path", "/the/path");
 }
+
+#[async_std::test]
+async fn stubs_should_be_isolated() {
+    let srv = Stubr::start("tests/stubs/resp/template/smoke-isolation").await;
+    get(&srv.path("/api/a")).await.unwrap().assert_ok().assert_body_text("/api/a");
+    get(&srv.path("/api/b")).await.unwrap().assert_ok().assert_body_text("/api/b");
+    get(&srv.path("/api/a")).await.unwrap().assert_ok().assert_body_text("/api/a");
+    get(&srv.path("/api/b")).await.unwrap().assert_ok().assert_body_text("/api/b");
+}
