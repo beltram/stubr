@@ -1,17 +1,16 @@
 use std::convert::TryFrom;
 
 use serde::Deserialize;
-use wiremock::{
-    matchers::{PathExactMatcher, PathRegexMatcher},
-    MockBuilder,
-};
+use wiremock::{matchers::{PathExactMatcher, PathRegexMatcher}, MockBuilder};
 
 use just_url::ExactPathAndQueryMatcher;
+use url_pattern::UrlPatternMatcher;
 
 use super::MockRegistrable;
 
 mod url_path;
 mod url_path_pattern;
+mod url_pattern;
 mod just_url;
 
 #[derive(Deserialize, Debug, Default)]
@@ -34,6 +33,9 @@ impl MockRegistrable for HttpUrlDto {
         }
         if let Ok(regex) = PathRegexMatcher::try_from(self) {
             mock = mock.and(regex);
+        }
+        if let Ok(url_pattern_matcher) = UrlPatternMatcher::try_from(self) {
+            mock = mock.and(url_pattern_matcher);
         }
         if let Ok(ExactPathAndQueryMatcher(path, queries)) = ExactPathAndQueryMatcher::try_from(self) {
             mock = mock.and(path);

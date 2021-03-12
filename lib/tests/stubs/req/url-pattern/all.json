@@ -1,0 +1,9 @@
+{
+  "request": {
+    "urlPattern": "/api/pattern/([a-z]{4})\\?one=([a-z]{4})&two=([a-z]{4})",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200
+  }
+}

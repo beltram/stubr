@@ -62,7 +62,7 @@ the latter.
         * [x] `url`
         * [x] `urlPath`
         * [x] `urlPathPattern`
-        * [ ] `urlPattern`
+        * [x] `urlPattern`
     * [x] headers
         * [x] `equalTo`
         * [x] `contains`

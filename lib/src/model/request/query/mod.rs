@@ -10,10 +10,7 @@ use case::QueryCaseInsensitiveMatcher;
 use contains::QueryContainsMatcher;
 use matches::QueryRegexMatcher;
 
-use super::{
-    matcher::RequestMatcherDto,
-    super::request::MockRegistrable,
-};
+use super::{matcher::RequestMatcherDto, super::request::MockRegistrable};
 
 mod exact;
 mod case;
