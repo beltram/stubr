@@ -45,6 +45,7 @@ implemented features in `stubr` : just things which actually work in `stubr` are
     "method": "GET", // (required) http method. Can be "ANY" to match any method
     "urlPath": "/api/exact-url", // exact uri match
     "urlPathPattern": "/api/regex-url/([a-z]{4})", // uri must match regex
+    "urlPattern": "/api/regex-url/([a-z]{4})\\?and=([a-z]{4})", // uri & query must match regex
     "url": "/api/url?age=young", // raw url + query parameters by equality matching
     "queryParameters": {
       "firstname": { "equalTo": "beltram" }, // by equality matching (can also be an int, or a boolean)
@@ -63,7 +64,8 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       { "matchesJsonPath": "$.name" }, // must just match json path
       { "matchesJsonPath": "$.consoles[?(@.name == 'xbox')]" }, // must match json path + equality
       { "matchesJsonPath": "$.consoles[?(@.price > 200)]" }, // must match json path + bound
-      { "expression": "$.name", "contains": "o" } // must match json path + contain the letter 'o'
+      { "expression": "$.name", "contains": "o" }, // must match json path + contain the letter 'o'
+      { "binaryEqualTo": "AQID" /* Base 64 */ } // byte array equality
     ]
   },
   "response": {
