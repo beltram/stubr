@@ -1,10 +1,10 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/api/query-equal",
+    "urlPath": "/api/query-contains",
     "queryParameters": {
       "one": {
-        "equalTo": "one"
+        "contains": "w"
       }
     }
   },

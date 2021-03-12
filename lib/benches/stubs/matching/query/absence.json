@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/api/query-absence",
+    "queryParameters": {
+      "present": {
+        "equalTo": "here"
+      },
+      "absent": {
+        "absent": true
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}
