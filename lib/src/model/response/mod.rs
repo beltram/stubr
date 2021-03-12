@@ -17,7 +17,7 @@ pub mod template;
 #[serde(rename_all = "camelCase")]
 pub struct ResponseDto {
     /// HTTP response status
-    pub(crate) status: u16,
+    pub(crate) status: Option<u16>,
     /// delay in milliseconds to apply to the response
     fixed_delay_milliseconds: Option<u64>,
     /// HTTP response body

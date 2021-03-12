@@ -32,7 +32,7 @@ impl StubDto {
     }
 
     pub fn into_respond<'a>(self, config: &Config) -> impl Respond + 'a {
-        let mut template = ResponseTemplate::new(self.response.status);
+        let mut template = ResponseTemplate::new(self.response.status.unwrap_or(200));
         template = WiremockIsoResponse(&self).add(template);
         template = Delay(&self, config).add(template);
         if self.response.requires_response_templating() {
