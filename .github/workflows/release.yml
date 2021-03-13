@@ -73,8 +73,12 @@ jobs:
       - name: bench
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
-          cargo bench
+          mkdir -p target/criterion
           cd target/criterion
+          curl -OL https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz
+          tar -xzf bench.tar.gz
+          rm bench.tar.gz
+          cargo bench
           tar czf ../bench.tar.gz .
       - name: release-assets
         uses: softprops/action-gh-release@v1
