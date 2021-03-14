@@ -27,6 +27,7 @@ stubr build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings
 | `--root-dir` | Directory containing a `mappings` folder with all stubs. Equivalent to Wiremock's one. Has precedence over `[dir]` | `stubr --root-dir ./my-app-stubs` |
 | `--port` | Server port. Defaults to random port. | `stubr --port 8080` or `stubr -p 8080` |
 | `--delay` | Global delay duration applied to all stubs (supersedes any locally defined delay). | `stubr --delay 2s` or `stubr -d 1m` or `stubr -d 100ms` |
+| `--latency` | Delay added to any locally defined delay. Simulates network latency. | `stubr --latency 2s` or `stubr -l 1m` or `stubr -l 100ms` |
 | `completion` | Generates & installs bash or zsh completion scripts | `stubr completion bash` or `stubr completion zsh` |
 | `--help` | Displays help. | `stubr help` or `stubr -h` for short help. `stubr --help` for long help |
 | `--version` | Displays `stubr` version. | `stubr -V` or `stubr --version` |

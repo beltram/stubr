@@ -15,7 +15,7 @@
 //!     let srv = Stubr::start("tests/stubs").await;
 //!     // or just mount a single file
 //!     let srv = Stubr::start("tests/stubs/ping.json").await;
-//!     // or configure it (more configurations to come)
+//!     // or configure it
 //!     let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default() }).await;
 //!     // can also be used in a blocking way
 //!     let srv = Stubr::start_blocking("tests/stubs");
@@ -25,6 +25,27 @@
 //!     surf::get(srv.uri()).await;
 //! }
 //! ```
+//!
+//! # configuration
+//!
+//! A [`Stubr`] server can be configured globally thanks to [`Config`] struct.
+//!
+//! ```
+//! use stubr::Config;
+//! let config = Config {
+//!     // server port, defaults to random
+//!     port: Some(8080),
+//!     // enable verbose logs
+//!     verbose: Some(true),
+//!     // global delay in milliseconds. Supersedes any locally defined one.
+//!     global_delay: Some(2000),
+//!     // delay in milliseconds added to any locally defined one. Simulates network latencies.
+//!     latency: Some(2000),
+//! };
+//! ```
+//!
+//! [`Config`]: Config
+//! [`Stubr`]: Stubr
 
 #[macro_use]
 extern crate lazy_static;

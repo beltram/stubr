@@ -1,10 +1,15 @@
 /// Stubr server configuration.
 #[derive(Default)]
 pub struct Config {
-    /// HTTP the mock server will be listening on
+    /// HTTP port the mock server will be listening on
     pub port: Option<u16>,
-    /// enables turning off logs
+    /// Enables turning off logs
     pub verbose: Option<bool>,
-    /// global delay in milliseconds. Supersedes any locally defined delay
+    /// Global delay in milliseconds.
+    /// Supersedes any locally defined delay
     pub global_delay: Option<u64>,
+    /// Global delay in milliseconds.
+    /// Contrary to [global_delay], this one is added to any locally defined delay.
+    /// Use it to simulate network delays.
+    pub latency: Option<u64>,
 }

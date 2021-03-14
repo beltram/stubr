@@ -5,12 +5,13 @@ use std::{
     path::PathBuf,
     time::{Duration, Instant},
 };
+use std::convert::TryInto;
 
 use clap::{AppSettings, Clap, ValueHint};
 use colored::Colorize;
+
 use commands::Commands;
 use stubr::{Config, Stubr};
-use std::convert::TryInto;
 
 mod commands;
 mod completion;
@@ -46,6 +47,11 @@ pub struct Cli {
     /// supersedes any locally defined delay
     #[clap(short, long)]
     delay: Option<String>,
+    /// latency e.g. 10ms or 2s
+    ///
+    /// adds this delay to any locally defined delay. Simulates network delays.
+    #[clap(short, long)]
+    latency: Option<String>,
     #[clap(subcommand)]
     cmd: Option<Commands>,
 }
@@ -114,6 +120,12 @@ impl Cli {
             .and_then(|it| humantime::parse_duration(it.as_str()).ok())
             .and_then(|it| it.as_millis().try_into().ok())
     }
+
+    fn latency_milliseconds(&self) -> Option<u64> {
+        self.latency.as_ref()
+            .and_then(|it| humantime::parse_duration(it.as_str()).ok())
+            .and_then(|it| it.as_millis().try_into().ok())
+    }
 }
 
 impl From<&Cli> for Config {
@@ -122,6 +134,7 @@ impl From<&Cli> for Config {
             port: cli.port,
             verbose: Some(true),
             global_delay: cli.global_delay_milliseconds(),
+            latency: cli.latency_milliseconds(),
         }
     }
 }
