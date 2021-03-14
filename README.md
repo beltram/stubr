@@ -101,7 +101,7 @@ the latter.
         * [ ] Handlebars helpers
         * [ ] Number and assignment helpers
         * [ ] XPath helpers
-        * [ ] jsonPath helper
+        * [x] jsonPath helper
         * [ ] date and time helpers
         * [ ] Random value helper
         * [ ] Pick random helper

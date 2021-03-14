@@ -1,5 +1,6 @@
 use http_types::Method;
 use serde::Serialize;
+use serde_json::Value;
 use wiremock::Request;
 
 use super::req_ext::{Headers, Queries, RequestExt};
@@ -15,7 +16,7 @@ struct RequestData<'a> {
     url: &'a str,
     port: Option<u16>,
     method: Method,
-    body: Option<&'a str>,
+    body: Option<Value>,
     query: Option<Queries<'a>>,
     headers: Option<Headers<'a>>,
 }
@@ -46,10 +47,10 @@ mod request_data_tests {
     use std::{borrow::Cow, collections::HashMap, iter::FromIterator, str::FromStr};
 
     use http_types::{headers::{HeaderName, HeaderValue, HeaderValues}, Method, Url};
-    use serde_json::Value;
+    use itertools::Itertools;
+    use serde_json::{json, Value};
 
     use super::*;
-    use itertools::Itertools;
 
     #[test]
     fn should_take_request_path() {
@@ -110,11 +111,22 @@ mod request_data_tests {
     }
 
     #[test]
-    fn should_take_request_body() {
+    fn should_take_request_text_body() {
         let req = request("https://localhost", Some(Method::Post), &[], Some("Lorem ipsum"));
-        assert_eq!(RequestData::from(&req).body, Some("Lorem ipsum"));
+        assert_eq!(RequestData::from(&req).body.as_ref().and_then(|it| it.as_str()), Some("Lorem ipsum"));
+    }
+
+    #[test]
+    fn should_not_take_request_body_when_absent() {
         let req = request("https://localhost", None, &[], None);
         assert!(RequestData::from(&req).body.is_none());
+    }
+
+    #[test]
+    fn should_take_request_json_body() {
+        let req_body_str = "{\"name\": \"bob\", \"age\": 42}";
+        let req = request("https://localhost", Some(Method::Post), &[], Some(req_body_str));
+        assert_eq!(RequestData::from(&req).body, Some(json!({"name": "bob", "age": 42})));
     }
 
     #[test]

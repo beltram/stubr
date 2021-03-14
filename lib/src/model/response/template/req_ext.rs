@@ -11,7 +11,7 @@ pub(crate) type Headers<'a> = HashMap<&'a str, Value>;
 pub(crate) trait RequestExt {
     fn url(&self) -> &str;
     fn path_segments(&self) -> Option<Vec<&str>>;
-    fn body(&self) -> Option<&str>;
+    fn body(&self) -> Option<Value>;
     fn queries(&self) -> Option<Queries<'_>>;
     fn headers(&self) -> Option<Headers<'_>>;
 }
@@ -29,9 +29,14 @@ impl RequestExt for Request {
             .filter(|it| it.get(0) != Some(&""))
     }
 
-    fn body(&self) -> Option<&str> {
-        from_utf8(self.body.as_slice()).ok()
-            .filter(|it| !it.is_empty())
+    fn body(&self) -> Option<Value> {
+        if !self.body.is_empty() {
+            serde_json::from_slice::<Value>(self.body.as_slice()).ok()
+                .or_else(|| {
+                    from_utf8(self.body.as_slice()).ok()
+                        .map(|body_str| Value::String(body_str.to_string()))
+                })
+        } else { None }
     }
 
     fn queries(&self) -> Option<Queries<'_>> {

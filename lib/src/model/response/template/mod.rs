@@ -1,12 +1,26 @@
+use std::sync::RwLock;
+
+use handlebars::Handlebars;
 use serde::Serialize;
 use wiremock::{Request, Respond, ResponseTemplate};
 
 use data::HandlebarsData;
+use helpers::json_path::JsonPathHelper;
 
-use crate::model::{response::ResponseDto, stub::HANDLEBARS};
+use crate::model::response::ResponseDto;
 
 pub mod data;
 mod req_ext;
+mod helpers;
+
+lazy_static! {
+    pub(crate) static ref HANDLEBARS: RwLock<Handlebars<'static>> = {
+        let mut handlebars = Handlebars::new();
+        handlebars.source_map_enabled(false);
+        handlebars.register_helper("jsonPath", Box::new(JsonPathHelper));
+        RwLock::new(handlebars)
+    };
+}
 
 pub struct StubTemplate {
     pub(crate) template: ResponseTemplate,

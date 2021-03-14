@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "POST"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{jsonPath request.body '$.client.name'}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

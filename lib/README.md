@@ -91,7 +91,8 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       "multi-query": "{{request.query.kind.[1]}}", // will return 'novel' given '/api/books?kind=comics&kind=novel'
       "method": "{{request.method}}", // http request method e.g. "POST"
       "header": "{{request.headers.Content-Type}}", // will return request header with given key
-      "body": "{{request.body}}" // will return raw request body
+      "body": "{{request.body}}", // will return raw request body
+      "from-request": "{{jsonPath request.body '$.name'}}" // takes field 'name' from json request body
     }
   }
 }

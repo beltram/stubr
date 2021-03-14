@@ -1,6 +1,5 @@
-use std::{convert::TryFrom, sync::RwLock};
+use std::convert::TryFrom;
 
-use handlebars::Handlebars;
 use serde::Deserialize;
 use wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
 
@@ -10,14 +9,6 @@ use super::{
     request::RequestDto,
     response::{default::WiremockIsoResponse, delay::Delay, ResponseAppender, ResponseDto, template::{HandlebarTemplatable, StubTemplate}},
 };
-
-lazy_static! {
-    pub(crate) static ref HANDLEBARS: RwLock<Handlebars<'static>> = {
-        let mut handlebars = Handlebars::new();
-        handlebars.source_map_enabled(false);
-        RwLock::new(handlebars)
-    };
-}
 
 #[derive(Deserialize, Debug)]
 pub struct StubDto {
