@@ -70,12 +70,15 @@ jobs:
           cd target/release
           7z a ${{ matrix.to-file }} ${{ matrix.file }}
           mv ${{ matrix.to-file }} ../..
+      - name: get-previous-tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
       - name: bench
         if: ${{ matrix.os == 'ubuntu-latest' }}
         run: |
           mkdir -p target/criterion
           cd target/criterion
-          curl -OL https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz
+          curl -OL https://github.com/beltram/stubr/releases/download/${{ steps.previoustag.outputs.tag }}/bench.tar.gz
           tar -xzf bench.tar.gz
           rm bench.tar.gz
           cargo bench
