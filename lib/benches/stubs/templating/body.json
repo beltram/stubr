@@ -1,6 +1,7 @@
 {
   "request": {
-    "method": "POST"
+    "method": "POST",
+    "urlPath": "/api/request-body"
   },
   "response": {
     "status": 200,

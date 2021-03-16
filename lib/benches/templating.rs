@@ -6,9 +6,13 @@ use stubr::Stubr;
 
 fn body_templating_bench(c: &mut Criterion) {
     let srv = Stubr::start_blocking("benches/stubs/templating");
-    let uri = format!("{}{}", srv.uri(), "/api/json");
+    let req_body_uri = format!("{}{}", srv.uri(), "/api/request-body");
     c.bench_function("template request body", |b| {
-        b.to_async(AsyncStdExecutor).iter(|| black_box(post(&uri).body(json!({"name": "jdoe"}))))
+        b.to_async(AsyncStdExecutor).iter(|| black_box(post(&req_body_uri).body(json!({"name": "jdoe"}))))
+    });
+    let jsonpath_uri = format!("{}{}", srv.uri(), "/api/jsonpath");
+    c.bench_function("template request body by jsonpath", |b| {
+        b.to_async(AsyncStdExecutor).iter(|| black_box(post(&jsonpath_uri).body(json!({"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}))))
     });
 }
 

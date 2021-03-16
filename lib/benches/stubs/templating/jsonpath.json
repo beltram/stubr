@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/jsonpath"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "a": "{{jsonPath request.body '$.a'}}",
+      "b": "{{jsonPath request.body '$.b'}}",
+      "c": "{{jsonPath request.body '$.c'}}",
+      "d": "{{jsonPath request.body '$.d'}}",
+      "e": "{{jsonPath request.body '$.e'}}"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  }
+}
