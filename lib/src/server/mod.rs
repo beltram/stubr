@@ -1,14 +1,15 @@
 use std::{convert::TryFrom, net::TcpListener, path::PathBuf};
 
 use async_std::task::block_on;
-use itertools::Itertools;
 use wiremock::{Mock, MockServer};
 
 use stub::StubrMock;
+use stub_finder::StubFinder;
 
 use crate::Config;
 
 mod stub;
+mod stub_finder;
 pub mod config;
 
 /// Allows running a Wiremock mock server from Wiremock stubs.
@@ -92,62 +93,14 @@ impl Stubr {
     }
 
     fn find_all_mocks<'a>(&self, from: &PathBuf, config: &'a Config) -> impl Iterator<Item=(Mock, PathBuf)> + 'a {
-        self.find_all_files(from).into_iter()
+        StubFinder::find_all_stubs(from).into_iter()
             .flat_map(move |path| StubrMock::try_from((&path, config)).map(|mock| (mock.0, path)))
-    }
-
-    fn find_all_files(&self, from: &PathBuf) -> Vec<PathBuf> {
-        if from.exists() {
-            if from.is_dir() {
-                from.read_dir()
-                    .map(|dir| dir.into_iter().flatten()
-                        .map(|it| it.path())
-                        .filter(|it| it.is_file())
-                        .collect_vec())
-                    .unwrap_or_default()
-            } else { vec![from.to_path_buf()] }
-        } else { vec![] }
     }
 }
 
 #[cfg(test)]
 mod server_test {
-    use itertools::Itertools;
-
     use super::*;
-
-    #[async_std::test]
-    async fn should_find_all_files_from_dir() {
-        let from = PathBuf::from("tests/stubs/server");
-        let files = Stubr::start_on_random_port().await.find_all_files(&from);
-        assert_eq!(files.len(), 2);
-        let file_names = files.iter()
-            .map(|it| it.file_name().unwrap().to_str().unwrap())
-            .collect_vec();
-        assert!(file_names.contains(&"valid.json"));
-        assert!(file_names.contains(&"also_valid.json"));
-    }
-
-    #[async_std::test]
-    async fn should_find_all_files_from_single_file() {
-        let from = PathBuf::from("tests/stubs/server/valid.json");
-        let files = Stubr::start_on_random_port().await.find_all_files(&from);
-        assert_eq!(files.len(), 1);
-        let file_names = files.iter()
-            .map(|it| it.file_name().unwrap().to_str().unwrap())
-            .collect_vec();
-        assert!(file_names.contains(&"valid.json"));
-    }
-
-    #[async_std::test]
-    async fn should_not_find_any_file_when_path_does_not_exist() {
-        let from = PathBuf::from("tests/stubs/server/unknown");
-        let files = Stubr::start_on_random_port().await.find_all_files(&from);
-        assert!(files.is_empty());
-        let from = PathBuf::from("tests/stubs/server/unknown.json");
-        let files = Stubr::start_on_random_port().await.find_all_files(&from);
-        assert!(files.is_empty());
-    }
 
     #[async_std::test]
     async fn should_find_all_mocks_from_dir() {
