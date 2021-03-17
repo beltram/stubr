@@ -17,7 +17,7 @@ lazy_static! {
     pub(crate) static ref HANDLEBARS: RwLock<Handlebars<'static>> = {
         let mut handlebars = Handlebars::new();
         handlebars.source_map_enabled(false);
-        handlebars.register_helper("jsonPath", Box::new(JsonPathHelper));
+        handlebars.register_helper(JsonPathHelper::SUPPORTED_PATH, Box::new(JsonPathHelper));
         RwLock::new(handlebars)
     };
 }
