@@ -24,12 +24,6 @@ jobs:
       uses: gmiam/rust-musl-action@master
       with:
         args: cargo build --target $BUILD_TARGET --release
-    - name: upx
-      uses: svenstaro/upx-action@v2
-      with:
-        file: ${{ matrix.from-file }}
-        args: ${{ matrix.args }}
-        strip: ${{ matrix.strip }}
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ env.BINARY_NAME }}
