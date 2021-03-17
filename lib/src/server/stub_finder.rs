@@ -8,14 +8,18 @@ impl StubFinder {
     pub fn find_all_stubs(from: &PathBuf) -> Vec<PathBuf> {
         if from.exists() {
             if from.is_dir() {
-                from.read_dir()
-                    .map(|dir| dir.into_iter().flatten()
-                        .map(|it| it.path())
-                        .filter(|it| it.is_file())
-                        .collect_vec())
-                    .unwrap_or_default()
+                Self::find_all_stubs_under_dir(from)
             } else { vec![from.to_path_buf()] }
         } else { vec![] }
+    }
+
+    fn find_all_stubs_under_dir(from: &PathBuf) -> Vec<PathBuf> {
+        from.read_dir()
+            .map(|dir| dir.into_iter().flatten()
+                .map(|it| it.path())
+                .filter(|it| it.is_file())
+                .collect_vec())
+            .unwrap_or_default()
     }
 }
 
@@ -56,6 +60,13 @@ mod stub_finder_test {
         assert!(files.is_empty());
         let from = PathBuf::from("tests/stubs/server/unknown.json");
         let files = StubFinder::find_all_stubs(&from);
+        assert!(files.is_empty());
+    }
+
+    #[async_std::test]
+    async fn should_return_empty_vec_when_read_dir_fails() {
+        let from = PathBuf::from("tests/stubs/server/unknown.json");
+        let files = StubFinder::find_all_stubs_under_dir(&from);
         assert!(files.is_empty());
     }
 }
