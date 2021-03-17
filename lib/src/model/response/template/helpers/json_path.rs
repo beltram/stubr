@@ -4,7 +4,7 @@ use serde_json::Value;
 pub struct JsonPathHelper;
 
 impl JsonPathHelper {
-    pub(crate) const SUPPORTED_PATH: &'static str = "request.body";
+    const SUPPORTED_PATH: &'static str = "request.body";
 
     fn is_supported_helper(input: &PathAndJson) -> bool {
         input.relative_path().map(|it| it.as_str()) == Some(Self::SUPPORTED_PATH)
