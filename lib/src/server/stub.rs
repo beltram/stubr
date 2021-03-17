@@ -1,10 +1,11 @@
-use std::{convert::TryFrom, fs::OpenOptions, path::PathBuf};
+use std::{convert::TryFrom, fs::OpenOptions};
 
 use wiremock::Mock;
 
 use crate::Config;
 
 use super::super::model::stub::StubDto;
+use async_std::path::PathBuf;
 
 pub struct StubrMock(pub Mock);
 
