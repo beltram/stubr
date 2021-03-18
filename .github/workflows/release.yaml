@@ -1,0 +1,131 @@
+name: ci
+
+on: [ push, pull_request ]
+
+env:
+  CARGO_TERM_COLOR: always
+  STATIC_BUILD_TARGET: x86_64-unknown-linux-musl
+
+jobs:
+  check:
+    strategy:
+      matrix:
+        os: [ macos-latest, windows-latest, ubuntu-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: Swatinem/rust-cache@v1
+      - name: cargo/check
+        run: cargo check
+      - name: cargo/test
+        run: cargo test
+      - name: cargo/clippy
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: cargo clippy
+  release:
+    # runs on tags only
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [check]
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            file: stubr
+            from-file: ./target/release/stubr
+            to-file: stubr-linux.tar.gz
+            args: --best --lzma
+            strip: true
+          - os: macos-latest
+            file: stubr
+            from-file: ./target/release/stubr
+            to-file: stubr-macos.tar.gz
+            args: --best
+            strip: true
+          - os: windows-latest
+            file: stubr.exe
+            from-file: ./target/release/stubr.exe
+            to-file: stubr-windows.zip
+            args: -9
+            strip: false
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: Swatinem/rust-cache@v1
+      - name: cargo/build
+        run: cargo build --release
+      - name: upx
+        uses: svenstaro/upx-action@v2
+        with:
+          file: ${{ matrix.from-file }}
+          args: ${{ matrix.args }}
+          strip: ${{ matrix.strip }}
+      - name: compression/tar
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
+        run: |
+          cd target/release
+          tar czf ${{ matrix.to-file }} ${{ matrix.file }}
+          mv ${{ matrix.to-file }} ../..
+      - name: compression/zip
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          cd target/release
+          7z a ${{ matrix.to-file }} ${{ matrix.file }}
+          mv ${{ matrix.to-file }} ../..
+      - name: bench
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          mkdir -p target/criterion
+          cd target/criterion
+          curl -OL https://github.com/beltram/stubr/releases/download/0.3.1/bench.tar.gz
+          tar -xzf bench.tar.gz
+          rm bench.tar.gz
+          cargo bench
+          tar czf ../bench.tar.gz .
+      - name: release-assets
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            ${{ matrix.to-file }}
+            target/bench.tar.gz
+  publish:
+    # runs on tags only
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - uses: Swatinem/rust-cache@v1
+      - name: publish lib
+        run: |
+          cd lib
+          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
+      - name: publish cli
+        run: |
+          cd cli
+          sleep 180
+          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
+  docker_publish:
+    # runs on tags only
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    needs: [release]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build-musl
+      uses: gmiam/rust-musl-action@master
+      with:
+        args: cargo build --target ${STATIC_BUILD_TARGET} --release
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.CR_PAT }}
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ghcr.io/beltram/stubr:latest
