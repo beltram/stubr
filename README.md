@@ -94,7 +94,7 @@ the latter.
         * [ ] `{{request.scheme}}`
         * [ ] `{{request.baseUrl}}`
         * [x] `{{request.headers.<key>}}`
-        * [ ] `{{request.headers.<key>.[<n>]}}`
+        * [x] `{{request.headers.<key>.[<n>]}}`
         * [ ] `{{request.cookies.<key>}}`
         * [ ] `{{request.cookies.<key>.[<n>]}}`
         * [x] `{{request.body}}`

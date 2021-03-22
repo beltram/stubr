@@ -78,7 +78,7 @@ implemented features in `stubr` : just things which actually work in `stubr` are
     "body": "Hello World !", // text response (automatically adds 'Content-Type:text/plain' header)
     "bodyFileName": "tests/stubs/response.json", // path to a .json or .txt file containing the response
     "headers": {
-      "Content-Type": "application/pdf" // return this response header
+      "Content-Type": "application/pdf" // returns this response header
     },
     // ..now response templating
     // it uses handlebars and allows you to define dynamic response based upon the content of the request
@@ -86,12 +86,13 @@ implemented features in `stubr` : just things which actually work in `stubr` are
     "jsonBody": {
       "url-path-and-query": "{{request.url}}",
       "url-path": "{{request.path}}",
-      "url-path-segments": "{{request.pathSegments.[1]}}", // will return 'two' given '/one/two/three' path
-      "query": "{{request.query.kind}}", // will return 'comics' given '/api/books?kind=comics'
-      "multi-query": "{{request.query.kind.[1]}}", // will return 'novel' given '/api/books?kind=comics&kind=novel'
+      "url-path-segments": "{{request.pathSegments.[1]}}", // returns 'two' given '/one/two/three' path
+      "query": "{{request.query.kind}}", // returns 'comics' given '/api/books?kind=comics'
+      "multi-query": "{{request.query.kind.[1]}}", // returns 'novel' given '/api/books?kind=comics&kind=novel'
       "method": "{{request.method}}", // http request method e.g. "POST"
-      "header": "{{request.headers.Content-Type}}", // will return request header with given key
-      "body": "{{request.body}}", // will return raw request body
+      "header": "{{request.headers.Content-Type}}", // returns request header with given key
+      "multi-header": "{{request.headers.cache-control.[0]}}", // returns first value of "cache-control" values
+      "body": "{{request.body}}", // returns raw request body
       "from-request": "{{jsonPath request.body '$.name'}}" // takes field 'name' from json request body
     }
   }
