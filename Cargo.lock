@@ -2363,7 +2363,7 @@ checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 
 [[package]]
 name = "stubr"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "anyhow",
  "async-std",
@@ -2387,7 +2387,7 @@ dependencies = [
 
 [[package]]
 name = "stubr-cli"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "anyhow",
  "assert_cmd",
