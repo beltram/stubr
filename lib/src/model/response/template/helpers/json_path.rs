@@ -18,7 +18,7 @@ impl JsonPathHelper {
 
     fn extract(request_body: &Value, jsonpath: &str) -> Option<Value> {
         jsonpath_lib::select(request_body, jsonpath).ok()
-            .and_then(|values| values.get(0).map(|it| it.to_owned().to_owned()))
+            .and_then(|values| values.get(0).map(|&it| it.to_owned()))
     }
 }
 
