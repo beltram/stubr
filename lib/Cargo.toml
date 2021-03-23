@@ -28,7 +28,7 @@ base64 = "0.13.0"
 futures = "0.3.13"
 
 [dependencies.serde]
-version = "1.0.124"
+version = "1.0.125"
 features = ["derive"]
 
 [dependencies.async-std]
