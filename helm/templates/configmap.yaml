@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "stubr.fullname" . }}
+data:
+  {{- $currentScope := . -}}
+  {{- range $path, $bytes := .Files.Glob .Values.stubs }}
+  {{- with $currentScope }}
+  {{ regexReplaceAll "[^a-zA-Z0-9-_.]" $path "_" | replace "stubs_" "" | quote }}: {{ .Files.Get $path | quote }}
+  {{- end }}
+  {{- end }}
