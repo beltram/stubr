@@ -1,6 +1,0 @@
-apiVersion: v2
-name: stubr
-description: stubr Helm chart
-type: application
-version: 0.1.0
-appVersion: "0.3.4"
