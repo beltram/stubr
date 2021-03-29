@@ -18,7 +18,7 @@ path = "src/main.rs"
 
 [dependencies]
 stubr = { path = "../lib", version = "0.3.4" }
-anyhow = "1.0.39"
+anyhow = "1.0.40"
 directories = "3.0.1"
 clap = "3.0.0-beta.2"
 clap_generate = "3.0.0-beta.2"
