@@ -51,12 +51,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create the name of the service account to use
+Templates stubs files
 */}}
-{{- define "stubr.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "stubr.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
+{{- define "stubr.stubs" -}}
+{{- $currentScope := . -}}
+{{- range $path, $bytes := .Files.Glob .Values.stubs }}
+{{- with $currentScope }}
+{{ regexReplaceAll "[^a-zA-Z0-9-_.]" $path "_" | replace "stubs_" "" | quote }}: {{ .Files.Get $path | quote }}
+{{- end }}
 {{- end }}
 {{- end }}

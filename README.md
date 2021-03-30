@@ -48,7 +48,7 @@ the latter.
 * [as a crate](lib/README.md)
 * [as a cli](cli/README.md)
 * [Docker](#Docker)
-* Helm chart (incoming)
+* [Helm chart](#Helm)
 
 # features
 
@@ -123,7 +123,7 @@ the latter.
 
 A docker image is published [here](https://github.com/users/beltram/packages/container/package/stubr) with each release.  
 
-You can play with it with the following commands
+You can play with it with the following commands:
 
 ```bash
 echo "{\"request\": {\"method\": \"GET\"}, \"response\": { \"body\": \"Hello stubr\" }}" > hello.json &&
@@ -141,6 +141,18 @@ date: Tue, 23 Mar 2021 13:37:41 GMT
 server: stubr(0.3.4)
 
 Hello stubr
+```
+
+# Helm
+
+A Helm chart is also maintained for those moments where you have to deploy mocks in a Kubernetes cluster.
+
+You can play with it with the following commands:
+
+```
+mkdir stubs &&
+echo "{\"request\": {\"method\": \"GET\"}, \"response\": { \"body\": \"Hello stubr\" }}" > stubs/hello.json &&
+helm install --repo https://beltram.github.io/stubr/ hello-stubr stubr
 ```
 
 # benchmark

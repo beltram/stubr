@@ -1,5 +1,5 @@
-source ./helm/test/scripts/start.sh
-source ./helm/test/scripts/stop.sh
+source ./charts/example/scripts/start.sh
+source ./charts/example/scripts/stop.sh
 
 echo "--------------------"
 echo "Stopping k3s cluster"
@@ -14,11 +14,11 @@ k3d_start
 echo "-------------------------------------------------------"
 echo "Installing ingress, exposing stubr service on port 8081"
 echo "-------------------------------------------------------"
-kubectl apply -f helm/test/scripts/ingress.yaml
+kubectl apply -f charts/example/scripts/ingress.yaml
 echo "----------------------"
 echo "Installing stubr chart"
 echo "----------------------"
-helm install stubr ./helm
+helm install --repo https://beltram.github.io/stubr/ hello-stubr stubr
 echo "--------------------------"
 echo "Make sure pod is installed"
 echo "--------------------------"
