@@ -150,7 +150,8 @@ A Helm chart is also maintained for those moments where you have to deploy mocks
 You can play with it with the following commands:
 
 *Pending Helm `--include-dir` flag the workaround is to unpack the chart then copy stubs folder inside it.*
-```
+
+```bash
 mkdir stubs &&
 echo "{\"request\": {\"method\": \"GET\"}, \"response\": { \"body\": \"Hello stubr\" }}" > stubs/hello.json &&
 helm pull --repo https://beltram.github.io/stubr/ stubr --untar &&
