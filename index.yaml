@@ -1,0 +1,23 @@
+apiVersion: v1
+entries:
+  stubr:
+  - apiVersion: v2
+    appVersion: 0.3.4
+    created: "2021-03-30T12:31:47.542356048Z"
+    description: stubr Helm chart
+    digest: 870cdaf783f7a79773110e15f5557feeeb771274bda44ae2f1e1167e72bd0cac
+    home: https://github.com/beltram/stubr
+    keywords:
+    - wiremock
+    - mock
+    - stub
+    kubeVersion: '>= 1.18.0'
+    name: stubr
+    sources:
+    - https://beltram.github.io/stubr/
+    - https://github.com/beltram/stubr
+    type: application
+    urls:
+    - https://github.com/beltram/stubr/releases/download/stubr-0.2.0/stubr-0.2.0.tgz
+    version: 0.2.0
+generated: "2021-03-30T12:31:47.542398248Z"
