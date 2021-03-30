@@ -2,5 +2,14 @@ apiVersion: v2
 name: stubr
 description: stubr Helm chart
 type: application
-version: 0.1.0
+version: 0.1.1
+kubeVersion: ">= 1.18.0"
 appVersion: "0.3.4"
+home: https://github.com/beltram/stubr
+keywords:
+  - wiremock
+  - mock
+  - stub
+sources:
+  - https://beltram.github.io/stubr/
+  - https://github.com/beltram/stubr

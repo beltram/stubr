@@ -8,7 +8,7 @@ on:
 #      - 'helm/**'
 
 jobs:
-  release:
+  helm-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,6 +26,6 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.0
         with:
-          charts_dir: "./helm"
+          charts_dir: "helm"
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
