@@ -14,6 +14,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2.3.4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
       - uses: Swatinem/rust-cache@v1
       - name: cargo/check
         run: cargo check
@@ -50,6 +54,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2.3.4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
       - uses: Swatinem/rust-cache@v1
       - name: cargo/build
         run: cargo build --release
@@ -96,6 +104,10 @@ jobs:
     needs: [release]
     steps:
       - uses: actions/checkout@v2.3.4
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
       - uses: Swatinem/rust-cache@v1
       - name: publish lib
         run: |
@@ -113,6 +125,10 @@ jobs:
     needs: [release]
     steps:
     - uses: actions/checkout@v2.3.4
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
     - uses: Swatinem/rust-cache@v1
     - name: build-musl
       uses: gmiam/rust-musl-action@master
