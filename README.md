@@ -159,6 +159,12 @@ mv stubs stubr &&
 helm install hello-stubr ./stubr
 ```
 
+For the hurry ones who also have [k3d](https://k3d.io/) installed locally you can bootstrap a Kubernetes cluster
+locally and install stubr chart on it with the following command
+```bash
+curl https://raw.githubusercontent.com/beltram/stubr/main/charts/example/run.sh | sh
+```
+
 # benchmark
 
 Performance matters for `stubr` because it is meant to be a lighter version of [Wiremock](https://github.com/tomakehurst/wiremock).
