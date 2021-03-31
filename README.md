@@ -52,72 +52,101 @@ the latter.
 
 # features
 
-* [x] request matching (json)
-    * [x] body
-        * [x] `equalToJson`
-        * [x] `matchesJsonPath`
-        * [x] `binaryEqualTo`
-    * [x] method (GET, POST etc...)
-    * [x] url
-        * [x] `url`
-        * [x] `urlPath`
-        * [x] `urlPathPattern`
-        * [x] `urlPattern`
-    * [x] headers
-        * [x] `equalTo`
-        * [x] `contains`
-        * [x] `matches`
-        * [x] `caseInsensitive`
-        * [x] `absent`
-        * [ ] multivalued
-    * [x] query parameters
-        * [x] `equalTo`
-        * [x] `contains`
-        * [x] `matches`
-        * [x] `caseInsensitive`
-        * [x] `absent`
-* [x] response
-    * [x] `status`
-    * [x] `headers`
-    * [x] `bodyFileName`
-    * [x] `jsonBody`
-    * [x] `body`
-    * [x] `fixedDelayMilliseconds`
-    * [x] templating
-        * [x] `{{request.url}}`
-        * [x] `{{request.path}}`
-        * [x] `{{request.pathSegments.[<n>]}}`
-        * [x] `{{request.query.<key>}}`
-        * [x] `{{request.query.<key>.[<n>]}}`
-        * [x] `{{request.method}}`
-        * [ ] `{{request.host}}`
-        * [ ] `{{request.scheme}}`
-        * [ ] `{{request.baseUrl}}`
-        * [x] `{{request.headers.<key>}}`
-        * [x] `{{request.headers.<key>.[<n>]}}`
-        * [ ] `{{request.cookies.<key>}}`
-        * [ ] `{{request.cookies.<key>.[<n>]}}`
-        * [x] `{{request.body}}`
-        * [ ] Handlebars helpers
-        * [ ] Number and assignment helpers
-        * [ ] XPath helpers
-        * [x] jsonPath helper
-        * [ ] date and time helpers
-        * [ ] Random value helper
-        * [ ] Pick random helper
-        * [ ] String trim helper
-        * [ ] Base64 helper
-        * [ ] URL encoding helper
-        * [ ] Form helper
-        * [ ] Regular expression extract helper
-        * [ ] Size helper
-        * [ ] Hostname helper
-        * [ ] System property helper
+We list here all the capabilities supported by the original [Wiremock](https://github.com/tomakehurst/wiremock) and we
+track down which ones are implemented by stubr. For having a view of what is supported in a json stub refer to the
+[Wiremock cheat sheet](https://github.com/beltram/stubr/tree/main/lib#wiremock-cheat-sheet).
+
+<details>
+<summary><b>Global</b></summary>
+
 * [ ] anything related to xml
-* [x] config
-    * [x] custom port
-    * [x] global delay
-    * [ ] random delay
+* [x] start server oncustom port
+
+</details>
+
+<details>
+<summary><b><a href="http://wiremock.org/docs/request-matching/"> Request matching</a></b></summary>
+
+* [x] body
+  * [x] `equalToJson`
+  * [x] `matchesJsonPath`
+  * [x] `binaryEqualTo`
+* [x] method (GET, POST, ANY etc...)
+* [x] url
+    * [x] `url`
+    * [x] `urlPath`
+    * [x] `urlPathPattern`
+    * [x] `urlPattern`
+* [x] headers
+    * [x] `equalTo`
+    * [x] `contains`
+    * [x] `matches`
+    * [x] `caseInsensitive`
+    * [x] `absent`
+    * [ ] multivalued
+* [x] query parameters
+    * [x] `equalTo`
+    * [x] `contains`
+    * [x] `matches`
+    * [x] `caseInsensitive`
+    * [x] `absent`
+
+</details>
+
+<details>
+<summary><b><a href="http://wiremock.org/docs/stubbing/"> Stubbing</a></b></summary>
+
+* [x] `status`
+* [x] `headers`
+* [x] `bodyFileName`
+* [x] `jsonBody`
+* [x] `body`
+
+</details>
+
+<details>
+<summary><b><a href="http://wiremock.org/docs/simulating-faults/"> Simulating faults</a></b></summary>
+
+* [x] `fixedDelayMilliseconds`
+* [x] global delay
+* [ ] random delay
+
+</details>
+
+<details>
+<summary><b><a href="http://wiremock.org/docs/response-templating/"> Response templating</a></b></summary>
+
+* [x] `{{request.url}}`
+* [x] `{{request.path}}`
+* [x] `{{request.pathSegments.[<n>]}}`
+* [x] `{{request.query.<key>}}`
+* [x] `{{request.query.<key>.[<n>]}}`
+* [x] `{{request.method}}`
+* [ ] `{{request.host}}`
+* [ ] `{{request.scheme}}`
+* [ ] `{{request.baseUrl}}`
+* [x] `{{request.headers.<key>}}`
+* [x] `{{request.headers.<key>.[<n>]}}`
+* [ ] `{{request.cookies.<key>}}`
+* [ ] `{{request.cookies.<key>.[<n>]}}`
+* [x] `{{request.body}}`
+* [ ] Handlebars helpers
+* [ ] Number and assignment helpers
+* [ ] XPath helpers
+* [x] jsonPath helper
+* [ ] date and time helpers
+* [ ] Random value helper
+* [ ] Pick random helper
+* [ ] String trim helper
+* [ ] Base64 helper
+* [ ] URL encoding helper
+* [ ] Form helper
+* [ ] Regular expression extract helper
+* [ ] Size helper
+* [ ] Hostname helper
+* [ ] System property helper
+
+</details>
 
 # Docker
 
