@@ -11,5 +11,5 @@ spec:
           - path: /
             pathType: Prefix
             backend:
-              serviceName: stubr
+              serviceName: hello-stubr
               servicePort: 80

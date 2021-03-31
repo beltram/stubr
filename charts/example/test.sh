@@ -1,14 +1,13 @@
 source ./charts/example/scripts/start.sh
 source ./charts/example/scripts/stop.sh
 
-echo "--------------------"
-echo "Stopping k3s cluster"
-echo "--------------------"
+echo "--------------------------------"
+echo "Stopping any running k3s cluster"
+echo "--------------------------------"
 k3d_stop
 echo "--------------------"
 echo "Starting k3s cluster"
 echo "--------------------"
-k3d_stop
 k3d_start
 
 echo "-------------------------------------------------------"
@@ -18,21 +17,18 @@ kubectl apply -f charts/example/scripts/ingress.yaml
 echo "----------------------"
 echo "Installing stubr chart"
 echo "----------------------"
-helm install --repo https://beltram.github.io/stubr/ hello-stubr stubr
+helm pull --repo https://beltram.github.io/stubr/ stubr --untar
+cp -R charts/example/stubs stubr
+helm install hello-stubr ./stubr
 echo "--------------------------"
 echo "Make sure pod is installed"
 echo "--------------------------"
 kubectl get pod -n default
 
-echo "Waiting ..."
-sleep 60
+echo "Waiting 20s for pod to be up and running ..."
+sleep 20
 
 echo "--------------------------------------"
 echo "calling deployed pod on localhost:8081"
 echo "--------------------------------------"
 curl http://localhost:8081/stubr
-
-echo "--------------------"
-echo "Stopping k3s cluster"
-echo "--------------------"
-#k3d_stop
