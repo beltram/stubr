@@ -8,6 +8,7 @@ use stub_finder::StubFinder;
 
 use crate::Config;
 use async_std::path::PathBuf;
+use crate::cloud::probe::HttpProbe;
 
 mod stub;
 mod stub_finder;
@@ -20,7 +21,6 @@ pub struct Stubr {
 }
 
 impl Stubr {
-
     #[cfg(feature = "cloud")]
     const HOST: &'static str = "0.0.0.0";
 
@@ -55,6 +55,7 @@ impl Stubr {
             Self::start_on_random_port().await
         };
         server.register_stubs(stubs.into(), config).await;
+        server.register_cloud_features().await;
         server
     }
 
@@ -101,6 +102,11 @@ impl Stubr {
     async fn find_all_mocks<'a>(&self, from: &PathBuf, config: &'a Config) -> impl Iterator<Item=(Mock, PathBuf)> + 'a {
         StubFinder::find_all_stubs(from).await.into_iter()
             .flat_map(move |path| StubrMock::try_from((&path, config)).map(|mock| (mock.0, path)))
+    }
+
+    async fn register_cloud_features(&self) {
+        let probe_mock = HttpProbe::health_probe();
+        self.instance.register(probe_mock).await;
     }
 }
 

@@ -54,3 +54,4 @@ pub use server::{config::Config, Stubr};
 
 mod model;
 mod server;
+mod cloud;
