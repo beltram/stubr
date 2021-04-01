@@ -1,4 +1,7 @@
 # Benchmark
+
+*Run on Macbook Pro 2017 2,8 GHz Quad-Core Intel Core i7*
+
 * stubr
   * rust version: 1.50.0 
 * wiremock
