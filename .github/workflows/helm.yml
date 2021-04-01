@@ -9,20 +9,21 @@ jobs:
   helm-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0
-      - name: Configure Git
+      - name: configure git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      - name: Install Helm
+      - name: install helm
         uses: azure/setup-helm@v1
         with:
           version: v3.5.3
-      - name: Run chart-releaser
+      - name: release chart
         uses: helm/chart-releaser-action@v1.2.0
+        continue-on-error: true
         with:
           charts_dir: "charts"
         env:
