@@ -36,6 +36,21 @@ spec:
           volumeMounts:
             - mountPath: /stubs
               name: {{ include "stubr.fullname" . }}
+          livenessProbe:
+            httpGet:
+              port: http
+              path: /healtz
+            failureThreshold: {{ .Values.liveness.failureThreshold }}
+            periodSeconds: {{ .Values.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.liveness.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /healtz
+            failureThreshold: {{ .Values.readiness.failureThreshold }}
+            periodSeconds: {{ .Values.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.readiness.timeoutSeconds }}
+            initialDelaySeconds: {{ .Values.readiness.initialDelaySeconds }}
       volumes:
         - name: {{ include "stubr.fullname" . }}
           configMap:

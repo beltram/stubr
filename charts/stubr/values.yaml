@@ -24,3 +24,13 @@ resources:
 
 autoscaling:
   enabled: true
+
+liveness:
+  failureThreshold: 1
+  periodSeconds: 5
+  timeoutSeconds: 1
+readiness:
+  failureThreshold: 1
+  periodSeconds: 10
+  timeoutSeconds: 1
+  initialDelaySeconds: 1
