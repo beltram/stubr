@@ -2,6 +2,26 @@ apiVersion: v1
 entries:
   stubr:
   - apiVersion: v2
+    appVersion: 0.4.0
+    created: "2021-04-01T19:42:42.801701478Z"
+    description: stubr Helm chart
+    digest: b0e4adf2e0fd39554a0292b01c8fa828015dd45d3370052f4b5117b11a2370a3
+    home: https://github.com/beltram/stubr
+    keywords:
+    - wiremock
+    - mock
+    - stub
+    - rust
+    kubeVersion: '>= 1.18.0'
+    name: stubr
+    sources:
+    - https://beltram.github.io/stubr/
+    - https://github.com/beltram/stubr
+    type: application
+    urls:
+    - https://github.com/beltram/stubr/releases/download/stubr-0.3.1/stubr-0.3.1.tgz
+    version: 0.3.1
+  - apiVersion: v2
     appVersion: 0.4.0-alpha.1
     created: "2021-04-01T15:14:31.157849493Z"
     description: stubr Helm chart
@@ -60,4 +80,4 @@ entries:
     urls:
     - https://github.com/beltram/stubr/releases/download/stubr-0.2.0/stubr-0.2.0.tgz
     version: 0.2.0
-generated: "2021-04-01T15:14:31.157862894Z"
+generated: "2021-04-01T19:42:42.801717278Z"
