@@ -10,6 +10,8 @@ image:
 nameOverride: ""
 fullnameOverride: ""
 
+podAnnotations: {}
+
 service:
   type: ClusterIP
   port: 80
@@ -24,6 +26,9 @@ resources:
 
 autoscaling:
   enabled: true
+  minReplicas: 1
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 80
 
 liveness:
   failureThreshold: 1
