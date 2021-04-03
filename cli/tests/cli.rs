@@ -17,3 +17,9 @@ async fn should_serve_stubs_under_root_dir() {
     assert!(post(&stubr.addr).await.unwrap().status().is_success());
     assert!(get(&stubr.addr).await.unwrap().status().is_client_error());
 }
+
+#[async_std::test]
+async fn should_start_even_without_stubs() {
+    let stubr = StubrCli::new(&[]);
+    assert!(get(format!("{}/healtz", stubr.addr)).await.unwrap().status().is_success());
+}
