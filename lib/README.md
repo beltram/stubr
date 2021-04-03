@@ -83,6 +83,7 @@ implemented features in `stubr` : just things which actually work in `stubr` are
     // ..now response templating
     // it uses handlebars and allows you to define dynamic response based upon the content of the request
     // it can be used in "jsonBody", "body", "bodyFileName" or "headers"
+    "transformers": ["response-template"], // required to activate response templating
     "jsonBody": {
       "url-path-and-query": "{{request.url}}",
       "url-path": "{{request.path}}",
