@@ -94,8 +94,12 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       "header": "{{request.headers.Content-Type}}", // returns request header with given key
       "multi-header": "{{request.headers.cache-control.[0]}}", // returns first value of "cache-control" values
       "body": "{{request.body}}", // returns raw request body
-      "from-request": "{{jsonPath request.body '$.name'}}" // takes field 'name' from json request body
+      "from-request": "{{jsonPath request.body '$.name'}}", // takes field 'name' from json request body
+      "now": "{{now}}", // current datetime (UTC)
+      "now-fmt": "{{now format='yyyy/MM/dd'}}" // (1) with custom Java SimpleDateFormat
     }
   }
 }
 ```
+
+* (1) [Java SimpleDateFormat](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html)

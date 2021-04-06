@@ -6,7 +6,7 @@ use wiremock::{Request, Respond, ResponseTemplate};
 
 use data::HandlebarsData;
 use helpers::json_path::JsonPathHelper;
-
+use helpers::now::NowHelper;
 use crate::model::response::ResponseDto;
 
 pub mod data;
@@ -17,7 +17,8 @@ lazy_static! {
     pub(crate) static ref HANDLEBARS: RwLock<Handlebars<'static>> = {
         let mut handlebars = Handlebars::new();
         handlebars.source_map_enabled(false);
-        handlebars.register_helper("jsonPath", Box::new(JsonPathHelper));
+        handlebars.register_helper(JsonPathHelper::NAME, Box::new(JsonPathHelper));
+        handlebars.register_helper(NowHelper::NAME, Box::new(NowHelper));
         RwLock::new(handlebars)
     };
 }

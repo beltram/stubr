@@ -26,6 +26,8 @@ handlebars = "3.5.3"
 lazy_static = "1.4.0"
 base64 = "0.13.0"
 futures = "0.3.13"
+chrono = "0.4.19"
+simpledateformat = "0.1.1"
 
 [dependencies.serde]
 version = "1.0.125"

@@ -4,6 +4,7 @@ use serde_json::Value;
 pub struct JsonPathHelper;
 
 impl JsonPathHelper {
+    pub const NAME: &'static str = "jsonPath";
     const SUPPORTED_PATH: &'static str = "request.body";
 
     fn is_supported_helper(input: &PathAndJson) -> bool {
@@ -33,10 +34,10 @@ impl HelperDef for JsonPathHelper {
     ) -> HelperResult {
         if let Some(input) = h.params().get(0) {
             if Self::is_supported_helper(input) {
-                if let Some(jsonpath) = Self::get_json_path(h.params()) {
-                    if let Some(rendered) = Self::extract(input.value(), jsonpath) {
-                        out.write(rendered.as_str().unwrap()).unwrap();
-                    }
+                let rendered = Self::get_json_path(h.params())
+                    .and_then(|jsonpath| Self::extract(input.value(), jsonpath));
+                if let Some(rendered) = rendered.as_ref().and_then(|it| it.as_str()) {
+                    out.write(rendered).unwrap();
                 }
             }
         }

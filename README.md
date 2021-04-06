@@ -60,7 +60,7 @@ track down which ones are implemented by stubr. For having a view of what is sup
 <summary><b>Global</b></summary>
 
 * [ ] anything related to xml
-* [x] start server oncustom port
+* [x] start server on custom port
 
 </details>
 

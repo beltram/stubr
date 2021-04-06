@@ -4,6 +4,7 @@ use std::{fmt::Debug, path::PathBuf, str::FromStr};
 
 use async_std::task::block_on;
 use http_types::headers::{HeaderName, HeaderValue};
+use regex::Regex;
 use serde::de::DeserializeOwned;
 use surf::Response;
 
@@ -71,6 +72,8 @@ pub trait ResponseAsserter {
 
     fn assert_error(&mut self) -> &mut Self { self.assert_status_eq(500) }
     fn assert_body_text(&mut self, body: &str) -> &mut Self;
+    fn assert_body_text_satisfies(&mut self, asserter: fn(&str)) -> &mut Self;
+    fn assert_body_text_matches(&mut self, regex: &str) -> &mut Self;
     fn assert_body_json<T>(&mut self, body: T) -> &mut Self where T: DeserializeOwned + PartialEq + Debug;
     fn assert_body_empty(&mut self) -> &mut Self { self.assert_body_text("") }
     fn assert_header(&mut self, key: &str, value: &str) -> &mut Self;
@@ -97,6 +100,18 @@ impl ResponseAsserter for Response {
 
     fn assert_body_text(&mut self, body: &str) -> &mut Self {
         assert_eq!(block_on(self.body_string()).unwrap(), body);
+        self
+    }
+
+    fn assert_body_text_satisfies(&mut self, asserter: fn(&str)) -> &mut Self {
+        asserter(block_on(self.body_string()).unwrap().as_str());
+        self
+    }
+
+    fn assert_body_text_matches(&mut self, regex: &str) -> &mut Self {
+        let regex = Regex::new(regex).unwrap();
+        let body = block_on(self.body_string()).unwrap();
+        assert!(regex.is_match(body.as_str()));
         self
     }
 
