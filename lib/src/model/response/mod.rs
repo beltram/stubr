@@ -4,7 +4,7 @@ use wiremock::ResponseTemplate;
 use body::BodyDto;
 use headers::HttpRespHeadersDto;
 
-use super::stub::StubDto;
+use super::StubDto;
 
 mod body;
 mod body_file;
