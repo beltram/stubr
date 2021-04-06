@@ -4,7 +4,7 @@ description: stubr Helm chart
 type: application
 version: 0.3.1
 kubeVersion: ">= 1.18.0"
-appVersion: "0.4.0"
+appVersion: "0.4.1"
 home: https://github.com/beltram/stubr
 keywords:
   - wiremock

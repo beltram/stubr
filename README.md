@@ -167,7 +167,7 @@ HTTP/1.1 200 OK
 content-length: 11
 content-type: text/plain
 date: Tue, 23 Mar 2021 13:37:41 GMT
-server: stubr(0.4.0)
+server: stubr(0.4.1)
 
 Hello stubr
 ```
