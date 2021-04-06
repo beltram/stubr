@@ -76,7 +76,7 @@ impl Stubr {
     async fn start_on(port: u16) -> Self {
         if let Ok(listener) = TcpListener::bind(format!("{}:{}", Self::HOST, port)) {
             Self {
-                instance: MockServer::builder().listener(listener).start().await
+                instance: MockServer::builder().disable_request_recording().listener(listener).start().await
             }
         } else {
             Self::start_on_random_port().await
@@ -84,7 +84,7 @@ impl Stubr {
     }
 
     async fn start_on_random_port() -> Self {
-        Self { instance: MockServer::start().await }
+        Self { instance: MockServer::builder().disable_request_recording().start().await }
     }
 
     async fn register_stubs(&self, stub_folder: PathBuf, config: Config) {
