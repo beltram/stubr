@@ -37,7 +37,7 @@ impl NowHelper {
         Self::get_hash(h, Self::OFFSET)
             .map(|it| it.replace(' ', ""))
             .and_then(|offset| Self::compute_offset(now, offset))
-            .unwrap_or_else(|| now)
+            .unwrap_or(now)
     }
 
     fn compute_offset(now: DateTime<Utc>, offset: String) -> Option<DateTime<Utc>> {

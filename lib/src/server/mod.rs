@@ -1,14 +1,14 @@
 use std::{convert::TryFrom, net::TcpListener};
 
+use async_std::path::PathBuf;
 use async_std::task::block_on;
 use wiremock::{Mock, MockServer};
 
 use stub::StubrMock;
 use stub_finder::StubFinder;
 
-use crate::Config;
-use async_std::path::PathBuf;
 use crate::cloud::probe::HttpProbe;
+use crate::Config;
 
 mod stub;
 mod stub_finder;
@@ -105,8 +105,7 @@ impl Stubr {
     }
 
     async fn register_cloud_features(&self) {
-        let probe_mock = HttpProbe::health_probe();
-        self.instance.register(probe_mock).await;
+        self.instance.register(HttpProbe::health_probe()).await;
     }
 }
 

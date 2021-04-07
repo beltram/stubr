@@ -19,7 +19,7 @@ impl TryFrom<&HttpUrlDto> for UrlPatternMatcher {
     fn try_from(http_url: &HttpUrlDto) -> anyhow::Result<Self> {
         http_url.url_pattern.as_ref()
             .and_then(|it| Regex::from_str(it).ok())
-            .map(|it| Self(it))
+            .map(Self)
             .ok_or_else(|| anyhow::Error::msg("No 'urlPattern'"))
     }
 }

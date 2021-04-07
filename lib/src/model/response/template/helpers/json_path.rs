@@ -11,10 +11,10 @@ impl JsonPathHelper {
         input.relative_path().map(|it| it.as_str()) == Some(Self::SUPPORTED_PATH)
     }
 
-    fn get_json_path<'a>(params: &'a Vec<PathAndJson>) -> Option<&'a str> {
+    fn get_json_path<'a>(params: &'a [PathAndJson]) -> Option<&'a str> {
         params.get(1)
             .and_then(|it| it.relative_path())
-            .map(|it| it.trim_start_matches("\'").trim_end_matches("\'"))
+            .map(|it| it.trim_start_matches('\'').trim_end_matches('\''))
     }
 
     fn extract(request_body: &Value, jsonpath: &str) -> Option<Value> {

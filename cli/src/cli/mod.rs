@@ -2,7 +2,7 @@ use std::{
     env::current_dir,
     ffi::OsStr,
     fs::DirEntry,
-    path::PathBuf,
+    path::{Path, PathBuf},
     time::{Duration, Instant},
 };
 use std::convert::TryInto;
@@ -104,7 +104,7 @@ impl Cli {
             })
     }
 
-    fn does_contains_mappings_folder(input: &PathBuf) -> bool {
+    fn does_contains_mappings_folder(input: &Path) -> bool {
         input.read_dir().ok().as_mut()
             .map(|all| all.any(|child| child.map(Self::is_mappings_folder).unwrap_or_default()))
             .unwrap_or_default()
