@@ -7,7 +7,7 @@ use wiremock::{Request, Respond, ResponseTemplate};
 use data::HandlebarsData;
 use helpers::{
     json_path::JsonPathHelper,
-    now::NowHelper,
+    datetime::NowHelper,
     numbers::NumberHelper,
     trim::TrimHelper,
     base64::Base64Helper,
