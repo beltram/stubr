@@ -5,8 +5,12 @@ use serde::Serialize;
 use wiremock::{Request, Respond, ResponseTemplate};
 
 use data::HandlebarsData;
-use helpers::json_path::JsonPathHelper;
-use helpers::now::NowHelper;
+use helpers::{
+    json_path::JsonPathHelper,
+    now::NowHelper,
+    numbers::NumberHelper,
+};
+
 use crate::model::response::ResponseDto;
 
 pub mod data;
@@ -19,6 +23,8 @@ lazy_static! {
         handlebars.source_map_enabled(false);
         handlebars.register_helper(JsonPathHelper::NAME, Box::new(JsonPathHelper));
         handlebars.register_helper(NowHelper::NAME, Box::new(NowHelper));
+        handlebars.register_helper(NumberHelper::IS_EVEN, Box::new(NumberHelper));
+        handlebars.register_helper(NumberHelper::IS_ODD, Box::new(NumberHelper));
         RwLock::new(handlebars)
     };
 }
