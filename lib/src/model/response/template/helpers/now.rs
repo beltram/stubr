@@ -1,7 +1,4 @@
-use std::ops::Add;
-
-use chrono::Duration;
-use chrono::prelude::*;
+use chrono::{Duration, prelude::*};
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
 use humantime::parse_duration;
 
@@ -33,10 +30,16 @@ impl NowHelper {
     fn apply_offset<'a>(now: DateTime<Utc>, h: &'a Helper) -> DateTime<Utc> {
         Self::get_hash(h, Self::OFFSET)
             .map(|it| it.replace(' ', ""))
-            .and_then(|it| parse_duration(&it).ok())
-            .and_then(|it| Duration::from_std(it).ok())
-            .map(|it| now.add(it))
+            .and_then(|offset| Self::compute_offset(now, offset))
             .unwrap_or_else(|| now)
+    }
+
+    fn compute_offset(now: DateTime<Utc>, offset: String) -> Option<DateTime<Utc>> {
+        let is_negative = offset.starts_with('-');
+        let offset = if is_negative { offset.trim_start_matches('-') } else { offset.as_str() };
+        parse_duration(offset).ok()
+            .and_then(|it| Duration::from_std(it).ok())
+            .map(|rhs| if is_negative { now - rhs } else { now + rhs })
     }
 }
 

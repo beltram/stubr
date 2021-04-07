@@ -39,6 +39,15 @@ async fn should_template_now_with_offset() {
         .assert_content_type_text();
 }
 
+#[async_std::test]
+async fn should_template_now_with_negative_offset() {
+    let srv = given("resp/template/datetime/negative-offset");
+    get(&srv.url()).await.unwrap()
+        .assert_ok()
+        .assert_body_text_satisfies(|body| is_close_to(body, Duration::days(1), |resp| resp + Duration::days(3)))
+        .assert_content_type_text();
+}
+
 fn is_close_to(from: &str, rounding: Duration, alter: fn(DateTime<Utc>) -> DateTime<Utc>) {
     let approx_now = Utc::now().duration_round(rounding).unwrap();
     let parsed = DateTime::<FixedOffset>::parse_from_rfc3339(from).unwrap();
