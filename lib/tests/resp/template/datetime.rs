@@ -1,3 +1,6 @@
+use std::str::FromStr;
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use chrono::{Duration, DurationRound, prelude::*};
 use surf::get;
 
@@ -45,6 +48,20 @@ async fn should_template_now_with_negative_offset() {
     get(&srv.url()).await.unwrap()
         .assert_ok()
         .assert_body_text_satisfies(|body| is_close_to(body, Duration::days(1), |resp| resp + Duration::days(3)))
+        .assert_content_type_text();
+}
+
+#[async_std::test]
+async fn should_template_now_with_epoch_format() {
+    let srv = given("resp/template/datetime/fmt-epoch");
+    get(&srv.url()).await.unwrap()
+        .assert_ok()
+        .assert_body_text_satisfies(|body| {
+            let current_epoch = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
+            let returned = u64::from_str(body).unwrap();
+            assert!(returned <= current_epoch);
+            assert!(current_epoch - 1 <= returned)
+        })
         .assert_content_type_text();
 }
 

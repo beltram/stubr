@@ -1,3 +1,5 @@
+use std::time::{SystemTime, UNIX_EPOCH};
+
 use chrono::{Duration, prelude::*};
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
 use humantime::parse_duration;
@@ -8,6 +10,7 @@ impl NowHelper {
     pub const NAME: &'static str = "now";
     const FORMAT: &'static str = "format";
     const OFFSET: &'static str = "offset";
+    const EPOCH: &'static str = "epoch";
     const QUOTE: char = '\'';
 
     fn now() -> DateTime<Utc> {
@@ -16,7 +19,10 @@ impl NowHelper {
 
     fn fmt_with_custom_format(now: DateTime<Utc>, h: &Helper) -> String {
         if let Some(format) = Self::get_hash(h, Self::FORMAT) {
-            simpledateformat::fmt(format).unwrap().format(&now)
+            match format {
+                Self::EPOCH => SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs().to_string(),
+                _ => simpledateformat::fmt(format).unwrap().format(&now)
+            }
         } else {
             now.to_rfc3339_opts(SecondsFormat::Secs, true)
         }
