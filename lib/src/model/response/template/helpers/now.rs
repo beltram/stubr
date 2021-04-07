@@ -4,7 +4,8 @@ use chrono::{Duration, prelude::*};
 use chrono_tz::Tz;
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
 use humantime::parse_duration;
-use crate::model::response::template::helpers::traits::ValueExt;
+
+use super::traits::ValueExt;
 
 pub struct NowHelper;
 

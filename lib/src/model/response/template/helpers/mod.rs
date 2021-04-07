@@ -3,3 +3,4 @@ pub mod now;
 pub mod numbers;
 pub mod traits;
 pub mod trim;
+pub mod base64;

@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "POST"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{base64 request.body}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

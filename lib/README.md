@@ -104,7 +104,9 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       "now-with-timezone": "{{now timezone='Europe/Rome'}}",
       "number-is-odd": "{{isOdd 3}}", // or 'isEven'
       "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
-      "string-trim": "{{trim request.body}}" // removes leading & trailing whitespaces
+      "string-trim": "{{trim request.body}}", // removes leading & trailing whitespaces
+      "base64-encode": "{{base64 request.body padding=false}}", // padding is optional and defaults to true
+      "base64-decode": "{{base64 request.body decode=true}}"
     }
   }
 }

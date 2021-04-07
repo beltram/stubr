@@ -2,7 +2,7 @@ use std::ops::Not;
 
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
 
-use crate::model::response::template::helpers::traits::ValueExt;
+use super::traits::ValueExt;
 
 pub struct NumberHelper;
 
