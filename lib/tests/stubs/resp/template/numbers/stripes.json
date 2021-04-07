@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "POST"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{stripes request.body 'if-even' 'if-odd'}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

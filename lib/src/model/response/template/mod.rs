@@ -25,6 +25,7 @@ lazy_static! {
         handlebars.register_helper(NowHelper::NAME, Box::new(NowHelper));
         handlebars.register_helper(NumberHelper::IS_EVEN, Box::new(NumberHelper));
         handlebars.register_helper(NumberHelper::IS_ODD, Box::new(NumberHelper));
+        handlebars.register_helper(NumberHelper::STRIPES, Box::new(NumberHelper));
         RwLock::new(handlebars)
     };
 }

@@ -4,6 +4,7 @@ use chrono::{Duration, prelude::*};
 use chrono_tz::Tz;
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
 use humantime::parse_duration;
+use crate::model::response::template::helpers::traits::ValueExt;
 
 pub struct NowHelper;
 
@@ -14,7 +15,6 @@ impl NowHelper {
     const TIMEZONE: &'static str = "timezone";
     const EPOCH: &'static str = "epoch";
     const UNIX: &'static str = "unix";
-    const QUOTE: char = '\'';
 
     fn now() -> DateTime<Utc> {
         Utc::now()
@@ -34,7 +34,7 @@ impl NowHelper {
 
     fn get_hash<'a>(h: &'a Helper, key: &str) -> Option<&'a str> {
         h.hash_get(key)?.relative_path()
-            .map(|it| it.trim_start_matches(Self::QUOTE).trim_end_matches(Self::QUOTE))
+            .map(|it| it.escape_single_quotes())
     }
 
     fn apply_offset<'a>(now: DateTime<Utc>, h: &'a Helper) -> DateTime<Utc> {
