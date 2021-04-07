@@ -11,6 +11,7 @@ impl NowHelper {
     const FORMAT: &'static str = "format";
     const OFFSET: &'static str = "offset";
     const EPOCH: &'static str = "epoch";
+    const UNIX: &'static str = "unix";
     const QUOTE: char = '\'';
 
     fn now() -> DateTime<Utc> {
@@ -20,7 +21,8 @@ impl NowHelper {
     fn fmt_with_custom_format(now: DateTime<Utc>, h: &Helper) -> String {
         if let Some(format) = Self::get_hash(h, Self::FORMAT) {
             match format {
-                Self::EPOCH => SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs().to_string(),
+                Self::EPOCH => SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis().to_string(),
+                Self::UNIX => SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs().to_string(),
                 _ => simpledateformat::fmt(format).unwrap().format(&now)
             }
         } else {
