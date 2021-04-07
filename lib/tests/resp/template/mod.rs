@@ -6,3 +6,4 @@ pub mod query;
 pub mod headers;
 pub mod json_path_body;
 pub mod numbers;
+pub mod trim;

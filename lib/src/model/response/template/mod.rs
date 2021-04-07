@@ -9,6 +9,7 @@ use helpers::{
     json_path::JsonPathHelper,
     now::NowHelper,
     numbers::NumberHelper,
+    trim::TrimHelper,
 };
 
 use crate::model::response::ResponseDto;
@@ -26,6 +27,7 @@ lazy_static! {
         handlebars.register_helper(NumberHelper::IS_EVEN, Box::new(NumberHelper));
         handlebars.register_helper(NumberHelper::IS_ODD, Box::new(NumberHelper));
         handlebars.register_helper(NumberHelper::STRIPES, Box::new(NumberHelper));
+        handlebars.register_helper(TrimHelper::NAME, Box::new(TrimHelper));
         RwLock::new(handlebars)
     };
 }

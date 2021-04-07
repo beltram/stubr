@@ -103,7 +103,8 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       "now-negative-offset": "{{now offset='-3 days'}}", // human time negative offset
       "now-with-timezone": "{{now timezone='Europe/Rome'}}",
       "number-is-odd": "{{isOdd 3}}", // or 'isEven'
-      "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}"
+      "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
+      "string-trim": "{{trim request.body}}" // removes leading & trailing whitespaces
     }
   }
 }

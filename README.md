@@ -138,7 +138,7 @@ track down which ones are implemented by stubr. For having a view of what is sup
 * [x] date and time helpers
 * [ ] Random value helper
 * [ ] Pick random helper
-* [ ] String trim helper
+* [x] String trim helper
 * [ ] Base64 helper
 * [ ] URL encoding helper
 * [ ] Form helper
