@@ -1,6 +1,7 @@
 use std::{str::FromStr, time::{SystemTime, UNIX_EPOCH}};
 
 use chrono::{Duration, DurationRound, prelude::*};
+use chrono_tz::Tz;
 use surf::get;
 
 use crate::utils::*;
@@ -78,11 +79,25 @@ async fn should_template_now_with_unix_format() {
         .assert_content_type_text();
 }
 
+#[async_std::test]
+async fn should_template_now_with_custom_timezone() {
+    let srv = given("resp/template/datetime/timezone");
+    get(&srv.url()).await.unwrap()
+        .assert_ok()
+        .assert_body_text_satisfies(|body| is_close_to(body, Duration::hours(1), |resp| {
+            let rome: Tz = "Europe/Rome".parse().unwrap();
+            let naive_now: NaiveDateTime = Utc::now().naive_utc();
+            let rome_offset = rome.offset_from_utc_datetime(&naive_now).fix().local_minus_utc();
+            resp - Duration::seconds(rome_offset.into())
+        }))
+        .assert_content_type_text();
+}
+
 fn is_close_to(from: &str, rounding: Duration, alter: fn(DateTime<Utc>) -> DateTime<Utc>) {
-    let approx_now = Utc::now().duration_round(rounding).unwrap();
     let parsed = DateTime::<FixedOffset>::parse_from_rfc3339(from).unwrap();
     let received: DateTime<Utc> = DateTime::from_utc(parsed.naive_utc(), Utc)
         .duration_round(rounding).unwrap();
     let received = alter(received);
+    let approx_now = Utc::now().duration_round(rounding).unwrap();
     assert_eq!(approx_now, received)
 }

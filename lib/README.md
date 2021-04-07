@@ -100,7 +100,8 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       "now-fmt-epoch": "{{now format='epoch'}}", // epoch in milliseconds
       "now-fmt-unix": "{{now format='unix'}}", // epoch in seconds
       "now-positive-offset": "{{now offset='3 days'}}", // human time positive offset
-      "now-negative-offset": "{{now offset='-3 days'}}" // human time negative offset
+      "now-negative-offset": "{{now offset='-3 days'}}", // human time negative offset
+      "now-with-timezone": "{{now timezone='Europe/Rome'}}"
     }
   }
 }

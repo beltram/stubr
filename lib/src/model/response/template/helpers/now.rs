@@ -1,6 +1,7 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use chrono::{Duration, prelude::*};
+use chrono_tz::Tz;
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
 use humantime::parse_duration;
 
@@ -10,6 +11,7 @@ impl NowHelper {
     pub const NAME: &'static str = "now";
     const FORMAT: &'static str = "format";
     const OFFSET: &'static str = "offset";
+    const TIMEZONE: &'static str = "timezone";
     const EPOCH: &'static str = "epoch";
     const UNIX: &'static str = "unix";
     const QUOTE: char = '\'';
@@ -49,6 +51,17 @@ impl NowHelper {
             .and_then(|it| Duration::from_std(it).ok())
             .map(|rhs| if is_negative { now - rhs } else { now + rhs })
     }
+
+    fn apply_timezone<'a>(now: DateTime<Utc>, h: &'a Helper) -> DateTime<Utc> {
+        Self::get_hash(h, Self::TIMEZONE)
+            .and_then(|timezone| timezone.parse().ok())
+            .map(|tz: Tz| {
+                let offset_seconds = tz.offset_from_utc_datetime(&now.naive_utc()).fix().local_minus_utc();
+                Duration::seconds(offset_seconds.into())
+            })
+            .map(|offset: Duration| now + offset)
+            .unwrap_or(now)
+    }
 }
 
 impl HelperDef for NowHelper {
@@ -61,6 +74,7 @@ impl HelperDef for NowHelper {
         out: &mut dyn Output,
     ) -> HelperResult {
         let now = Self::now();
+        let now = Self::apply_timezone(now, h);
         let now = Self::apply_offset(now, h);
         let now = Self::fmt_with_custom_format(now, h);
         out.write(now.as_str()).unwrap();
