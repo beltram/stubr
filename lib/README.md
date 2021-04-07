@@ -96,7 +96,11 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       "body": "{{request.body}}", // returns raw request body
       "from-request": "{{jsonPath request.body '$.name'}}", // takes field 'name' from json request body
       "now": "{{now}}", // current datetime (UTC)
-      "now-fmt": "{{now format='yyyy/MM/dd'}}" // (1) with custom Java SimpleDateFormat
+      "now-fmt": "{{now format='yyyy/MM/dd'}}", // (1) with custom Java SimpleDateFormat
+      "now-fmt-epoch": "{{now format='epoch'}}", // epoch in milliseconds
+      "now-fmt-unix": "{{now format='unix'}}", // epoch in seconds
+      "now-positive-offset": "{{now offset='3 days'}}", // human time positive offset
+      "now-negative-offset": "{{now offset='-3 days'}}" // human time negative offset
     }
   }
 }
