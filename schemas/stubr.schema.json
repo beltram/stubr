@@ -1,0 +1,227 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "Unique stub identifier",
+      "type": "string"
+    },
+    "request": {
+      "description": "Request matching",
+      "type": "object",
+      "required": [
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "description": "Http method",
+          "type": "string",
+          "enum": [
+            "GET",
+            "HEAD",
+            "POST",
+            "PUT",
+            "DELETE",
+            "CONNECT",
+            "OPTIONS",
+            "TRACE",
+            "PATCH"
+          ]
+        },
+        "urlPath": {
+          "description": "Exact url matching",
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "urlPathPattern": {
+          "description": "Url matching by regex",
+          "type": "string",
+          "format": "regex"
+        },
+        "urlPattern": {
+          "description": "Url and query parameters must match regex",
+          "type": "string",
+          "format": "regex"
+        },
+        "url": {
+          "description": "Url and query parameters exact matching",
+          "type": "string"
+        },
+        "queryParameters": {
+          "description": "Query parameters",
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "equalTo": {
+                      "description": "Matching by equality",
+                      "type": "string"
+                    },
+                    "absent": {
+                      "description": "Must be absent",
+                      "type": "boolean"
+                    },
+                    "contains": {
+                      "description": "Must contain the given string",
+                      "type": "string"
+                    },
+                    "matches": {
+                      "description": "Must match the regex",
+                      "type": "string",
+                      "format": "regex"
+                    },
+                    "doesNotMatch": {
+                      "description": "Must not match the regex",
+                      "type": "string",
+                      "format": "regex"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "headers": {
+          "description": "Request headers",
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "equalTo": {
+                      "description": "Matching by equality",
+                      "type": "string"
+                    },
+                    "absent": {
+                      "description": "Must be absent",
+                      "type": "boolean"
+                    },
+                    "contains": {
+                      "description": "Must contain the given string",
+                      "type": "string"
+                    },
+                    "matches": {
+                      "description": "Must match the regex",
+                      "type": "string",
+                      "format": "regex"
+                    },
+                    "doesNotMatch": {
+                      "description": "Must not match the regex",
+                      "type": "string",
+                      "format": "regex"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "bodyPatterns": {
+          "description": "Allows defining many request body matchers",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "equalToJson": {
+                    "description": "Request body must be strictly equal to this",
+                    "type": "object"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "matchesJsonPath": {
+                    "description": "Request body must match this json path",
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "expression",
+                  "contains"
+                ],
+                "properties": {
+                  "expression": {
+                    "description": "Request body must match this json path",
+                    "type": "string"
+                  },
+                  "contains": {
+                    "description": "Matched json path must contain this string",
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "binaryEqualTo": {
+                    "description": "Binary equality of a byte array with the supplied Base64 representation",
+                    "type": "string"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "response": {
+      "description": "Response templating",
+      "type": "object",
+      "properties": {
+        "status": {
+          "description": "Response status code",
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599,
+          "default": 200
+        },
+        "fixedDelayMilliseconds": {
+          "description": "Local delay in milliseconds this stub will simulate",
+          "type": "integer"
+        },
+        "body": {
+          "description": "Text response body, adds 'Content-Type:application/text' header in the response",
+          "type": "string"
+        },
+        "bodyFileName": {
+          "description": "Relative path to a .json or .txt file containing response body",
+          "type": "string"
+        },
+        "jsonBody": {
+          "description": "Json response body, adds 'Content-Type:application/json' header in the response",
+          "type": "object"
+        },
+        "headers": {
+          "description": "Response headers",
+          "type": "object"
+        },
+        "transformers": {
+          "description": "Enables predefined response transformations",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "response-template"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "request",
+    "response"
+  ]
+}

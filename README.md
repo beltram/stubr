@@ -43,12 +43,13 @@ Adaptation of [wiremock-rs](https://github.com/LukeMathWalker/wiremock-rs) suppo
 Aims at reaching feature parity with [Wiremock](https://github.com/tomakehurst/wiremock) and be a drop-in replacement of
 the latter.
 
-# usage
+# assets
 
 * [as a crate](lib/README.md)
 * [as a cli](cli/README.md)
 * [Docker](#Docker)
 * [Helm chart](#Helm)
+* [IDE completion](#ide-completion)
 
 # features
 
@@ -223,3 +224,26 @@ curl -L https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz |
 ```
 
 Then open `./stubr-bench/report/index.html` in your browser.
+
+
+
+# IDE completion
+
+A json schema is also maintained [here](schemas/stubr.schema.json) to provide completion in IDE. It just contains completion
+for features implemented in stubr and should alleviate you from a bit of pain when writing json from scratch.
+
+<details open>
+<summary><b>IntelliJ Ultimate</b></summary>
+
+*Manual installation is required pending the schema is added to [schemastore](https://github.com/SchemaStore/schemastore)*
+
+* Go to `Settings > Languages & Frameworks > Schemas & DTDs > JSON Schema Mappings`
+* Add a mapping (click on the upper `+`)
+* Then supply the following
+  * name: `stubr`
+  * Schema file or URL: `https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json`
+  * Schema version: `JSON Schema version 7`
+  * File path pattern: `stubs/*.json` (and `mappings/*.json` if you want to use it for original wiremock stubs)
+* The `Apply`
+
+</details>
