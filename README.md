@@ -56,11 +56,14 @@ We list here all the capabilities supported by the original [Wiremock](https://g
 track down which ones are implemented by stubr. For having a view of what is supported in a json stub refer to the
 [Wiremock cheat sheet](https://github.com/beltram/stubr/tree/main/lib#wiremock-cheat-sheet).
 
-<details>
+*Items marked with (\*) are exclusive to stubr*  
+
+<details open>
 <summary><b>Global</b></summary>
 
 * [ ] anything related to xml
 * [x] start server on custom port
+* [x] (*) OpenTracing support ([OpenZipkin B3 propagation](https://github.com/openzipkin/b3-propagation))
 
 </details>
 
@@ -109,6 +112,7 @@ track down which ones are implemented by stubr. For having a view of what is sup
 
 * [x] `fixedDelayMilliseconds`
 * [x] global delay
+* [x] (*) latency (global delay added to local ones)
 * [ ] random delay
 
 </details>

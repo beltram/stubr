@@ -6,14 +6,15 @@ use wiremock::{Request, Respond, ResponseTemplate};
 
 use data::HandlebarsData;
 use helpers::{
-    json_path::JsonPathHelper,
+    base64::Base64Helper,
     datetime::NowHelper,
+    json_path::JsonPathHelper,
     numbers::NumberHelper,
     trim::TrimHelper,
-    base64::Base64Helper,
     url_encode::UrlEncodingHelper,
 };
 
+use crate::cloud::opentracing::OpenTracing;
 use crate::model::response::ResponseDto;
 
 pub mod data;
@@ -43,20 +44,21 @@ pub struct StubTemplate {
 }
 
 impl Respond for StubTemplate {
-    fn respond(&self, request: &Request) -> ResponseTemplate {
+    fn respond(&self, req: &Request) -> ResponseTemplate {
+        let mut resp = self.template.clone();
+        resp = OpenTracing(req, self.response.defined_header_keys()).add_opentracing_header(resp);
         if self.requires_templating {
-            let mut template = self.template.clone();
-            let data = HandlebarsData::from(request);
-            template = self.response.body.into_response_template(template, &data);
-            template = self.response.headers.into_response_template(template, &data);
-            template
-        } else { self.template.clone() }
+            let data = HandlebarsData::from(req);
+            resp = self.response.body.render_response_template(resp, &data);
+            resp = self.response.headers.render_response_template(resp, &data);
+            resp
+        } else { resp }
     }
 }
 
 pub trait HandlebarTemplatable {
     fn register_template(&self);
-    fn into_response_template(&self, template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate;
+    fn render_response_template(&self, template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate;
 
     fn register<S: AsRef<str>>(&self, name: &str, content: S) {
         if let Ok(mut handlebars) = HANDLEBARS.write() {

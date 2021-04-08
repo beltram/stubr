@@ -1,0 +1,11 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "x-b3-sampled": "0"
+    }
+  }
+}

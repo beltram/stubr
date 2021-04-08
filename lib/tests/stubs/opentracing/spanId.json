@@ -1,0 +1,11 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "x-b3-spanid": "e457b5a2e4d86bd2"
+    }
+  }
+}

@@ -38,7 +38,7 @@ impl HandlebarTemplatable for BodyDto {
         }
     }
 
-    fn into_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
+    fn render_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
         if let Some(body) = self.body.as_ref() {
             template = template.set_body_string(self.render(body.as_str(), data));
         } else if let Some(json_body) = self.json_body.as_ref().map(ToString::to_string) {

@@ -5,6 +5,7 @@ use body::BodyDto;
 use headers::HttpRespHeadersDto;
 
 use super::StubDto;
+use itertools::Itertools;
 
 mod body;
 mod body_file;
@@ -36,6 +37,12 @@ impl ResponseDto {
 
     pub(crate) fn requires_response_templating(&self) -> bool {
         self.transformers.iter().any(|it| it == Self::RESPONSE_TEMPLATE)
+    }
+
+    pub fn defined_header_keys(&self) -> Vec<&str> {
+        self.headers.headers.as_ref()
+            .map(|headers| headers.keys().map(|it| it.as_str()).collect_vec())
+            .unwrap_or_default()
     }
 }
 

@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "x-b3-traceid": "80f198ee56343ba864fe8b2a57d3eff8"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

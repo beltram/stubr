@@ -7,7 +7,7 @@ use super::template::{data::HandlebarsData, HandlebarTemplatable};
 
 #[derive(Deserialize, Debug, Default, Clone)]
 pub struct HttpRespHeadersDto {
-    headers: Option<Map<String, Value>>,
+    pub(crate) headers: Option<Map<String, Value>>,
 }
 
 impl ResponseAppender for HttpRespHeadersDto {
@@ -34,15 +34,15 @@ impl HandlebarTemplatable for HttpRespHeadersDto {
         }
     }
 
-    fn into_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
+    fn render_response_template(&self, mut resp: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
         if let Some(headers) = self.headers.as_ref() {
             for (k, v) in headers {
                 if let Some(v) = v.as_str() {
                     let rendered = self.render(v, data);
-                    template = template.insert_header(k.as_str(), rendered.as_str())
+                    resp = resp.insert_header(k.as_str(), rendered.as_str())
                 }
             }
         }
-        template
+        resp
     }
 }
