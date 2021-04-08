@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{urlEncode 'a%2Fb%2Fc' decode=true}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

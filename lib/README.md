@@ -106,7 +106,9 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
       "string-trim": "{{trim request.body}}", // removes leading & trailing whitespaces
       "base64-encode": "{{base64 request.body padding=false}}", // padding is optional and defaults to true
-      "base64-decode": "{{base64 request.body decode=true}}"
+      "base64-decode": "{{base64 request.body decode=true}}",
+      "url-encode": "{{urlEncode request.header.x-raw}}",
+      "url-decode": "{{urlEncode request.header.x-encoded decode=true}}"
     }
   }
 }

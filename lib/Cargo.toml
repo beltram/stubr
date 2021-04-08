@@ -30,6 +30,7 @@ chrono = "0.4.19"
 simpledateformat = "0.1.1"
 humantime = "2.1.0"
 chrono-tz = "0.5.3"
+percent-encoding = "2.1.0"
 
 [dependencies.serde]
 version = "1.0.125"

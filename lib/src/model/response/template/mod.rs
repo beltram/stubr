@@ -11,6 +11,7 @@ use helpers::{
     numbers::NumberHelper,
     trim::TrimHelper,
     base64::Base64Helper,
+    url_encode::UrlEncodingHelper,
 };
 
 use crate::model::response::ResponseDto;
@@ -30,6 +31,7 @@ lazy_static! {
         handlebars.register_helper(NumberHelper::STRIPES, Box::new(NumberHelper));
         handlebars.register_helper(TrimHelper::NAME, Box::new(TrimHelper));
         handlebars.register_helper(Base64Helper::NAME, Box::new(Base64Helper));
+        handlebars.register_helper(UrlEncodingHelper::NAME, Box::new(UrlEncodingHelper));
         RwLock::new(handlebars)
     };
 }

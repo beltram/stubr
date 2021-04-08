@@ -4,3 +4,4 @@ pub mod numbers;
 pub mod traits;
 pub mod trim;
 pub mod base64;
+pub mod url_encode;
