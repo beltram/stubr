@@ -148,10 +148,15 @@
                 "properties": {
                   "equalToJson": {
                     "description": "Request body must be strictly equal to this",
-                    "type": "object"
+                    "type": ["object", "array"]
                   },
                   "ignoreExtraElements": {
-                    "description": "Do not fail when extra json fields supplied",
+                    "description": "Ignore extra json fields supplied in request body",
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "ignoreArrayOrder": {
+                    "description": "Ignore array items order",
                     "type": "boolean",
                     "default": false
                   }

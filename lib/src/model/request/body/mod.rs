@@ -13,6 +13,7 @@ use json_path_eq::JsonPathEqMatcher;
 use super::MockRegistrable;
 
 mod eq;
+mod diff;
 mod eq_relaxed;
 mod json_path;
 mod json_path_eq;
@@ -35,6 +36,9 @@ pub struct BodyPatternDto {
     /// used alongside [equalToJson].
     /// Instructs stubr not to fail when extra fields are present in request body.
     ignore_extra_elements: Option<bool>,
+    /// used alongside [equalToJson].
+    /// Any array present in request body will be matched by equality ignoring items order.
+    ignore_array_order: Option<bool>,
 }
 
 impl BodyPatternDto {
@@ -67,6 +71,10 @@ impl BodyPatternDto {
 
     fn is_ignore_extra_elements(&self) -> bool {
         self.ignore_extra_elements.unwrap_or_default()
+    }
+
+    fn is_ignore_array_order(&self) -> bool {
+        self.ignore_array_order.unwrap_or_default()
     }
 }
 

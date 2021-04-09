@@ -67,7 +67,8 @@ implemented features in `stubr` : just things which actually work in `stubr` are
     },
     "bodyPatterns": [
       { "equalToJson": {"name": "bob"} }, // strict json request body equality
-      { "equalToJson": {"name": "bob"}, "ignoreExtraElements": true }, // do not fail when extra json fields supplied. Default to false.
+      { "equalToJson": {"name": "bob"}, "ignoreExtraElements": true }, // ignore extra json fields supplied in request body. Default to false.
+      { "equalToJson": {"name": "bob"}, "ignoreArrayOrder": true }, // ignore array items order. Default to false.
       { "matchesJsonPath": "$.name" }, // must just match json path
       { "matchesJsonPath": "$.consoles[?(@.name == 'xbox')]" }, // must match json path + equality
       { "matchesJsonPath": "$.consoles[?(@.price > 200)]" }, // must match json path + bound

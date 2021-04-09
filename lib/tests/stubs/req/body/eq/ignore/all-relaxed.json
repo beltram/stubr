@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "names": [
+            "john",
+            "doe"
+          ]
+        },
+        "ignoreExtraElements": true,
+        "ignoreArrayOrder": true
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}
