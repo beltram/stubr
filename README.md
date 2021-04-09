@@ -94,6 +94,7 @@ track down which ones are implemented by stubr. For having a view of what is sup
     * [x] `matches`
     * [x] `caseInsensitive`
     * [x] `absent`
+* [x] basic auth
 
 </details>
 

@@ -121,6 +121,24 @@
             }
           }
         },
+        "basicAuth": {
+          "description": "For exact Basic authentication matching",
+          "type": "object",
+          "required": [
+            "password",
+            "username"
+          ],
+          "properties": {
+            "username": {
+              "description": "Basic username",
+              "type": "string"
+            },
+            "password": {
+              "description": "Basic password",
+              "type": "string"
+            }
+          }
+        },
         "bodyPatterns": {
           "description": "Allows defining many request body matchers",
           "type": "array",

@@ -8,6 +8,7 @@ use headers::HttpReqHeadersDto;
 use method::HttpMethodDto;
 use query::HttpQueryParamsDto;
 use url::HttpUrlDto;
+use crate::model::request::auth::AuthDto;
 
 mod headers;
 mod query;
@@ -15,6 +16,7 @@ mod url;
 mod matcher;
 mod method;
 mod body;
+mod auth;
 
 #[derive(Deserialize, Debug, Default)]
 #[serde(default, rename_all = "camelCase")]
@@ -27,6 +29,8 @@ pub struct RequestDto {
     #[serde(flatten)]
     queries: HttpQueryParamsDto,
     body_patterns: Vec<BodyPatternDto>,
+    #[serde(flatten)]
+    auth: AuthDto,
 }
 
 impl TryFrom<&RequestDto> for MockBuilder {
@@ -38,6 +42,7 @@ impl TryFrom<&RequestDto> for MockBuilder {
         mock = request.headers.register(mock);
         mock = request.queries.register(mock);
         mock = request.body_patterns.register(mock);
+        mock = request.auth.register(mock);
         Ok(mock)
     }
 }

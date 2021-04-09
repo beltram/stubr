@@ -61,6 +61,10 @@ implemented features in `stubr` : just things which actually work in `stubr` are
       "Content-Type": { "equalTo": "application/json" } // by equality matching
       // .. then all matchers described above for query parameters are also applicable here
     },
+    "basicAuth" : { // exact Basic authentication matching
+      "username" : "user",
+      "password" : "pass"
+    },
     "bodyPatterns": [
       { "equalToJson": {"name": "bob"} }, // strict json request body equality
       { "matchesJsonPath": "$.name" }, // must just match json path
