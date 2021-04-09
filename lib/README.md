@@ -44,7 +44,7 @@ implemented features in `stubr` : just things which actually work in `stubr` are
 {
   "id": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e", // (optional) unique stub identifier. Returned in 'Matched-Stub-Id' header
   "request": {
-    "method": "GET", // (required) http method. Can be "ANY" to match any method
+    "method": "GET", // (optional) http method. Can be "ANY" to match any method. Defaults to "ANY"
     "urlPath": "/api/exact-url", // exact uri match
     "urlPathPattern": "/api/regex-url/([a-z]{4})", // uri must match regex
     "urlPattern": "/api/regex-url/([a-z]{4})\\?and=([a-z]{4})", // uri & query must match regex

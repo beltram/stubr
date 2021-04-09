@@ -9,17 +9,25 @@ use wiremock::{
     Request,
 };
 
-const METHOD_ANY: &str = "ANY";
-
-#[derive(Deserialize, Debug, Default)]
+#[derive(Deserialize, Debug)]
 pub struct HttpMethodDto(String);
+
+impl HttpMethodDto {
+    const METHOD_ANY: &'static str = "ANY";
+}
+
+impl Default for HttpMethodDto {
+    fn default() -> Self {
+        Self(Self::METHOD_ANY.to_string())
+    }
+}
 
 impl TryFrom<&HttpMethodDto> for MethodExactMatcher {
     type Error = anyhow::Error;
 
     fn try_from(http_method: &HttpMethodDto) -> anyhow::Result<Self> {
         let m = http_method.0.as_str();
-        if m != METHOD_ANY {
+        if m != HttpMethodDto::METHOD_ANY {
             Ok(method(m))
         } else {
             anyhow::Result::Err(anyhow::Error::msg(""))

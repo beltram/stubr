@@ -9,9 +9,6 @@
     "request": {
       "description": "Request matching",
       "type": "object",
-      "required": [
-        "method"
-      ],
       "properties": {
         "method": {
           "description": "Http method",

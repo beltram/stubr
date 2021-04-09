@@ -21,6 +21,7 @@ mod auth;
 #[derive(Deserialize, Debug, Default)]
 #[serde(default, rename_all = "camelCase")]
 pub struct RequestDto {
+    #[serde(default)]
     method: HttpMethodDto,
     #[serde(flatten)]
     url: HttpUrlDto,
