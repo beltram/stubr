@@ -73,8 +73,11 @@ track down which ones are implemented by stubr. For having a view of what is sup
 
 * [x] body
   * [x] `equalToJson`
+  * [x] `ignoreExtraElements`
   * [x] `matchesJsonPath`
   * [x] `binaryEqualTo`
+  * [x] `expression`
+  * [x] `contains`
 * [x] method (GET, POST, ANY etc...)
 * [x] url
     * [x] `url`

@@ -149,6 +149,11 @@
                   "equalToJson": {
                     "description": "Request body must be strictly equal to this",
                     "type": "object"
+                  },
+                  "ignoreExtraElements": {
+                    "description": "Do not fail when extra json fields supplied",
+                    "type": "boolean",
+                    "default": false
                   }
                 }
               },
