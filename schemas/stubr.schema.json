@@ -25,7 +25,8 @@
             "CONNECT",
             "OPTIONS",
             "TRACE",
-            "PATCH"
+            "PATCH",
+            "ANY"
           ]
         },
         "urlPath": {
