@@ -67,6 +67,7 @@ jobs:
           file: ${{ matrix.from-file }}
           args: ${{ matrix.args }}
           strip: ${{ matrix.strip }}
+        continue-on-error: true
       - name: compression/tar
         if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
         run: |
