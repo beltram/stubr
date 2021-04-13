@@ -1,18 +1,11 @@
-use std::{
-    convert::TryFrom,
-    fs::OpenOptions,
-    io::Read,
-    path::PathBuf,
-    str::from_utf8,
-};
+use std::{fs::OpenOptions, io::Read, path::PathBuf, str::from_utf8};
 
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
 use serde_json::Value;
 use wiremock::ResponseTemplate;
 
-use crate::model::response::template::{data::HandlebarsData, HandlebarTemplatable};
-
 use super::{body_file::BodyFile, ResponseAppender};
+use super::template::{data::HandlebarsData, HandlebarTemplatable};
 
 #[derive(Deserialize, Debug, Default, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -22,7 +15,27 @@ pub struct BodyDto {
     /// json body
     pub json_body: Option<Value>,
     /// relative path to raw body content
-    pub body_file_name: Option<String>,
+    #[serde(default, deserialize_with = "deserialize_body_file")]
+    pub body_file_name: Option<BodyFile>,
+}
+
+fn deserialize_body_file<'de, D>(path: D) -> Result<Option<BodyFile>, D::Error> where D: Deserializer<'de> {
+    let body_file = String::deserialize(path).ok()
+        .map(PathBuf::from)
+        .map(|path| {
+            let path_exists = path.exists();
+            let extension = path.extension().and_then(|it| it.to_str()).map(|it| it.to_string());
+            let content = OpenOptions::new().read(true).open(&path).ok()
+                .and_then(|mut file| {
+                    let mut buf = vec![];
+                    file.read_to_end(&mut buf).map(|_| buf).ok()
+                })
+                .and_then(|bytes| from_utf8(bytes.as_slice()).map(|it| it.to_string()).ok())
+                .unwrap_or_default();
+            let path = path.to_str().map(|it| it.to_string()).unwrap_or_default();
+            BodyFile { path_exists, path, extension, content }
+        });
+    Ok(body_file)
 }
 
 impl HandlebarTemplatable for BodyDto {
@@ -31,10 +44,8 @@ impl HandlebarTemplatable for BodyDto {
             self.register(body, body);
         } else if let Some(json_body) = self.json_body.as_ref().map(ToString::to_string) {
             self.register(json_body.as_str(), json_body.clone());
-        } else if let Some(path) = self.body_file_name.as_ref() {
-            if let Some(content) = self.read_file() {
-                self.register(path, content);
-            }
+        } else if let Some(body_file) = self.body_file_name.as_ref() {
+            self.register(body_file.path.as_str(), body_file.content.clone());
         }
     }
 
@@ -46,23 +57,11 @@ impl HandlebarTemplatable for BodyDto {
             if let Ok(value) = serde_json::from_str::<Value>(rendered.as_str()) {
                 template = template.set_body_json(value);
             }
-        } else if let Some(path) = self.body_file_name.as_ref() {
-            template = BodyFile::from((PathBuf::from(path), self.render(path, data))).add(template);
+        } else if let Some(body_file) = self.body_file_name.as_ref() {
+            let rendered = self.render(body_file.path.as_str(), data);
+            template = body_file.render_templated(template, rendered);
         }
         template
-    }
-}
-
-impl BodyDto {
-    fn read_file(&self) -> Option<String> {
-        self.body_file_name.as_ref()
-            .map(PathBuf::from)
-            .and_then(|file| OpenOptions::new().read(true).open(file).ok())
-            .and_then(|mut file| {
-                let mut buf = vec![];
-                file.read_to_end(&mut buf).map(|_| buf).ok()
-            })
-            .and_then(|bytes| from_utf8(bytes.as_slice()).map(|it| it.to_string()).ok())
     }
 }
 
@@ -74,7 +73,7 @@ impl ResponseAppender for BodyDto {
         if let Some(json) = self.json_body.as_ref() {
             resp = resp.set_body_json(json)
         }
-        if let Ok(body_file) = BodyFile::try_from(self.body_file_name.as_ref()) {
+        if let Some(body_file) = self.body_file_name.as_ref() {
             resp = body_file.add(resp)
         }
         resp

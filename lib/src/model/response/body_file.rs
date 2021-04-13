@@ -1,14 +1,14 @@
-use std::{convert::TryFrom, fs::File, io::{BufReader, Read}, path::PathBuf};
-
-use anyhow::Error;
 use serde_json::Value;
 use wiremock::ResponseTemplate;
 
 use super::ResponseAppender;
 
+#[derive(Debug, Default, Clone)]
 pub struct BodyFile {
-    file: PathBuf,
-    maybe_content: Option<String>,
+    pub path_exists: bool,
+    pub path: String,
+    pub extension: Option<String>,
+    pub content: String,
 }
 
 impl BodyFile {
@@ -16,55 +16,43 @@ impl BodyFile {
     const TEXT_EXT: &'static str = "txt";
 
     fn maybe_as_json(&self) -> Option<Value> {
-        if self.has_file_extension(Self::JSON_EXT) {
-            self.read_from_json_content()
-                .or_else(|| self.read_json_from_file())
-        } else { None }
-    }
-
-    fn read_from_json_content(&self) -> Option<Value> {
-        self.maybe_content.as_ref()
-            .and_then(|content| serde_json::from_str::<Value>(content.as_str()).ok())
-    }
-
-    fn read_json_from_file(&self) -> Option<Value> {
-        self.read_file()
-            .and_then(|it| serde_json::from_reader(it).ok())
+        self.extension.as_ref()
+            .filter(|ext| ext.as_str() == Self::JSON_EXT)
+            .and_then(|_| serde_json::from_str::<Value>(self.content.as_str()).ok())
     }
 
     fn maybe_as_text(&self) -> Option<String> {
-        if self.has_file_extension(Self::TEXT_EXT) {
-            self.maybe_content.to_owned()
-                .or_else(|| self.read_from_text_file())
-        } else { None }
+        self.extension.as_ref()
+            .filter(|ext| ext.as_str() == Self::TEXT_EXT)
+            .map(|_| self.content.to_owned())
     }
 
-    fn read_from_text_file(&self) -> Option<String> {
-        let mut buff = String::new();
-        self.read_file()
-            ?.read_to_string(&mut buff).ok()
-            .map(|_| buff)
-    }
-
-    fn has_file_extension(&self, extension: &str) -> bool {
-        self.file.extension()
-            .map(|it| it.eq(extension))
+    fn is_json(&self) -> bool {
+        self.extension.as_ref()
+            .map(|ext| ext.as_str() == Self::JSON_EXT)
             .unwrap_or_default()
     }
 
-    fn read_file(&self) -> Option<BufReader<File>> {
-        File::open(self.file.as_path())
-            .map(BufReader::new)
-            .ok()
+    fn is_text(&self) -> bool {
+        self.extension.as_ref()
+            .map(|ext| ext.as_str() == Self::TEXT_EXT)
+            .unwrap_or_default()
     }
 }
 
-impl ResponseAppender for BodyFile {
-    fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
-        if let Some(json) = self.maybe_as_json() {
-            resp = resp.set_body_json(json);
-        } else if let Some(text) = self.maybe_as_text() {
-            resp = resp.set_body_string(text);
+impl BodyFile {
+    pub fn render_templated(&self, mut resp: ResponseTemplate, content: String) -> ResponseTemplate {
+        if !self.path_exists {
+            resp = ResponseTemplate::new(500)
+        } else if self.is_json() {
+            let maybe_content: Option<Value> = serde_json::from_str(&content).ok();
+            if let Some(content) = maybe_content {
+                resp = resp.set_body_json(content);
+            } else {
+                resp = ResponseTemplate::new(500)
+            }
+        } else if self.is_text() {
+            resp = resp.set_body_string(content);
         } else {
             resp = ResponseTemplate::new(500)
         }
@@ -72,19 +60,17 @@ impl ResponseAppender for BodyFile {
     }
 }
 
-impl TryFrom<Option<&String>> for BodyFile {
-    type Error = Error;
-
-    fn try_from(maybe_path: Option<&String>) -> anyhow::Result<Self> {
-        maybe_path
-            .map(PathBuf::from)
-            .map(|file| Self { file, maybe_content: None })
-            .ok_or_else(|| Error::msg("Invalid body file path"))
-    }
-}
-
-impl From<(PathBuf, String)> for BodyFile {
-    fn from((file, content): (PathBuf, String)) -> Self {
-        Self { file, maybe_content: Some(content) }
+impl ResponseAppender for BodyFile {
+    fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
+        if !self.path_exists {
+            resp = ResponseTemplate::new(500)
+        } else if let Some(json) = self.maybe_as_json() {
+            resp = resp.set_body_json(json);
+        } else if let Some(text) = self.maybe_as_text() {
+            resp = resp.set_body_string(text);
+        } else {
+            resp = ResponseTemplate::new(500)
+        }
+        resp
     }
 }
