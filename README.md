@@ -45,8 +45,8 @@ the latter.
 
 # assets
 
-* [as a crate](lib/README.md)
-* [as a cli](cli/README.md)
+* [as a crate](https://crates.io/crates/stubr)
+* [as a cli](https://crates.io/crates/stubr-cli)
 * [Docker](#Docker)
 * [Helm chart](#Helm)
 * [IDE completion](#ide-completion)
