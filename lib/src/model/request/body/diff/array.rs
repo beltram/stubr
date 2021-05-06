@@ -7,7 +7,7 @@ impl<'a> RelaxedJsonArray<'a> {
         a.len() == b.len() && Self::symmetric(a, b)
     }
 
-    fn symmetric(a: &'a Vec<Value>, b: &'a Vec<Value>) -> bool {
+    fn symmetric(a: &'a [Value], b: &'a [Value]) -> bool {
         a.iter().all(|va| b.iter().any(|vb| Self(va) == Self(vb)))
     }
 

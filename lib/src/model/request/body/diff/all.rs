@@ -15,7 +15,7 @@ impl<'a> RelaxedValue<'a> {
         a.len() == b.len() && Self::is_array_symmetric(a, b)
     }
 
-    fn is_array_symmetric(a: &'a Vec<Value>, b: &'a Vec<Value>) -> bool {
+    fn is_array_symmetric(a: &'a [Value], b: &'a [Value]) -> bool {
         a.iter().all(|va| b.iter().any(|vb| Self(va) == Self(vb)))
     }
 }
