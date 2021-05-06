@@ -6,7 +6,9 @@ use wiremock::Request;
 use super::req_ext::{Headers, Queries, RequestExt};
 
 #[derive(Serialize)]
-pub struct HandlebarsData<'a> { request: RequestData<'a> }
+pub struct HandlebarsData<'a> {
+    request: RequestData<'a>,
+}
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]

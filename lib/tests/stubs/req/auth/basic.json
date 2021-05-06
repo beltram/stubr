@@ -1,9 +1,9 @@
 {
   "request": {
     "method": "GET",
-    "basicAuth" : {
-      "username" : "user",
-      "password" : "pass"
+    "basicAuth": {
+      "username": "user",
+      "password": "pass"
     }
   },
   "response": {

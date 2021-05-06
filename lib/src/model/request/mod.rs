@@ -8,6 +8,7 @@ use headers::HttpReqHeadersDto;
 use method::HttpMethodDto;
 use query::HttpQueryParamsDto;
 use url::HttpUrlDto;
+
 use crate::model::request::auth::AuthDto;
 
 mod headers;

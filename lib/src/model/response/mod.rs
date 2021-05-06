@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use serde::Deserialize;
 use wiremock::ResponseTemplate;
 
@@ -5,7 +6,6 @@ use body::BodyDto;
 use headers::HttpRespHeadersDto;
 
 use super::StubDto;
-use itertools::Itertools;
 
 mod body;
 mod body_file;
