@@ -4,8 +4,6 @@ use surf::get;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_start_server_from_relative_pathbuf() {
     let srv = Stubr::start(PathBuf::from("tests/stubs/ping.json")).await;

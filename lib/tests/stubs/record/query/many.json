@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/query/many",
+    "queryParameters": {
+      "a": {
+        "equalTo": "1"
+      },
+      "b": {
+        "equalTo": "2"
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

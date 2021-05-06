@@ -2,14 +2,14 @@ use const_format::concatcp;
 use http_types::headers::SERVER;
 use wiremock::ResponseTemplate;
 
-use super::{ResponseAppender, StubDto};
+use super::{JsonStub, ResponseAppender};
 
 const MATCHED_STUB_ID_HEADER: &str = "Matched-Stub-Id";
 
 const STUBR_VERSION: &str = env!("CARGO_PKG_VERSION");
 const SERVER_HEADER: &str = concatcp!("stubr(", STUBR_VERSION, ")");
 
-pub struct WiremockIsoResponse<'a>(pub &'a StubDto);
+pub struct WiremockIsoResponse<'a>(pub &'a JsonStub);
 
 impl ResponseAppender for WiremockIsoResponse<'_> {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {

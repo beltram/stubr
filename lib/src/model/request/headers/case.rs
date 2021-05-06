@@ -4,7 +4,7 @@ use http_types::headers::HeaderName;
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::{HttpReqHeadersDto, super::matcher::RequestMatcherDto};
+use super::{HttpReqHeadersStub, super::matcher::RequestMatcherStub};
 
 pub struct HeaderCaseInsensitiveMatcher(String, String);
 
@@ -17,8 +17,8 @@ impl Match for HeaderCaseInsensitiveMatcher {
     }
 }
 
-impl From<&HttpReqHeadersDto> for Vec<HeaderCaseInsensitiveMatcher> {
-    fn from(headers: &HttpReqHeadersDto) -> Self {
+impl From<&HttpReqHeadersStub> for Vec<HeaderCaseInsensitiveMatcher> {
+    fn from(headers: &HttpReqHeadersStub) -> Self {
         headers.get_headers().iter()
             .filter(|h| h.is_case_insensitive())
             .map(HeaderCaseInsensitiveMatcher::try_from).flatten()
@@ -26,10 +26,10 @@ impl From<&HttpReqHeadersDto> for Vec<HeaderCaseInsensitiveMatcher> {
     }
 }
 
-impl TryFrom<&RequestMatcherDto> for HeaderCaseInsensitiveMatcher {
+impl TryFrom<&RequestMatcherStub> for HeaderCaseInsensitiveMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(header: &RequestMatcherDto) -> anyhow::Result<Self> {
+    fn try_from(header: &RequestMatcherStub) -> anyhow::Result<Self> {
         header.equal_to_as_str()
             .filter(|_| header.is_case_insensitive())
             .map(|it| HeaderCaseInsensitiveMatcher(header.key.to_string(), it))

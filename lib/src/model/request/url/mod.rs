@@ -1,6 +1,6 @@
 use std::convert::TryFrom;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use wiremock::{matchers::{PathExactMatcher, PathRegexMatcher}, MockBuilder};
 
 use just_url::ExactPathAndQueryMatcher;
@@ -13,20 +13,24 @@ mod url_path_pattern;
 mod url_pattern;
 mod just_url;
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Eq, PartialEq, Hash)]
 #[serde(rename_all = "camelCase")]
-pub struct HttpUrlDto {
+pub struct HttpUrlStub {
     // exact match on path only
-    url_path: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub url_path: Option<String>,
     // regex match on path only
-    url_path_pattern: Option<String>,
+    #[serde(skip_serializing)]
+    pub url_path_pattern: Option<String>,
     // exact match on path and query
-    url: Option<String>,
+    #[serde(skip_serializing)]
+    pub url: Option<String>,
     // regex match on path and query
-    url_pattern: Option<String>,
+    #[serde(skip_serializing)]
+    pub url_pattern: Option<String>,
 }
 
-impl MockRegistrable for HttpUrlDto {
+impl MockRegistrable for HttpUrlStub {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
         if let Ok(exact) = PathExactMatcher::try_from(self) {
             mock = mock.and(exact);

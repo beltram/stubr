@@ -4,8 +4,6 @@ use stubr::Config;
 
 use crate::utils::*;
 
-mod utils;
-
 #[async_std::test]
 async fn should_start_server_on_dedicated_port() {
     let cfg = Config { port: Some(59_999), ..Default::default() };

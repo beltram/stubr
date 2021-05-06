@@ -7,7 +7,7 @@ use directories::UserDirs;
 
 use crate::cli::Cli;
 
-#[derive(Clap, Debug, PartialEq)]
+#[derive(Clap, Debug, Eq, PartialEq)]
 pub enum Shell {
     /// generates cli completion file for bash
     Bash,

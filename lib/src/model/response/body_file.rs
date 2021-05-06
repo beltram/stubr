@@ -1,9 +1,10 @@
+use serde::Serialize;
 use serde_json::Value;
 use wiremock::ResponseTemplate;
 
 use super::ResponseAppender;
 
-#[derive(Debug, Default, Clone)]
+#[derive(Serialize, Debug, Default, Clone, Eq, PartialEq, Hash)]
 pub struct BodyFile {
     pub path_exists: bool,
     pub path: String,

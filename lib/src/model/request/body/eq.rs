@@ -2,12 +2,12 @@ use std::convert::TryFrom;
 
 use wiremock::matchers::{body_json, BodyExactMatcher};
 
-use super::BodyPatternDto;
+use super::BodyPatternStub;
 
-impl TryFrom<&BodyPatternDto> for BodyExactMatcher {
+impl TryFrom<&BodyPatternStub> for BodyExactMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternDto) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
         let is_exact_matching = body.is_by_json_equality()
             && !body.is_ignore_extra_elements()
             && !body.is_ignore_array_order();

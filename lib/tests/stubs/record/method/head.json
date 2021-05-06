@@ -1,0 +1,8 @@
+{
+  "request": {
+    "method": "HEAD"
+  },
+  "response": {
+    "status": 200
+  }
+}

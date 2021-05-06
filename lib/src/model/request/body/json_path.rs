@@ -4,7 +4,7 @@ use jsonpath_lib::Compiled;
 use serde_json::{from_slice as deserialize, Value};
 use wiremock::{Match, Request};
 
-use super::BodyPatternDto;
+use super::BodyPatternStub;
 
 pub struct JsonPathMatcher(Compiled);
 
@@ -17,10 +17,10 @@ impl Match for JsonPathMatcher {
     }
 }
 
-impl TryFrom<&BodyPatternDto> for JsonPathMatcher {
+impl TryFrom<&BodyPatternStub> for JsonPathMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternDto) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
         body.matches_json_path.as_ref()
             .filter(|_| body.is_by_json_path())
             .and_then(|it| jsonpath_lib::Compiled::compile(it.as_str()).ok())

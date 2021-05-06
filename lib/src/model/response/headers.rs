@@ -1,16 +1,16 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use wiremock::ResponseTemplate;
 
-use super::ResponseAppender;
-use super::template::{data::HandlebarsData, HandlebarTemplatable};
+use super::{ResponseAppender, template::{data::HandlebarsData, HandlebarTemplatable}};
 
-#[derive(Deserialize, Debug, Default, Clone)]
-pub struct HttpRespHeadersDto {
-    pub(crate) headers: Option<Map<String, Value>>,
+#[derive(Serialize, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
+pub struct HttpRespHeadersStub {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub headers: Option<Map<String, Value>>,
 }
 
-impl ResponseAppender for HttpRespHeadersDto {
+impl ResponseAppender for HttpRespHeadersStub {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
         if let Some(headers) = self.headers.as_ref() {
             for (k, v) in headers {
@@ -23,7 +23,7 @@ impl ResponseAppender for HttpRespHeadersDto {
     }
 }
 
-impl HandlebarTemplatable for HttpRespHeadersDto {
+impl HandlebarTemplatable for HttpRespHeadersStub {
     fn register_template(&self) {
         if let Some(headers) = self.headers.as_ref() {
             for (_, v) in headers {

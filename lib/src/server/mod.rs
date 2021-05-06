@@ -1,14 +1,13 @@
 use std::{convert::TryFrom, net::TcpListener};
 
-use async_std::path::PathBuf;
-use async_std::task::block_on;
+use async_std::{path::PathBuf, task::block_on};
+use log::info;
 use wiremock::{Mock, MockServer};
 
 use stub::StubrMock;
 use stub_finder::StubFinder;
 
-use crate::cloud::probe::HttpProbe;
-use crate::Config;
+use crate::{cloud::probe::HttpProbe, Config, record::{config::RecordConfig, StubrRecord}};
 
 mod stub;
 mod stub_finder;
@@ -68,6 +67,16 @@ impl Stubr {
         block_on(Self::start_with(stubs, config))
     }
 
+    /// Proxies requests and converts them into stubs
+    pub fn record() -> StubrRecord {
+        StubrRecord::record(RecordConfig::default())
+    }
+
+    /// Proxies requests and converts them into stubs
+    pub fn record_with(config: RecordConfig) -> StubrRecord {
+        StubrRecord::record(config)
+    }
+
     /// Get running server address
     pub fn uri(&self) -> String {
         self.instance.uri()
@@ -93,12 +102,13 @@ impl Stubr {
             if config.verbose.unwrap_or_default() {
                 let maybe_file_name = file.strip_prefix(&stub_folder).ok().and_then(|file| file.to_str());
                 if let Some(file_name) = maybe_file_name {
-                    println!("+ mounted '{}'", file_name);
+                    info!("mounted stub '{}'", file_name);
                 }
             }
         }
     }
 
+    #[allow(clippy::needless_lifetimes)]
     async fn find_all_mocks<'a>(&self, from: &PathBuf, config: &'a Config) -> impl Iterator<Item=(Mock, PathBuf)> + 'a {
         StubFinder::find_all_stubs(from).await.into_iter()
             .flat_map(move |path| StubrMock::try_from((&path, config)).map(|mock| (mock.0, path)))

@@ -1,0 +1,8 @@
+{
+  "request": {
+    "method": "PATCH"
+  },
+  "response": {
+    "status": 200
+  }
+}

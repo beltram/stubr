@@ -4,7 +4,7 @@ use jsonpath_lib::select as matches_json_path;
 use serde_json::{from_slice as deserialize, Value};
 use wiremock::{Match, Request};
 
-use super::BodyPatternDto;
+use super::BodyPatternStub;
 
 pub struct JsonPathEqMatcher(String, Value);
 
@@ -18,10 +18,10 @@ impl Match for JsonPathEqMatcher {
     }
 }
 
-impl TryFrom<&BodyPatternDto> for JsonPathEqMatcher {
+impl TryFrom<&BodyPatternStub> for JsonPathEqMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternDto) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
         if body.is_by_json_path_eq() {
             body.expression.as_ref()
                 .and_then(|path| body.equal_to_json.as_ref().map(|eq| (path, eq)))

@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/query/one",
+    "queryParameters": {
+      "a": {
+        "equalTo": "1"
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

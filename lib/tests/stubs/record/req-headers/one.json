@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/headers/req/one",
+    "headers": {
+      "x-a": {
+        "equalTo": "a"
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

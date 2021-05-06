@@ -9,7 +9,7 @@ use crate::utils::*;
 #[async_std::test]
 async fn should_template_now_formatted_as_rfc_3339() {
     let srv = given("resp/template/datetime/now");
-    get(&srv.url()).await.unwrap()
+    get(&srv.uri()).await.unwrap()
         .assert_ok()
         .assert_body_text_matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:]+Z$")
         .assert_content_type_text();
@@ -18,7 +18,7 @@ async fn should_template_now_formatted_as_rfc_3339() {
 #[async_std::test]
 async fn should_template_now_as_close_to_current_utc_current() {
     let srv = given("resp/template/datetime/now");
-    get(&srv.url()).await.unwrap()
+    get(&srv.uri()).await.unwrap()
         .assert_ok()
         .assert_body_text_satisfies(|body| is_close_to(body, Duration::days(1), |it| it))
         .assert_content_type_text();
@@ -27,7 +27,7 @@ async fn should_template_now_as_close_to_current_utc_current() {
 #[async_std::test]
 async fn should_template_now_with_custom_format() {
     let srv = given("resp/template/datetime/custom-format");
-    get(&srv.url()).await.unwrap()
+    get(&srv.uri()).await.unwrap()
         .assert_ok()
         .assert_body_text_matches("^[0-9]{4}/[0-9]{2}/[0-9]{2}$")
         .assert_content_type_text();
@@ -36,7 +36,7 @@ async fn should_template_now_with_custom_format() {
 #[async_std::test]
 async fn should_template_now_with_offset() {
     let srv = given("resp/template/datetime/offset");
-    get(&srv.url()).await.unwrap()
+    get(&srv.uri()).await.unwrap()
         .assert_ok()
         .assert_body_text_satisfies(|body| is_close_to(body, Duration::days(1), |resp| resp - Duration::days(3)))
         .assert_content_type_text();
@@ -45,7 +45,7 @@ async fn should_template_now_with_offset() {
 #[async_std::test]
 async fn should_template_now_with_negative_offset() {
     let srv = given("resp/template/datetime/negative-offset");
-    get(&srv.url()).await.unwrap()
+    get(&srv.uri()).await.unwrap()
         .assert_ok()
         .assert_body_text_satisfies(|body| is_close_to(body, Duration::days(1), |resp| resp + Duration::days(3)))
         .assert_content_type_text();
@@ -54,7 +54,7 @@ async fn should_template_now_with_negative_offset() {
 #[async_std::test]
 async fn should_template_now_with_epoch_format() {
     let srv = given("resp/template/datetime/fmt-epoch");
-    get(&srv.url()).await.unwrap()
+    get(&srv.uri()).await.unwrap()
         .assert_ok()
         .assert_body_text_satisfies(|body| {
             let current_epoch = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
@@ -68,7 +68,7 @@ async fn should_template_now_with_epoch_format() {
 #[async_std::test]
 async fn should_template_now_with_unix_format() {
     let srv = given("resp/template/datetime/fmt-unix");
-    get(&srv.url()).await.unwrap()
+    get(&srv.uri()).await.unwrap()
         .assert_ok()
         .assert_body_text_satisfies(|body| {
             let current_epoch = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
@@ -82,7 +82,7 @@ async fn should_template_now_with_unix_format() {
 #[async_std::test]
 async fn should_template_now_with_custom_timezone() {
     let srv = given("resp/template/datetime/timezone");
-    get(&srv.url()).await.unwrap()
+    get(&srv.uri()).await.unwrap()
         .assert_ok()
         .assert_body_text_satisfies(|body| is_close_to(body, Duration::hours(1), |resp| {
             let rome: Tz = "Europe/Rome".parse().unwrap();

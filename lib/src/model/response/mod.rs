@@ -1,38 +1,42 @@
+use std::hash::{Hash, Hasher};
+
 use itertools::Itertools;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use wiremock::ResponseTemplate;
 
-use body::BodyDto;
-use headers::HttpRespHeadersDto;
+use body::BodyStub;
+use headers::HttpRespHeadersStub;
 
-use super::StubDto;
+use super::JsonStub;
 
-mod body;
+pub mod body;
 mod body_file;
-mod headers;
+pub mod headers;
 pub mod default;
 pub mod delay;
 pub mod template;
 
-#[derive(Deserialize, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct ResponseDto {
+pub struct ResponseStub {
     /// HTTP response status
-    pub(crate) status: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<u16>,
     /// delay in milliseconds to apply to the response
-    fixed_delay_milliseconds: Option<u64>,
+    #[serde(skip_serializing)]
+    pub fixed_delay_milliseconds: Option<u64>,
     /// HTTP response body
     #[serde(flatten)]
-    pub(crate) body: BodyDto,
+    pub body: BodyStub,
     /// HTTP response headers
     #[serde(flatten)]
-    pub(crate) headers: HttpRespHeadersDto,
+    pub headers: HttpRespHeadersStub,
     /// Mostly used for enabling response templating
-    #[serde(default)]
-    transformers: Vec<String>,
+    #[serde(default, skip_serializing)]
+    pub transformers: Vec<String>,
 }
 
-impl ResponseDto {
+impl ResponseStub {
     const RESPONSE_TEMPLATE: &'static str = "response-template";
 
     pub(crate) fn requires_response_templating(&self) -> bool {
@@ -43,6 +47,12 @@ impl ResponseDto {
         self.headers.headers.as_ref()
             .map(|headers| headers.keys().map(|it| it.as_str()).collect_vec())
             .unwrap_or_default()
+    }
+}
+
+impl Hash for ResponseStub {
+    fn hash<H: Hasher>(&self, _state: &mut H) {
+        // we do not need response hash for recorded stub file name
     }
 }
 
@@ -58,19 +68,19 @@ mod response_dto_tests {
 
     #[test]
     fn requires_response_templating_should_be_true_when_present() {
-        let resp = ResponseDto { transformers: vec![String::from(ResponseDto::RESPONSE_TEMPLATE)], ..Default::default() };
+        let resp = ResponseStub { transformers: vec![String::from(ResponseStub::RESPONSE_TEMPLATE)], ..Default::default() };
         assert!(resp.requires_response_templating());
     }
 
     #[test]
     fn requires_response_templating_should_be_false_when_absent() {
-        let resp = ResponseDto { transformers: vec![String::from("other")], ..Default::default() };
+        let resp = ResponseStub { transformers: vec![String::from("other")], ..Default::default() };
         assert!(resp.requires_response_templating().not());
     }
 
     #[test]
     fn requires_response_templating_should_be_false_when_transformers_empty() {
-        let resp = ResponseDto { transformers: vec![], ..Default::default() };
+        let resp = ResponseStub { transformers: vec![], ..Default::default() };
         assert!(resp.requires_response_templating().not());
     }
 }

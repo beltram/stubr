@@ -5,11 +5,13 @@
 [![Docs.rs](https://img.shields.io/badge/docs-latest-blue.svg)](https://docs.rs/stubr)
 
 Extends [wiremock-rs](https://crates.io/crates/wiremock) by supporting
-[Wiremock](https://github.com/tomakehurst/wiremock) json stubs as input.  
+[Wiremock](https://github.com/tomakehurst/wiremock) json stubs as input.
 
-Use it when you have to mock an external service over http and want a language agnostic format for representing
-your mocks. Especially shines when the service you have to mock already proposes and publishes [Wiremock](https://github.com/tomakehurst/wiremock)
-e.g. [Spring Boot](https://spring.io/projects/spring-boot) with [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract).  
+Use it when you have to mock an external service over http and want a language agnostic format for representing your
+mocks. Especially shines when the service you have to mock already proposes and
+publishes [Wiremock](https://github.com/tomakehurst/wiremock)
+e.g. [Spring Boot](https://spring.io/projects/spring-boot)
+with [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract).
 
 Also available as a [cli](https://crates.io/crates/stubr-cli).
 
@@ -24,10 +26,10 @@ let srv = Stubr::start("tests/stubs").await;
 // or just mount a single file
 let srv = Stubr::start("tests/stubs/ping.json").await;
 // or configure it (more configurations to come)
-let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default() }).await;
+let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default () }).await;
 // can also be used in a blocking way
 let srv = Stubr::start_blocking("tests/stubs");
-let srv = Stubr::start_blocking_with("tests/stubs", Config { port: Some(8080), ..Default::default() });
+let srv = Stubr::start_blocking_with("tests/stubs", Config { port: Some(8080), ..Default::default () });
 
 // use '.uri()' method to get server address
 surf::get(srv.uri()).await;
@@ -36,9 +38,10 @@ surf::get(srv.uri()).await;
 # wiremock cheat sheet
 
 This is a condensed reminder of Wiremock documentation regarding json stubs format. It is also a view of the currently
-implemented features in `stubr` : just things which actually work in `stubr` are present.  
+implemented features in `stubr` : just things which actually work in `stubr` are present.
 
-*You can also get assistance for writing json stubs with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided by stubr.*
+*You can also get assistance for writing json stubs
+with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided by stubr.*
 
 ```json
 {
@@ -123,3 +126,28 @@ implemented features in `stubr` : just things which actually work in `stubr` are
 ```
 
 * (1) [Java SimpleDateFormat](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html)
+
+# recording
+
+Stubr can be used to record http traffic in your unit tests and dump them into json stubs.
+Currently, integration is quite limited but much more (actix, warp, rocket, tide) are around the corner.  
+
+You need to start a tokio multi-threaded runtime in your unit test so as the recorder starts. Use
+`#[tokio::test(flavor = "multi_thread")]` for that.  
+
+The recorder acts as a proxy, so you need to configure your http client to use this proxy. Currently, thanks to the
+`test-isahc` feature you can get a configured [isahc](https://github.com/sagebind/isahc) client with
+`Stubr::record().isahc_client()`. Your stubs will then be stored under `target/stubs/localhost`
+
+```rust
+use stubr::Stubr;
+use isahc;
+
+#[tokio::test(flavor = "multi_thread")] // required for recording
+async fn sample_test() {
+    // start a standalone http server to record, for example stubr itself
+    let srv = Stubr::start("tests/stubs");
+    Stubr::record().isahc_client().get(srv.uri()).unwrap();
+    // stubs will be created under `target/stubs`
+}
+```

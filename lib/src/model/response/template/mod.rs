@@ -15,7 +15,7 @@ use helpers::{
 };
 
 use crate::cloud::opentracing::OpenTracing;
-use crate::model::response::ResponseDto;
+use crate::model::response::ResponseStub;
 
 pub mod data;
 mod req_ext;
@@ -39,7 +39,7 @@ lazy_static! {
 
 pub struct StubTemplate {
     pub(crate) template: ResponseTemplate,
-    pub(crate) response: ResponseDto,
+    pub(crate) response: ResponseStub,
     pub(crate) requires_templating: bool,
 }
 
