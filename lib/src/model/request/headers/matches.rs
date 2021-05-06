@@ -5,7 +5,7 @@ use itertools::Itertools;
 use regex::Regex;
 use wiremock::{Match, Request};
 
-use super::{HttpReqHeadersDto, super::matcher::RequestMatcherDto};
+use super::{HttpReqHeadersStub, super::matcher::RequestMatcherStub};
 
 pub struct HeaderRegexMatcher(String, Regex, bool);
 
@@ -24,8 +24,8 @@ impl Match for HeaderRegexMatcher {
     }
 }
 
-impl From<&HttpReqHeadersDto> for Vec<HeaderRegexMatcher> {
-    fn from(headers: &HttpReqHeadersDto) -> Self {
+impl From<&HttpReqHeadersStub> for Vec<HeaderRegexMatcher> {
+    fn from(headers: &HttpReqHeadersStub) -> Self {
         headers.get_headers().iter()
             .filter(|h| h.is_by_regex())
             .map(HeaderRegexMatcher::try_from).flatten()
@@ -33,10 +33,10 @@ impl From<&HttpReqHeadersDto> for Vec<HeaderRegexMatcher> {
     }
 }
 
-impl TryFrom<&RequestMatcherDto> for HeaderRegexMatcher {
+impl TryFrom<&RequestMatcherStub> for HeaderRegexMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(header: &RequestMatcherDto) -> anyhow::Result<Self> {
+    fn try_from(header: &RequestMatcherStub) -> anyhow::Result<Self> {
         let maybe_positive_regex = header.matches_as_regex()
             .filter(|_| header.is_matches())
             .map(|it| HeaderRegexMatcher(header.key.to_string(), it, true));

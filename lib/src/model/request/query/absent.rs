@@ -3,7 +3,7 @@ use std::{convert::TryFrom};
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::{HttpQueryParamsDto, super::matcher::RequestMatcherDto};
+use super::{HttpQueryParamsStub, super::matcher::RequestMatcherStub};
 
 pub struct QueryAbsentMatcher(String, bool);
 
@@ -14,8 +14,8 @@ impl Match for QueryAbsentMatcher {
     }
 }
 
-impl From<&HttpQueryParamsDto> for Vec<QueryAbsentMatcher> {
-    fn from(queries: &HttpQueryParamsDto) -> Self {
+impl From<&HttpQueryParamsStub> for Vec<QueryAbsentMatcher> {
+    fn from(queries: &HttpQueryParamsStub) -> Self {
         queries.get_queries().iter()
             .filter(|it| it.is_absent())
             .map(QueryAbsentMatcher::try_from)
@@ -24,10 +24,10 @@ impl From<&HttpQueryParamsDto> for Vec<QueryAbsentMatcher> {
     }
 }
 
-impl TryFrom<&RequestMatcherDto> for QueryAbsentMatcher {
+impl TryFrom<&RequestMatcherStub> for QueryAbsentMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(query: &RequestMatcherDto) -> anyhow::Result<Self> {
+    fn try_from(query: &RequestMatcherStub) -> anyhow::Result<Self> {
         query.value.as_ref()
             .filter(|_| query.is_absent())
             .map(|it| QueryAbsentMatcher(query.key.to_string(), it.absent.unwrap_or_default()))

@@ -1,21 +1,30 @@
 use clap::Clap;
 
-use super::completion::Shell;
+use crate::record::config::CliRecordConfig;
 
-#[derive(Clap, Debug, PartialEq)]
+use super::completion::Shell;
+use super::super::record::Record;
+
+#[derive(Clap, Debug, Eq, PartialEq)]
 pub enum Commands {
     /// generates & installs completion scripts for the given shell
     Completion {
         #[clap(subcommand)]
         shell: Shell
-    }
+    },
+    /// Records incoming exchanges and convert them to stubs
+    Record {
+        #[clap(flatten)]
+        config: CliRecordConfig
+    },
 }
 
 impl Commands {
     /// Dispatches subcommands
-    pub fn exec(&self) -> anyhow::Result<()> {
+    pub async fn exec(self) -> anyhow::Result<()> {
         match self {
             Commands::Completion { shell } => shell.generate_and_install(),
+            Commands::Record { config } => Record::record(config).await,
         }
         Ok(())
     }

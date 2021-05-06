@@ -29,7 +29,7 @@ async fn should_fail_when_invalid_key() {
 #[async_std::test]
 async fn should_fail_when_missing() {
     let srv = given("req/query/contains/single");
-    get(&srv.url()).await.unwrap().assert_not_found();
+    get(&srv.uri()).await.unwrap().assert_not_found();
 }
 
 #[async_std::test]

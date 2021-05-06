@@ -1,20 +1,22 @@
 use std::{
+    convert::TryInto,
     env::current_dir,
     ffi::OsStr,
     fs::DirEntry,
     path::{Path, PathBuf},
     time::{Duration, Instant},
 };
-use std::convert::TryInto;
 
 use clap::{AppSettings, Clap, ValueHint};
 use colored::Colorize;
+use log::info;
 
 use commands::Commands;
 use stubr::{Config, Stubr};
 
 mod commands;
 mod completion;
+pub mod logger;
 
 /// A Rust implementation of Wiremock
 #[derive(Clap, Debug, Default)]
@@ -39,7 +41,7 @@ pub struct Cli {
     root_dir: Option<PathBuf>,
     /// port number the server is listening on
     ///
-    /// When absent, defaults to a random one
+    /// Defaults to a random one
     #[clap(short, long)]
     port: Option<u16>,
     /// global delay e.g. 10ms or 2s
@@ -61,9 +63,9 @@ impl Cli {
     const SLEEP_DURATION: Duration = Duration::from_millis(1000);
 
     // Runs stubr forever until process exits
-    pub async fn run(&self, start_time: Instant) -> anyhow::Result<()> {
-        if let Some(cmd) = self.cmd.as_ref() {
-            cmd.exec()
+    pub async fn run(self, start_time: Instant) -> anyhow::Result<()> {
+        if let Some(cmd) = self.cmd {
+            cmd.exec().await
         } else {
             Self::run_server(self.stubs_dir(), self.into(), start_time).await
         }
@@ -75,7 +77,7 @@ impl Cli {
     /// * `config` - global server configuration
     async fn run_server<T>(stubs: T, config: Config, start_time: Instant) -> anyhow::Result<()> where T: Into<async_std::path::PathBuf> {
         let server = Stubr::start_with(stubs, config).await;
-        println!("Started {} in {}ms on {}", "stubr".green().bold(), start_time.elapsed().as_millis(), server.uri());
+        info!("Started {} in {}ms on {}", "stubr".green().bold(), start_time.elapsed().as_millis(), server.uri());
         loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
     }
 
@@ -128,8 +130,8 @@ impl Cli {
     }
 }
 
-impl From<&Cli> for Config {
-    fn from(cli: &Cli) -> Self {
+impl From<Cli> for Config {
+    fn from(cli: Cli) -> Self {
         Self {
             port: cli.port,
             verbose: Some(true),

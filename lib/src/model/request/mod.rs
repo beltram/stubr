@@ -1,44 +1,45 @@
 use std::convert::TryFrom;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use wiremock::MockBuilder;
 
-use body::BodyPatternDto;
-use headers::HttpReqHeadersDto;
-use method::HttpMethodDto;
-use query::HttpQueryParamsDto;
-use url::HttpUrlDto;
+use body::BodyPatternStub;
+use headers::HttpReqHeadersStub;
+use method::HttpMethodStub;
+use query::HttpQueryParamsStub;
+use url::HttpUrlStub;
 
-use crate::model::request::auth::AuthDto;
+use crate::model::request::auth::AuthStub;
 
-mod headers;
-mod query;
-mod url;
-mod matcher;
-mod method;
-mod body;
-mod auth;
+pub mod headers;
+pub mod query;
+pub mod url;
+pub mod matcher;
+pub mod method;
+pub mod body;
+pub mod auth;
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Hash)]
 #[serde(default, rename_all = "camelCase")]
-pub struct RequestDto {
+pub struct RequestStub {
     #[serde(default)]
-    method: HttpMethodDto,
+    pub method: HttpMethodStub,
     #[serde(flatten)]
-    url: HttpUrlDto,
+    pub url: HttpUrlStub,
     #[serde(flatten)]
-    headers: HttpReqHeadersDto,
+    pub headers: HttpReqHeadersStub,
     #[serde(flatten)]
-    queries: HttpQueryParamsDto,
-    body_patterns: Vec<BodyPatternDto>,
-    #[serde(flatten)]
-    auth: AuthDto,
+    pub queries: HttpQueryParamsStub,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub body_patterns: Vec<BodyPatternStub>,
+    #[serde(flatten, skip_serializing)]
+    pub auth: AuthStub,
 }
 
-impl TryFrom<&RequestDto> for MockBuilder {
+impl TryFrom<&RequestStub> for MockBuilder {
     type Error = anyhow::Error;
 
-    fn try_from(request: &RequestDto) -> anyhow::Result<Self> {
+    fn try_from(request: &RequestStub) -> anyhow::Result<Self> {
         let mut mock = MockBuilder::from(&request.method);
         mock = request.url.register(mock);
         mock = request.headers.register(mock);

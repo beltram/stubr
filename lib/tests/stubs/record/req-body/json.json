@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/body/req/json",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "a": {
+            "b": "c"
+          }
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}

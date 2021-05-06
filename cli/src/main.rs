@@ -2,12 +2,14 @@ use std::time::Instant;
 
 use clap::Clap;
 
-use cli::Cli;
+use cli::{Cli, logger::Logger};
 
 mod cli;
+mod record;
 
-#[async_std::main]
+#[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let now = Instant::now();
+    Logger::init();
     Cli::parse().run(now).await
 }

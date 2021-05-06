@@ -1,33 +1,39 @@
 use std::{convert::TryFrom, ops::Not, str::FromStr};
 
 use regex::Regex;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 #[derive(Deserialize, Debug, Default)]
-pub struct RequestMatcherDto {
+pub struct RequestMatcherStub {
     pub key: String,
-    pub value: Option<MatcherValueDto>,
+    pub value: Option<MatcherValueStub>,
 }
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Deserialize, Serialize, Debug, Default)]
 #[serde(rename_all = "camelCase")]
-pub struct MatcherValueDto {
+pub struct MatcherValueStub {
     /// matches by strict equality
-    equal_to: Option<Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub equal_to: Option<Value>,
     /// matches by strict case insensitive (when true) equality
-    case_insensitive: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub case_insensitive: Option<bool>,
     /// matches when string contains once or more this value
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub contains: Option<String>,
     /// matches when matches the regex
-    matches: Option<Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub matches: Option<Value>,
     /// matches when does not matches the regex
-    does_not_match: Option<Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub does_not_match: Option<Value>,
     /// when true matches when parameter is not present in request
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub absent: Option<bool>,
 }
 
-impl RequestMatcherDto {
+impl RequestMatcherStub {
     pub fn is_exact_match(&self) -> bool {
         self.is_equal_to() && !self.is_case_insensitive() && !self.is_contains()
     }
@@ -92,7 +98,7 @@ impl RequestMatcherDto {
     }
 }
 
-impl TryFrom<(&String, &Value)> for RequestMatcherDto {
+impl TryFrom<(&String, &Value)> for RequestMatcherStub {
     type Error = anyhow::Error;
 
     fn try_from((k, v): (&String, &Value)) -> anyhow::Result<Self> {

@@ -1,24 +1,25 @@
 use std::convert::TryFrom;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
 
-use request::RequestDto;
-use response::{default::WiremockIsoResponse, delay::Delay, ResponseAppender, ResponseDto, template::{HandlebarTemplatable, StubTemplate}};
+use request::RequestStub;
+use response::{default::WiremockIsoResponse, delay::Delay, ResponseAppender, ResponseStub, template::{HandlebarTemplatable, StubTemplate}};
 
 use crate::Config;
 
-mod request;
-mod response;
+pub mod request;
+pub mod response;
 
-#[derive(Deserialize, Debug)]
-pub struct StubDto {
+#[derive(Serialize, Deserialize, Debug, Hash)]
+pub struct JsonStub {
+    #[serde(skip_serializing)]
     pub uuid: Option<String>,
-    request: RequestDto,
-    pub response: ResponseDto,
+    pub request: RequestStub,
+    pub response: ResponseStub,
 }
 
-impl StubDto {
+impl JsonStub {
     pub(crate) fn try_creating_from(self, config: &Config) -> anyhow::Result<Mock> {
         Ok(MockBuilder::try_from(&self.request)?.respond_with(self.into_respond(config)))
     }

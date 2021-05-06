@@ -1,0 +1,8 @@
+{
+  "request": {
+    "method": "OPTIONS"
+  },
+  "response": {
+    "status": 200
+  }
+}

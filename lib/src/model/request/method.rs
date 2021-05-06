@@ -1,42 +1,63 @@
 use std::convert::TryFrom;
 
-use serde::Deserialize;
-use wiremock::{
-    Match,
-    matchers::{method, MethodExactMatcher},
-    Mock,
-    MockBuilder,
-    Request,
-};
+use serde::{Deserialize, Serialize};
+use wiremock::{Match, matchers::{method, MethodExactMatcher}, Mock, MockBuilder, Request};
 
-#[derive(Deserialize, Debug)]
-pub struct HttpMethodDto(String);
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
+pub struct HttpMethodStub(pub Verb);
 
-impl HttpMethodDto {
-    const METHOD_ANY: &'static str = "ANY";
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum Verb {
+    Any,
+    Get,
+    Post,
+    Put,
+    Delete,
+    Patch,
+    Head,
+    Options,
+    Connect,
+    Trace,
 }
 
-impl Default for HttpMethodDto {
-    fn default() -> Self {
-        Self(Self::METHOD_ANY.to_string())
+
+impl From<&str> for HttpMethodStub {
+    fn from(v: &str) -> Self {
+        Self(match v {
+            "GET" => Verb::Get,
+            "POST" => Verb::Post,
+            "PUT" => Verb::Put,
+            "DELETE" => Verb::Delete,
+            "PATCH" => Verb::Patch,
+            "HEAD" => Verb::Head,
+            "OPTIONS" => Verb::Options,
+            "CONNECT" => Verb::Connect,
+            "TRACE" => Verb::Trace,
+            _ => Verb::Any,
+        })
     }
 }
 
-impl TryFrom<&HttpMethodDto> for MethodExactMatcher {
+impl Default for HttpMethodStub {
+    fn default() -> Self { Self(Verb::Any) }
+}
+
+impl TryFrom<&HttpMethodStub> for MethodExactMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(http_method: &HttpMethodDto) -> anyhow::Result<Self> {
-        let m = http_method.0.as_str();
-        if m != HttpMethodDto::METHOD_ANY {
-            Ok(method(m))
+    fn try_from(http_method: &HttpMethodStub) -> anyhow::Result<Self> {
+        let m = &http_method.0;
+        if m != &Verb::Any {
+            Ok(method(format!("{:?}", m).as_str()))
         } else {
             anyhow::Result::Err(anyhow::Error::msg(""))
         }
     }
 }
 
-impl From<&HttpMethodDto> for MockBuilder {
-    fn from(method: &HttpMethodDto) -> Self {
+impl From<&HttpMethodStub> for MockBuilder {
+    fn from(method: &HttpMethodStub) -> Self {
         MethodExactMatcher::try_from(method)
             .map(Mock::given)
             .unwrap_or_else(|_| Mock::given(MethodAnyMatcher))

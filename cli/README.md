@@ -5,7 +5,7 @@
 
 # use it
 
-You can use `stubr` as a cli for serving Wiremock stubs on a local server.  
+You can use `stubr` as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into json stubs.  
 To get a list of all available options run `stubr --help`
 
 The simplest usage is for serving Wiremock stubs under a directory.  
@@ -75,6 +75,20 @@ stubr completion zsh
 stubr completion bash
 ```
 
+# recording
+
+In order to record http traffic, `stubr` can act as a proxy to dump this traffic into json stubs on your local filesystem.
+Recording can be started with the `stubr record` command. Stubs will be grouped by hosts. You can then play them back
+using `stubr`.
+
+| arg | about | examples |
+|-----|:-----:|:-------:|
+| `--port` | Proxy port. Defaults to 3030. | `stubr --port 3031` or `stubr -p 3031` |
+| `--output` | File path where recorded stubs are stored. Default to current directory. | `stubr --port record-1` or `stubr -o record-1` |
+
+Also available as a [crate](https://crates.io/crates/stubr) for recording traffic in unit tests.
+
 # benchmark
 
-A very simple benchmark comparing stubr to wiremock is available [here](https://github.com/beltram/stubr/blob/main/bench/report.md)
+A very simple benchmark comparing stubr to wiremock is
+available [here](https://github.com/beltram/stubr/blob/main/bench/report.md)

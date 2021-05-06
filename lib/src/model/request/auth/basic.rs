@@ -1,12 +1,12 @@
 use std::str::FromStr;
 
 use http_types::headers::HeaderName;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use wiremock::{Match, Request};
 
-#[derive(Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Hash)]
 #[serde(default, rename_all = "camelCase")]
-pub struct BasicAuthDto {
+pub struct BasicAuthStub {
     username: String,
     password: String,
 }
@@ -27,8 +27,8 @@ impl Match for BasicAuthMatcher {
     }
 }
 
-impl From<&BasicAuthDto> for BasicAuthMatcher {
-    fn from(dto: &BasicAuthDto) -> Self {
+impl From<&BasicAuthStub> for BasicAuthMatcher {
+    fn from(dto: &BasicAuthStub) -> Self {
         let value = base64::encode(format!("{}:{}", dto.username, dto.password));
         Self(format!("{} {}", Self::BASIC_PREFIX, value))
     }

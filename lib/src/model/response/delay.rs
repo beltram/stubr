@@ -4,9 +4,9 @@ use wiremock::ResponseTemplate;
 
 use crate::Config;
 
-use super::{ResponseAppender, StubDto};
+use super::{JsonStub, ResponseAppender};
 
-pub struct Delay<'a>(pub &'a StubDto, pub &'a Config);
+pub struct Delay<'a>(pub &'a JsonStub, pub &'a Config);
 
 impl ResponseAppender for Delay<'_> {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {

@@ -1,30 +1,20 @@
 #![allow(dead_code)]
 
-use std::{fmt::Debug, path::PathBuf, str::FromStr};
+use std::{fs::File, io::Read, path::PathBuf};
+use std::env::current_dir;
+use std::path::Path;
 
 use async_std::task::block_on;
-use http_types::headers::{HeaderName, HeaderValue};
-use regex::Regex;
-use serde::de::DeserializeOwned;
-use surf::Response;
+use serde_json::Value;
 
+pub use client::ResponseAsserter;
+use stubr::RecordConfig;
 pub use stubr::Stubr;
-pub use traits::AnyStubServer;
 
-#[cfg(feature = "iso")]
-use self::wiremock::Wiremock;
+pub mod client;
 
-mod wiremock;
-mod traits;
-
-#[cfg(not(feature = "iso"))]
-pub fn given(name: &str) -> impl AnyStubServer {
+pub fn given(name: &str) -> Stubr {
     block_on(Stubr::start(stub(name)))
-}
-
-#[cfg(feature = "iso")]
-pub fn given(name: &str) -> impl AnyStubServer {
-    Wiremock::start(stub(name))
 }
 
 fn stub(name: &str) -> PathBuf {
@@ -56,80 +46,47 @@ pub trait UriAndQuery {
     }
 }
 
-impl<S: AnyStubServer> UriAndQuery for S {
-    fn get_uri(&self) -> String { self.url() }
+impl UriAndQuery for Stubr {
+    fn get_uri(&self) -> String { self.uri() }
 }
 
-pub trait ResponseAsserter {
-    fn assert_status_eq(&mut self, status: u16) -> &mut Self;
-    fn assert_ok(&mut self) -> &mut Self { self.assert_status_eq(200) }
-
-    #[cfg(not(feature = "iso"))]
-    fn assert_not_found(&mut self) -> &mut Self { self.assert_status_eq(404) }
-
-    #[cfg(feature = "iso")]
-    fn assert_not_found(&mut self) -> &mut Self;
-
-    fn assert_error(&mut self) -> &mut Self { self.assert_status_eq(500) }
-    fn assert_body_text(&mut self, body: &str) -> &mut Self;
-    fn assert_body_text_satisfies(&mut self, asserter: fn(&str)) -> &mut Self;
-    fn assert_body_text_matches(&mut self, regex: &str) -> &mut Self;
-    fn assert_body_json<T>(&mut self, body: T) -> &mut Self where T: DeserializeOwned + PartialEq + Debug;
-    fn assert_body_empty(&mut self) -> &mut Self { self.assert_body_text("") }
-    fn assert_header(&mut self, key: &str, value: &str) -> &mut Self;
-    fn assert_no_header(&mut self, key: &str) -> &mut Self;
-    fn assert_content_type_json(&mut self) -> &mut Self { self.assert_header("Content-Type", "application/json") }
-    fn assert_content_type_text(&mut self) -> &mut Self { self.assert_header("Content-Type", "text/plain") }
+pub fn assert_recorded_stub_eq(id: &str, expected: Value) {
+    let file = target_dir()
+        .join("stubs")
+        .join("localhost")
+        .join(format!("{}.json", id));
+    let mut content = String::new();
+    File::open(file).unwrap().read_to_string(&mut content).unwrap();
+    let content: Value = serde_json::from_str(content.as_str()).unwrap();
+    assert_eq!(content, expected);
 }
 
-impl ResponseAsserter for Response {
-    fn assert_status_eq(&mut self, status: u16) -> &mut Self {
-        assert_eq!(u16::from(self.status()), status);
-        self
-    }
+fn target_dir() -> PathBuf {
+    current_dir().ok()
+        .and_then(|c| c.parent().map(Path::to_path_buf))
+        .map(|p| p.join("target"))
+        .unwrap()
+}
 
-    #[cfg(feature = "iso")]
-    fn assert_not_found(&mut self) -> &mut Self {
-        let status = u16::from(self.status());
-        if status != 403 || status != 404 {
-            println!("Failed because status was {} where either 404 or 403 was expected", status);
-            assert_eq!(true, false)
-        }
-        self
+pub fn record_cfg() -> RecordConfig {
+    RecordConfig {
+        except_request_headers: Some(relaxed_req_headers()),
+        except_response_headers: Some(relaxed_resp_headers()),
+        ..Default::default()
     }
+}
 
-    fn assert_body_text(&mut self, body: &str) -> &mut Self {
-        assert_eq!(block_on(self.body_string()).unwrap(), body);
-        self
-    }
+pub fn relaxed_req_headers() -> Vec<&'static str> {
+    vec![
+        "accept", "accept-encoding", "content-type", "host", "proxy-connection", "user-agent",
+        "expect", "transfer-encoding", "content-length"
+    ]
+}
 
-    fn assert_body_text_satisfies(&mut self, asserter: fn(&str)) -> &mut Self {
-        asserter(block_on(self.body_string()).unwrap().as_str());
-        self
-    }
+pub fn relaxed_resp_headers() -> Vec<&'static str> {
+    vec!["date", "content-length", "content-type", "server"]
+}
 
-    fn assert_body_text_matches(&mut self, regex: &str) -> &mut Self {
-        let regex = Regex::new(regex).unwrap();
-        let body = block_on(self.body_string()).unwrap();
-        assert!(regex.is_match(body.as_str()));
-        self
-    }
-
-    fn assert_body_json<T>(&mut self, body: T) -> &mut Self where T: DeserializeOwned + PartialEq + Debug {
-        assert_eq!(block_on(self.body_json::<T>()).unwrap(), body);
-        self
-    }
-
-    fn assert_header(&mut self, key: &str, value: &str) -> &mut Self {
-        let key = HeaderName::from_str(key).unwrap();
-        let value = HeaderValue::from_str(value).unwrap();
-        assert_eq!(self.header(key).unwrap().last(), &value);
-        self
-    }
-
-    fn assert_no_header(&mut self, key: &str) -> &mut Self {
-        let key = HeaderName::from_str(key).unwrap();
-        assert_eq!(self.header(key).is_none(), true);
-        self
-    }
+pub fn resp_headers_with_content_type() -> Vec<&'static str> {
+    vec!["date", "content-length", "server"]
 }

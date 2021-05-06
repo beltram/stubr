@@ -3,7 +3,7 @@ use std::convert::TryFrom;
 use serde_json::{from_slice as deserialize, Value};
 use wiremock::{Match, Request};
 
-use super::{BodyPatternDto, diff::{all::RelaxedValue, array::RelaxedJsonArray, extra::RelaxedExtraJsonObj}};
+use super::{BodyPatternStub, diff::{all::RelaxedValue, array::RelaxedJsonArray, extra::RelaxedExtraJsonObj}};
 
 pub struct JsonBodyRelaxedMatcher {
     value: Value,
@@ -40,10 +40,10 @@ impl Match for JsonBodyRelaxedMatcher {
     }
 }
 
-impl TryFrom<&BodyPatternDto> for JsonBodyRelaxedMatcher {
+impl TryFrom<&BodyPatternStub> for JsonBodyRelaxedMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternDto) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
         let is_ignore_extra_elements = body.is_ignore_extra_elements();
         let is_ignore_array_order = body.is_ignore_array_order();
         let is_relaxed = is_ignore_extra_elements || is_ignore_array_order;

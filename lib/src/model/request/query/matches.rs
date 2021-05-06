@@ -4,7 +4,7 @@ use itertools::Itertools;
 use regex::Regex;
 use wiremock::{Match, Request};
 
-use super::{HttpQueryParamsDto, super::matcher::RequestMatcherDto};
+use super::{HttpQueryParamsStub, super::matcher::RequestMatcherStub};
 
 pub struct QueryRegexMatcher(String, Regex, bool);
 
@@ -23,8 +23,8 @@ impl Match for QueryRegexMatcher {
     }
 }
 
-impl From<&HttpQueryParamsDto> for Vec<QueryRegexMatcher> {
-    fn from(queries: &HttpQueryParamsDto) -> Self {
+impl From<&HttpQueryParamsStub> for Vec<QueryRegexMatcher> {
+    fn from(queries: &HttpQueryParamsStub) -> Self {
         queries.get_queries().iter()
             .filter(|q| q.is_by_regex())
             .map(QueryRegexMatcher::try_from).flatten()
@@ -32,10 +32,10 @@ impl From<&HttpQueryParamsDto> for Vec<QueryRegexMatcher> {
     }
 }
 
-impl TryFrom<&RequestMatcherDto> for QueryRegexMatcher {
+impl TryFrom<&RequestMatcherStub> for QueryRegexMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(query: &RequestMatcherDto) -> anyhow::Result<Self> {
+    fn try_from(query: &RequestMatcherStub) -> anyhow::Result<Self> {
         let maybe_positive_regex = query.matches_as_regex()
             .filter(|_| query.is_matches())
             .map(|it| QueryRegexMatcher(query.key.to_string(), it, true));

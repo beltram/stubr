@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/headers/req/many",
+    "headers": {
+      "x-a": {
+        "equalTo": "a"
+      },
+      "x-b": {
+        "equalTo": "b"
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

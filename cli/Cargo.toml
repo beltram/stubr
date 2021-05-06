@@ -24,6 +24,9 @@ clap = "3.0.0-beta.2"
 clap_generate = "3.0.0-beta.2"
 colored = "2.0.0"
 humantime = "2.1.0"
+tokio = { version = "1.6.0", features = ["macros", "rt-multi-thread"] }
+log = "0.4.14"
+simple_logger = "1.11.0"
 
 [dependencies.async-std]
 version = "1.9.0"
@@ -31,7 +34,9 @@ features = ["attributes"]
 
 [dev-dependencies]
 surf = "2.2.0"
+isahc = { version = "1.4.0", features = ["json"] }
 assert_cmd = "1.0.5"
+asserhttp = "0.0.2"
 
 [features]
 default = []

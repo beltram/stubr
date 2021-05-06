@@ -4,7 +4,7 @@ use http_types::headers::HeaderName;
 use itertools::Itertools;
 use wiremock::{Match, Request};
 
-use super::{HttpReqHeadersDto, super::matcher::RequestMatcherDto};
+use super::{HttpReqHeadersStub, super::matcher::RequestMatcherStub};
 
 pub struct HeaderAbsentMatcher(String, bool);
 
@@ -16,8 +16,8 @@ impl Match for HeaderAbsentMatcher {
     }
 }
 
-impl From<&HttpReqHeadersDto> for Vec<HeaderAbsentMatcher> {
-    fn from(headers: &HttpReqHeadersDto) -> Self {
+impl From<&HttpReqHeadersStub> for Vec<HeaderAbsentMatcher> {
+    fn from(headers: &HttpReqHeadersStub) -> Self {
         headers.get_headers().iter()
             .filter(|h| h.is_absent())
             .map(HeaderAbsentMatcher::try_from)
@@ -26,10 +26,10 @@ impl From<&HttpReqHeadersDto> for Vec<HeaderAbsentMatcher> {
     }
 }
 
-impl TryFrom<&RequestMatcherDto> for HeaderAbsentMatcher {
+impl TryFrom<&RequestMatcherStub> for HeaderAbsentMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(header: &RequestMatcherDto) -> anyhow::Result<Self> {
+    fn try_from(header: &RequestMatcherStub) -> anyhow::Result<Self> {
         header.value.as_ref()
             .filter(|_| header.is_absent())
             .map(|it| HeaderAbsentMatcher(header.key.to_string(), it.absent.unwrap_or_default()))

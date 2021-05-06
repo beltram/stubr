@@ -1,21 +1,23 @@
 use std::{fs::OpenOptions, io::Read, path::PathBuf, str::from_utf8};
 
-use serde::{Deserialize, Deserializer};
+use serde::{Deserialize, Deserializer, Serialize};
 use serde_json::Value;
 use wiremock::ResponseTemplate;
 
 use super::{body_file::BodyFile, ResponseAppender};
 use super::template::{data::HandlebarsData, HandlebarTemplatable};
 
-#[derive(Deserialize, Debug, Default, Clone)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
 #[serde(rename_all = "camelCase")]
-pub struct BodyDto {
+pub struct BodyStub {
     /// plain text body
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
     /// json body
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub json_body: Option<Value>,
     /// relative path to raw body content
-    #[serde(default, deserialize_with = "deserialize_body_file")]
+    #[serde(default, skip_serializing, deserialize_with = "deserialize_body_file")]
     pub body_file_name: Option<BodyFile>,
 }
 
@@ -38,7 +40,7 @@ fn deserialize_body_file<'de, D>(path: D) -> Result<Option<BodyFile>, D::Error> 
     Ok(body_file)
 }
 
-impl HandlebarTemplatable for BodyDto {
+impl HandlebarTemplatable for BodyStub {
     fn register_template(&self) {
         if let Some(body) = self.body.as_ref() {
             self.register(body, body);
@@ -65,7 +67,7 @@ impl HandlebarTemplatable for BodyDto {
     }
 }
 
-impl ResponseAppender for BodyDto {
+impl ResponseAppender for BodyStub {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
         if let Some(text) = self.body.as_ref() {
             resp = resp.set_body_string(text);
