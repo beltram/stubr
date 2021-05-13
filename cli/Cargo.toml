@@ -31,7 +31,7 @@ features = ["attributes"]
 
 [dev-dependencies]
 surf = "2.2.0"
-assert_cmd = "1.0.3"
+assert_cmd = "1.0.4"
 
 [features]
 default = []
