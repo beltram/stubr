@@ -33,7 +33,7 @@ chrono-tz = "0.5.3"
 percent-encoding = "2.1.0"
 
 [dependencies.serde]
-version = "1.0.125"
+version = "1.0.126"
 features = ["derive"]
 
 [dependencies.async-std]
