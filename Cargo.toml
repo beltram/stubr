@@ -4,3 +4,7 @@ members = ["cli", "lib"]
 [profile.release]
 lto = true
 codegen-units = 1
+
+[profile.dev]
+# improves compilation performances on macos
+split-debuginfo = "unpacked"
