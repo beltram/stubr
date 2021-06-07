@@ -2539,12 +2539,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "smawk"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f67ad224767faa3c7d8b6d91985b78e70a1324408abcb1cfcc2be4c06bc06043"
-
-[[package]]
 name = "socket2"
 version = "0.3.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2776,16 +2770,6 @@ version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "203008d98caf094106cfaba70acfed15e18ed3ddb7d94e49baec153a2b462789"
 dependencies = [
- "unicode-width",
-]
-
-[[package]]
-name = "textwrap"
-version = "0.13.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a89bc85084ac4e273c6bbf99050d932821af166392aaedc5038a38e1f229cdf5"
-dependencies = [
- "smawk",
  "unicode-width",
 ]
 
@@ -3386,9 +3370,9 @@ dependencies = [
 
 [[package]]
 name = "wiremock"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1cbd58fcf4ac80633ef8f48abdfa1d8743150593c6def666d114c10aa90afac8"
+checksum = "3deed3c6d9aba42c805725854efc01823f59a00cd3af7763c433962227a843c8"
 dependencies = [
  "async-trait",
  "deadpool",
@@ -3401,6 +3385,5 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "textwrap 0.13.3",
  "tokio",
 ]
