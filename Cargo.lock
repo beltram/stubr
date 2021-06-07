@@ -3233,9 +3233,9 @@ dependencies = [
 
 [[package]]
 name = "warp-reverse-proxy"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa91183f89706b331c4639d6d5a8586bba6f770866ddf91e84d4c892f6860a4e"
+checksum = "ddb4e2b0778508ed42fb55ec8ea09d49053f41f377c53fe6c022ae40f55846d5"
 dependencies = [
  "hyper",
  "lazy_static",
