@@ -2513,9 +2513,9 @@ dependencies = [
 
 [[package]]
 name = "simpledateformat"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d06fa9a6e21926f4eaf8d506dfac4243b473ca49491dc8b4feb7668cc17e0084"
+checksum = "2a84014cdabee95bd9b17e3e55e80cd28f99df562a97f5e3ac92883f59bf04ff"
 dependencies = [
  "chrono",
  "quick-error 1.2.3",
