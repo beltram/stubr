@@ -1,3 +1,4 @@
+use asserhttp::*;
 use isahc::Request;
 use serde_json::json;
 
@@ -8,10 +9,10 @@ use crate::utils::*;
 #[tokio::test(flavor = "multi_thread")]
 async fn proxy_should_forward_request_headers() {
     let srv = given("record/req-headers/one");
-    isahc::send(req_header(srv.path("/headers/req/one"), &[("x-a", "a")])).unwrap().assert_ok();
+    isahc::send(req_header(srv.path("/headers/req/one"), &[("x-a", "a")])).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client()
         .send(req_header(srv.path("/headers/req/one"), &[("x-a", "a")]))
-        .unwrap().assert_ok();
+        .expect_status_ok();
     assert_recorded_stub_eq("headers-req-one-4429402255848487673", json!({
         "request": {
             "method": "GET",
@@ -27,10 +28,10 @@ async fn proxy_should_forward_request_headers() {
 #[tokio::test(flavor = "multi_thread")]
 async fn proxy_should_forward_many_request_headers() {
     let srv = given("record/req-headers/many");
-    isahc::send(req_header(srv.path("/headers/req/many"), &[("x-a", "a"), ("x-b", "b")])).unwrap().assert_ok();
+    isahc::send(req_header(srv.path("/headers/req/many"), &[("x-a", "a"), ("x-b", "b")])).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client()
         .send(req_header(srv.path("/headers/req/many"), &[("x-a", "a"), ("x-b", "b")]))
-        .unwrap().assert_ok();
+        .expect_status_ok();
     assert_recorded_stub_eq("headers-req-many-7310784668229424867", json!({
         "request": {
             "method": "GET",

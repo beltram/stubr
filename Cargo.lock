@@ -77,9 +77,9 @@ checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
 name = "asserhttp"
-version = "0.0.4"
+version = "0.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22a82aedce6d51da8794497b88c0fee537d51376e722af5b5f35c5cb1783a4fd"
+checksum = "ae6cc6126953a9e3fc8b5bd8e935701d83a1a50301c041db5e45b8d93dfa1b9a"
 dependencies = [
  "anyhow",
  "async-std",
@@ -2647,6 +2647,7 @@ name = "stubr"
 version = "0.4.4"
 dependencies = [
  "anyhow",
+ "asserhttp",
  "async-std",
  "async-trait",
  "base64 0.13.0",

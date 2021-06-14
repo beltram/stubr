@@ -50,6 +50,7 @@ features = ["attributes"]
 [dev-dependencies]
 surf = "2.2.0"
 tempfile = "3.2.0"
+asserhttp = "0.0.5"
 isahc = { version = "1.4.0", features = ["json"] }
 tokio = { version = "1.6.1", features = ["macros", "rt-multi-thread"] }
 

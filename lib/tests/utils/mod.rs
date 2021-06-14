@@ -7,7 +7,6 @@ use std::path::Path;
 use async_std::task::block_on;
 use serde_json::Value;
 
-pub use client::ResponseAsserter;
 use stubr::RecordConfig;
 pub use stubr::Stubr;
 

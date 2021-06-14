@@ -8,7 +8,7 @@ use std::{
 use assert_cmd::prelude::*;
 
 fn port() -> String {
-    static PORT: AtomicU16 = AtomicU16::new(60_000);
+    static PORT: AtomicU16 = AtomicU16::new(50_000);
     PORT.fetch_add(1, Ordering::SeqCst).to_string()
 }
 
@@ -18,7 +18,7 @@ pub struct StubrCli {
 }
 
 impl StubrCli {
-    const SLEEP: u64 = 1000;
+    const SLEEP: u64 = 500;
     const HOST: &'static str = "127.0.0.1";
 
     pub fn new(args: &[&str]) -> Self {

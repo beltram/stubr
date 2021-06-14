@@ -1,3 +1,4 @@
+use asserhttp::AsserhttpStatus;
 use surf::{get, post};
 
 use utils::StubrCli;
@@ -7,19 +8,19 @@ mod utils;
 #[async_std::test]
 async fn should_serve_stubs_under_dir() {
     let stubr = StubrCli::new(&["tests/stubs"]);
-    assert!(get(&stubr.addr).await.unwrap().status().is_success());
-    assert!(post(&stubr.addr).await.unwrap().status().is_client_error());
+    get(&stubr.addr).await.expect_status_success();
+    post(&stubr.addr).await.expect_status_client_error();
 }
 
 #[async_std::test]
 async fn should_serve_stubs_under_root_dir() {
     let stubr = StubrCli::new(&["--root-dir", "tests/stubs"]);
-    assert!(post(&stubr.addr).await.unwrap().status().is_success());
-    assert!(get(&stubr.addr).await.unwrap().status().is_client_error());
+    post(&stubr.addr).await.expect_status_success();
+    get(&stubr.addr).await.expect_status_client_error();
 }
 
 #[async_std::test]
 async fn should_start_even_without_stubs() {
     let stubr = StubrCli::new(&[]);
-    assert!(get(format!("{}/healtz", stubr.addr)).await.unwrap().status().is_success());
+    get(format!("{}/healtz", stubr.addr)).await.expect_status_success();
 }
