@@ -55,6 +55,8 @@ pub use record::{config::RecordConfig, StubrRecord};
 pub use record::test::isahc_client;
 pub use server::{config::Config, Stubr};
 
+pub use stubr_macros::mock;
+
 mod model;
 mod server;
 mod cloud;
