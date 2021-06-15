@@ -10,8 +10,6 @@ use serde_json::Value;
 use stubr::RecordConfig;
 pub use stubr::Stubr;
 
-pub mod client;
-
 pub fn given(name: &str) -> Stubr {
     block_on(Stubr::start(stub(name)))
 }
