@@ -1,0 +1,26 @@
+[package]
+name = "stubr-macros"
+version = "0.4.4"
+edition = "2018"
+authors = ["Beltram Maldant"]
+description = "Wiremock implemented in Rust"
+homepage = "https://github.com/beltram/stubr"
+repository = "https://github.com/beltram/stubr"
+license = "Apache-2.0"
+keywords = ["cli", "mock", "test", "contract", "http"]
+categories = ["command-line-utilities", "development-tools::testing"]
+
+include = ["/src/*", "/Cargo.toml"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "1.0.57", features = ["full", "fold"] }
+quote = "1.0.8"
+proc-macro2 = "1.0.27"
+
+[dev-dependencies]
+asserhttp = "0.0.5"
+isahc = "1.4.0"
+async-std = "1.9.0"
