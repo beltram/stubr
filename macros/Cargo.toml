@@ -7,7 +7,7 @@ description = "Wiremock implemented in Rust"
 homepage = "https://github.com/beltram/stubr"
 repository = "https://github.com/beltram/stubr"
 license = "Apache-2.0"
-keywords = ["cli", "mock", "test", "contract", "http"]
+keywords = ["macro", "mock", "test", "contract", "http"]
 categories = ["command-line-utilities", "development-tools::testing"]
 
 include = ["/src/*", "/Cargo.toml"]

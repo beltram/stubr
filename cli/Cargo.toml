@@ -27,10 +27,7 @@ humantime = "2.1.0"
 tokio = { version = "1.7.0", features = ["macros", "rt-multi-thread"] }
 log = "0.4.14"
 simple_logger = "1.11.0"
-
-[dependencies.async-std]
-version = "1.9.0"
-features = ["attributes"]
+async-std = { version = "1.9.0", features = ["attributes"] }
 
 [dev-dependencies]
 surf = "2.2.0"
