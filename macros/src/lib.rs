@@ -25,7 +25,7 @@ mod mock;
 /// // also works for async functions
 /// #[async_std::test]
 /// #[stubr::mock]
-/// fn async_test() {
+/// async fn async_test() {
 ///     isahc::get(stubr.uri()).await.expect_status_ok();
 /// }
 /// ```
