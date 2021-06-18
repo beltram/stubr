@@ -12,7 +12,7 @@ mod mock;
 /// # Example
 /// ```no_run
 /// # use isahc;
-/// # use stubr_macros as stubr;
+/// # use stubr_attributes as stubr;
 /// use asserhttp::*; // optional
 ///
 /// #[test]
@@ -32,7 +32,7 @@ mod mock;
 ///
 /// # Configuration
 /// ```no_run
-/// # use stubr_macros as stubr;
+/// # use stubr_attributes as stubr;
 ///
 /// // path to stub file (or directory) under crate's "tests/stubs"
 /// #[test]

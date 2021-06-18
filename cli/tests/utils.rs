@@ -18,7 +18,7 @@ pub struct StubrCli {
 }
 
 impl StubrCli {
-    const SLEEP: u64 = 500;
+    const SLEEP: u64 = 1000;
     const HOST: &'static str = "127.0.0.1";
 
     pub fn new(args: &[&str]) -> Self {

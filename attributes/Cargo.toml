@@ -1,5 +1,5 @@
 [package]
-name = "stubr-macros"
+name = "stubr-attributes"
 version = "0.4.4"
 edition = "2018"
 authors = ["Beltram Maldant"]

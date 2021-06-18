@@ -2603,13 +2603,25 @@ dependencies = [
  "serde",
  "serde_json",
  "simpledateformat",
- "stubr-macros",
+ "stubr-attributes",
  "surf",
  "tempfile",
  "tokio",
  "warp",
  "warp-reverse-proxy",
  "wiremock",
+]
+
+[[package]]
+name = "stubr-attributes"
+version = "0.4.4"
+dependencies = [
+ "asserhttp",
+ "async-std",
+ "isahc 1.4.0",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -2631,18 +2643,6 @@ dependencies = [
  "stubr",
  "surf",
  "tokio",
-]
-
-[[package]]
-name = "stubr-macros"
-version = "0.4.4"
-dependencies = [
- "asserhttp",
- "async-std",
- "isahc 1.4.0",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
