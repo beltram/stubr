@@ -50,15 +50,16 @@
 #[macro_use]
 extern crate lazy_static;
 
+#[cfg(feature = "record")]
 pub use record::{config::RecordConfig, StubrRecord};
-#[cfg(feature = "test-isahc")]
+#[cfg(all(feature = "record", feature = "test-isahc"))]
 pub use record::test::isahc_client;
 pub use server::{config::Config, Stubr};
-
 #[cfg(feature = "attributes")]
 pub use stubr_attributes::mock;
 
 mod model;
 mod server;
 mod cloud;
+#[cfg(feature = "record")]
 mod record;

@@ -7,7 +7,9 @@ use wiremock::{Mock, MockServer};
 use stub::StubrMock;
 use stub_finder::StubFinder;
 
-use crate::{cloud::probe::HttpProbe, Config, record::{config::RecordConfig, StubrRecord}};
+use crate::{cloud::probe::HttpProbe, Config};
+#[cfg(feature = "record")]
+use crate::record::{config::RecordConfig, StubrRecord};
 
 mod stub;
 mod stub_finder;
@@ -68,11 +70,13 @@ impl Stubr {
     }
 
     /// Proxies requests and converts them into stubs
+    #[cfg(feature = "record")]
     pub fn record() -> StubrRecord {
         StubrRecord::record(RecordConfig::default())
     }
 
     /// Proxies requests and converts them into stubs
+    #[cfg(feature = "record")]
     pub fn record_with(config: RecordConfig) -> StubrRecord {
         StubrRecord::record(config)
     }
