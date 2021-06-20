@@ -6,10 +6,10 @@ use stubr::Stubr;
 use crate::utils::*;
 
 #[tokio::test(flavor = "multi_thread")]
+#[stubr::mock("record/path/simple.json")]
 async fn proxy_should_forward_path() {
-    let srv = given("record/path/simple");
-    isahc::get(srv.path("/a/b/c")).expect_status_ok();
-    Stubr::record_with(record_cfg()).isahc_client().get(srv.path("/a/b/c")).expect_status_ok();
+    isahc::get(stubr.path("/a/b/c")).expect_status_ok();
+    Stubr::record_with(record_cfg()).isahc_client().get(stubr.path("/a/b/c")).expect_status_ok();
     assert_recorded_stub_eq("a-b-c-16081596189452964389", json!({
         "request": {
             "method": "GET",

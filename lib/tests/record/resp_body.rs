@@ -6,13 +6,13 @@ use stubr::{RecordConfig, Stubr};
 use crate::utils::*;
 
 #[tokio::test(flavor = "multi_thread")]
+#[stubr::mock("record/resp-body/json.json")]
 async fn proxy_should_forward_json_response_body() {
-    let srv = given("record/resp-body/json");
-    isahc::get(srv.path("/body/resp/json"))
+    isahc::get(stubr.path("/body/resp/json"))
         .expect_status_ok()
         .expect_content_type_json()
         .expect_body_json_eq(json!({"a": {"b": "c"}}));
-    Stubr::record_with(resp_body_cfg()).isahc_client().get(srv.path("/body/resp/json"))
+    Stubr::record_with(resp_body_cfg()).isahc_client().get(stubr.path("/body/resp/json"))
         .expect_status_ok()
         .expect_content_type_json()
         .expect_body_json_eq(json!({"a": {"b": "c"}}));

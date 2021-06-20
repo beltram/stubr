@@ -1,23 +1,9 @@
-#![allow(dead_code)]
+use std::{env::current_dir, fs::File, io::Read, path::{Path, PathBuf}};
 
-use std::{fs::File, io::Read, path::PathBuf};
-use std::env::current_dir;
-use std::path::Path;
-
-use async_std::task::block_on;
 use serde_json::Value;
 
 use stubr::RecordConfig;
 pub use stubr::Stubr;
-
-pub fn given(name: &str) -> Stubr {
-    block_on(Stubr::start(stub(name)))
-}
-
-fn stub(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join(PathBuf::from(format!("tests/stubs/{}.json", name)))
-}
 
 pub trait UriAndQuery {
     fn get_uri(&self) -> String;

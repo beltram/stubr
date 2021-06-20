@@ -6,11 +6,11 @@ use stubr::Stubr;
 use crate::utils::*;
 
 #[tokio::test(flavor = "multi_thread")]
+#[stubr::mock("record/query/one.json")]
 async fn proxy_should_forward_query_param() {
-    let srv = given("record/query/one");
-    isahc::get(srv.path_query("/query/one", "a", "1")).expect_status_ok();
+    isahc::get(stubr.path_query("/query/one", "a", "1")).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client()
-        .get(srv.path_query("/query/one", "a", "1"))
+        .get(stubr.path_query("/query/one", "a", "1"))
         .expect_status_ok();
     assert_recorded_stub_eq("query-one-12579359212080673625", json!({
         "request": {
@@ -25,11 +25,11 @@ async fn proxy_should_forward_query_param() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
+#[stubr::mock("record/query/many.json")]
 async fn proxy_should_forward_many_query_param() {
-    let srv = given("record/query/many");
-    isahc::get(srv.path_queries("/query/many", ("a", "1"), ("b", "2"))).expect_status_ok();
+    isahc::get(stubr.path_queries("/query/many", ("a", "1"), ("b", "2"))).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client()
-        .get(srv.path_queries("/query/many", ("a", "1"), ("b", "2")))
+        .get(stubr.path_queries("/query/many", ("a", "1"), ("b", "2")))
         .expect_status_ok();
     assert_recorded_stub_eq("query-many-17502612938178303204", json!({
         "request": {

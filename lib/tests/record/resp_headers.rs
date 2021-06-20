@@ -6,12 +6,12 @@ use stubr::Stubr;
 use crate::utils::*;
 
 #[tokio::test(flavor = "multi_thread")]
+#[stubr::mock("record/resp-headers/one.json")]
 async fn proxy_should_forward_response_headers() {
-    let srv = given("record/resp-headers/one");
-    isahc::get(srv.path("/headers/resp/one"))
+    isahc::get(stubr.path("/headers/resp/one"))
         .expect_status_ok()
         .expect_header("x-a", "a");
-    Stubr::record_with(record_cfg()).isahc_client().get(srv.path("/headers/resp/one"))
+    Stubr::record_with(record_cfg()).isahc_client().get(stubr.path("/headers/resp/one"))
         .expect_status_ok()
         .expect_header("x-a", "a");
     assert_recorded_stub_eq("headers-resp-one-357454623928053573", json!({
@@ -29,13 +29,13 @@ async fn proxy_should_forward_response_headers() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
+#[stubr::mock("record/resp-headers/many.json")]
 async fn proxy_should_forward_many_response_headers() {
-    let srv = given("record/resp-headers/many");
-    isahc::get(srv.path("/headers/resp/many"))
+    isahc::get(stubr.path("/headers/resp/many"))
         .expect_status_ok()
         .expect_header("x-a", "a")
         .expect_header("x-b", "b");
-    Stubr::record_with(record_cfg()).isahc_client().get(srv.path("/headers/resp/many"))
+    Stubr::record_with(record_cfg()).isahc_client().get(stubr.path("/headers/resp/many"))
         .expect_status_ok()
         .expect_header("x-a", "a")
         .expect_header("x-b", "b");

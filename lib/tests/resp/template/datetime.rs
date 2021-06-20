@@ -5,57 +5,55 @@ use chrono::{Duration, DurationRound, prelude::*};
 use chrono_tz::Tz;
 use surf::get;
 
-use crate::utils::*;
-
 #[async_std::test]
+#[stubr::mock("resp/template/datetime/now.json")]
 async fn should_template_now_formatted_as_rfc_3339() {
-    let srv = given("resp/template/datetime/now");
-    get(&srv.uri()).await
+    get(stubr.uri()).await
         .expect_status_ok()
         .expect_body_text_matches("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:]+Z$")
         .expect_content_type_text();
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/datetime/now.json")]
 async fn should_template_now_as_close_to_current_utc_current() {
-    let srv = given("resp/template/datetime/now");
-    get(&srv.uri()).await
+    get(stubr.uri()).await
         .expect_status_ok()
         .expect_body_text(|body| is_close_to(body, Duration::days(1), |it| it))
         .expect_content_type_text();
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/datetime/custom-format.json")]
 async fn should_template_now_with_custom_format() {
-    let srv = given("resp/template/datetime/custom-format");
-    get(&srv.uri()).await
+    get(stubr.uri()).await
         .expect_status_ok()
         .expect_body_text_matches("^[0-9]{4}/[0-9]{2}/[0-9]{2}$")
         .expect_content_type_text();
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/datetime/offset.json")]
 async fn should_template_now_with_offset() {
-    let srv = given("resp/template/datetime/offset");
-    get(&srv.uri()).await
+    get(stubr.uri()).await
         .expect_status_ok()
         .expect_body_text(|body| is_close_to(body, Duration::days(1), |resp| resp - Duration::days(3)))
         .expect_content_type_text();
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/datetime/negative-offset.json")]
 async fn should_template_now_with_negative_offset() {
-    let srv = given("resp/template/datetime/negative-offset");
-    get(&srv.uri()).await
+    get(stubr.uri()).await
         .expect_status_ok()
         .expect_body_text(|body| is_close_to(body, Duration::days(1), |resp| resp + Duration::days(3)))
         .expect_content_type_text();
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/datetime/fmt-epoch.json")]
 async fn should_template_now_with_epoch_format() {
-    let srv = given("resp/template/datetime/fmt-epoch");
-    get(&srv.uri()).await
+    get(stubr.uri()).await
         .expect_status_ok()
         .expect_body_text(|body: String| {
             let current_epoch = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_millis();
@@ -67,9 +65,9 @@ async fn should_template_now_with_epoch_format() {
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/datetime/fmt-unix.json")]
 async fn should_template_now_with_unix_format() {
-    let srv = given("resp/template/datetime/fmt-unix");
-    get(&srv.uri()).await
+    get(stubr.uri()).await
         .expect_status_ok()
         .expect_body_text(|body: String| {
             let current_epoch = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs();
@@ -81,9 +79,9 @@ async fn should_template_now_with_unix_format() {
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/datetime/timezone.json")]
 async fn should_template_now_with_custom_timezone() {
-    let srv = given("resp/template/datetime/timezone");
-    get(&srv.uri()).await
+    get(stubr.uri()).await
         .expect_status_ok()
         .expect_body_text(|body| is_close_to(body, Duration::hours(1), |resp| {
             let rome: Tz = "Europe/Rome".parse().unwrap();

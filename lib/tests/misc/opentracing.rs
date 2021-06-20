@@ -1,12 +1,10 @@
 use asserhttp::*;
 use surf::get;
 
-use crate::utils::*;
-
 #[async_std::test]
+#[stubr::mock("opentracing/ping.json")]
 async fn should_return_b3_trace_id_header() {
-    let srv = given("opentracing/ping");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-traceid", "80f198ee56343ba864fe8b2a57d3eff7")
         .await
         .expect_status_ok()
@@ -14,9 +12,9 @@ async fn should_return_b3_trace_id_header() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/ping.json")]
 async fn should_return_b3_span_id_header() {
-    let srv = given("opentracing/ping");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-spanid", "e457b5a2e4d86bd1")
         .await
         .expect_status_ok()
@@ -24,9 +22,9 @@ async fn should_return_b3_span_id_header() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/ping.json")]
 async fn should_return_b3_parent_span_id_header() {
-    let srv = given("opentracing/ping");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-parentspanid", "05e3ac9a4f6e3b90")
         .await
         .expect_status_ok()
@@ -34,9 +32,9 @@ async fn should_return_b3_parent_span_id_header() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/ping.json")]
 async fn should_return_b3_sampled_header() {
-    let srv = given("opentracing/ping");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-sampled", "1")
         .await
         .expect_status_ok()
@@ -44,9 +42,9 @@ async fn should_return_b3_sampled_header() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/ping.json")]
 async fn should_support_single_b3_header() {
-    let srv = given("opentracing/ping");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("b3", "80f198ee56343ba864fe8b2a57d3eff7-e457b5a2e4d86bd1-1-05e3ac9a4f6e3b90")
         .await
         .expect_status_ok()
@@ -54,9 +52,9 @@ async fn should_support_single_b3_header() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/trace-id.json")]
 async fn trace_id_can_be_superseded() {
-    let srv = given("opentracing/traceId");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-traceid", "80f198ee56343ba864fe8b2a57d3eff7")
         .await
         .expect_status_ok()
@@ -64,9 +62,9 @@ async fn trace_id_can_be_superseded() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/span-id.json")]
 async fn span_id_can_be_superseded() {
-    let srv = given("opentracing/spanId");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-spanid", "e457b5a2e4d86bd1")
         .await
         .expect_status_ok()
@@ -74,9 +72,9 @@ async fn span_id_can_be_superseded() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/parent-span-id.json")]
 async fn parent_span_id_can_be_superseded() {
-    let srv = given("opentracing/parentSpanId");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-parentspanid", "05e3ac9a4f6e3b90")
         .await
         .expect_status_ok()
@@ -84,9 +82,9 @@ async fn parent_span_id_can_be_superseded() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/sampled.json")]
 async fn sampled_can_be_superseded() {
-    let srv = given("opentracing/sampled");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-sampled", "1")
         .await
         .expect_status_ok()
@@ -94,9 +92,9 @@ async fn sampled_can_be_superseded() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/b3.json")]
 async fn b3_header_can_be_superseded() {
-    let srv = given("opentracing/b3");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("b3", "80f198ee56343ba864fe8b2a57d3eff7-e457b5a2e4d86bd1-1-05e3ac9a4f6e3b90")
         .await
         .expect_status_ok()
@@ -104,9 +102,9 @@ async fn b3_header_can_be_superseded() {
 }
 
 #[async_std::test]
+#[stubr::mock("opentracing/trace-id-resp-templating.json")]
 async fn trace_id_can_be_superseded_with_response_templating_activated() {
-    let srv = given("opentracing/traceId-resp-templating");
-    get(&srv.uri())
+    get(stubr.uri())
         .header("x-b3-traceid", "80f198ee56343ba864fe8b2a57d3eff7")
         .await
         .expect_status_ok()

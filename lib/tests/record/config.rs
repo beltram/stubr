@@ -6,8 +6,8 @@ use stubr::{RecordConfig, Stubr};
 use crate::utils::*;
 
 #[tokio::test(flavor = "multi_thread")]
+#[stubr::mock("record/status/200.json")]
 async fn should_allow_custom_output() {
-    let srv = given("record/status/200");
     let output = tempdir().unwrap().into_path();
     let cfg = RecordConfig {
         output: Some(output.clone()),
@@ -15,6 +15,6 @@ async fn should_allow_custom_output() {
         except_response_headers: Some(relaxed_resp_headers()),
         ..Default::default()
     };
-    Stubr::record_with(cfg).isahc_client().get(srv.path("/status/200")).expect_status_ok();
+    Stubr::record_with(cfg).isahc_client().get(stubr.path("/status/200")).expect_status_ok();
     assert!(output.join("localhost").join("status-200-1330526116653087821.json").exists())
 }
