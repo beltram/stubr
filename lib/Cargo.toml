@@ -13,7 +13,7 @@ categories = ["command-line-utilities", "development-tools::testing"]
 include = ["/src/*", "/Cargo.toml"]
 
 [dependencies]
-stubr-attributes = { path = "../attributes" }
+stubr-attributes = { path = "../attributes", optional = true }
 wiremock = "0.5.3"
 anyhow = "1.0.41"
 async-trait = "0.1.50"
@@ -33,12 +33,12 @@ humantime = "2.1.0"
 chrono-tz = "0.5.3"
 percent-encoding = "2.1.0"
 log = "0.4.14"
-warp = { version = "0.3.1", default-features = false }
-warp-reverse-proxy = "0.3.2"
-tokio = "1.7.0"
 isahc = { version = "1.4.0", optional = true }
 serde = { version = "1.0.126", features = ["derive"] }
 async-std = { version = "1.9.0", features = ["attributes"] }
+warp = { version = "0.3.1", default-features = false }
+warp-reverse-proxy = "0.3.2"
+tokio = "1.7.0"
 
 [dev-dependencies]
 surf = "2.2.0"
@@ -69,6 +69,7 @@ path = "benches/templating.rs"
 harness = false
 
 [features]
-default = ["test-isahc"]
+default = ["test-isahc", "attributes"]
 cloud = []
 test-isahc = ["isahc"]
+attributes = ["stubr-attributes"]

@@ -55,6 +55,7 @@ pub use record::{config::RecordConfig, StubrRecord};
 pub use record::test::isahc_client;
 pub use server::{config::Config, Stubr};
 
+#[cfg(feature = "attributes")]
 pub use stubr_attributes::mock;
 
 mod model;
