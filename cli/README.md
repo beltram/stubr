@@ -8,14 +8,16 @@
 You can use `stubr` as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into json stubs.  
 To get a list of all available options run `stubr --help`
 
-The simplest usage is for serving Wiremock stubs under a directory.  
-Example for a project exposing contracts using Spring Cloud Contract
+The simplest usage is for serving Wiremock stubs under a directory (or just a single file).  
+For example let's generate a simple stub.  
 
 ```bash
-./gradlew generateClientStubs
-stubr build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings
- > + mounted "./build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings/find-all.json"
- > + mounted "./build/stubs/META-INF/com.ecorp/my-app/SNAPSHOT/mappings/find-by-id.json"
+echo "{\"request\": {\"method\": \"GET\"}, \"response\": { \"status\": 200 }}" > hello.json
+```
+
+```bash
+stubr hello.json
+ > + mounted "hello.json"
  > Started stubr in 50ms on http://127.0.0.1:49604
 ```
 
@@ -80,6 +82,17 @@ stubr completion bash
 In order to record http traffic, `stubr` can act as a proxy to dump this traffic into json stubs on your local filesystem.
 Recording can be started with the `stubr record` command. Stubs will be grouped by hosts. You can then play them back
 using `stubr`.
+
+### example
+
+*Using [httpie](https://httpie.io/)*
+```bash
+stubr record -p 3030
+http jsonplaceholder.typicode.com/users --proxy http://localhost:3030
+# you should have a stub under `jsonplaceholder.typicode.com/users-*.json`
+```
+
+### arguments
 
 | arg | about | examples |
 |-----|:-----:|:-------:|
