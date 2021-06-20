@@ -2603,6 +2603,7 @@ dependencies = [
  "serde",
  "serde_json",
  "simpledateformat",
+ "stubr",
  "stubr-attributes",
  "surf",
  "tempfile",

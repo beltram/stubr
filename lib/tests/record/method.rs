@@ -2,7 +2,7 @@ use asserhttp::*;
 use isahc::Request;
 use serde_json::json;
 
-use stubr::Stubr;
+use stubr::*;
 
 use crate::utils::*;
 

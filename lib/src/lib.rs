@@ -87,5 +87,5 @@ pub use stubr_attributes::mock;
 mod model;
 mod server;
 mod cloud;
-#[cfg(feature = "record")]
+#[cfg(any(feature = "record", feature = "test-isahc"))]
 mod record;
