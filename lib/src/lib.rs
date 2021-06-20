@@ -6,23 +6,49 @@
 //! # use it
 //!
 //! ```no_run
-//! use stubr::{Stubr, Config};
-//! use surf;
+//! use isahc;
+//! use stubr::*;
+//! use asserhttp::*;
 //!
-//! #[async_std::main]
-//! async fn main() {
+//! #[async_std::test]
+//! #[stubr::mock]
+//! async fn simple_async() {
 //!     // supply a directory containing json stubs. Invalid files are just ignored
-//!     let srv = Stubr::start("tests/stubs").await;
+//!     let stubr = Stubr::start("tests/stubs").await;
 //!     // or just mount a single file
-//!     let srv = Stubr::start("tests/stubs/ping.json").await;
-//!     // or configure it
-//!     let srv = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default() }).await;
-//!     // can also be used in a blocking way
-//!     let srv = Stubr::start_blocking("tests/stubs");
-//!     let srv = Stubr::start_blocking_with("tests/stubs", Config { port: Some(8080), ..Default::default() });
+//!     let stubr = Stubr::start("tests/stubs/hello.json").await;
+//!     // or configure it (more configurations to come)
+//!     let stubr = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default () }).await;
+//!     isahc::get_async(stubr.uri()).await.expect_status_ok();
+//! }
 //!
-//!     // use '.uri()' method to get server address
-//!     surf::get(srv.uri()).await;
+//! #[test]
+//! #[stubr::mock]
+//! fn simple_blocking() {
+//!     // can also be used in a blocking way
+//!     let stubr = Stubr::start_blocking("tests/stubs");
+//!     let stubr = Stubr::start_blocking_with("tests/stubs", Config { port: Some(8080), ..Default::default () });
+//!     isahc::get(stubr.uri()).expect_status_ok();
+//! }
+//! ```
+//!
+//! # macro
+//!
+//! ```no_run
+//! use isahc;
+//! use stubr::*;
+//! use asserhttp::*;
+//!
+//! #[async_std::test]
+//! #[stubr::mock] // <- takes all stubs under "tests/stubs"
+//! async fn with_macro() {
+//!     surf::get(stubr.uri()).await.expect_status_ok();
+//! }
+//!
+//! #[async_std::test]
+//! #[stubr::mock("pets", port = 4321)] // <- takes all stubs under "tests/stubs/pets"
+//! async fn with_path_and_port() {
+//!     surf::get(stubr.uri()).await.expect_status_ok();
 //! }
 //! ```
 //!
