@@ -92,6 +92,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "asserhttp"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b15bd3e0241c74a0e96bf4500c2bf3dbaa253c9b33c6ded1656ebb3ac306a699"
+dependencies = [
+ "anyhow",
+ "async-std",
+ "isahc 1.4.0",
+ "regex",
+ "serde",
+ "serde_json",
+ "surf",
+]
+
+[[package]]
 name = "assert_cmd"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2582,7 +2597,7 @@ name = "stubr"
 version = "0.4.5"
 dependencies = [
  "anyhow",
- "asserhttp",
+ "asserhttp 0.1.0",
  "async-std",
  "async-trait",
  "base64",
@@ -2618,7 +2633,7 @@ dependencies = [
 name = "stubr-attributes"
 version = "0.4.5"
 dependencies = [
- "asserhttp",
+ "asserhttp 0.0.6",
  "async-std",
  "isahc 1.4.0",
  "proc-macro2",
@@ -2631,7 +2646,7 @@ name = "stubr-cli"
 version = "0.4.5"
 dependencies = [
  "anyhow",
- "asserhttp",
+ "asserhttp 0.0.6",
  "assert_cmd",
  "async-std",
  "clap 3.0.0-beta.2",
