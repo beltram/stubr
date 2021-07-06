@@ -46,7 +46,7 @@ tokio = { version = "1.8.0", optional = true }
 stubr = { path = ".", features = ["record", "test-isahc"] }
 surf = "2.2.0"
 tempfile = "3.2.0"
-asserhttp = { version = "0.1.0", features = ["surf", "isahc"] }
+asserhttp = { version = "0.2.0", features = ["surf", "isahc"] }
 isahc = { version = "1.4.0", features = ["json"] }
 tokio = { version = "1.8.0", features = ["macros", "rt-multi-thread"] }
 criterion = { version = "0.3.4", features = ["async_std", "html_reports"] }
