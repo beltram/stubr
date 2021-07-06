@@ -11,21 +11,22 @@ use super::{
     http::RecordedExchange,
     warp_exchange::{WarpExchange, WarpRequest, WarpResponse},
 };
+use tokio::sync::mpsc::{channel, Sender};
 
 pub struct Proxy;
 
 impl Proxy {
-    pub(crate) fn run(cfg: RecordConfig, then: fn(RecordInput)) -> SocketAddr {
+    pub(crate) fn run(cfg: RecordConfig, then: fn(RecordInput)) -> (SocketAddr, Sender<String>) {
+        let (tx, mut rx) = channel::<String>(1);
         let addr = PortAllocator::new_binding(cfg.port);
-        tokio::spawn(async move {
-            warp::serve(warp::any().and(Self::forward_and_record(cfg, then).boxed()))
-                .run(addr).await;
-        });
+        let server = warp::serve(warp::any().and(Self::forward_and_record(cfg, then).boxed()));
+        let (addr, server) = server.bind_with_graceful_shutdown(addr, async move { rx.recv().await; });
+        tokio::spawn(async move { server.await; });
         // give some time to warp server to spawn
         // TODO: try awaiting
         std::thread::sleep(Duration::from_millis(100));
         info!("Started stubr recorder on {}", addr);
-        addr
+        (addr, tx)
     }
 
     fn forward_and_record(cfg: RecordConfig, then: fn(RecordInput)) -> impl Filter<Extract=(impl Reply, ), Error=Rejection> {
