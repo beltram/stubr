@@ -3,8 +3,10 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 use mock::mock_transform;
+use record::record_transform;
 
 mod mock;
+mod record;
 
 /// Starts a Stubr mock server and creates a `stubr` variable which can be used to call the server e.g. `stubr.uri()`.
 /// It supports both standard and async test functions.
@@ -53,4 +55,37 @@ mod mock;
 pub fn mock(args: TokenStream, item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);
     mock_transform(args, item.into()).unwrap().into()
+}
+
+/// Starts a Stubr recorder server and creates a `recorder` variable which can be used to call the server e.g. `stubr.isahc_client()`.
+/// It only supports non-async test functions.
+///
+/// # Example
+/// ```no_run
+/// # use isahc;
+/// # use stubr_attributes as stubr;
+/// use asserhttp::*; // optional
+///
+/// #[test]
+/// #[stubr::mock] // <- start a server to record, stubr itself for example
+/// #[stubr::record] // <- spawns a recorder in a tokio runtime
+/// fn simple_test() {
+///     recorder.isahc_client().get(stubr.uri()).expect_status_ok();
+///     // a recorded stub has been created under 'target/stubs'
+/// }
+/// ```
+///
+/// # Configuration
+/// ```no_run
+/// # use stubr_attributes as stubr;
+///
+/// // start recorder on a dedicated port
+/// #[test]
+/// #[stubr::record(port = 1234)]
+/// fn port() {}
+/// ```
+#[proc_macro_attribute]
+pub fn record(args: TokenStream, item: TokenStream) -> TokenStream {
+    let args = syn::parse_macro_input!(args as syn::AttributeArgs);
+    record_transform(args, item.into()).unwrap().into()
 }

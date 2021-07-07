@@ -34,17 +34,24 @@ impl UriAndQuery for Stubr {
 }
 
 pub fn assert_recorded_stub_eq(id: &str, expected: Value) {
-    let file = target_dir()
-        .join("stubs")
-        .join("localhost")
-        .join(format!("{}.json", id));
     let mut content = String::new();
-    File::open(file).unwrap().read_to_string(&mut content).unwrap();
+    File::open(stub_file(id)).unwrap().read_to_string(&mut content).unwrap();
     let content: Value = serde_json::from_str(content.as_str()).unwrap();
     assert_eq!(content, expected);
 }
 
-fn target_dir() -> PathBuf {
+pub fn assert_recorded_stub_exists(id: &str) {
+    assert!(stub_file(id).exists());
+}
+
+fn stub_file(id: &str) -> PathBuf {
+    target_dir()
+        .join("stubs")
+        .join("localhost")
+        .join(format!("{}.json", id))
+}
+
+pub fn target_dir() -> PathBuf {
     current_dir().ok()
         .and_then(|c| c.parent().map(Path::to_path_buf))
         .map(|p| p.join("target"))

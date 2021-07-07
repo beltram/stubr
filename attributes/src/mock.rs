@@ -92,16 +92,14 @@ impl TryFrom<AttributeArgs> for Args {
 fn starter(func: &ItemFn, args: &Args) -> TokenStream {
     let path = args.path();
     let port = args.port();
-    let cfg = quote! { let cfg = stubr::Config { port: #port, ..Default::default() }; };
+    let cfg = quote! { stubr::Config { port: #port, ..Default::default() } };
     if func.sig.asyncness.is_some() {
         quote! {
-            #cfg
-            let stubr = stubr::Stubr::start_with(#path, cfg).await;
+            let stubr = stubr::Stubr::start_with(#path, #cfg).await;
         }
     } else {
         quote! {
-            #cfg
-            let stubr = stubr::Stubr::start_blocking_with(#path, cfg);
+            let stubr = stubr::Stubr::start_blocking_with(#path, #cfg);
         }
     }
 }
