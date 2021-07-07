@@ -1,6 +1,7 @@
-use std::{net::SocketAddr, time::Duration};
+use std::net::SocketAddr;
 
 use log::info;
+use tokio::sync::mpsc::{channel, Sender};
 use warp::{Filter, filters::{host::Authority, path::FullPath}, http::HeaderMap, hyper::body::Bytes, Rejection, Reply};
 use warp_reverse_proxy::{extract_request_data_filter, Method, proxy_to_and_forward_response, QueryParameters};
 
@@ -11,7 +12,6 @@ use super::{
     http::RecordedExchange,
     warp_exchange::{WarpExchange, WarpRequest, WarpResponse},
 };
-use tokio::sync::mpsc::{channel, Sender};
 
 pub struct Proxy;
 
@@ -22,9 +22,6 @@ impl Proxy {
         let server = warp::serve(warp::any().and(Self::forward_and_record(cfg, then).boxed()));
         let (addr, server) = server.bind_with_graceful_shutdown(addr, async move { rx.recv().await; });
         tokio::spawn(async move { server.await; });
-        // give some time to warp server to spawn
-        // TODO: try awaiting
-        std::thread::sleep(Duration::from_millis(100));
         info!("Started stubr recorder on {}", addr);
         (addr, tx)
     }
