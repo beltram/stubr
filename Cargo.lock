@@ -2580,7 +2580,7 @@ checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 
 [[package]]
 name = "stubr"
-version = "0.4.5"
+version = "0.4.6"
 dependencies = [
  "anyhow",
  "asserhttp",
@@ -2617,7 +2617,7 @@ dependencies = [
 
 [[package]]
 name = "stubr-attributes"
-version = "0.4.5"
+version = "0.4.6"
 dependencies = [
  "asserhttp",
  "async-std",
@@ -2629,7 +2629,7 @@ dependencies = [
 
 [[package]]
 name = "stubr-cli"
-version = "0.4.5"
+version = "0.4.6"
 dependencies = [
  "anyhow",
  "asserhttp",
