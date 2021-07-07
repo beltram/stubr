@@ -46,3 +46,12 @@ async fn recorder_should_have_graceful_shutdown() {
             .get(stubr.path("/status/200")).expect_status_ok();
     }
 }
+
+#[test]
+#[stubr::mock("record/status/200.json")]
+fn should_start_recorder_on_provided_runtime() {
+    let runtime = tokio::runtime::Builder::new_multi_thread().enable_all().build().unwrap();
+    runtime.block_on(async {
+        Stubr::record().isahc_client().get(stubr.path("/status/200")).expect_status_ok();
+    })
+}
