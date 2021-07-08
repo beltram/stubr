@@ -52,7 +52,7 @@ impl TryFrom<AttributeArgs> for Args {
                         if let syn::Lit::Int(lit) = nv.lit {
                             port = Some(lit)
                         } else {
-                            return Err(syn::Error::new_spanned(nv.lit, "Attribute 'port' expects integer"));
+                            return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects integer", Self::ATTR_PORT)));
                         }
                     }
                 }
@@ -68,5 +68,113 @@ fn starter(args: &Args) -> TokenStream {
     let cfg = quote! { stubr::RecordConfig { port: #port, ..Default::default() } };
     quote! {
         let recorder = stubr::Stubr::record_with(#cfg);
+    }
+}
+
+#[cfg(test)]
+mod record_tests {
+    use proc_macro2::Span;
+
+    use super::*;
+
+    mod visibility {
+        use syn::Visibility;
+
+        use super::*;
+
+        #[test]
+        fn should_conserve_private_visibility() {
+            let item = quote! { fn a() {} };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert!(matches!(transformed.vis, Visibility::Inherited))
+        }
+
+        #[test]
+        fn should_conserve_pub_visibility() {
+            let item = quote! { pub fn a() {} };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert!(matches!(transformed.vis, Visibility::Public(_)))
+        }
+    }
+
+    mod asyncness {
+        use super::*;
+
+        #[test]
+        fn should_conserve_asyncness() {
+            let item = quote! { async fn a() {} };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert!(transformed.sig.asyncness.is_some())
+        }
+
+        #[test]
+        fn should_not_add_asyncness_when_none() {
+            let item = quote! { fn a() {} };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert!(transformed.sig.asyncness.is_none())
+        }
+    }
+
+    mod name {
+        use super::*;
+
+        #[test]
+        fn should_conserve_function_name() {
+            let item = quote! { fn azerty() {} };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert_eq!(transformed.sig.ident.to_string(), String::from("azerty"))
+        }
+    }
+
+    mod attributes {
+        use super::*;
+
+        #[test]
+        fn should_conserve_attributes() {
+            let item = quote! {
+                #[test]
+                #[should_panic]
+                fn azerty() {}
+            };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert_eq!(transformed.attrs.len(), 2);
+        }
+    }
+
+    mod port {
+        use syn::{Meta, MetaNameValue, Path, Lit, LitStr, PathSegment};
+
+        use super::*;
+
+        #[test]
+        fn should_accept_int_port() {
+            let port = Meta::NameValue(MetaNameValue {
+                path: Path::from(PathSegment::from(syn::Ident::new("port", Span::call_site()))),
+                eq_token: syn::token::Eq([Span::call_site()]),
+                lit: Lit::Int(LitInt::new("1234", Span::call_site())),
+            });
+            let args = vec![NestedMeta::from(port)];
+            let transformed = record_transform(args, quote! { fn a() {} });
+            assert!(transformed.is_ok())
+        }
+
+        #[test]
+        fn should_fail_when_port_not_int() {
+            let port = Meta::NameValue(MetaNameValue {
+                path: Path::from(PathSegment::from(syn::Ident::new("port", Span::call_site()))),
+                eq_token: syn::token::Eq([Span::call_site()]),
+                lit: Lit::Str(LitStr::new("abcd", Span::call_site())),
+            });
+            let args = vec![NestedMeta::from(port)];
+            let transformed = record_transform(args, quote! { fn a() {} });
+            assert!(transformed.is_err());
+            assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'port' expects integer"))
+        }
     }
 }
