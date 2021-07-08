@@ -1,22 +1,24 @@
 use std::convert::TryFrom;
 
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
 use syn::{AttributeArgs, ItemFn, LitInt, NestedMeta};
 
 pub(crate) fn record_transform(args: AttributeArgs, item: TokenStream) -> syn::Result<TokenStream> {
     let func = syn::parse2::<ItemFn>(item)?;
+    if func.sig.asyncness.is_some() {
+        return Err(syn::Error::new(Span::call_site(), "async functions are not supported by stubr record macro"));
+    }
     let ret = &func.sig.output;
     let name = &func.sig.ident;
     let body = &func.block;
     let attrs = &func.attrs;
     let vis = &func.vis;
-    let asyncness = &func.sig.asyncness;
     let args = Args::try_from(args)?;
     let starter = starter(&args);
     Ok(quote! {
         #(#attrs)*
-        #vis #asyncness fn #name() #ret {
+        #vis fn #name() #ret {
             tokio::runtime::Builder::new_multi_thread().enable_all().build().unwrap().block_on(async {
                 #starter
                 #body
@@ -73,8 +75,6 @@ fn starter(args: &Args) -> TokenStream {
 
 #[cfg(test)]
 mod record_tests {
-    use proc_macro2::Span;
-
     use super::*;
 
     mod visibility {
@@ -103,19 +103,18 @@ mod record_tests {
         use super::*;
 
         #[test]
-        fn should_conserve_asyncness() {
-            let item = quote! { async fn a() {} };
-            let transformed = record_transform(vec![], item).unwrap().into();
-            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
-            assert!(transformed.sig.asyncness.is_some())
+        fn should_accept_not_async_function() {
+            let item = quote! { fn a() {} };
+            let transformed = record_transform(vec![], item);
+            assert!(transformed.is_ok())
         }
 
         #[test]
-        fn should_not_add_asyncness_when_none() {
-            let item = quote! { fn a() {} };
-            let transformed = record_transform(vec![], item).unwrap().into();
-            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
-            assert!(transformed.sig.asyncness.is_none())
+        fn should_fail_when_function_async() {
+            let item = quote! { async fn a() {} };
+            let transformed = record_transform(vec![], item);
+            assert!(transformed.is_err());
+            assert_eq!(transformed.err().unwrap().to_string(), String::from("async functions are not supported by stubr record macro"));
         }
     }
 
@@ -148,7 +147,7 @@ mod record_tests {
     }
 
     mod port {
-        use syn::{Meta, MetaNameValue, Path, Lit, LitStr, PathSegment};
+        use syn::{Lit, LitStr, Meta, MetaNameValue, Path, PathSegment};
 
         use super::*;
 
