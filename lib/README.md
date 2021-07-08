@@ -157,14 +157,14 @@ You need to start a tokio multi-threaded runtime in your unit test so as the rec
 `#[tokio::test(flavor = "multi_thread")]` for that.  
 
 The recorder acts as a proxy, so you need to configure your http client to use this proxy. Currently, thanks to the
-`test-isahc` feature you can get a configured [isahc](https://github.com/sagebind/isahc) client with
+`record-isahc` feature you can get a configured [isahc](https://github.com/sagebind/isahc) client with
 `Stubr::record().isahc_client()`. Your stubs will then be stored under `target/stubs/localhost`
 
 ```rust
 use stubr::Stubr;
 use isahc;
 
-// this requires `record` and `test-isahc` features which are not default.
+// this requires `record` and `record-isahc` features which are not default.
 
 #[tokio::test(flavor = "multi_thread")] // required for recording
 #[stubr::mock] // start a standalone http server to record, for example stubr itself

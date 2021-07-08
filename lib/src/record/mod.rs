@@ -1,6 +1,6 @@
 use std::net::SocketAddr;
 
-#[cfg(feature = "test-isahc")]
+#[cfg(feature = "record-isahc")]
 use isahc::HttpClient as IsahcHttpClient;
 use log::{error, info};
 use tokio::sync::mpsc::Sender;
@@ -11,7 +11,7 @@ use logger::RecordLogger;
 use proxy::Proxy;
 use writer::StubWriter;
 
-#[cfg(feature = "test-isahc")]
+#[cfg(feature = "record-isahc")]
 use crate::isahc_client;
 
 use super::model::JsonStub;
@@ -55,7 +55,7 @@ impl StubrRecord {
         Self { addr, tx }
     }
 
-    #[cfg(feature = "test-isahc")]
+    #[cfg(feature = "record-isahc")]
     pub fn isahc_client(&self) -> IsahcHttpClient {
         isahc_client(self.uri())
     }
