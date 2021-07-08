@@ -4,6 +4,7 @@ use serde_json::json;
 use stubr::{RecordConfig, Stubr};
 
 use crate::utils::*;
+use std::time::Duration;
 
 #[tokio::test(flavor = "multi_thread")]
 #[stubr::mock("record/smoke/success.json")]
@@ -33,6 +34,7 @@ async fn proxy_should_forward_errors() {
     }))
 }
 
+#[cfg(not(target_os = "windows"))]
 #[tokio::test(flavor = "multi_thread")]
 #[stubr::mock("record/status/200.json")]
 async fn recorder_should_have_graceful_shutdown() {
@@ -40,6 +42,7 @@ async fn recorder_should_have_graceful_shutdown() {
         Stubr::record_with(RecordConfig { port: Some(1234), ..record_cfg() }).isahc_client()
             .get(stubr.path("/status/200")).expect_status_ok();
     }
+    std::thread::sleep(Duration::from_millis(100));
     // <- first recorder should be dropped and socket unbinded
     {
         Stubr::record_with(RecordConfig { port: Some(1234), ..record_cfg() }).isahc_client()
