@@ -69,16 +69,21 @@ impl TryFrom<AttributeArgs> for Args {
         for arg in input {
             match arg {
                 NestedMeta::Lit(Lit::Str(lit)) => path = Some(lit),
+                NestedMeta::Lit(token) => {
+                    return Err(syn::Error::new_spanned(token, format!("Default attribute expects string")));
+                }
                 NestedMeta::Meta(syn::Meta::NameValue(nv)) => {
                     if nv.path.is_ident(Self::ATTR_FULL_PATH) {
                         if let syn::Lit::Str(lit) = nv.lit {
                             full_path = Some(lit)
+                        } else {
+                            return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects string", Self::ATTR_FULL_PATH)));
                         }
                     } else if nv.path.is_ident(Self::ATTR_PORT) {
                         if let syn::Lit::Int(lit) = nv.lit {
                             port = Some(lit)
                         } else {
-                            return Err(syn::Error::new_spanned(nv.lit, "Attribute 'port' expects integer"));
+                            return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects integer", Self::ATTR_PORT)));
                         }
                     }
                 }
@@ -206,6 +211,58 @@ mod mock_tests {
             let transformed = mock_transform(args, quote! { fn a() {} });
             assert!(transformed.is_err());
             assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'port' expects integer"))
+        }
+    }
+
+    mod path {
+        use super::*;
+
+        #[test]
+        fn should_accept_str_path() {
+            let path = Lit::Str(LitStr::new("path/some.json", Span::call_site()));
+            let args = vec![NestedMeta::from(path)];
+            let transformed = mock_transform(args, quote! { fn a() {} });
+            assert!(transformed.is_ok())
+        }
+
+        #[test]
+        fn should_fail_when_path_not_str() {
+            let path = Lit::Int(LitInt::new("1234", Span::call_site()));
+            let args = vec![NestedMeta::from(path)];
+            let transformed = mock_transform(args, quote! { fn a() {} });
+            assert!(transformed.is_err());
+            assert_eq!(transformed.err().unwrap().to_string(), String::from("Default attribute expects string"))
+        }
+    }
+
+    mod full_path {
+        use syn::{Meta, MetaNameValue, Path, PathSegment};
+
+        use super::*;
+
+        #[test]
+        fn should_accept_str_full_path() {
+            let full_path = Meta::NameValue(MetaNameValue {
+                path: Path::from(PathSegment::from(syn::Ident::new("full_path", Span::call_site()))),
+                eq_token: syn::token::Eq([Span::call_site()]),
+                lit: Lit::Str(LitStr::new("my/ping.json", Span::call_site())),
+            });
+            let args = vec![NestedMeta::from(full_path)];
+            let transformed = mock_transform(args, quote! { fn a() {} });
+            assert!(transformed.is_ok())
+        }
+
+        #[test]
+        fn should_fail_when_full_path_not_str() {
+            let full_path = Meta::NameValue(MetaNameValue {
+                path: Path::from(PathSegment::from(syn::Ident::new("full_path", Span::call_site()))),
+                eq_token: syn::token::Eq([Span::call_site()]),
+                lit: Lit::Int(LitInt::new("1234", Span::call_site())),
+            });
+            let args = vec![NestedMeta::from(full_path)];
+            let transformed = mock_transform(args, quote! { fn a() {} });
+            assert!(transformed.is_err());
+            assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'full_path' expects string"))
         }
     }
 }
