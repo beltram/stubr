@@ -21,7 +21,7 @@ mod proxy;
 mod mapping;
 pub mod config;
 mod warp_exchange;
-pub mod test;
+pub mod client;
 mod port;
 mod writer;
 mod logger;
