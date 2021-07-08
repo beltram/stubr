@@ -1,8 +1,10 @@
 use std::net::SocketAddr;
 
 #[cfg(feature = "record-isahc")]
-use isahc::HttpClient as IsahcHttpClient;
+use isahc::HttpClient as IsahcClient;
 use log::{error, info};
+#[cfg(feature = "record-reqwest")]
+use reqwest::Client as ReqwestClient;
 use tokio::sync::mpsc::Sender;
 
 use config::RecordConfig;
@@ -13,6 +15,8 @@ use writer::StubWriter;
 
 #[cfg(feature = "record-isahc")]
 use crate::isahc_client;
+#[cfg(feature = "record-reqwest")]
+use crate::reqwest_client;
 
 use super::model::JsonStub;
 
@@ -56,8 +60,13 @@ impl StubrRecord {
     }
 
     #[cfg(feature = "record-isahc")]
-    pub fn isahc_client(&self) -> IsahcHttpClient {
+    pub fn isahc_client(&self) -> IsahcClient {
         isahc_client(self.uri())
+    }
+
+    #[cfg(feature = "record-reqwest")]
+    pub fn reqwest_client(&self) -> ReqwestClient {
+        reqwest_client(self.uri())
     }
 }
 

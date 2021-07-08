@@ -37,16 +37,17 @@ serde = { version = "1.0.126", features = ["derive"] }
 async-std = { version = "1.9.0", features = ["attributes"] }
 
 isahc = { version = "1.4.0", optional = true }
+reqwest = { version = "0.11.4", optional = true }
 
 warp = { version = "0.3.1", default-features = false, optional = true }
 warp-reverse-proxy = { version = "0.3.2", optional = true }
 tokio = { version = "1.8.1", optional = true }
 
 [dev-dependencies]
-stubr = { path = ".", features = ["record", "record-isahc"] }
+stubr = { path = ".", features = ["record", "record-isahc", "record-reqwest"] }
 surf = "2.2.0"
 tempfile = "3.2.0"
-asserhttp = { version = "0.2.0", features = ["surf", "isahc"] }
+asserhttp = { version = "0.2.0", features = ["surf", "isahc", "reqwest"] }
 isahc = { version = "1.4.0", features = ["json"] }
 tokio = { version = "1.8.1", features = ["macros", "rt-multi-thread"] }
 criterion = { version = "0.3.4", features = ["async_std", "html_reports"] }
@@ -75,5 +76,6 @@ harness = false
 default = ["attributes"]
 cloud = []
 record-isahc = ["isahc"]
+record-reqwest = ["reqwest"]
 attributes = ["stubr-attributes"]
 record = ["warp", "warp-reverse-proxy", "tokio"]

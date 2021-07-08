@@ -8,3 +8,4 @@ pub mod req_headers;
 pub mod resp_headers;
 pub mod smoke;
 pub mod config;
+pub mod client;

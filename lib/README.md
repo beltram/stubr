@@ -153,22 +153,22 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
 Stubr can be used to record http traffic in your unit tests and dump them into json stubs.
 Currently, integration is quite limited but much more (actix, warp, rocket, tide) are around the corner.  
 
-You need to start a tokio multi-threaded runtime in your unit test so as the recorder starts. Use
-`#[tokio::test(flavor = "multi_thread")]` for that.  
-
-The recorder acts as a proxy, so you need to configure your http client to use this proxy. Currently, thanks to the
-`record-isahc` feature you can get a configured [isahc](https://github.com/sagebind/isahc) client with
-`Stubr::record().isahc_client()`. Your stubs will then be stored under `target/stubs/localhost`
+The recorder acts as a standalone proxy server, so you need to configure your http client to use it.  
+You can use the `record-isahc` feature to get a configured [isahc](https://github.com/sagebind/isahc) client with
+`Stubr::record().isahc_client()` or the `record-reqwest` feature to get a configured 
+[reqwest](https://github.com/seanmonstar/reqwest) client with `Stubr::record().reqwest_client()`.
+Your stubs will then be stored under `target/stubs/localhost`
 
 ```rust
 use stubr::Stubr;
 use isahc;
 
-// this requires `record` and `record-isahc` features which are not default.
+// this requires `record` and `record-reqwest` (or `record-isahc`) features which are not default.
 
 #[tokio::test(flavor = "multi_thread")] // required for recording
 #[stubr::mock] // start a standalone http server to record, for example stubr itself
 async fn sample_test() {
+    Stubr::record().reqwest_client().get(stubr.uri()).send().await.unwrap();
     Stubr::record().isahc_client().get(stubr.uri()).unwrap();
     // stubs will be created under `target/stubs`
 }
