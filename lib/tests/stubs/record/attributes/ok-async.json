@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/smoke/async/ok"
+  },
+  "response": {
+    "status": 200
+  }
+}

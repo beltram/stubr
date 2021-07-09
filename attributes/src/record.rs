@@ -1,22 +1,20 @@
 use std::convert::TryFrom;
 
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{AttributeArgs, ItemFn, LitInt, NestedMeta};
+use syn::{Attribute, AttributeArgs, ItemFn, LitInt, NestedMeta};
 
 pub(crate) fn record_transform(args: AttributeArgs, item: TokenStream) -> syn::Result<TokenStream> {
     let func = syn::parse2::<ItemFn>(item)?;
-    if func.sig.asyncness.is_some() {
-        return Err(syn::Error::new(Span::call_site(), "async functions are not supported by stubr record macro"));
-    }
     let ret = &func.sig.output;
     let name = &func.sig.ident;
     let body = &func.block;
-    let attrs = &func.attrs;
+    let attrs = &func.attrs.into_iter().filter(|a| !a.path.is_ident("test")).collect::<Vec<Attribute>>();
     let vis = &func.vis;
     let args = Args::try_from(args)?;
     let starter = starter(&args);
     Ok(quote! {
+        #[::core::prelude::v1::test]
         #(#attrs)*
         #vis fn #name() #ret {
             tokio::runtime::Builder::new_multi_thread().enable_all().build().unwrap().block_on(async {
@@ -103,18 +101,19 @@ mod record_tests {
         use super::*;
 
         #[test]
-        fn should_accept_not_async_function() {
-            let item = quote! { fn a() {} };
-            let transformed = record_transform(vec![], item);
-            assert!(transformed.is_ok())
+        fn should_remove_asyncness() {
+            let item = quote! { async fn a() {} };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert!(transformed.sig.asyncness.is_none())
         }
 
         #[test]
-        fn should_fail_when_function_async() {
-            let item = quote! { async fn a() {} };
-            let transformed = record_transform(vec![], item);
-            assert!(transformed.is_err());
-            assert_eq!(transformed.err().unwrap().to_string(), String::from("async functions are not supported by stubr record macro"));
+        fn should_not_add_asyncness_when_none() {
+            let item = quote! { fn a() {} };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert!(transformed.sig.asyncness.is_none())
         }
     }
 
@@ -134,19 +133,33 @@ mod record_tests {
         use super::*;
 
         #[test]
-        fn should_conserve_attributes() {
+        fn should_add_test_attributes() {
             let item = quote! {
-                #[test]
+                #[stubr::mock]
                 #[should_panic]
                 fn azerty() {}
             };
             let transformed = record_transform(vec![], item).unwrap().into();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
-            assert_eq!(transformed.attrs.len(), 2);
+            assert_eq!(transformed.attrs.len(), 3);
+        }
+
+        #[test]
+        fn should_not_remove_test_attribute_when_already_present() {
+            let item = quote! {
+                #[test]
+                #[stubr::mock]
+                #[should_panic]
+                fn azerty() {}
+            };
+            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
+            assert_eq!(transformed.attrs.len(), 3);
         }
     }
 
     mod port {
+        use proc_macro2::Span;
         use syn::{Lit, LitStr, Meta, MetaNameValue, Path, PathSegment};
 
         use super::*;
