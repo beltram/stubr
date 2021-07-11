@@ -1,6 +1,6 @@
 [package]
 name = "stubr-attributes"
-version = "0.4.6"
+version = "0.4.7"
 edition = "2018"
 authors = ["Beltram Maldant"]
 description = "Wiremock implemented in Rust"
