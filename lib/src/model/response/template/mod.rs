@@ -12,10 +12,10 @@ use helpers::{
     numbers::NumberHelper,
     trim::TrimHelper,
     url_encode::UrlEncodingHelper,
+    string::StringHelper,
 };
 
-use crate::cloud::opentracing::OpenTracing;
-use crate::model::response::ResponseStub;
+use crate::{cloud::opentracing::OpenTracing, model::response::ResponseStub};
 
 pub mod data;
 mod req_ext;
@@ -33,6 +33,10 @@ lazy_static! {
         handlebars.register_helper(TrimHelper::NAME, Box::new(TrimHelper));
         handlebars.register_helper(Base64Helper::NAME, Box::new(Base64Helper));
         handlebars.register_helper(UrlEncodingHelper::NAME, Box::new(UrlEncodingHelper));
+        handlebars.register_helper(StringHelper::CAPITALIZE, Box::new(StringHelper));
+        handlebars.register_helper(StringHelper::DECAPITALIZE, Box::new(StringHelper));
+        handlebars.register_helper(StringHelper::UPPER, Box::new(StringHelper));
+        handlebars.register_helper(StringHelper::LOWER, Box::new(StringHelper));
         RwLock::new(handlebars)
     };
 }

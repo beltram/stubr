@@ -141,6 +141,7 @@ track down which ones are implemented by stubr. For having a view of what is sup
 * [ ] `{{request.cookies.<key>.[<n>]}}`
 * [x] `{{request.body}}`
 * [ ] Handlebars helpers
+* [x] String helpers
 * [x] Number helpers
 * [ ] assignment helpers
 * [ ] XPath helpers

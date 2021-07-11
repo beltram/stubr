@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "POST"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{capitalize request.body}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

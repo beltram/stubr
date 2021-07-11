@@ -135,6 +135,8 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
       "now-negative-offset": "{{now offset='-3 days'}}", // human time negative offset
       "now-with-timezone": "{{now timezone='Europe/Rome'}}",
       "number-is-odd": "{{isOdd 3}}", // or 'isEven'
+      "string-capitalized": "{{capitalize mister}}", // or 'decapitalize'
+      "string-uppercase": "{{upper mister}}", // or 'lower'
       "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
       "string-trim": "{{trim request.body}}", // removes leading & trailing whitespaces
       "base64-encode": "{{base64 request.body padding=false}}", // padding is optional and defaults to true
