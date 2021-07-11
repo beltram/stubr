@@ -1,7 +1,24 @@
-# stubr
-
-[![Build status](https://github.com/beltram/stubr/workflows/ci/badge.svg)](https://github.com/beltram/stubr/actions)
-[![Crates.io](https://img.shields.io/crates/v/stubr.svg)](https://crates.io/crates/stubr-cli)
+<h1 align="center">stubr-cli</h1>
+<div align="center">
+ <strong>
+   stubr in your terminal
+ </strong>
+</div>
+<br />
+<div align="center">
+  <a href="https://docs.rs/stubr-cli">
+    <img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square"
+      alt="docs.rs docs" />
+  </a>
+  <a href="https://github.com/beltram/stubr/actions">
+    <img src="https://github.com/beltram/stubr/workflows/ci/badge.svg?style=flat-square"
+      alt="ci" />
+  </a>
+  <a href="https://coveralls.io/github/beltram/stubr?branch=main">
+    <img src="https://coveralls.io/repos/github/beltram/stubr/badge.svg?branch=main" alt="coverage" />
+  </a>
+</div>
+<br/>
 
 # use it
 

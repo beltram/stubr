@@ -1,8 +1,24 @@
-# stubr
-
-[![Build status](https://github.com/beltram/stubr/workflows/ci/badge.svg)](https://github.com/beltram/stubr/actions)
-[![Crates.io](https://img.shields.io/crates/v/stubr.svg)](https://crates.io/crates/stubr)
-[![Docs.rs](https://img.shields.io/badge/docs-latest-blue.svg)](https://docs.rs/stubr)
+<h1 align="center">stubr</h1>
+<div align="center">
+ <strong>
+   Wiremock reimplemented in Rust
+ </strong>
+</div>
+<br />
+<div align="center">
+  <a href="https://docs.rs/stubr">
+    <img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square"
+      alt="docs.rs docs" />
+  </a>
+  <a href="https://github.com/beltram/stubr/actions">
+    <img src="https://github.com/beltram/stubr/workflows/ci/badge.svg?style=flat-square"
+      alt="ci" />
+  </a>
+  <a href="https://coveralls.io/github/beltram/stubr?branch=main">
+    <img src="https://coveralls.io/repos/github/beltram/stubr/badge.svg?branch=main" alt="coverage" />
+  </a>
+</div>
+<br/>
 
 Extends [wiremock-rs](https://crates.io/crates/wiremock) by supporting
 [Wiremock](https://github.com/tomakehurst/wiremock) json stubs as input.

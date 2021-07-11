@@ -73,6 +73,14 @@ pub fn mock(args: TokenStream, item: TokenStream) -> TokenStream {
 ///     recorder.isahc_client().get(stubr.uri()).expect_status_ok();
 ///     // a recorded stub has been created under 'target/stubs'
 /// }
+///
+/// // Works for async too
+/// #[stubr::record] // <- spawns a recorder in a tokio runtime
+/// #[stubr::mock] // <- start a server to record, stubr itself for example
+/// #[test]
+/// async fn async_simple_test() {
+///     recorder.isahc_client().get_async(stubr.uri()).await.expect_status_ok();
+/// }
 /// ```
 ///
 /// # Configuration
