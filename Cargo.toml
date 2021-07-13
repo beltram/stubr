@@ -1,5 +1,12 @@
 [workspace]
-members = ["cli", "lib", "attributes"]
+members = [
+    "cli",
+    "lib",
+    "attributes",
+    "build",
+    "examples/stub-producer",
+    "examples/stub-consumer"
+]
 
 [profile.release]
 lto = true

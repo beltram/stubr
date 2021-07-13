@@ -1,0 +1,10 @@
+[package]
+name = "stubr-consumer"
+version = "0.0.1"
+edition = "2018"
+publish = false
+build = "build.rs"
+
+[build-dependencies]
+stubr-build = { path = "../../build", version = "0.4.7" }
+stubr-producer = { path = "../stub-producer" }

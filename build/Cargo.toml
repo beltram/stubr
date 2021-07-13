@@ -1,0 +1,8 @@
+[package]
+name = "stubr-build"
+version = "0.4.7"
+edition = "2018"
+
+[dependencies]
+cargo = "0.54.0"
+fs_extra = "1.2.0"
