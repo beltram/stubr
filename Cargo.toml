@@ -4,8 +4,8 @@ members = [
     "lib",
     "attributes",
     "build",
-    "examples/stub-producer",
-    "examples/stub-consumer"
+    "stub-producer",
+    "stub-consumer"
 ]
 
 [profile.release]

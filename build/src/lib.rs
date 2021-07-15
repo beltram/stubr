@@ -1,5 +1,7 @@
-use std::{fs::canonicalize, path::PathBuf};
-use std::fs::{create_dir, create_dir_all, remove_dir_all};
+use std::{
+    fs::{canonicalize, create_dir, create_dir_all, remove_dir_all},
+    path::PathBuf,
+};
 
 use cargo::{
     Config,
@@ -7,14 +9,15 @@ use cargo::{
     ops::{load_pkg_lockfile, read_package},
     util::hex,
 };
-use fs_extra::dir::CopyOptions;
-use fs_extra::error::{Error as CopyError, ErrorKind};
+use fs_extra::{
+    dir::CopyOptions,
+    error::{Error as CopyError, ErrorKind},
+};
 
 pub fn consumer() {
-    eprintln!("+++");
-    let consumer = StubrConsumer::new();
-    consumer.copy_stubs();
-    eprintln!("+++");
+    StubrConsumer::new()
+        .expect("Failed initializing stubr build plugin")
+        .copy_stubs();
 }
 
 struct StubrConsumer {
@@ -27,13 +30,13 @@ impl StubrConsumer {
     const STUBS_DIR: &'static str = "stubs";
     const IMPORT_DIR: &'static str = "stubr";
 
-    fn new() -> Self {
-        let config = Config::default().unwrap();
-        let cwd = canonicalize(config.cwd()).unwrap();
+    fn new() -> anyhow::Result<Self> {
+        let config = Config::default()?;
+        let cwd = canonicalize(config.cwd())?;
         let manifest_path = cwd.join("Cargo.toml");
-        let source_id = SourceId::for_path(&cwd).unwrap();
-        let package = read_package(&manifest_path, source_id, &config).unwrap().0;
-        Self { config, manifest_path, package }
+        let source_id = SourceId::for_path(&cwd)?;
+        let package = read_package(&manifest_path, source_id, &config)?.0;
+        Ok(Self { config, manifest_path, package })
     }
 
     fn copy_stubs(&self) {
@@ -79,18 +82,19 @@ impl StubrConsumer {
     fn resolve_remote_src_path(&self, dep: &Dependency) -> Option<PathBuf> {
         self.resolve_package().iter()
             .find(|it| it.name() == dep.package_name())
-            .map(|pkg| {
+            .map(|pkg| format!("{}-{}", pkg.name(), pkg.version()))
+            .and_then(|id| {
                 let source = dep.source_id();
-                let hash = hex::short_hash(&source);
-                let host = source.url().host_str().unwrap();
-                let part = format!("{}-{}", host, hash);
-                let id = format!("{}-{}", pkg.name(), pkg.version());
-                self.config.home()
-                    .join("registry")
-                    .join("src")
-                    .join(part)
-                    .join(id)
-                    .into_path_unlocked()
+                source.url().host_str().map(|host| {
+                    let hash = hex::short_hash(&source);
+                    let part = format!("{}-{}", host, hash);
+                    self.config.home()
+                        .join("registry")
+                        .join("src")
+                        .join(part)
+                        .join(id)
+                        .into_path_unlocked()
+                })
             })
     }
 
@@ -108,10 +112,13 @@ impl StubrConsumer {
     }
 
     fn resolve_package(&self) -> Resolve {
-        load_pkg_lockfile(&self.workspace()).unwrap().unwrap()
+        load_pkg_lockfile(&self.workspace()).ok()
+            .flatten()
+            .expect(&format!("Failed resolving package at {:?}", self.manifest_path))
     }
 
     fn workspace(&self) -> Workspace<'_> {
-        Workspace::new(&self.manifest_path, &self.config).unwrap()
+        Workspace::new(&self.manifest_path, &self.config)
+            .expect(&format!("Failed resolving workspace at {:?}", self.manifest_path))
     }
 }

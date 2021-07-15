@@ -21,6 +21,8 @@ jobs:
       - uses: Swatinem/rust-cache@v1
       - name: cargo/check
         run: cargo check
+        env:
+          RUST_BACKTRACE: 1
       - name: cargo/test
         run: cargo test
       - name: cargo/clippy

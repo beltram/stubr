@@ -3105,6 +3105,7 @@ dependencies = [
 name = "stubr-build"
 version = "0.4.7"
 dependencies = [
+ "anyhow",
  "cargo",
  "fs_extra",
 ]
