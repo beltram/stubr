@@ -1,17 +1,15 @@
 use std::{
     collections::hash_map::DefaultHasher,
-    env,
-    ffi::OsStr,
     fs::{create_dir_all, File},
     hash::{Hash, Hasher},
-    path::{Path, PathBuf},
+    path::PathBuf,
     str::FromStr,
 };
+use log::info;
 
 use http_types::Url;
-use itertools::Itertools;
 
-use crate::model::JsonStub;
+use crate::{model::JsonStub, server::stub_finder::StubFinder};
 
 pub(crate) struct StubWriter {
     pub(crate) stub: JsonStub,
@@ -20,19 +18,16 @@ pub(crate) struct StubWriter {
 impl StubWriter {
     const RECORDED_TEST_DIR: &'static str = "stubs";
 
-    #[cfg(target_os = "macos")]
-    const LIB_PATH_ENV_VAR: &'static str = "DYLD_FALLBACK_LIBRARY_PATH";
-    #[cfg(target_os = "windows")]
-    const LIB_PATH_ENV_VAR: &'static str = "PATH";
-    #[cfg(target_os = "linux")]
-    const LIB_PATH_ENV_VAR: &'static str = "LD_LIBRARY_PATH";
-
     pub(crate) fn write(&self, host: &str, output: Option<PathBuf>) -> anyhow::Result<PathBuf> {
         let output = self.output_and_create(host, output);
         let file = output.join(self.stub_name());
         File::create(&file)
             .map_err(anyhow::Error::msg)
             .and_then(|f| serde_json::to_writer_pretty(&f, &self.stub).map_err(anyhow::Error::msg).map(|_| file))
+            .map(|p| {
+                info!("Recorded stub in {:?}", p);
+                p
+            })
             .map_err(anyhow::Error::msg)
     }
 
@@ -76,26 +71,6 @@ impl StubWriter {
     }
 
     fn default_output() -> PathBuf {
-        Self::target_dir().join(Self::RECORDED_TEST_DIR)
-    }
-
-    fn target_dir() -> PathBuf {
-        env::var(Self::LIB_PATH_ENV_VAR).ok()
-            .and_then(|v| v.split(':').map(PathBuf::from).find(|p| Self::is_target_debug(p)))
-            .and_then(|p| p.parent().map(|it| it.to_path_buf()))
-            .expect("Failed locating '/target' directory")
-    }
-
-    fn is_target_debug(path: &Path) -> bool {
-        let is_named = |p: &Path, name: &str| {
-            p.file_name()
-                .and_then(OsStr::to_str)
-                .map(|n| n.split(';').collect_vec())
-                .and_then(|v| v.get(0).map(|it| it.to_string()))
-                == Some(name.to_string())
-        };
-        let debug = is_named(path, "debug");
-        let target = path.parent().map(|p| is_named(&p.to_path_buf(), "target")).unwrap_or_default();
-        debug && target
+        StubFinder::output_dir().join(Self::RECORDED_TEST_DIR)
     }
 }

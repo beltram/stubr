@@ -3135,6 +3135,10 @@ dependencies = [
 name = "stubr-consumer"
 version = "0.0.1"
 dependencies = [
+ "asserhttp",
+ "async-std",
+ "isahc 1.4.0",
+ "stubr",
  "stubr-build",
  "stubr-producer",
 ]

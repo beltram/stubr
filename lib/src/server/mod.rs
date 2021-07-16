@@ -14,7 +14,7 @@ use crate::{cloud::probe::HttpProbe, Config};
 use crate::record::{config::RecordConfig, StubrRecord};
 
 mod stub;
-mod stub_finder;
+pub mod stub_finder;
 pub mod config;
 
 /// Allows running a Wiremock mock server from Wiremock stubs.
@@ -81,6 +81,30 @@ impl Stubr {
     #[cfg(feature = "record")]
     pub fn record_with(config: RecordConfig) -> StubrRecord {
         StubrRecord::record(config)
+    }
+
+    /// Runs stubs of a remote producer app.
+    /// * `name` - producer name
+    pub async fn app(name: &str) -> Self {
+        Self::app_with(name, Config::default()).await
+    }
+
+    /// Runs stubs of a remote producer app.
+    /// * `name` - producer name
+    pub async fn app_with(name: &str, config: Config) -> Self {
+        Self::start_with(StubFinder::find_app(name), config).await
+    }
+
+    /// Runs stubs of a remote producer app.
+    /// * `name` - producer name
+    pub fn app_blocking(name: &str) -> Self {
+        block_on(Self::app(name))
+    }
+
+    /// Runs stubs of a remote producer app.
+    /// * `name` - producer name
+    pub fn app_blocking_with(name: &str, config: Config) -> Self {
+        block_on(Self::app_with(name, config))
     }
 
     /// Get running server address
