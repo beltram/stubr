@@ -2,6 +2,7 @@ use std::{convert::TryFrom, net::TcpListener};
 
 use async_std::{path::PathBuf, task::block_on};
 use async_std::stream::Stream;
+use futures::future::join_all;
 use futures::stream::StreamExt;
 use log::info;
 use wiremock::{Mock, MockServer};
@@ -43,7 +44,7 @@ impl Stubr {
     /// Use this in a test context.
     /// * `stubs` - folder or file containing the stubs
     pub fn start_blocking<T>(stubs: T) -> Self where T: Into<PathBuf> {
-        block_on(Self::start(stubs))
+        Self::start_blocking_with(stubs, Config::default())
     }
 
     /// Runs a mock server with some configuration.
@@ -98,13 +99,29 @@ impl Stubr {
     /// Runs stubs of a remote producer app.
     /// * `name` - producer name
     pub fn app_blocking(name: &str) -> Self {
-        block_on(Self::app(name))
+        Self::app_blocking_with(name, Config::default())
     }
 
     /// Runs stubs of a remote producer app.
     /// * `name` - producer name
     pub fn app_blocking_with(name: &str, config: Config) -> Self {
         block_on(Self::app_with(name, config))
+    }
+
+    pub async fn apps(names: &[&str]) -> Vec<Self> {
+        Self::apps_with(names, Config::default()).await
+    }
+
+    pub async fn apps_with(names: &[&str], config: Config) -> Vec<Self> {
+        join_all(names.iter().map(|n| async move { Self::app_with(n, config).await })).await
+    }
+
+    pub fn apps_blocking(names: &[&str]) -> Vec<Self> {
+        Self::apps_blocking_with(names, Config::default())
+    }
+
+    pub fn apps_blocking_with(names: &[&str], config: Config) -> Vec<Self> {
+        block_on(Self::apps_with(names, config))
     }
 
     /// Get running server address

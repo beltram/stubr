@@ -1,5 +1,5 @@
 /// Stubr server configuration.
-#[derive(Default)]
+#[derive(Default, Copy, Clone)]
 pub struct Config {
     /// HTTP port the mock server will be listening on
     pub port: Option<u16>,

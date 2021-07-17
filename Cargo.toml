@@ -5,6 +5,7 @@ members = [
     "attributes",
     "build",
     "stub-producer",
+    "actix-producer",
     "stub-consumer"
 ]
 
