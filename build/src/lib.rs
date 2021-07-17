@@ -14,7 +14,17 @@ use fs_extra::{
     error::{Error as CopyError, ErrorKind},
 };
 
-pub fn consumer() {
+/// This introspects package build dependencies and extracts json stubs files
+/// located under a 'stubs' directory at package root into 'target/stubr/<consumer-name>/<producer-name>'
+///
+/// # Example
+///
+/// In your `build.rs` build script
+///
+/// ```no_run
+/// fn main() { stubr_build::stubr_consumer() }
+/// ```
+pub fn stubr_consumer() {
     StubrConsumer::new()
         .expect("Failed initializing stubr build plugin")
         .copy_stubs();

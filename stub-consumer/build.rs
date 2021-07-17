@@ -1,3 +1,3 @@
 fn main() {
-    stubr_build::consumer()
+    stubr_build::stubr_consumer()
 }
