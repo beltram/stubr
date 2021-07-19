@@ -84,6 +84,8 @@ pub use record::client::isahc_client;
 pub use record::client::reqwest_client;
 pub use server::{config::Config, Stubr};
 #[cfg(feature = "attributes")]
+pub use stubr_attributes::apps;
+#[cfg(feature = "attributes")]
 pub use stubr_attributes::mock;
 #[cfg(all(feature = "record", feature = "attributes"))]
 pub use stubr_attributes::record;

@@ -4,9 +4,11 @@ use proc_macro::TokenStream;
 
 use mock::mock_transform;
 use record::record_transform;
+use apps::apps_transform;
 
 mod mock;
 mod record;
+mod apps;
 
 /// Starts a Stubr mock server and creates a `stubr` variable which can be used to call the server e.g. `stubr.uri()`.
 /// It supports both standard and async test functions.
@@ -96,4 +98,10 @@ pub fn mock(args: TokenStream, item: TokenStream) -> TokenStream {
 pub fn record(args: TokenStream, item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);
     record_transform(args, item.into()).unwrap().into()
+}
+
+#[proc_macro_attribute]
+pub fn apps(args: TokenStream, item: TokenStream) -> TokenStream {
+    let args = syn::parse_macro_input!(args as syn::AttributeArgs);
+    apps_transform(args, item.into()).unwrap().into()
 }
