@@ -239,7 +239,7 @@ A json schema is also maintained [here](schemas/stubr.schema.json) to provide co
 for features implemented in stubr and should alleviate you from a bit of pain when writing json from scratch.
 
 <details open>
-<summary><b>IntelliJ Ultimate</b></summary>
+<summary><b>IntelliJ</b></summary>
 
 *Manual installation is required pending the schema is added to [schemastore](https://github.com/SchemaStore/schemastore)*
 
