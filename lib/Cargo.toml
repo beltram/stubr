@@ -14,7 +14,7 @@ include = ["/src/*", "/Cargo.toml"]
 
 [dependencies]
 stubr-attributes = { path = "../attributes", version = "0.4.8", optional = true }
-wiremock = "0.5.4"
+wiremock = "0.5.6"
 anyhow = "1.0.42"
 async-trait = "0.1.50"
 serde_json = "1.0.64"
