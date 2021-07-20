@@ -60,7 +60,6 @@ pub fn mock(args: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 /// Starts a Stubr recorder server and creates a `recorder` variable which can be used to call the server e.g. `stubr.isahc_client()`.
-/// It only supports non-async test functions.
 ///
 /// # Example
 /// ```no_run
@@ -100,6 +99,22 @@ pub fn record(args: TokenStream, item: TokenStream) -> TokenStream {
     record_transform(args, item.into()).unwrap().into()
 }
 
+/// Starts a Stubr server for each remote app name supplied.
+///
+/// # Example
+/// ```no_run
+/// # use isahc;
+/// # use stubr_attributes as stubr;
+/// use asserhttp::*; // optional
+///
+/// #[test]
+/// #[stubr::apps("producer-a", "producer-b")] // <- start a server for each app
+/// fn using_producers() {
+///     // a binding is created for each app supplied with the name of the app
+///     isahc::get(producer_a.uri()).expect_status_ok();
+///     isahc::get(producer_b.uri()).expect_status_ok();
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn apps(args: TokenStream, item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);

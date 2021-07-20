@@ -3,6 +3,10 @@
 //! Its aims at converting [Wiremock stubs](http://wiremock.org/docs/stubbing/) into
 //! [wiremock-rs](https://github.com/LukeMathWalker/wiremock-rs) mocks.
 //!
+//! You can also use [stubr-build](https://crates.io/crates/stubr-build) to share stubs between a producer project and a consumer one.
+//!
+//! Also available as a [cli](https://crates.io/crates/stubr-cli).
+//!
 //! # use it
 //!
 //! ```no_run

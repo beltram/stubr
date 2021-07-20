@@ -29,6 +29,8 @@ publishes [Wiremock](https://github.com/tomakehurst/wiremock)
 e.g. [Spring Boot](https://spring.io/projects/spring-boot)
 with [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract).
 
+You can use [stubr-build](https://crates.io/crates/stubr-build) to share stubs between a producer project and a consumer one.  
+
 Also available as a [cli](https://crates.io/crates/stubr-cli).
 
 # use it
@@ -38,6 +40,8 @@ First prepare some stubs
 ```bash
 echo "{\"request\": {\"method\": \"GET\"}, \"response\": { \"status\": 200 }}" > tests/stubs/hello.json
 ```
+
+Then use this stub in your tests.
 
 ```rust
 use isahc;
