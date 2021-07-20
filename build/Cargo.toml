@@ -2,6 +2,13 @@
 name = "stubr-build"
 version = "0.4.8"
 edition = "2018"
+authors = ["Beltram Maldant"]
+description = "Stubr build plugin"
+homepage = "https://github.com/beltram/stubr"
+repository = "https://github.com/beltram/stubr"
+license = "Apache-2.0"
+keywords = ["mock", "test", "contract", "http"]
+categories = ["development-tools::testing"]
 
 [dependencies]
 anyhow = "1.0.42"
