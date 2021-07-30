@@ -420,9 +420,9 @@ checksum = "631ae5198c9be5e753e5cc215e1bd73c2b466a3565173db433f52bb9d3e66dba"
 
 [[package]]
 name = "cargo"
-version = "0.54.0"
+version = "0.55.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cbd976a733418564685769d03cca35bf228ddfc2c8a5e6771ca0f48ce80ae2e"
+checksum = "64675d9fe22972517547e58c297e1c5c9519f228ec7041a1ead90be00bbe3575"
 dependencies = [
  "anyhow",
  "atty",
@@ -446,6 +446,7 @@ dependencies = [
  "humantime",
  "ignore",
  "im-rc",
+ "itertools",
  "jobserver",
  "lazy_static",
  "lazycell",
@@ -459,7 +460,7 @@ dependencies = [
  "rand 0.8.4",
  "rustc-workspace-hack",
  "rustfix",
- "semver 0.10.0",
+ "semver 1.0.3",
  "serde",
  "serde_ignored",
  "serde_json",
@@ -2735,21 +2736,20 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "394cec28fa623e00903caf7ba4fa6fb9a0e260280bb8cdbbba029611108a0190"
-dependencies = [
- "semver-parser 0.7.0",
- "serde",
-]
-
-[[package]]
-name = "semver"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f301af10236f6df4160f7c3f04eec6dbc70ace82d23326abad5edee88801c6b6"
 dependencies = [
  "semver-parser 0.10.2",
+]
+
+[[package]]
+name = "semver"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f3aac57ee7f3272d8395c6e4f502f434f0e289fcd62876f70daa008c20dcabe"
+dependencies = [
+ "serde",
 ]
 
 [[package]]

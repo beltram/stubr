@@ -12,5 +12,5 @@ categories = ["development-tools::testing"]
 
 [dependencies]
 anyhow = "1.0.42"
-cargo = "0.54.0"
+cargo = "0.55.0"
 fs_extra = "1.2.0"
