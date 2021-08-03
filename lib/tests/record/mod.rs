@@ -9,3 +9,4 @@ pub mod resp_headers;
 pub mod smoke;
 pub mod config;
 pub mod client;
+pub mod reqwest;

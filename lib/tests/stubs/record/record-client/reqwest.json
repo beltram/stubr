@@ -1,0 +1,9 @@
+{
+  "request": {
+    "urlPath": "/record-client/reqwest",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200
+  }
+}
