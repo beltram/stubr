@@ -82,6 +82,8 @@ extern crate lazy_static;
 
 #[cfg(feature = "record")]
 pub use record::{config::RecordConfig, StubrRecord};
+#[cfg(feature = "record")]
+pub use record::core::Record;
 #[cfg(all(feature = "record", feature = "record-isahc"))]
 pub use record::client::isahc_client;
 #[cfg(all(feature = "record", feature = "record-reqwest"))]

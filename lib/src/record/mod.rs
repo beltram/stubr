@@ -29,6 +29,8 @@ pub mod client;
 mod port;
 mod writer;
 mod logger;
+pub mod core;
+pub mod record_client;
 
 type RecordInput<'a> = (&'a mut RecordedExchange, RecordConfig);
 
