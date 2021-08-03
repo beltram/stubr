@@ -54,7 +54,7 @@ impl StubWriter {
     }
 
     fn dir_name(&self, host: &str) -> String {
-        if let Ok(url) = Url::from_str(&host) {
+        if let Ok(url) = Url::from_str(host) {
             let (host, port) = url.host_str()
                 .filter(|&h| h != "127.0.0.1")
                 .map(|h| h.replace(|c: char| !c.is_alphanumeric(), "."))

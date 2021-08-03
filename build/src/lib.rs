@@ -63,7 +63,7 @@ impl StubrConsumer {
                     remove_dir_all(&target).unwrap();
                     create_dir(&target).unwrap();
                 }
-                match fs_extra::copy_items(&paths, target, &CopyOptions::default()) {
+                match fs_extra::copy_items(paths, target, &CopyOptions::default()) {
                     Ok(_) => {}
                     Err(CopyError { kind, .. }) => {
                         if let ErrorKind::AlreadyExists = kind {} else {
@@ -109,7 +109,7 @@ impl StubrConsumer {
     }
 
     fn build_dependencies(&self) -> Vec<Dependency> {
-        self.package.dependencies().into_iter()
+        self.package.dependencies().iter()
             .filter(|d| d.is_build())
             .map(|it| it.to_owned())
             .collect()
@@ -124,11 +124,11 @@ impl StubrConsumer {
     fn resolve_package(&self) -> Resolve {
         load_pkg_lockfile(&self.workspace()).ok()
             .flatten()
-            .expect(&format!("Failed resolving package at {:?}", self.manifest_path))
+            .unwrap_or_else(|| panic!("Failed resolving package at {:?}", self.manifest_path))
     }
 
     fn workspace(&self) -> Workspace<'_> {
         Workspace::new(&self.manifest_path, &self.config)
-            .expect(&format!("Failed resolving workspace at {:?}", self.manifest_path))
+            .unwrap_or_else(|_| panic!("Failed resolving workspace at {:?}", self.manifest_path))
     }
 }

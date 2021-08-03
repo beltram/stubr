@@ -10,9 +10,9 @@ use helpers::{
     datetime::NowHelper,
     json_path::JsonPathHelper,
     numbers::NumberHelper,
+    string::StringHelper,
     trim::TrimHelper,
     url_encode::UrlEncodingHelper,
-    string::StringHelper,
 };
 
 use crate::{cloud::opentracing::OpenTracing, model::response::ResponseStub};
@@ -55,8 +55,8 @@ impl Respond for StubTemplate {
             let data = HandlebarsData::from(req);
             resp = self.response.body.render_response_template(resp, &data);
             resp = self.response.headers.render_response_template(resp, &data);
-            resp
-        } else { resp }
+        }
+        resp
     }
 }
 

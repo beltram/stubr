@@ -1,5 +1,4 @@
 use std::{borrow::Cow, collections::HashMap, iter, str::from_utf8};
-use std::iter::FromIterator;
 
 use itertools::Itertools;
 use serde_json::Value;
@@ -45,11 +44,11 @@ impl RequestExt for Request {
                 let mut iter = v.iter();
                 let values = if let Some(first) = iter.next() {
                     if let Some(second) = iter.next() {
-                        let all = iter::once(first)
+                        iter::once(first)
                             .chain(iter::once(second))
                             .chain(iter)
-                            .map(|it| it.as_ref());
-                        Value::from_iter(all)
+                            .map(|it| it.as_ref())
+                            .collect()
                     } else { Value::from(first.as_ref()) }
                 } else { Value::Null };
                 (k, values)
@@ -64,11 +63,11 @@ impl RequestExt for Request {
                 let mut iter = v.iter();
                 let values = if let Some(first) = iter.next() {
                     if let Some(second) = iter.next() {
-                        let all = iter::once(first)
+                        iter::once(first)
                             .chain(iter::once(second))
                             .chain(iter)
-                            .map(|it| it.as_str());
-                        Value::from_iter(all)
+                            .map(|it| it.as_str())
+                            .collect()
                     } else { Value::from(first.as_str()) }
                 } else { Value::Null };
                 (k.as_str(), values)

@@ -83,7 +83,7 @@ mod record_tests {
         #[test]
         fn should_conserve_private_visibility() {
             let item = quote! { fn a() {} };
-            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = record_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert!(matches!(transformed.vis, Visibility::Inherited))
         }
@@ -91,7 +91,7 @@ mod record_tests {
         #[test]
         fn should_conserve_pub_visibility() {
             let item = quote! { pub fn a() {} };
-            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = record_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert!(matches!(transformed.vis, Visibility::Public(_)))
         }
@@ -103,7 +103,7 @@ mod record_tests {
         #[test]
         fn should_remove_asyncness() {
             let item = quote! { async fn a() {} };
-            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = record_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert!(transformed.sig.asyncness.is_none())
         }
@@ -111,7 +111,7 @@ mod record_tests {
         #[test]
         fn should_not_add_asyncness_when_none() {
             let item = quote! { fn a() {} };
-            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = record_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert!(transformed.sig.asyncness.is_none())
         }
@@ -123,7 +123,7 @@ mod record_tests {
         #[test]
         fn should_conserve_function_name() {
             let item = quote! { fn azerty() {} };
-            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = record_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert_eq!(transformed.sig.ident.to_string(), String::from("azerty"))
         }
@@ -139,7 +139,7 @@ mod record_tests {
                 #[should_panic]
                 fn azerty() {}
             };
-            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = record_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert_eq!(transformed.attrs.len(), 3);
         }
@@ -152,7 +152,7 @@ mod record_tests {
                 #[should_panic]
                 fn azerty() {}
             };
-            let transformed = record_transform(vec![], item).unwrap().into();
+            let transformed = record_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert_eq!(transformed.attrs.len(), 3);
         }

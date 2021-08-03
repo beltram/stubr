@@ -77,20 +77,20 @@ async fn should_fail_when_req_body_value_not_equal_to_json_signed_number() {
 #[async_std::test]
 #[stubr::mock("req/body/eq/float.json")]
 async fn should_map_req_body_equal_to_float() {
-    post(stubr.uri()).body(json!({"pi": 3.14})).await.expect_status_ok();
+    post(stubr.uri()).body(json!({"pi": 14.3})).await.expect_status_ok();
 }
 
 #[async_std::test]
 #[stubr::mock("req/body/eq/float.json")]
 async fn should_fail_when_req_body_key_not_equal_to_float() {
-    post(stubr.uri()).body(json!({"notPi": 3.14})).await.expect_status_not_found();
+    post(stubr.uri()).body(json!({"notPi": 14.3})).await.expect_status_not_found();
 }
 
 #[async_std::test]
 #[stubr::mock("req/body/eq/float.json")]
 async fn should_fail_when_req_body_value_not_equal_to_float() {
-    post(stubr.uri()).body(json!({"pi": 3.15})).await.expect_status_not_found();
-    post(stubr.uri()).body(json!({"pi": 3.13})).await.expect_status_not_found();
+    post(stubr.uri()).body(json!({"pi": 14.4})).await.expect_status_not_found();
+    post(stubr.uri()).body(json!({"pi": 14.2})).await.expect_status_not_found();
 }
 
 #[async_std::test]

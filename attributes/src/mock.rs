@@ -70,7 +70,7 @@ impl TryFrom<AttributeArgs> for Args {
             match arg {
                 NestedMeta::Lit(Lit::Str(lit)) => path = Some(lit),
                 NestedMeta::Lit(token) => {
-                    return Err(syn::Error::new_spanned(token, format!("Default attribute expects string")));
+                    return Err(syn::Error::new_spanned(token, "Default attribute expects string"));
                 }
                 NestedMeta::Meta(syn::Meta::NameValue(nv)) => {
                     if nv.path.is_ident(Self::ATTR_FULL_PATH) {
@@ -121,7 +121,7 @@ mod mock_tests {
         #[test]
         fn should_conserve_private_visibility() {
             let item = quote! { fn a() {} };
-            let transformed = mock_transform(vec![], item).unwrap().into();
+            let transformed = mock_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert!(matches!(transformed.vis, Visibility::Inherited))
         }
@@ -129,7 +129,7 @@ mod mock_tests {
         #[test]
         fn should_conserve_pub_visibility() {
             let item = quote! { pub fn a() {} };
-            let transformed = mock_transform(vec![], item).unwrap().into();
+            let transformed = mock_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert!(matches!(transformed.vis, Visibility::Public(_)))
         }
@@ -141,7 +141,7 @@ mod mock_tests {
         #[test]
         fn should_conserve_asyncness() {
             let item = quote! { async fn a() {} };
-            let transformed = mock_transform(vec![], item).unwrap().into();
+            let transformed = mock_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert!(transformed.sig.asyncness.is_some())
         }
@@ -149,7 +149,7 @@ mod mock_tests {
         #[test]
         fn should_not_add_asyncness_when_none() {
             let item = quote! { fn a() {} };
-            let transformed = mock_transform(vec![], item).unwrap().into();
+            let transformed = mock_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert!(transformed.sig.asyncness.is_none())
         }
@@ -161,7 +161,7 @@ mod mock_tests {
         #[test]
         fn should_conserve_function_name() {
             let item = quote! { fn azerty() {} };
-            let transformed = mock_transform(vec![], item).unwrap().into();
+            let transformed = mock_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert_eq!(transformed.sig.ident.to_string(), String::from("azerty"))
         }
@@ -177,7 +177,7 @@ mod mock_tests {
                 #[should_panic]
                 fn azerty() {}
             };
-            let transformed = mock_transform(vec![], item).unwrap().into();
+            let transformed = mock_transform(vec![], item).unwrap();
             let transformed = syn::parse2::<ItemFn>(transformed).unwrap();
             assert_eq!(transformed.attrs.len(), 2);
         }
