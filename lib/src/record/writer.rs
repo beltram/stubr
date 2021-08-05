@@ -31,7 +31,7 @@ impl StubWriter {
             .map_err(anyhow::Error::msg)
     }
 
-    fn stub_name(&self) -> String {
+    pub(crate) fn stub_name(&self) -> String {
         let mut hasher = DefaultHasher::new();
         self.stub.hash(&mut hasher);
         format!("{}{}.json", self.base_path().unwrap_or_default(), hasher.finish())
@@ -54,19 +54,23 @@ impl StubWriter {
     }
 
     fn dir_name(&self, host: &str) -> String {
-        if let Ok(url) = Url::from_str(host) {
-            let (host, port) = url.host_str()
-                .filter(|&h| h != "127.0.0.1")
-                .map(|h| h.replace(|c: char| !c.is_alphanumeric(), "."))
-                .map(|h| {
-                    url.port()
-                        .map(|p| (h.clone(), format!("-{}", p.to_string())))
-                        .unwrap_or_else(|| (h, String::new()))
-                })
-                .unwrap_or((String::from("localhost"), String::new()));
-            format!("{}{}", host, port)
+        if host == "127.0.0.1" {
+            String::from("localhost")
         } else {
-            String::from("default")
+            if let Ok(url) = Url::from_str(host) {
+                let (host, port) = url.host_str()
+                    .filter(|&h| h != "127.0.0.1")
+                    .map(|h| h.replace(|c: char| !c.is_alphanumeric(), "."))
+                    .map(|h| {
+                        url.port()
+                            .map(|p| (h.clone(), format!("-{}", p.to_string())))
+                            .unwrap_or_else(|| (h, String::new()))
+                    })
+                    .unwrap_or((String::from("localhost"), String::new()));
+                format!("{}{}", host, port)
+            } else {
+                String::from("default")
+            }
         }
     }
 
