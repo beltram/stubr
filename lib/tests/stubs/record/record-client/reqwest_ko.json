@@ -1,6 +1,6 @@
 {
   "request": {
-    "urlPath": "/record-client/reqwest",
+    "urlPath": "/record-client/reqwest/ko",
     "method": "GET"
   },
   "response": {
