@@ -98,9 +98,9 @@ checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
 name = "asserhttp"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81094183d22c16e0b019f260c94d324f8eb2c01084890c22cfaa8048d6ac2c0e"
+checksum = "b673781a07f579c762980d88d1befecddeea3faa7536d9b296225f57f90f2d07"
 dependencies = [
  "anyhow",
  "async-std",
