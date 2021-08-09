@@ -13,6 +13,7 @@ use helpers::{
     string::StringHelper,
     trim::TrimHelper,
     url_encode::UrlEncodingHelper,
+    size::SizeHelper,
 };
 
 use crate::{cloud::opentracing::OpenTracing, model::response::ResponseStub};
@@ -37,6 +38,7 @@ lazy_static! {
         handlebars.register_helper(StringHelper::DECAPITALIZE, Box::new(StringHelper));
         handlebars.register_helper(StringHelper::UPPER, Box::new(StringHelper));
         handlebars.register_helper(StringHelper::LOWER, Box::new(StringHelper));
+        handlebars.register_helper(SizeHelper::NAME, Box::new(SizeHelper));
         RwLock::new(handlebars)
     };
 }

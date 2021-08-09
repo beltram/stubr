@@ -154,7 +154,7 @@ track down which ones are implemented by stubr. For having a view of what is sup
 * [x] URL encoding helper
 * [ ] Form helper
 * [ ] Regular expression extract helper
-* [ ] Size helper
+* [x] Size helper
 * [ ] Hostname helper
 * [ ] System property helper
 

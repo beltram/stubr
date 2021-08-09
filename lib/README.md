@@ -159,6 +159,7 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
       "string-uppercase": "{{upper mister}}", // or 'lower'
       "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
       "string-trim": "{{trim request.body}}", // removes leading & trailing whitespaces
+      "size": "{{size request.body}}", // string length or array length
       "base64-encode": "{{base64 request.body padding=false}}", // padding is optional and defaults to true
       "base64-decode": "{{base64 request.body decode=true}}",
       "url-encode": "{{urlEncode request.header.x-raw}}",
