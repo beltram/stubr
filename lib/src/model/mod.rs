@@ -11,7 +11,7 @@ use crate::Config;
 pub mod request;
 pub mod response;
 
-#[derive(Serialize, Deserialize, Debug, Hash)]
+#[derive(Serialize, Deserialize, Debug, Hash, Default)]
 pub struct JsonStub {
     #[serde(skip_serializing)]
     pub uuid: Option<String>,
@@ -25,7 +25,7 @@ impl JsonStub {
     }
 
     pub fn into_respond<'a>(self, config: &Config) -> impl Respond + 'a {
-        let mut template = ResponseTemplate::new(self.response.status.unwrap_or(200));
+        let mut template = ResponseTemplate::new(self.response.status());
         template = WiremockIsoResponse(&self).add(template);
         template = Delay(&self, config).add(template);
         if self.response.requires_response_templating() {

@@ -49,7 +49,7 @@ impl MockRegistrable for HttpQueryParamsStub {
 }
 
 impl HttpQueryParamsStub {
-    fn get_queries(&self) -> Vec<RequestMatcherStub> {
+    pub fn get_queries(&self) -> Vec<RequestMatcherStub> {
         self.query_parameters.as_ref()
             .map(|h| h.iter().map(RequestMatcherStub::try_from))
             .map(|it| it.flatten().collect_vec())

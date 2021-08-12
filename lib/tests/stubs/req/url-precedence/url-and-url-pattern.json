@@ -1,0 +1,10 @@
+{
+  "request": {
+    "url": "/api/url?age=42",
+    "urlPattern": "/api/pattern\\?one=([a-z]{4})",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200
+  }
+}

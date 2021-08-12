@@ -48,6 +48,10 @@ impl ResponseStub {
             .map(|headers| headers.keys().map(|it| it.as_str()).collect_vec())
             .unwrap_or_default()
     }
+
+    pub fn status(&self) -> u16 {
+        self.status.unwrap_or(200)
+    }
 }
 
 impl Hash for ResponseStub {

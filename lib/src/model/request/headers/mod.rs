@@ -48,7 +48,7 @@ impl MockRegistrable for HttpReqHeadersStub {
 }
 
 impl HttpReqHeadersStub {
-    fn get_headers(&self) -> Vec<RequestMatcherStub> {
+    pub fn get_headers(&self) -> Vec<RequestMatcherStub> {
         self.headers.as_ref()
             .map(|h| h.iter().map(RequestMatcherStub::try_from))
             .map(|it| it.flatten().collect_vec())

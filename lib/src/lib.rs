@@ -91,6 +91,8 @@ pub use server::{config::Config, Stubr};
 pub use stubr_attributes::apps;
 #[cfg(feature = "attributes")]
 pub use stubr_attributes::mock;
+#[cfg(feature = "verify")]
+pub use verify::StubrVerify;
 #[cfg(all(feature = "record", feature = "attributes"))]
 pub use stubr_attributes::record;
 
@@ -99,3 +101,5 @@ mod server;
 mod cloud;
 #[cfg(feature = "record")]
 mod record;
+#[cfg(feature = "verify")]
+mod verify;

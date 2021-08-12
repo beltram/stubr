@@ -8,7 +8,7 @@ use reqwest::Client as ReqwestClient;
 use tokio::sync::mpsc::Sender;
 
 use config::RecordConfig;
-use http::RecordedExchange;
+use self::http::RecordedExchange;
 use logger::RecordLogger;
 use proxy::Proxy;
 use writer::StubWriter;

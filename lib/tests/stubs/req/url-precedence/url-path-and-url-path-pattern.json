@@ -1,0 +1,10 @@
+{
+  "request": {
+    "urlPath": "/api/exact-url",
+    "urlPathPattern": "/api/regex-uri/([a-z]{4})",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200
+  }
+}

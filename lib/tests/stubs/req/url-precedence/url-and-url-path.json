@@ -1,0 +1,10 @@
+{
+  "request": {
+    "url": "/api/url?age=42",
+    "urlPath": "/api/exact-url",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200
+  }
+}

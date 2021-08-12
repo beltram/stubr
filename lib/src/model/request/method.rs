@@ -21,7 +21,6 @@ pub enum Verb {
     Trace,
 }
 
-
 impl From<&str> for HttpMethodStub {
     fn from(v: &str) -> Self {
         Self(match v {
