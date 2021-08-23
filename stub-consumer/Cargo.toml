@@ -13,5 +13,5 @@ actix-producer = { path = "../actix-producer" }
 [dev-dependencies]
 stubr = { path = "../lib", version = "0.4.9", features = ["attributes"] }
 asserhttp = { version = "0.2.1", features = ["isahc"] }
-isahc = "1.4.1"
+isahc = "1.5.0"
 async-std = { version = "1.9.0", features = ["attributes"] }

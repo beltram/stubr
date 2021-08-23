@@ -104,7 +104,7 @@ checksum = "b673781a07f579c762980d88d1befecddeea3faa7536d9b296225f57f90f2d07"
 dependencies = [
  "anyhow",
  "async-std",
- "isahc 1.4.1",
+ "isahc 1.5.0",
  "regex",
  "reqwest",
  "serde",
@@ -1752,9 +1752,9 @@ dependencies = [
 
 [[package]]
 name = "isahc"
-version = "1.4.1"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b183576592898e9e007d41b7cf2bc8bb3f8b5d2733b9291e42618d50040e7ba"
+checksum = "431445cb4ba85a80cb1438a9ae8042dadb78ae4046ecee89ad027b614aa0ddb7"
 dependencies = [
  "async-channel",
  "crossbeam-utils",
@@ -3056,7 +3056,7 @@ dependencies = [
  "handlebars",
  "http-types",
  "humantime",
- "isahc 1.4.1",
+ "isahc 1.5.0",
  "itertools",
  "jsonpath_lib",
  "lazy_static",
@@ -3083,7 +3083,7 @@ version = "0.4.9"
 dependencies = [
  "asserhttp",
  "async-std",
- "isahc 1.4.1",
+ "isahc 1.5.0",
  "proc-macro2",
  "quote",
  "syn",
@@ -3112,7 +3112,7 @@ dependencies = [
  "colored 2.0.0",
  "directories",
  "humantime",
- "isahc 1.4.1",
+ "isahc 1.5.0",
  "log",
  "simple_logger",
  "stubr",
@@ -3127,7 +3127,7 @@ dependencies = [
  "actix-producer",
  "asserhttp",
  "async-std",
- "isahc 1.4.1",
+ "isahc 1.5.0",
  "stubr",
  "stubr-build",
  "stubr-producer",
