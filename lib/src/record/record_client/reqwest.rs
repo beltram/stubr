@@ -423,18 +423,18 @@ mod http_tests {
 
         use super::*;
 
-        // #[test]
-        // fn should_map_json_resp_body() {
-        //     let input_body = json!({"a": "b"});
-        //     // let input = WarpResponse(Response::builder().status(200).body(Bytes::from(input_body.to_string())).unwrap());
-        //     let input = Response::from(Builder::new()
-        //         .status(200)
-        //         .body(input_body.to_string().as_bytes())
-        //         .unwrap());
-        //     let mut output = RecordedResponse::from(input).0;
-        //     let body = block_on(async move { output.body_json::<Value>().await.unwrap() });
-        //     assert_eq!(body, input_body);
-        // }
+        #[test]
+        fn should_map_json_resp_body() {
+            let input_body = json!({"a": "b"});
+            let str_body = input_body.to_string();
+            let input = Response::from(Builder::new()
+                .status(200)
+                .body(str_body)
+                .unwrap());
+            let mut output = RecordedResponse::from(input).0;
+            let body = block_on(async move { output.body_json::<Value>().await.unwrap() });
+            assert_eq!(body, input_body);
+        }
 
         #[test]
         fn should_map_binary_resp_body() {
