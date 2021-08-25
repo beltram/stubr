@@ -41,7 +41,7 @@ reqwest = { version = "0.11.4", optional = true }
 
 warp = { version = "0.3.1", default-features = false, optional = true }
 warp-reverse-proxy = { version = "0.3.2", optional = true }
-tokio = { version = "1.10.0", optional = true }
+tokio = { version = "1.10.1", optional = true }
 
 [dev-dependencies]
 stubr = { path = ".", features = ["record", "record-isahc", "record-reqwest"] }
@@ -49,7 +49,7 @@ surf = "2.3.1"
 tempfile = "3.2.0"
 asserhttp = { version = "0.2.1", features = ["surf", "isahc", "reqwest"] }
 isahc = { version = "1.5.0", features = ["json"] }
-tokio = { version = "1.10.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.10.1", features = ["macros", "rt-multi-thread"] }
 criterion = { version = "0.3.5", features = ["async_std", "html_reports"] }
 
 [[bench]]
