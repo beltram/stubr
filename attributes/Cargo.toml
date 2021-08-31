@@ -18,7 +18,7 @@ proc-macro = true
 [dependencies]
 syn = "1.0.75"
 quote = "1.0.8"
-proc-macro2 = "1.0.28"
+proc-macro2 = "1.0.29"
 
 [dev-dependencies]
 asserhttp = "0.2.1"
