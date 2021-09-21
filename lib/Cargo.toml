@@ -30,7 +30,7 @@ futures = "0.3.17"
 chrono = "0.4.19"
 simpledateformat = "0.1.2"
 humantime = "2.1.0"
-chrono-tz = "0.5.3"
+chrono-tz = "0.6.0"
 percent-encoding = "2.1.0"
 log = "0.4.14"
 serde = { version = "1.0.130", features = ["derive"] }
