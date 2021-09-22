@@ -33,7 +33,8 @@ impl Shell {
     fn create_completion<G: Generator>(&self, app: &mut App) {
         let bin_name = app.get_name().to_string();
         let dir = self.completion_dir();
-        generate_to::<G, _, _>(app, &bin_name, &dir);
+        generate_to::<G, _, _>(app, &bin_name, &dir)
+            .expect("Failed generating completion file");
     }
 
     fn completion_dir(&self) -> PathBuf {
