@@ -5,8 +5,9 @@ members = [
     "attributes",
     "build",
     "stub-producer",
+    "stub-consumer",
     "actix-producer",
-    "stub-consumer"
+    "actix-consumer",
 ]
 
 [profile.release]

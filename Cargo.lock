@@ -36,6 +36,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "actix-consumer"
+version = "0.0.1"
+dependencies = [
+ "actix-rt",
+ "actix-web",
+ "asserhttp",
+ "stubr",
+ "stubr-build",
+ "stubr-producer",
+]
+
+[[package]]
 name = "actix-http"
 version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -366,8 +378,11 @@ version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b673781a07f579c762980d88d1befecddeea3faa7536d9b296225f57f90f2d07"
 dependencies = [
+ "actix-http",
+ "actix-web",
  "anyhow",
  "async-std",
+ "awc",
  "isahc 1.5.0",
  "regex",
  "reqwest",
@@ -3788,7 +3803,6 @@ dependencies = [
 name = "stubr-attributes"
 version = "0.4.9"
 dependencies = [
- "asserhttp",
  "async-std",
  "isahc 1.5.0",
  "proc-macro2",

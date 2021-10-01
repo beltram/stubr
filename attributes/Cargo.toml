@@ -21,6 +21,5 @@ quote = "1.0.8"
 proc-macro2 = "1.0.29"
 
 [dev-dependencies]
-asserhttp = "0.2.1"
 isahc = "1.5.0"
 async-std = "1.10.0"

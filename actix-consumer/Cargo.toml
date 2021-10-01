@@ -1,0 +1,17 @@
+[package]
+name = "actix-consumer"
+version = "0.0.1"
+edition = "2018"
+publish = false
+
+[build-dependencies]
+stubr-build = { path = "../build", version = "0.4.9" }
+stubr-producer = { path = "../stub-producer" }
+
+[dependencies]
+actix-web = "3.3.2"
+
+[dev-dependencies]
+stubr = { path = "../lib", version = "0.4.9", features = ["verify-actix"] }
+actix-rt = "1.1.1"
+asserhttp = { version = "0.2.1", features = ["actix"] }
