@@ -23,3 +23,4 @@ proc-macro2 = "1.0.29"
 [dev-dependencies]
 isahc = "1.5.0"
 async-std = "1.10.0"
+asserhttp = "0.2.1"
