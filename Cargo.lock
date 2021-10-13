@@ -406,7 +406,7 @@ dependencies = [
  "anyhow",
  "async-std",
  "awc",
- "isahc 1.5.0",
+ "isahc 1.5.1",
  "regex",
  "reqwest",
  "serde",
@@ -870,6 +870,12 @@ checksum = "57cdfa5d50aad6cb4d44dcab6101a7f79925bd59d82ca42f38a9856a28865374"
 dependencies = [
  "rustc_version 0.3.3",
 ]
+
+[[package]]
+name = "castaway"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed247d1586918e46f2bbe0f13b06498db8dab5a8c1093f156652e9f2e0a73fc3"
 
 [[package]]
 name = "cc"
@@ -2237,11 +2243,12 @@ dependencies = [
 
 [[package]]
 name = "isahc"
-version = "1.5.0"
+version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "431445cb4ba85a80cb1438a9ae8042dadb78ae4046ecee89ad027b614aa0ddb7"
+checksum = "40ef5402b1791c9fc479ef9871601a2f10e4cc0f14414a5c9c6e043fb51e5a56"
 dependencies = [
  "async-channel",
+ "castaway",
  "crossbeam-utils",
  "curl",
  "curl-sys",
@@ -3062,9 +3069,9 @@ checksum = "bc881b2c22681370c6a780e47af9840ef841837bc98118431d4e1868bd0c1086"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.29"
+version = "1.0.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9f5105d4fdaab20335ca9565e106a5d9b82b6219b5ba735731124ac6711d23d"
+checksum = "edc3358ebc67bc8b7fa0c007f945b0b18226f78437d61bec735a9eb96b61ee70"
 dependencies = [
  "unicode-xid",
 ]
@@ -3796,7 +3803,7 @@ dependencies = [
  "http",
  "http-types",
  "humantime",
- "isahc 1.5.0",
+ "isahc 1.5.1",
  "itertools",
  "json_value_merge",
  "jsonpath_lib",
@@ -3828,7 +3835,7 @@ version = "0.4.9"
 dependencies = [
  "asserhttp",
  "async-std",
- "isahc 1.5.0",
+ "isahc 1.5.1",
  "proc-macro2",
  "quote",
  "syn",
@@ -3857,7 +3864,7 @@ dependencies = [
  "colored 2.0.0",
  "directories",
  "humantime",
- "isahc 1.5.0",
+ "isahc 1.5.1",
  "log",
  "simple_logger",
  "stubr",
@@ -3872,7 +3879,7 @@ dependencies = [
  "actix-producer",
  "asserhttp",
  "async-std",
- "isahc 1.5.0",
+ "isahc 1.5.1",
  "stubr",
  "stubr-build",
  "stubr-producer",
