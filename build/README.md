@@ -46,7 +46,7 @@ In your `Cargo.toml` use `stubr-build` in your `build-dependencies` and also add
 build = "build.rs"
 
 [build-dependencies]
-stubr-build = "0.4.9"
+stubr-build = "0.4.10"
 producer-a = "<version>"
 producer-b = "<version>"
 ```
