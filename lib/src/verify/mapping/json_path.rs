@@ -1,13 +1,15 @@
-use std::iter::FromIterator;
+// use std::iter::FromIterator;
 
-use jsonpath_lib::{ParserNodeVisitor, ParserTokenHandler, ParseToken, StrRange};
-use serde_json::{Map, Value};
+// use jsonpath_lib::{ParserNodeVisitor, ParserTokenHandler, ParseToken, StrRange};
+use serde_json::Value;
+// use serde_json::Map;
 
 pub struct JsonPathGenerator;
 
 impl JsonPathGenerator {
-    pub fn generate_path(path: &str, value: Value) -> Value {
-        let parser = jsonpath_lib::PathParser::compile(path).unwrap();
+    pub fn generate_path(_path: &str, _value: Value) -> Value {
+        todo!()
+        /*let parser = jsonpath_lib::PathParser::compile(path).unwrap();
         let node = parser.parser.parse_node.as_ref().unwrap();
         let mut handler = JsonPathParserTokenHandler { stack: vec![] };
         parser.visit(&node, &mut handler, &|_| "");
@@ -23,15 +25,15 @@ impl JsonPathGenerator {
                     _ => {}
                 }
                 acc
-            }).unwrap()
+            }).unwrap()*/
     }
 
-    fn extract(path: &str, range: &StrRange) -> String {
+    /*fn extract(path: &str, range: &StrRange) -> String {
         path[range.pos..range.pos + range.offset].to_string()
-    }
+    }*/
 }
 
-struct JsonPathParserTokenHandler {
+/*struct JsonPathParserTokenHandler {
     stack: Vec<ParseToken>,
 }
 
@@ -39,9 +41,9 @@ impl<'a> ParserTokenHandler<'a> for JsonPathParserTokenHandler {
     fn handle<F>(&mut self, token: &ParseToken, _reader: &F) where F: Fn(&StrRange) -> &'a str {
         self.stack.push(token.to_owned());
     }
-}
+}*/
 
-#[cfg(test)]
+/*#[cfg(test)]
 mod json_path_generator_tests {
     use serde_json::json;
 
@@ -58,4 +60,4 @@ mod json_path_generator_tests {
         let value = JsonPathGenerator::generate_path("$.a.b.c", json!({"name": "doe"}));
         assert_eq!(value, json!({"a": { "b": { "c": {"name": "doe"} } }}));
     }
-}
+}*/

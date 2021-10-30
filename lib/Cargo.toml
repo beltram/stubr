@@ -22,7 +22,8 @@ http-types = "2.12.0"
 itertools = "0.10.1"
 const_format = "0.2.22"
 regex = "1.4.6"
-jsonpath_lib = { git = "https://github.com/beltram/jsonpath", rev = "ca0bcfcdc8c3eb9ae86459aad31a7a59a1f00a9f" }
+jsonpath_lib = "0.3.0"
+#jsonpath_lib = { git = "https://github.com/beltram/jsonpath", rev = "ca0bcfcdc8c3eb9ae86459aad31a7a59a1f00a9f" }
 handlebars = "=3.5.3"
 lazy_static = "1.4.0"
 base64 = "0.13.0"

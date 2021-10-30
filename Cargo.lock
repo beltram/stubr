@@ -2315,7 +2315,8 @@ dependencies = [
 [[package]]
 name = "jsonpath_lib"
 version = "0.3.0"
-source = "git+https://github.com/beltram/jsonpath?rev=ca0bcfcdc8c3eb9ae86459aad31a7a59a1f00a9f#ca0bcfcdc8c3eb9ae86459aad31a7a59a1f00a9f"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eaa63191d68230cccb81c5aa23abd53ed64d83337cacbb25a7b8c7979523774f"
 dependencies = [
  "log",
  "serde",
