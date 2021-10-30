@@ -7,8 +7,8 @@ use utils::StubrCli;
 
 mod utils;
 
-// TODO: too flaky
 // #[async_std::test]
+// TODO: too flaky
 async fn should_serve_stubs_under_dir() {
     let stubr = StubrCli::new(&["tests/stubs"]);
     std::thread::sleep(Duration::from_millis(500));
@@ -16,7 +16,8 @@ async fn should_serve_stubs_under_dir() {
     post(&stubr.addr).await.expect_status_client_error();
 }
 
-#[async_std::test]
+// #[async_std::test]
+// TODO: too flaky
 async fn should_serve_stubs_under_root_dir() {
     let stubr = StubrCli::new(&["--root-dir", "tests/stubs"]);
     std::thread::sleep(Duration::from_millis(500));
@@ -24,7 +25,8 @@ async fn should_serve_stubs_under_root_dir() {
     get(&stubr.addr).await.expect_status_client_error();
 }
 
-#[async_std::test]
+// #[async_std::test]
+// TODO: too flaky
 async fn should_start_even_without_stubs() {
     let stubr = StubrCli::new(&[]);
     std::thread::sleep(Duration::from_millis(500));
