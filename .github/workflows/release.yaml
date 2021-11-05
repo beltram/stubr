@@ -118,11 +118,11 @@ jobs:
 #        run: |
 #          cd attributes
 #          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
-      - name: publish lib
-        run: |
-          cd lib
-          sleep 180
-          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
+#      - name: publish lib
+#        run: |
+#          cd lib
+#          sleep 180
+#          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
       - name: publish cli
         run: |
           cd cli
