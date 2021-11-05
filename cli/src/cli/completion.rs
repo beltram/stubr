@@ -1,13 +1,12 @@
-use std::fs::create_dir_all;
-use std::path::PathBuf;
+use std::{fs::create_dir_all, path::PathBuf};
 
-use clap::{App, Clap, IntoApp};
+use clap::{App, IntoApp, Parser};
 use clap_generate::{generate_to, Generator, generators::{Bash, Zsh}};
 use directories::UserDirs;
 
 use crate::cli::Cli;
 
-#[derive(Clap, Debug, Eq, PartialEq)]
+#[derive(Parser, Debug, Eq, PartialEq)]
 pub enum Shell {
     /// generates cli completion file for bash
     Bash,
@@ -25,15 +24,15 @@ impl Shell {
 
     fn create_completion_for(&self, mut app: App) {
         match self {
-            Shell::Bash => self.create_completion::<Bash>(&mut app),
-            Shell::Zsh => self.create_completion::<Zsh>(&mut app),
+            Shell::Bash => self.create_completion::<Bash>(&mut app, Bash),
+            Shell::Zsh => self.create_completion::<Zsh>(&mut app, Zsh),
         }
     }
 
-    fn create_completion<G: Generator>(&self, app: &mut App) {
+    fn create_completion<G: Generator>(&self, app: &mut App, generator: G) {
         let bin_name = app.get_name().to_string();
         let dir = self.completion_dir();
-        generate_to::<G, _, _>(app, &bin_name, &dir)
+        generate_to::<G, _, _>(generator, app, &bin_name, &dir)
             .expect("Failed generating completion file");
     }
 

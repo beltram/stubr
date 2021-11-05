@@ -1,11 +1,10 @@
-use std::env::current_dir;
-use std::path::PathBuf;
+use std::{env::current_dir, path::PathBuf};
 
-use clap::Clap;
+use clap::Parser;
 
 use stubr::RecordConfig;
 
-#[derive(Clap, Debug, Eq, PartialEq)]
+#[derive(Parser, Debug, Eq, PartialEq)]
 pub struct CliRecordConfig {
     /// port number the recording proxy server is listening on
     ///
