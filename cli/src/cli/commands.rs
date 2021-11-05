@@ -1,11 +1,11 @@
-use clap::Clap;
+use clap::Parser;
 
 use crate::record::config::CliRecordConfig;
 
 use super::completion::Shell;
 use super::super::record::Record;
 
-#[derive(Clap, Debug, Eq, PartialEq)]
+#[derive(Parser, Debug, Eq, PartialEq)]
 pub enum Commands {
     /// generates & installs completion scripts for the given shell
     Completion {

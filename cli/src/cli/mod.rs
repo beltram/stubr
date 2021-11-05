@@ -7,7 +7,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use clap::{AppSettings, Clap, ValueHint};
+use clap::{Parser, ValueHint};
 use colored::Colorize;
 use log::info;
 
@@ -19,14 +19,8 @@ mod completion;
 pub mod logger;
 
 /// A Rust implementation of Wiremock
-#[derive(Clap, Debug, Default)]
-#[clap(
-version, about,
-name = "stubr",
-bin_name = "stubr",
-rename_all = "kebab-case",
-)]
-#[clap(global_setting = AppSettings::ColoredHelp)]
+#[derive(Parser, Debug, Default)]
+#[clap(version, about, name = "stubr", bin_name = "stubr", rename_all = "kebab-case")]
 pub struct Cli {
     /// stub files directory
     ///

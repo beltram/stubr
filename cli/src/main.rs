@@ -1,6 +1,6 @@
 use std::time::Instant;
 
-use clap::Clap;
+use clap::Parser;
 
 use cli::{Cli, logger::Logger};
 
