@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/response-template"
+  },
+  "response": {
+    "body": "{{request.path}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

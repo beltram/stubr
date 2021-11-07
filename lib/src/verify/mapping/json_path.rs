@@ -4,9 +4,11 @@
 use serde_json::Value;
 // use serde_json::Map;
 
+#[allow(dead_code)]
 pub struct JsonPathGenerator;
 
 impl JsonPathGenerator {
+    #[allow(dead_code)]
     pub fn generate_path(_path: &str, _value: Value) -> Value {
         todo!()
         /*let parser = jsonpath_lib::PathParser::compile(path).unwrap();

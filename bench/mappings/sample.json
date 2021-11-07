@@ -1,9 +1,0 @@
-{
-  "request": {
-    "url": "/api/templated?name=beltram&job=dev"
-  },
-  "response": {
-    "body": "{{request.path}}",
-    "transformers": ["response-template"]
-  }
-}
