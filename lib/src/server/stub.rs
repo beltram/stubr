@@ -1,6 +1,5 @@
-use std::{convert::TryFrom, fs::OpenOptions};
+use std::{convert::TryFrom, fs::OpenOptions, path::PathBuf};
 
-use async_std::path::PathBuf;
 use wiremock::Mock;
 
 use crate::Config;

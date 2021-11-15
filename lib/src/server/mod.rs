@@ -1,9 +1,7 @@
-use std::{convert::TryFrom, net::TcpListener};
+use std::{convert::TryFrom, net::TcpListener, path::PathBuf};
 
-use async_std::{path::PathBuf, task::block_on};
-use async_std::stream::Stream;
+use async_std::task::block_on;
 use futures::future::join_all;
-use futures::stream::StreamExt;
 use log::info;
 use wiremock::{Mock, MockServer};
 
@@ -58,7 +56,7 @@ impl Stubr {
         } else {
             Self::start_on_random_port().await
         };
-        server.register_stubs(stubs.into(), config).await;
+        server.register_stubs(stubs.into(), config);
         server.register_cloud_features().await;
         server
     }
@@ -143,28 +141,30 @@ impl Stubr {
         Self { instance: MockServer::builder().disable_request_recording().start().await }
     }
 
-    async fn register_stubs(&self, stub_folder: PathBuf, config: Config) {
+    fn register_stubs(&self, stub_folder: PathBuf, config: Config) {
         let cfg = &config;
         let folder = &stub_folder;
-        self.find_all_mocks(&stub_folder, &config).await.for_each(|(mock, file)| async move {
-            self.instance.register(mock).await;
+        self.find_all_mocks(&stub_folder, &config).for_each(|(mock, file)| {
+            block_on(async move {
+                self.instance.register(mock).await;
+            });
             if cfg.verbose.unwrap_or_default() {
                 let maybe_file_name = file.strip_prefix(&folder).ok().and_then(|file| file.to_str());
                 if let Some(file_name) = maybe_file_name {
                     info!("mounted stub '{}'", file_name);
                 }
-            }
-        }).await;
+            };
+        });
     }
 
     #[allow(clippy::needless_lifetimes)]
-    async fn find_all_mocks<'a>(&self, from: &PathBuf, config: &'a Config) -> impl Stream<Item=(Mock, PathBuf)> + 'a {
-        StubFinder::find_all_stubs(from).await
+    fn find_all_mocks<'a>(&self, from: &PathBuf, config: &'a Config) -> impl Iterator<Item=(Mock, PathBuf)> + 'a {
+        StubFinder::find_all_stubs(from)
             .map(move |path| {
                 StubrMock::try_from((&path, config))
                     .map(|mock| (mock.0, path))
             })
-            .filter_map(|it| async { it.ok() })
+            .filter_map(|it| it.ok())
     }
 
     async fn register_cloud_features(&self) {
@@ -174,8 +174,6 @@ impl Stubr {
 
 #[cfg(test)]
 mod server_test {
-    use futures::stream::StreamExt;
-
     use super::*;
 
     #[async_std::test]
@@ -183,8 +181,8 @@ mod server_test {
         let from = PathBuf::from("tests/stubs/server");
         let config = Config::default();
         let mocks = Stubr::start_on_random_port().await
-            .find_all_mocks(&from, &config).await
-            .collect::<Vec<(Mock, PathBuf)>>().await;
+            .find_all_mocks(&from, &config)
+            .collect::<Vec<(Mock, PathBuf)>>();
         assert_eq!(mocks.len(), 2);
     }
 
@@ -193,8 +191,8 @@ mod server_test {
         let from = PathBuf::from("tests/stubs/server/valid.json");
         let config = Config::default();
         let mocks = Stubr::start_on_random_port().await
-            .find_all_mocks(&from, &config).await
-            .collect::<Vec<(Mock, PathBuf)>>().await;
+            .find_all_mocks(&from, &config)
+            .collect::<Vec<(Mock, PathBuf)>>();
         assert_eq!(mocks.len(), 1);
     }
 
@@ -203,8 +201,8 @@ mod server_test {
         let from = PathBuf::from("tests/stubs/server/invalid");
         let config = Config::default();
         let mocks = Stubr::start_on_random_port().await
-            .find_all_mocks(&from, &config).await
-            .collect::<Vec<(Mock, PathBuf)>>().await;
+            .find_all_mocks(&from, &config)
+            .collect::<Vec<(Mock, PathBuf)>>();
         assert_eq!(mocks.len(), 0);
     }
 
@@ -213,13 +211,13 @@ mod server_test {
         let from = PathBuf::from("tests/stubs/server/unknown");
         let config = Config::default();
         let mocks = Stubr::start_on_random_port().await
-            .find_all_mocks(&from, &config).await
-            .collect::<Vec<(Mock, PathBuf)>>().await;
+            .find_all_mocks(&from, &config)
+            .collect::<Vec<(Mock, PathBuf)>>();
         assert_eq!(mocks.len(), 0);
         let from = PathBuf::from("tests/stubs/server/unknown.json");
         let mocks = Stubr::start_on_random_port().await
-            .find_all_mocks(&from, &config).await
-            .collect::<Vec<(Mock, PathBuf)>>().await;
+            .find_all_mocks(&from, &config)
+            .collect::<Vec<(Mock, PathBuf)>>();
         assert_eq!(mocks.len(), 0);
     }
 }

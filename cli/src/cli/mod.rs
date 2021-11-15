@@ -69,7 +69,7 @@ impl Cli {
     /// Mostly used by the cli.
     /// * `stubs` - folder or file containing the stubs
     /// * `config` - global server configuration
-    async fn run_server<T>(stubs: T, config: Config, start_time: Instant) -> anyhow::Result<()> where T: Into<async_std::path::PathBuf> {
+    async fn run_server<T>(stubs: T, config: Config, start_time: Instant) -> anyhow::Result<()> where T: Into<PathBuf> {
         let server = Stubr::start_with(stubs, config).await;
         info!("Started {} in {}ms on {}", "stubr".green().bold(), start_time.elapsed().as_millis(), server.uri());
         loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
