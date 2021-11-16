@@ -5,6 +5,7 @@ use futures::future::join_all;
 use log::info;
 use wiremock::{Mock, MockServer};
 
+use any_stub::AnyStubs;
 use stub::StubrMock;
 use stub_finder::StubFinder;
 
@@ -13,6 +14,7 @@ use crate::{cloud::probe::HttpProbe, Config};
 use crate::record::{config::RecordConfig, StubrRecord};
 
 mod stub;
+mod any_stub;
 pub mod stub_finder;
 pub mod config;
 
@@ -33,7 +35,7 @@ impl Stubr {
     /// The server is unbinded when the instance is dropped.
     /// Use this in a test context.
     /// * `stubs` - folder or file containing the stubs
-    pub async fn start<T>(stubs: T) -> Self where T: Into<PathBuf> {
+    pub async fn start<T>(stubs: T) -> Self where T: Into<AnyStubs> {
         Self::start_with(stubs, Config::default()).await
     }
 
@@ -41,7 +43,7 @@ impl Stubr {
     /// The server is unbinded when the instance is dropped.
     /// Use this in a test context.
     /// * `stubs` - folder or file containing the stubs
-    pub fn start_blocking<T>(stubs: T) -> Self where T: Into<PathBuf> {
+    pub fn start_blocking<T>(stubs: T) -> Self where T: Into<AnyStubs> {
         Self::start_blocking_with(stubs, Config::default())
     }
 
@@ -50,7 +52,7 @@ impl Stubr {
     /// Use this in a test context.
     /// * `stubs` - folder or file containing the stubs
     /// * `config` - global server configuration
-    pub async fn start_with<T>(stubs: T, config: Config) -> Self where T: Into<PathBuf> {
+    pub async fn start_with<T>(stubs: T, config: Config) -> Self where T: Into<AnyStubs> {
         let server = if let Some(p) = config.port {
             Self::start_on(p).await
         } else {
@@ -66,7 +68,7 @@ impl Stubr {
     /// Use this in a test context.
     /// * `stubs` - folder or file containing the stubs
     /// * `config` - global server configuration
-    pub fn start_blocking_with<T>(stubs: T, config: Config) -> Self where T: Into<PathBuf> {
+    pub fn start_blocking_with<T>(stubs: T, config: Config) -> Self where T: Into<AnyStubs> {
         block_on(Self::start_with(stubs, config))
     }
 
@@ -141,20 +143,20 @@ impl Stubr {
         Self { instance: MockServer::builder().disable_request_recording().start().await }
     }
 
-    fn register_stubs(&self, stub_folder: PathBuf, config: Config) {
-        let cfg = &config;
-        let folder = &stub_folder;
-        self.find_all_mocks(&stub_folder, &config).for_each(|(mock, file)| {
-            block_on(async move {
-                self.instance.register(mock).await;
+    fn register_stubs(&self, stub_folder: AnyStubs, config: Config) {
+        stub_folder.0.iter()
+            .flat_map(|path| self.find_all_mocks(path, &config).map(move |(m, p)| (m, p, path)))
+            .for_each(|(mock, file, folder)| {
+                block_on(async move {
+                    self.instance.register(mock).await;
+                });
+                if config.verbose.unwrap_or_default() {
+                    let maybe_file_name = file.strip_prefix(&folder).ok().and_then(|file| file.to_str());
+                    if let Some(file_name) = maybe_file_name {
+                        info!("mounted stub '{}'", file_name);
+                    }
+                };
             });
-            if cfg.verbose.unwrap_or_default() {
-                let maybe_file_name = file.strip_prefix(&folder).ok().and_then(|file| file.to_str());
-                if let Some(file_name) = maybe_file_name {
-                    info!("mounted stub '{}'", file_name);
-                }
-            };
-        });
     }
 
     #[allow(clippy::needless_lifetimes)]

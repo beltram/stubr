@@ -1,7 +1,7 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use asserhttp::*;
-use surf::get;
+use surf::{get, post};
 
 use crate::utils::*;
 
@@ -12,14 +12,21 @@ async fn should_start_server_from_relative_pathbuf() {
 }
 
 #[async_std::test]
-async fn should_start_server_from_relative_path() {
-    let srv = Stubr::start(Path::new("tests/stubs/ping.json")).await;
+async fn should_start_server_from_many_relative_pathbuf() {
+    let srv = Stubr::start(vec![PathBuf::from("tests/stubs/ping.json"), PathBuf::from("tests/stubs/pong.json")]).await;
     get(&srv.uri()).await.expect_status_ok();
+    post(&srv.uri()).await.expect_status_ok();
 }
 
 #[async_std::test]
 async fn should_start_server_from_relative_path_as_str() {
     let srv = Stubr::start("tests/stubs/ping.json").await;
+    get(&srv.uri()).await.expect_status_ok();
+}
+
+#[async_std::test]
+async fn should_start_server_from_many_relative_path_as_str() {
+    let srv = Stubr::start(vec!["tests/stubs/ping.json", "tests/stubs/pong.json"]).await;
     get(&srv.uri()).await.expect_status_ok();
 }
 
