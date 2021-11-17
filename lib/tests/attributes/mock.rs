@@ -48,6 +48,14 @@ mod path {
     }
 
     #[async_std::test]
+    #[stubr::mock("macros/get.json", "macros/delete.json")]
+    async fn should_append_many_tests_stubs_path() {
+        isahc::get_async(stubr.uri()).await.expect_status_ok();
+        isahc::delete_async(stubr.uri()).await.expect_status_ok();
+        isahc::post_async(stubr.uri(), ()).await.expect_status_not_found();
+    }
+
+    #[async_std::test]
     #[stubr::mock(full_path = "tests/stubs/macros/delete.json")]
     async fn should_accept_full_path() {
         isahc::delete_async(stubr.uri()).await.expect_status_ok();

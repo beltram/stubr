@@ -144,6 +144,7 @@ impl Stubr {
     }
 
     fn register_stubs(&self, stub_folder: AnyStubs, config: Config) {
+        println!("{:?}", stub_folder.0);
         stub_folder.0.iter()
             .flat_map(|path| self.find_all_mocks(path, &config).map(move |(m, p)| (m, p, path)))
             .for_each(|(mock, file, folder)| {

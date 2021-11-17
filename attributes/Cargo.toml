@@ -19,6 +19,7 @@ proc-macro = true
 syn = "1.0.81"
 quote = "1.0.10"
 proc-macro2 = "1.0.32"
+itertools = "0.10.1"
 
 [dev-dependencies]
 isahc = "1.6.0"

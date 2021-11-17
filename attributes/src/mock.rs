@@ -1,5 +1,6 @@
 use std::convert::TryFrom;
 
+use itertools::Itertools;
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
 use syn::{AttributeArgs, ItemFn, Lit, LitInt, LitStr, NestedMeta};
@@ -24,7 +25,7 @@ pub(crate) fn mock_transform(args: AttributeArgs, item: TokenStream) -> syn::Res
 }
 
 struct Args {
-    path: Option<LitStr>,
+    paths: Vec<LitStr>,
     full_path: Option<LitStr>,
     port: Option<LitInt>,
 }
@@ -44,11 +45,14 @@ impl Args {
     }
 
     fn default_path(&self) -> TokenStream {
-        self.path.to_owned()
+        let paths = self.paths.iter()
             .map(|p| format!("{}/{}", Self::DEFAULT_PATH, p.value()))
-            .map(|p| LitStr::new(p.as_str(), Span::call_site()))
-            .unwrap_or_else(|| LitStr::new(Self::DEFAULT_PATH, Span::call_site()))
-            .into_token_stream()
+            .collect_vec();
+        if !paths.is_empty() {
+            quote! { vec![#(#paths),*] }
+        } else {
+            LitStr::new(Self::DEFAULT_PATH, Span::call_site()).into_token_stream()
+        }
     }
 
     fn port(&self) -> TokenStream {
@@ -63,12 +67,12 @@ impl TryFrom<AttributeArgs> for Args {
     type Error = syn::Error;
 
     fn try_from(input: AttributeArgs) -> Result<Self, Self::Error> {
-        let mut path = None;
+        let mut paths = vec![];
         let mut full_path = None;
         let mut port = None;
         for arg in input {
             match arg {
-                NestedMeta::Lit(Lit::Str(lit)) => path = Some(lit),
+                NestedMeta::Lit(Lit::Str(lit)) => paths.push(lit),
                 NestedMeta::Lit(token) => {
                     return Err(syn::Error::new_spanned(token, "Default attribute expects string"));
                 }
@@ -90,7 +94,7 @@ impl TryFrom<AttributeArgs> for Args {
                 _ => {}
             }
         };
-        Ok(Self { path, full_path, port })
+        Ok(Self { paths, full_path, port })
     }
 }
 

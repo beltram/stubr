@@ -3831,6 +3831,7 @@ dependencies = [
  "asserhttp",
  "async-std",
  "isahc 1.6.0",
+ "itertools",
  "proc-macro2",
  "quote",
  "syn",
