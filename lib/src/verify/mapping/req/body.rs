@@ -1,13 +1,12 @@
 use std::hash::{Hash, Hasher};
 
-// use super::super::json_path::JsonPathGenerator;
 use itertools::Itertools;
 use json_value_merge::Merge;
 use serde_json::Value;
 
 use crate::model::request::{body::BodyPatternStub, RequestStub};
 
-use super::super::contains::ContainsGenerator;
+use super::super::{contains::ContainsGenerator, json_path::JsonPathGenerator};
 
 impl From<&RequestStub> for Vec<u8> {
     fn from(stub: &RequestStub) -> Self {
@@ -62,8 +61,7 @@ impl PartialBody {
     fn to_partial_value(&self) -> Option<Value> {
         self.path.as_ref()
             .zip(self.value.to_owned())
-            .map(|(_, v)| v)
-        // .map(|(path, value)| JsonPathGenerator::generate_path(path, value))
+            .map(|(path, value)| JsonPathGenerator::generate_path(path, value))
     }
 }
 
@@ -148,9 +146,7 @@ mod verify_body_tests {
     mod expression {
         use super::*;
 
-        // #[test]
-        // TODO: pending a json_path alternative found
-        #[allow(dead_code)]
+        #[test]
         fn expression_contains_should_generate_containing() {
             let stub = BodyPatternStub {
                 expression: Some(String::from("$.name")),
@@ -163,9 +159,7 @@ mod verify_body_tests {
             assert!(name.as_str().unwrap().contains('a'));
         }
 
-        // #[test]
-        // TODO: pending a json_path alternative found
-        #[allow(dead_code)]
+        #[test]
         fn expression_equal_to_json_should_generate_strictly_equal() {
             let expected = json!({"name": "john", "age": 42});
             let stub = BodyPatternStub {
@@ -183,9 +177,7 @@ mod verify_body_tests {
     mod many_expression {
         use super::*;
 
-        // #[test]
-        // TODO: pending a json_path alternative found
-        #[allow(dead_code)]
+        #[test]
         fn many_expression_equal_to_json_should_generate_combined() {
             let expected_sender = json!({"name": "alice"});
             let expected_receiver = json!({"name": "bob"});
@@ -206,9 +198,7 @@ mod verify_body_tests {
             assert_eq!(body.get("receiver").unwrap(), &expected_receiver);
         }
 
-        // #[test]
-        // TODO: pending a json_path alternative found
-        #[allow(dead_code)]
+        #[test]
         fn many_expression_equal_to_json_should_merge_paths() {
             let name = json!({"name": "alice"});
             let age = json!({"name": "bob"});
@@ -231,9 +221,7 @@ mod verify_body_tests {
             }));
         }
 
-        // #[test]
-        // TODO: pending a json_path alternative found
-        #[allow(dead_code)]
+        #[test]
         fn many_expression_equal_to_json_and_contains_should_generate_combined() {
             let expected_sender = json!({"name": "alice"});
             let sender = BodyPatternStub {
@@ -253,9 +241,7 @@ mod verify_body_tests {
             assert!(body.get("receiver").unwrap().as_str().unwrap().contains('b'));
         }
 
-        // #[test]
-        // TODO: pending a json_path alternative found
-        #[allow(dead_code)]
+        #[test]
         fn many_contains_should_generate_combined() {
             let sender = BodyPatternStub {
                 expression: Some(String::from("$.sender")),
@@ -303,9 +289,7 @@ mod verify_body_tests {
             assert_eq!(Vec::<u8>::from(&stub), expected.to_string().as_bytes());
         }
 
-        // #[test]
-        // TODO: pending a json_path alternative found
-        #[allow(dead_code)]
+        #[test]
         fn expression_equal_to_json_should_have_precedence_over_expression_contains() {
             let expected = json!({"name": "jdoe"});
             let priority = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(expected.clone()), ..Default::default() };

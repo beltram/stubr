@@ -1,50 +1,39 @@
-// use jsonpath_lib::{ParserNodeVisitor, ParserTokenHandler, ParseToken, StrRange};
-use serde_json::Value;
+use std::iter::FromIterator;
 
-// use serde_json::Map;
+use jsonpath_plus::{ast::{RawSelector, Segment}, JsonPath};
+use serde_json::{Map, Value};
 
 #[allow(dead_code)]
 pub struct JsonPathGenerator;
 
 impl JsonPathGenerator {
     #[allow(dead_code)]
-    pub fn generate_path(_path: &str, _value: Value) -> Value {
-        todo!()
-        /*let parser = jsonpath_lib::PathParser::compile(path).unwrap();
-        let node = parser.parser.parse_node.as_ref().unwrap();
-        let mut handler = JsonPathParserTokenHandler { stack: vec![] };
-        parser.visit(&node, &mut handler, &|_| "");
-        handler.stack.iter()
-            .rev()
-            .fold(None, |mut acc: Option<Value>, n| {
-                match n {
-                    ParseToken::Key(k) => {
-                        let local_path = Self::extract(path, k);
-                        let val = if let Some(m) = acc { m } else { value.clone() };
-                        acc = Some(Value::Object(Map::from_iter(vec![(local_path, val)])));
-                    }
-                    _ => {}
-                }
-                acc
-            }).unwrap()*/
+    pub fn generate_path(path: &str, value: Value) -> Value {
+        JsonPath::compile(path).ok()
+            .and_then(|p: JsonPath| {
+                p.segments().iter()
+                    .rev()
+                    .fold(None, |mut acc: Option<Value>, segment| {
+                        match segment {
+                            Segment::Dot(_, selector) => {
+                                match selector {
+                                    RawSelector::Name(name) => {
+                                        let local_path = name.as_str().to_string();
+                                        let val = if let Some(m) = acc { m } else { value.clone() };
+                                        acc = Some(Value::Object(Map::from_iter(vec![(local_path, val)])));
+                                    }
+                                    _ => todo!()
+                                }
+                            }
+                            _ => todo!()
+                        }
+                        acc
+                    })
+            }).expect(&format!("Failed generating a json value at path '{}'", path))
     }
-
-    /*fn extract(path: &str, range: &StrRange) -> String {
-        path[range.pos..range.pos + range.offset].to_string()
-    }*/
 }
 
-/*struct JsonPathParserTokenHandler {
-    stack: Vec<ParseToken>,
-}
-
-impl<'a> ParserTokenHandler<'a> for JsonPathParserTokenHandler {
-    fn handle<F>(&mut self, token: &ParseToken, _reader: &F) where F: Fn(&StrRange) -> &'a str {
-        self.stack.push(token.to_owned());
-    }
-}*/
-
-/*#[cfg(test)]
+#[cfg(test)]
 mod json_path_generator_tests {
     use serde_json::json;
 
@@ -61,4 +50,4 @@ mod json_path_generator_tests {
         let value = JsonPathGenerator::generate_path("$.a.b.c", json!({"name": "doe"}));
         assert_eq!(value, json!({"a": { "b": { "c": {"name": "doe"} } }}));
     }
-}*/
+}
