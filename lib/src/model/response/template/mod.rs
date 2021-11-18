@@ -25,7 +25,6 @@ mod helpers;
 lazy_static! {
     pub(crate) static ref HANDLEBARS: RwLock<Handlebars<'static>> = {
         let mut handlebars = Handlebars::new();
-        handlebars.source_map_enabled(false);
         handlebars.register_helper(JsonPathHelper::NAME, Box::new(JsonPathHelper));
         handlebars.register_helper(NowHelper::NAME, Box::new(NowHelper));
         handlebars.register_helper(NumberHelper::IS_EVEN, Box::new(NumberHelper));
