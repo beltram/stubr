@@ -1,7 +1,10 @@
-use std::{fs::OpenOptions, io::Read, path::PathBuf, str::from_utf8};
+use std::{f64, fs::OpenOptions, i64, io::Read, path::PathBuf, str::from_utf8};
+use std::iter::FromIterator;
+use std::str::FromStr;
 
+use itertools::Itertools;
 use serde::{Deserialize, Deserializer, Serialize};
-use serde_json::Value;
+use serde_json::{Map, Value};
 use wiremock::ResponseTemplate;
 
 use super::{body_file::BodyFile, ResponseAppender};
@@ -19,6 +22,85 @@ pub struct BodyStub {
     /// relative path to raw body content
     #[serde(default, skip_serializing, deserialize_with = "deserialize_body_file")]
     pub body_file_name: Option<BodyFile>,
+}
+
+impl BodyStub {
+    pub const BOOL_IDENTIFIER: &'static str = "[bool]";
+    pub const NUMBER_IDENTIFIER: &'static str = "[number]";
+    pub const FLOAT_IDENTIFIER: &'static str = "[float]";
+    pub const NULL_IDENTIFIER: &'static str = "[null]";
+    pub const OBJECT_IDENTIFIER: &'static str = "[object]";
+    pub const ARRAY_IDENTIFIER: &'static str = "[array]";
+
+    fn register_json_body_template(&self, json_values: Vec<&Value>) {
+        json_values.into_iter()
+            .for_each(|value| {
+                match value {
+                    Value::String(s) => self.register(&s, s),
+                    Value::Object(o) => self.register_json_body_template(o.values().collect_vec()),
+                    Value::Array(a) => self.register_json_body_template(a.iter().collect_vec()),
+                    _ => {}
+                }
+            });
+    }
+
+    fn render_json_body(&self, json_body: Option<&Value>, data: &HandlebarsData) -> Option<Value> {
+        json_body
+            .and_then(|it| it.as_object().map(|o| self.render_json_obj(o, data)))
+            .or_else(|| json_body.and_then(Value::as_array).map(|a| self.render_json_array(a, data)))
+    }
+
+    fn render_json_obj(&self, json_body: &Map<String, Value>, data: &HandlebarsData) -> Value {
+        let obj = json_body.into_iter()
+            .map(|(key, value)| match value {
+                Value::String(s) => (key.to_owned(), Self::cast_to_value(self.render(&s, data))),
+                Value::Object(o) => (key.to_owned(), self.render_json_obj(&o, data)),
+                Value::Array(a) => (key.to_owned(), self.render_json_array(&a, data)),
+                _ => (key.to_owned(), value.to_owned())
+            });
+        Value::from(Map::from_iter(obj))
+    }
+
+    fn render_json_array(&self, json_body: &Vec<Value>, data: &HandlebarsData) -> Value {
+        Value::Array(json_body.into_iter()
+            .map(|value| match value {
+                Value::String(s) => Self::cast_to_value(self.render(&s, data)),
+                Value::Object(o) => self.render_json_obj(&o, data),
+                Value::Array(a) => self.render_json_array(&a, data),
+                _ => value.to_owned()
+            }).collect_vec())
+    }
+
+    fn cast_to_value(raw: String) -> Value {
+        let len = raw.len();
+        match raw {
+            o if o.ends_with(Self::OBJECT_IDENTIFIER) => {
+                Value::from_str(&o[..len - Self::OBJECT_IDENTIFIER.len()].to_string())
+                    .unwrap_or_default()
+            }
+            a if a.ends_with(Self::ARRAY_IDENTIFIER) => {
+                Value::from_str(&a[..len - Self::ARRAY_IDENTIFIER.len()].to_string())
+                    .unwrap_or_default()
+            }
+            b if b.ends_with(Self::BOOL_IDENTIFIER) => {
+                bool::from_str(&b[..len - Self::BOOL_IDENTIFIER.len()].to_string())
+                    .map(Value::from)
+                    .unwrap_or_default()
+            }
+            n if n.ends_with(Self::NUMBER_IDENTIFIER) => {
+                i64::from_str(&n[..len - Self::NUMBER_IDENTIFIER.len()].to_string())
+                    .map(Value::from)
+                    .unwrap_or_default()
+            }
+            f if f.ends_with(Self::FLOAT_IDENTIFIER) => {
+                f64::from_str(&f[..len - Self::FLOAT_IDENTIFIER.len()].to_string())
+                    .map(Value::from)
+                    .unwrap_or_default()
+            }
+            n if n.ends_with(Self::NULL_IDENTIFIER) => Value::Null,
+            _ => Value::from(raw)
+        }
+    }
 }
 
 fn deserialize_body_file<'de, D>(path: D) -> Result<Option<BodyFile>, D::Error> where D: Deserializer<'de> {
@@ -44,8 +126,8 @@ impl HandlebarTemplatable for BodyStub {
     fn register_template(&self) {
         if let Some(body) = self.body.as_ref() {
             self.register(body, body);
-        } else if let Some(json_body) = self.json_body.as_ref().map(ToString::to_string) {
-            self.register(json_body.as_str(), json_body.clone());
+        } else if let Some(json_body) = self.json_body.as_ref().and_then(|it| it.as_object()) {
+            self.register_json_body_template(json_body.values().collect_vec());
         } else if let Some(body_file) = self.body_file_name.as_ref() {
             self.register(body_file.path.as_str(), body_file.content.clone());
         }
@@ -54,11 +136,8 @@ impl HandlebarTemplatable for BodyStub {
     fn render_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
         if let Some(body) = self.body.as_ref() {
             template = template.set_body_string(self.render(body.as_str(), data));
-        } else if let Some(json_body) = self.json_body.as_ref().map(ToString::to_string) {
-            let rendered = self.render(json_body.as_str(), data);
-            if let Ok(value) = serde_json::from_str::<Value>(rendered.as_str()) {
-                template = template.set_body_json(value);
-            }
+        } else if let Some(json_body) = self.render_json_body(self.json_body.as_ref(), data) {
+            template = template.set_body_json(json_body);
         } else if let Some(body_file) = self.body_file_name.as_ref() {
             let rendered = self.render(body_file.path.as_str(), data);
             template = body_file.render_templated(template, rendered);

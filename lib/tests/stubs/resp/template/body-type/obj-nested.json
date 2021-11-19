@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "any": {
+        "nested": "{{jsonPath request.body '$.any'}}"
+      }
+    },
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

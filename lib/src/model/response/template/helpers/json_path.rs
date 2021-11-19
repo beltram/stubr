@@ -1,6 +1,8 @@
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, PathAndJson, RenderContext};
 use serde_json::Value;
 
+use crate::model::response::body::BodyStub;
+
 pub struct JsonPathHelper;
 
 impl JsonPathHelper {
@@ -36,8 +38,20 @@ impl HelperDef for JsonPathHelper {
             if Self::is_supported_helper(input) {
                 let rendered = Self::get_json_path(h.params())
                     .and_then(|jsonpath| Self::extract(input.value(), jsonpath));
-                if let Some(rendered) = rendered.as_ref().and_then(|it| it.as_str()) {
-                    out.write(rendered).unwrap();
+                if let Some(r_str) = rendered.as_ref().and_then(|it| it.as_str()) {
+                    out.write(r_str).unwrap();
+                } else if let Some(r_obj) = rendered.as_ref().and_then(|it| it.as_object()) {
+                    out.write(&format!("{}{}", serde_json::to_string(r_obj).unwrap(), BodyStub::OBJECT_IDENTIFIER)).unwrap();
+                } else if let Some(r_array) = rendered.as_ref().and_then(|it| it.as_array()) {
+                    out.write(&format!("{}{}", serde_json::to_string(r_array).unwrap(), BodyStub::ARRAY_IDENTIFIER)).unwrap();
+                } else if let Some(r_bool) = rendered.as_ref().and_then(|it| it.as_bool()) {
+                    out.write(&format!("{}{}", r_bool, BodyStub::BOOL_IDENTIFIER)).unwrap();
+                } else if let Some(r_number) = rendered.as_ref().and_then(|it| it.as_i64()) {
+                    out.write(&format!("{}{}", r_number, BodyStub::NUMBER_IDENTIFIER)).unwrap();
+                } else if let Some(r_float) = rendered.as_ref().and_then(|it| it.as_f64()) {
+                    out.write(&format!("{}{}", r_float, BodyStub::FLOAT_IDENTIFIER)).unwrap();
+                } else if let Some(_) = rendered.as_ref().and_then(|it| it.as_null()) {
+                    out.write(&BodyStub::FLOAT_IDENTIFIER).unwrap();
                 }
             }
         }
