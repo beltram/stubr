@@ -7,6 +7,7 @@ use std::{
     path::PathBuf,
     str::{from_utf8, FromStr},
 };
+use std::ffi::OsStr;
 
 use handlebars::JsonValue;
 use itertools::Itertools;
@@ -43,15 +44,14 @@ impl BodyStub {
     pub const ARRAY_IDENTIFIER: &'static str = "[array]";
 
     fn register_json_body_template<'a, T>(&self, json_values: T) where T: Iterator<Item=&'a JsonValue> {
-        json_values.into_iter()
-            .for_each(|value| {
-                match value {
-                    Value::String(s) => self.register(&s, s),
-                    Value::Object(o) => self.register_json_body_template(o.values()),
-                    Value::Array(a) => self.register_json_body_template(a.iter()),
-                    _ => {}
-                }
-            });
+        json_values.into_iter().for_each(|value| {
+            match value {
+                Value::String(s) => self.register(&s, s),
+                Value::Object(o) => self.register_json_body_template(o.values()),
+                Value::Array(a) => self.register_json_body_template(a.iter()),
+                _ => {}
+            }
+        });
     }
 
     fn render_json_body(&self, json_body: Option<&Value>, data: &HandlebarsData) -> Option<Value> {
@@ -72,13 +72,12 @@ impl BodyStub {
     }
 
     fn render_json_array(&self, json_body: &Vec<Value>, data: &HandlebarsData) -> Value {
-        Value::Array(json_body.into_iter()
-            .map(|value| match value {
-                Value::String(s) => Self::cast_to_value(self.render(&s, data)),
-                Value::Object(o) => self.render_json_obj(&o, data),
-                Value::Array(a) => self.render_json_array(&a, data),
-                _ => value.to_owned()
-            }).collect_vec())
+        Value::Array(json_body.into_iter().map(|value| match value {
+            Value::String(s) => Self::cast_to_value(self.render(&s, data)),
+            Value::Object(o) => self.render_json_obj(&o, data),
+            Value::Array(a) => self.render_json_array(&a, data),
+            _ => value.to_owned()
+        }).collect_vec())
     }
 
     fn cast_to_value(raw: String) -> Value {
@@ -118,15 +117,15 @@ fn deserialize_body_file<'de, D>(path: D) -> Result<Option<BodyFile>, D::Error> 
         .map(PathBuf::from)
         .map(|path| {
             let path_exists = path.exists();
-            let extension = path.extension().and_then(|it| it.to_str()).map(|it| it.to_string());
+            let extension = path.extension().and_then(OsStr::to_str).map(str::to_string);
             let content = OpenOptions::new().read(true).open(&path).ok()
                 .and_then(|mut file| {
                     let mut buf = vec![];
                     file.read_to_end(&mut buf).map(|_| buf).ok()
                 })
-                .and_then(|bytes| from_utf8(bytes.as_slice()).map(|it| it.to_string()).ok())
+                .and_then(|bytes| from_utf8(bytes.as_slice()).map(str::to_string).ok())
                 .unwrap_or_default();
-            let path = path.to_str().map(|it| it.to_string()).unwrap_or_default();
+            let path = path.to_str().map(str::to_string).unwrap_or_default();
             BodyFile { path_exists, path, extension, content }
         });
     Ok(body_file)
