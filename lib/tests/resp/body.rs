@@ -1,5 +1,4 @@
 use asserhttp::*;
-use serde_json::{Map, Value};
 use serde_json::json;
 use surf::get;
 
@@ -45,7 +44,25 @@ async fn should_map_json_response_body() {
 async fn should_map_empty_json_response_body() {
     get(stubr.uri()).await
         .expect_status_ok()
-        .expect_body_json_eq(Value::Object(Map::default()))
+        .expect_body_json_eq(json!({}))
+        .expect_content_type_json();
+}
+
+#[async_std::test]
+#[stubr::mock("resp/body/json-array.json")]
+async fn should_map_json_array_response_body() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_body_json_eq(json!(["alice", "bob"]))
+        .expect_content_type_json();
+}
+
+#[async_std::test]
+#[stubr::mock("resp/body/empty-json-array.json")]
+async fn should_map_empty_json_array_response_body() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_body_json_eq(json!([]))
         .expect_content_type_json();
 }
 
