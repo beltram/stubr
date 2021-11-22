@@ -1,14 +1,24 @@
-use std::{f64, fs::OpenOptions, i64, io::Read, path::PathBuf, str::from_utf8};
-use std::iter::FromIterator;
-use std::str::FromStr;
+use std::{
+    f64,
+    fs::OpenOptions,
+    i64,
+    io::Read,
+    iter::FromIterator,
+    path::PathBuf,
+    str::{from_utf8, FromStr},
+};
 
+use handlebars::JsonValue;
 use itertools::Itertools;
 use serde::{Deserialize, Deserializer, Serialize};
 use serde_json::{Map, Value};
 use wiremock::ResponseTemplate;
 
-use super::{body_file::BodyFile, ResponseAppender};
-use super::template::{data::HandlebarsData, HandlebarTemplatable};
+use super::{
+    body_file::BodyFile,
+    ResponseAppender,
+    template::{data::HandlebarsData, HandlebarTemplatable},
+};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -32,13 +42,13 @@ impl BodyStub {
     pub const OBJECT_IDENTIFIER: &'static str = "[object]";
     pub const ARRAY_IDENTIFIER: &'static str = "[array]";
 
-    fn register_json_body_template(&self, json_values: Vec<&Value>) {
+    fn register_json_body_template<'a, T>(&self, json_values: T) where T: Iterator<Item=&'a JsonValue> {
         json_values.into_iter()
             .for_each(|value| {
                 match value {
                     Value::String(s) => self.register(&s, s),
-                    Value::Object(o) => self.register_json_body_template(o.values().collect_vec()),
-                    Value::Array(a) => self.register_json_body_template(a.iter().collect_vec()),
+                    Value::Object(o) => self.register_json_body_template(o.values()),
+                    Value::Array(a) => self.register_json_body_template(a.iter()),
                     _ => {}
                 }
             });
@@ -128,9 +138,9 @@ impl HandlebarTemplatable for BodyStub {
             self.register(body, body);
         } else if let Some(json_body) = self.json_body.as_ref() {
             if let Some(obj) = json_body.as_object() {
-                self.register_json_body_template(obj.values().collect_vec());
+                self.register_json_body_template(obj.values());
             } else if let Some(array) = json_body.as_array() {
-                self.register_json_body_template(array.into_iter().collect_vec());
+                self.register_json_body_template(array.iter());
             }
         } else if let Some(body_file) = self.body_file_name.as_ref() {
             self.register(body_file.path.as_str(), body_file.content.clone());
