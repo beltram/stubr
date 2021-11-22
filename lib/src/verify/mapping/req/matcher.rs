@@ -19,17 +19,13 @@ impl MatcherValueStubMapper {
             .or_else(|| value.as_f64().map(|it| it.to_string()))
             .or_else(|| value.as_bool().map(|it| it.to_string()))
             .or_else(|| value.as_null().map(|_| String::from("null")))
-            .map(|it| {
-                if case_insensitive {
-                    it.char_indices()
-                        .map(|(i, c)| if i % 2 == 0 {
-                            c.to_uppercase().to_string()
-                        } else {
-                            c.to_lowercase().to_string()
-                        })
-                        .join("")
-                } else { it }
-            })
+            .map(|it| if case_insensitive { Self::map_case_insensitive(it) } else { it })
+    }
+
+    fn map_case_insensitive(value: String) -> String {
+        value.char_indices()
+            .map(|(i, c)| if i % 2 == 0 { c.to_uppercase().to_string() } else { c.to_lowercase().to_string() })
+            .join("")
     }
 
     fn map_contains(value: &String) -> Option<String> {
@@ -56,7 +52,7 @@ impl TryFrom<&MatcherValueStub> for String {
         } else if let Some(contains) = matcher.contains.as_ref() {
             MatcherValueStubMapper::map_contains(contains)
                 .ok_or(Error::msg("Invalid 'contains'"))
-        } else if let Some(matches) = matcher.matches.as_ref().and_then(|it| it.as_str()) {
+        } else if let Some(matches) = matcher.matches.as_ref().and_then(Value::as_str) {
             MatcherValueStubMapper::map_matches(matches)
                 .ok_or(Error::msg("Invalid 'matches'"))
         } else {
