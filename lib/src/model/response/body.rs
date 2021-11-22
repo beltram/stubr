@@ -126,8 +126,12 @@ impl HandlebarTemplatable for BodyStub {
     fn register_template(&self) {
         if let Some(body) = self.body.as_ref() {
             self.register(body, body);
-        } else if let Some(json_body) = self.json_body.as_ref().and_then(|it| it.as_object()) {
-            self.register_json_body_template(json_body.values().collect_vec());
+        } else if let Some(json_body) = self.json_body.as_ref() {
+            if let Some(obj) = json_body.as_object() {
+                self.register_json_body_template(obj.values().collect_vec());
+            } else if let Some(array) = json_body.as_array() {
+                self.register_json_body_template(array.into_iter().collect_vec());
+            }
         } else if let Some(body_file) = self.body_file_name.as_ref() {
             self.register(body_file.path.as_str(), body_file.content.clone());
         }

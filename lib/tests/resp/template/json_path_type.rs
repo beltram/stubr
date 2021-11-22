@@ -128,4 +128,13 @@ mod array {
             .expect_body_json_eq(json!({"array": [{"item": "jdoe"}]}))
             .expect_content_type_json();
     }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/body-type/root-array.json")]
+    async fn should_template_root_json_array() {
+        post(stubr.uri()).body(json!({"a": "alice", "b": "bob"})).await
+            .expect_status_ok()
+            .expect_body_json_eq(json!(["alice", "bob"]))
+            .expect_content_type_json();
+    }
 }
