@@ -227,7 +227,7 @@
         },
         "jsonBody": {
           "description": "Json response body, adds 'Content-Type:application/json' header in the response",
-          "type": "object"
+          "type": ["object", "array"]
         },
         "headers": {
           "description": "Response headers",
