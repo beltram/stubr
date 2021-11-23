@@ -1,6 +1,6 @@
 [package]
 name = "stubr-build"
-version = "0.4.10"
+version = "0.4.11"
 edition = "2018"
 authors = ["Beltram Maldant"]
 description = "Stubr build plugin"
