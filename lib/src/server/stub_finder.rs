@@ -29,8 +29,11 @@ impl StubFinder {
         if let Ok(mut from) = read_dir(from) {
             while let Some(Ok(entry)) = from.next() {
                 let path = entry.path();
-                if path.is_file() && path.extension().and_then(|ext| ext.to_str()) == Some(Self::JSON_EXTENSION) {
+                if path.is_file() && path.extension().and_then(OsStr::to_str) == Some(Self::JSON_EXTENSION) {
                     stubs.push(path)
+                } else if path.is_dir() {
+                    Self::find_all_stubs_under_dir(&path).into_iter()
+                        .for_each(|s| stubs.push(s))
                 }
             }
         }
@@ -75,7 +78,7 @@ mod stub_finder_test {
     fn should_find_just_json_files_from_dir() {
         let from = PathBuf::from("tests/stubs/server");
         let files = StubFinder::find_all_stubs(&from).collect::<Vec<PathBuf>>();
-        assert_eq!(files.len(), 2);
+        assert!(files.len().gt(&2));
         let file_names = files.iter()
             .map(|it| it.file_name().unwrap().to_str().unwrap())
             .collect_vec();
@@ -109,5 +112,18 @@ mod stub_finder_test {
         let from = PathBuf::from("tests/stubs/server/unknown.json");
         let files = StubFinder::find_all_stubs_under_dir(&from);
         assert!(files.is_empty());
+    }
+
+    #[test]
+    fn should_find_all_stubs_recursively() {
+        let from = PathBuf::from("tests/stubs/recur");
+        let files = StubFinder::find_all_stubs(&from).collect::<Vec<PathBuf>>();
+        assert_eq!(files.len(), 3);
+        let file_names = files.iter()
+            .map(|it| it.file_name().unwrap().to_str().unwrap())
+            .collect_vec();
+        assert!(file_names.contains(&"get.json"));
+        assert!(file_names.contains(&"post.json"));
+        assert!(file_names.contains(&"delete.json"));
     }
 }

@@ -34,13 +34,6 @@ mod path {
     use super::*;
 
     #[async_std::test]
-    #[stubr::mock]
-    async fn should_default_to_tests_stubs() {
-        isahc::get_async(stubr.uri()).await.expect_status_ok();
-        isahc::delete_async(stubr.uri()).await.expect_status_not_found();
-    }
-
-    #[async_std::test]
     #[stubr::mock("macros/delete.json")]
     async fn should_append_tests_stubs_path() {
         isahc::delete_async(stubr.uri()).await.expect_status_ok();

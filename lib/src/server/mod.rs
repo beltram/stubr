@@ -185,7 +185,7 @@ mod server_test {
         let mocks = Stubr::start_on_random_port().await
             .find_all_mocks(&from, &config)
             .collect::<Vec<(Mock, PathBuf)>>();
-        assert_eq!(mocks.len(), 2);
+        assert!(mocks.len().gt(&2));
     }
 
     #[async_std::test]

@@ -1,0 +1,8 @@
+{
+  "request": {
+    "method": "DELETE"
+  },
+  "response": {
+    "status": 200
+  }
+}
