@@ -14,7 +14,7 @@ impl ProducerStubFinder {
         Self::stub_dir()
             .and_then(|it| it.read_dir().ok())
             .map(|dir| dir.map(|it| it.unwrap().path()).collect())
-            .map(|it| Self::map_json_stub(it))
+            .map(Self::map_json_stub)
             .unwrap_or_default()
     }
 

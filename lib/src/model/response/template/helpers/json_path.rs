@@ -50,10 +50,10 @@ impl HelperDef for JsonPathHelper {
                     out.write(&format!("{}{}", r_number, BodyStub::NUMBER_IDENTIFIER))
                 } else if let Some(r_float) = rendered.as_ref().and_then(Value::as_f64) {
                     out.write(&format!("{}{}", r_float, BodyStub::FLOAT_IDENTIFIER))
-                } else if let Some(_) = rendered.as_ref().and_then(Value::as_null) {
-                    out.write(&BodyStub::FLOAT_IDENTIFIER)
+                } else if rendered.as_ref().and_then(Value::as_null).is_some() {
+                    out.write(BodyStub::FLOAT_IDENTIFIER)
                 } else { Ok(()) }
-                    .expect(&format!("Failed rendering response template {:?} for json path {:?}", rendered, json_path));
+                    .unwrap_or_else(|_| panic!("Failed rendering response template {:?} for json path {:?}", rendered, json_path));
             }
         }
         Ok(())

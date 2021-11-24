@@ -1,17 +1,6 @@
-use reqwest::blocking::{RequestBuilder as ReqwestRequestBuilder, Request, Response};
 use std::{
     iter::FromIterator,
-    str::FromStr
-};
-
-use crate::{
-    RecordConfig,
-    model::JsonStub,
-    record::{
-        core::Record,
-        writer::StubWriter,
-        http::{RecordedRequest, RecordedResponse, RecordedExchange},
-    },
+    str::FromStr,
 };
 
 use http_types::{
@@ -24,13 +13,23 @@ use http_types::{
     Response as HttpResponse,
     Url,
 };
+use reqwest::blocking::{Request, RequestBuilder as ReqwestRequestBuilder, Response};
 
+use crate::{
+    model::JsonStub,
+    record::{
+        core::Record,
+        http::{RecordedExchange, RecordedRequest, RecordedResponse},
+        writer::StubWriter,
+    },
+    RecordConfig,
+};
 
 impl Record for ReqwestRequestBuilder {
     fn record_with(&mut self, cfg: RecordConfig) -> &mut Self {
         let req = RecordedRequest::from(self.try_clone().and_then(|it| it.build().ok()).unwrap());
-        let resp  = RecordedResponse::from(self.try_clone().and_then(|it| it.send().ok()).unwrap());
-        let host = req.0.clone().url().host_str().unwrap().to_string();
+        let resp = RecordedResponse::from(self.try_clone().and_then(|it| it.send().ok()).unwrap());
+        let host = req.0.url().host_str().unwrap().to_string();
         let mut exchange = RecordedExchange(req, resp);
 
         let stub = JsonStub::from((&mut exchange, cfg.clone()));
@@ -45,7 +44,7 @@ impl From<Request> for RecordedRequest {
         let method = HttpMethod::from_str(req.method().as_str()).unwrap_or(HttpMethod::Get);
         let path = req.url().path();
         let scheme = req.url().scheme();
-        let host = req.url().host_str().unwrap_or_else(|| "localhost");
+        let host = req.url().host_str().unwrap_or("localhost");
         let queries = req.url().query().unwrap_or_default();
         let mut url = Url::from_str(&format!("{}://{}{}?{}", scheme, host, path, queries)).unwrap();
         url.set_port(req.url().port()).unwrap();
@@ -90,9 +89,10 @@ impl From<Response> for RecordedResponse {
 
 #[cfg(test)]
 mod http_tests {
-    use super::*;
     use reqwest::blocking::ClientBuilder as ReqwestBlockingClientBuilder;
     use reqwest::Url;
+
+    use super::*;
 
     mod method {
         use http_types::Method;
@@ -320,8 +320,8 @@ mod http_tests {
     }
 
     mod status {
-        use http_types::StatusCode;
         use http::response::Builder;
+        use http_types::StatusCode;
 
         use super::*;
 
@@ -357,8 +357,8 @@ mod http_tests {
     }
 
     mod resp_headers {
-        use itertools::Itertools;
         use http::response::Builder;
+        use itertools::Itertools;
 
         use super::*;
 
@@ -417,9 +417,8 @@ mod http_tests {
 
     mod resp_body {
         use async_std::task::block_on;
-        use serde_json::{json, Value};
         use http::response::Builder;
-
+        use serde_json::{json, Value};
 
         use super::*;
 

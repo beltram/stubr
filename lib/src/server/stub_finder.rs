@@ -16,7 +16,7 @@ impl StubFinder {
     #[cfg(target_os = "linux")]
     const LIB_PATH_ENV_VAR: &'static str = "LD_LIBRARY_PATH";
 
-    pub fn find_all_stubs(from: &PathBuf) -> impl Iterator<Item=PathBuf> {
+    pub fn find_all_stubs(from: &Path) -> impl Iterator<Item=PathBuf> {
         if from.exists() {
             if from.is_dir() {
                 Self::find_all_stubs_under_dir(from).into_iter()
@@ -24,7 +24,7 @@ impl StubFinder {
         } else { vec![].into_iter() }
     }
 
-    fn find_all_stubs_under_dir(from: &PathBuf) -> Vec<PathBuf> {
+    fn find_all_stubs_under_dir(from: &Path) -> Vec<PathBuf> {
         let mut stubs = vec![];
         if let Ok(mut from) = read_dir(from) {
             while let Some(Ok(entry)) = from.next() {

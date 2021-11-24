@@ -28,8 +28,8 @@ impl MatcherValueStubMapper {
             .join("")
     }
 
-    fn map_contains(value: &String) -> Option<String> {
-        i64::from_str(&value).ok()
+    fn map_contains(value: &str) -> Option<String> {
+        i64::from_str(value).ok()
             .map(ContainsGenerator::generate_number_containing)
             .or_else(|| Some(ContainsGenerator::generate_string_containing(value.to_string())))
     }
@@ -48,13 +48,13 @@ impl TryFrom<&MatcherValueStub> for String {
         if let Some(equal_to) = matcher.equal_to.as_ref() {
             let case_insensitive = matcher.case_insensitive.unwrap_or_default();
             MatcherValueStubMapper::map_equal_to(equal_to, case_insensitive)
-                .ok_or(Error::msg("Invalid 'equal_to'"))
+                .ok_or_else(|| Error::msg("Invalid 'equal_to'"))
         } else if let Some(contains) = matcher.contains.as_ref() {
             MatcherValueStubMapper::map_contains(contains)
-                .ok_or(Error::msg("Invalid 'contains'"))
+                .ok_or_else(|| Error::msg("Invalid 'contains'"))
         } else if let Some(matches) = matcher.matches.as_ref().and_then(Value::as_str) {
             MatcherValueStubMapper::map_matches(matches)
-                .ok_or(Error::msg("Invalid 'matches'"))
+                .ok_or_else(|| Error::msg("Invalid 'matches'"))
         } else {
             Err(Error::msg("No matcher defined"))
         }

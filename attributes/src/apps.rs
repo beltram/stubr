@@ -41,10 +41,7 @@ impl TryFrom<AttributeArgs> for Args {
     fn try_from(input: AttributeArgs) -> Result<Self, Self::Error> {
         let mut paths = vec![];
         for arg in input {
-            match arg {
-                NestedMeta::Lit(Lit::Str(lit)) => paths.push(lit),
-                _ => {}
-            }
+            if let NestedMeta::Lit(Lit::Str(lit)) = arg { paths.push(lit) }
         };
         Ok(Self { paths })
     }

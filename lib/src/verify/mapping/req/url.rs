@@ -30,7 +30,7 @@ impl UrlStubMapper {
 
 impl From<&RequestStub> for Url {
     fn from(stub: &RequestStub) -> Self {
-        const BASE_URL: &'static str = "http://localhost/";
+        const BASE_URL: &str = "http://localhost/";
         let url = Self::parse(BASE_URL).unwrap();
         let mut url = url.join(&UrlStubMapper::url_from_matcher(stub)).unwrap();
         for (k, v) in Vec::<(String, String)>::from(&stub.queries).into_iter() {

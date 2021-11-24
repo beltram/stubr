@@ -43,7 +43,7 @@ impl<A> ActixApp<'_, A> where A: Service<Request=Request, Response=ActixServiceR
         let mut req = StdRequest::from(&stub);
         let test_req = TestRequest::from(&mut req).to_request();
         let resp: StdResponse = self.0.call(test_req).await
-            .expect(&format!("Failed verifying stub {:?}", name))
+            .unwrap_or_else(|_| panic!("Failed verifying stub {:?}", name))
             .into();
         RequestAndStub { req, stub: stub.response, name }.verify(resp);
     }

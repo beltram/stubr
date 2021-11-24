@@ -1,4 +1,5 @@
 use std::{convert::TryFrom, net::TcpListener, path::PathBuf};
+use std::path::Path;
 
 use async_std::task::block_on;
 use futures::future::join_all;
@@ -160,7 +161,7 @@ impl Stubr {
     }
 
     #[allow(clippy::needless_lifetimes)]
-    fn find_all_mocks<'a>(&self, from: &PathBuf, config: &'a Config) -> impl Iterator<Item=(Mock, PathBuf)> + 'a {
+    fn find_all_mocks<'a>(&self, from: &Path, config: &'a Config) -> impl Iterator<Item=(Mock, PathBuf)> + 'a {
         StubFinder::find_all_stubs(from)
             .map(move |path| {
                 StubrMock::try_from((&path, config))

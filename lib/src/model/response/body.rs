@@ -46,7 +46,7 @@ impl BodyStub {
     fn register_json_body_template<'a, T>(&self, json_values: T) where T: Iterator<Item=&'a JsonValue> {
         json_values.into_iter().for_each(|value| {
             match value {
-                Value::String(s) => self.register(&s, s),
+                Value::String(s) => self.register(s, s),
                 Value::Object(o) => self.register_json_body_template(o.values()),
                 Value::Array(a) => self.register_json_body_template(a.iter()),
                 _ => {}
@@ -63,19 +63,19 @@ impl BodyStub {
     fn render_json_obj(&self, json_body: &Map<String, Value>, data: &HandlebarsData) -> Value {
         let obj = json_body.into_iter()
             .map(|(key, value)| match value {
-                Value::String(s) => (key.to_owned(), Self::cast_to_value(self.render(&s, data))),
-                Value::Object(o) => (key.to_owned(), self.render_json_obj(&o, data)),
-                Value::Array(a) => (key.to_owned(), self.render_json_array(&a, data)),
+                Value::String(s) => (key.to_owned(), Self::cast_to_value(self.render(s, data))),
+                Value::Object(o) => (key.to_owned(), self.render_json_obj(o, data)),
+                Value::Array(a) => (key.to_owned(), self.render_json_array(a, data)),
                 _ => (key.to_owned(), value.to_owned())
             });
         Value::from(Map::from_iter(obj))
     }
 
-    fn render_json_array(&self, json_body: &Vec<Value>, data: &HandlebarsData) -> Value {
-        Value::Array(json_body.into_iter().map(|value| match value {
-            Value::String(s) => Self::cast_to_value(self.render(&s, data)),
-            Value::Object(o) => self.render_json_obj(&o, data),
-            Value::Array(a) => self.render_json_array(&a, data),
+    fn render_json_array(&self, json_body: &[Value], data: &HandlebarsData) -> Value {
+        Value::Array(json_body.iter().map(|value| match value {
+            Value::String(s) => Self::cast_to_value(self.render(s, data)),
+            Value::Object(o) => self.render_json_obj(o, data),
+            Value::Array(a) => self.render_json_array(a, data),
             _ => value.to_owned()
         }).collect_vec())
     }
@@ -148,7 +148,7 @@ impl HandlebarTemplatable for BodyStub {
 
     fn render_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
         if let Some(body) = self.body.as_ref() {
-            template = template.set_body_string(self.render(&body, data));
+            template = template.set_body_string(self.render(body, data));
         } else if let Some(json_body) = self.render_json_body(self.json_body.as_ref(), data) {
             template = template.set_body_json(json_body);
         } else if let Some(body_file) = self.body_file_name.as_ref() {

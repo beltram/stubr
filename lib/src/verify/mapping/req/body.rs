@@ -81,7 +81,7 @@ impl From<&BodyPatternStub> for PartialBody {
     fn from(stub: &BodyPatternStub) -> Self {
         if let Some(binary_equal_to) = stub.binary_equal_to.as_ref() {
             base64::decode(binary_equal_to)
-                .expect(&format!("'{}' must be Base64 encoded", binary_equal_to))
+                .unwrap_or_else(|_| panic!("'{}' must be Base64 encoded", binary_equal_to))
                 .into()
         } else if stub.equal_to_json.is_some() && stub.expression.is_none() {
             stub.equal_to_json.as_ref().unwrap().to_owned().into()

@@ -46,17 +46,14 @@ impl TryFrom<AttributeArgs> for Args {
     fn try_from(input: AttributeArgs) -> Result<Self, Self::Error> {
         let mut port = None;
         for arg in input {
-            match arg {
-                NestedMeta::Meta(syn::Meta::NameValue(nv)) => {
-                    if nv.path.is_ident(Self::ATTR_PORT) {
-                        if let syn::Lit::Int(lit) = nv.lit {
-                            port = Some(lit)
-                        } else {
-                            return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects integer", Self::ATTR_PORT)));
-                        }
+            if let NestedMeta::Meta(syn::Meta::NameValue(nv)) = arg {
+                if nv.path.is_ident(Self::ATTR_PORT) {
+                    if let syn::Lit::Int(lit) = nv.lit {
+                        port = Some(lit)
+                    } else {
+                        return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects integer", Self::ATTR_PORT)));
                     }
                 }
-                _ => {}
             }
         };
         Ok(Self { port })

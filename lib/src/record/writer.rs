@@ -5,9 +5,9 @@ use std::{
     path::PathBuf,
     str::FromStr,
 };
-use log::info;
 
 use http_types::Url;
+use log::info;
 
 use crate::{model::JsonStub, server::stub_finder::StubFinder};
 
@@ -56,21 +56,19 @@ impl StubWriter {
     fn dir_name(&self, host: &str) -> String {
         if host == "127.0.0.1" {
             String::from("localhost")
+        } else if let Ok(url) = Url::from_str(host) {
+            let (host, port) = url.host_str()
+                .filter(|&h| h != "127.0.0.1")
+                .map(|h| h.replace(|c: char| !c.is_alphanumeric(), "."))
+                .map(|h| {
+                    url.port()
+                        .map(|p| (h.clone(), format!("-{}", p.to_string())))
+                        .unwrap_or_else(|| (h, String::new()))
+                })
+                .unwrap_or((String::from("localhost"), String::new()));
+            format!("{}{}", host, port)
         } else {
-            if let Ok(url) = Url::from_str(host) {
-                let (host, port) = url.host_str()
-                    .filter(|&h| h != "127.0.0.1")
-                    .map(|h| h.replace(|c: char| !c.is_alphanumeric(), "."))
-                    .map(|h| {
-                        url.port()
-                            .map(|p| (h.clone(), format!("-{}", p.to_string())))
-                            .unwrap_or_else(|| (h, String::new()))
-                    })
-                    .unwrap_or((String::from("localhost"), String::new()));
-                format!("{}{}", host, port)
-            } else {
-                String::from("default")
-            }
+            String::from("default")
         }
     }
 
