@@ -22,6 +22,7 @@ use fs_extra::{
 /// In your `build.rs` build script
 ///
 /// ```no_run
+/// # #[allow(clippy::needless_doctest_main)]
 /// fn main() { stubr_build::stubr_consumer() }
 /// ```
 pub fn stubr_consumer() {

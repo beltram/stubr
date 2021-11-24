@@ -42,6 +42,7 @@ impl PartialBody {
         self.path.is_some()
     }
 
+    #[allow(clippy::wrong_self_convention)]
     fn to_bytes(self) -> Option<Vec<u8>> {
         if !self.is_partial() {
             self.bytes.to_owned()
@@ -51,6 +52,7 @@ impl PartialBody {
         }
     }
 
+    #[allow(clippy::wrong_self_convention)]
     fn to_value(self) -> Option<Value> {
         if !self.is_partial() {
             self.value
