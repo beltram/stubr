@@ -150,6 +150,7 @@ mod verify_body_tests {
 
         // #[test]
         // TODO: pending a json_path alternative found
+        #[allow(dead_code)]
         fn expression_contains_should_generate_containing() {
             let stub = BodyPatternStub {
                 expression: Some(String::from("$.name")),
@@ -159,11 +160,12 @@ mod verify_body_tests {
             let stub = RequestStub { body_patterns: vec![stub], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
             let name = body.as_object().unwrap().get("name").unwrap();
-            assert!(name.as_str().unwrap().contains("a"));
+            assert!(name.as_str().unwrap().contains('a'));
         }
 
         // #[test]
         // TODO: pending a json_path alternative found
+        #[allow(dead_code)]
         fn expression_equal_to_json_should_generate_strictly_equal() {
             let expected = json!({"name": "john", "age": 42});
             let stub = BodyPatternStub {
@@ -183,6 +185,7 @@ mod verify_body_tests {
 
         // #[test]
         // TODO: pending a json_path alternative found
+        #[allow(dead_code)]
         fn many_expression_equal_to_json_should_generate_combined() {
             let expected_sender = json!({"name": "alice"});
             let expected_receiver = json!({"name": "bob"});
@@ -205,17 +208,18 @@ mod verify_body_tests {
 
         // #[test]
         // TODO: pending a json_path alternative found
+        #[allow(dead_code)]
         fn many_expression_equal_to_json_should_merge_paths() {
             let name = json!({"name": "alice"});
             let age = json!({"name": "bob"});
             let alice = BodyPatternStub {
                 expression: Some(String::from("$.person.alice")),
-                equal_to_json: Some(name.clone()),
+                equal_to_json: Some(name),
                 ..Default::default()
             };
             let bob = BodyPatternStub {
                 expression: Some(String::from("$.person.bob")),
-                equal_to_json: Some(age.clone()),
+                equal_to_json: Some(age),
                 ..Default::default()
             };
             let stub = RequestStub { body_patterns: vec![alice, bob], ..Default::default() };
@@ -229,6 +233,7 @@ mod verify_body_tests {
 
         // #[test]
         // TODO: pending a json_path alternative found
+        #[allow(dead_code)]
         fn many_expression_equal_to_json_and_contains_should_generate_combined() {
             let expected_sender = json!({"name": "alice"});
             let sender = BodyPatternStub {
@@ -245,11 +250,12 @@ mod verify_body_tests {
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
             let body = body.as_object().unwrap();
             assert_eq!(body.get("sender").unwrap(), &expected_sender);
-            assert!(body.get("receiver").unwrap().as_str().unwrap().contains("b"));
+            assert!(body.get("receiver").unwrap().as_str().unwrap().contains('b'));
         }
 
         // #[test]
         // TODO: pending a json_path alternative found
+        #[allow(dead_code)]
         fn many_contains_should_generate_combined() {
             let sender = BodyPatternStub {
                 expression: Some(String::from("$.sender")),
@@ -264,8 +270,8 @@ mod verify_body_tests {
             let stub = RequestStub { body_patterns: vec![sender, receiver], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
             let body = body.as_object().unwrap();
-            assert!(body.get("sender").unwrap().as_str().unwrap().contains("s"));
-            assert!(body.get("receiver").unwrap().as_str().unwrap().contains("r"));
+            assert!(body.get("sender").unwrap().as_str().unwrap().contains('s'));
+            assert!(body.get("receiver").unwrap().as_str().unwrap().contains('r'));
         }
     }
 
@@ -299,6 +305,7 @@ mod verify_body_tests {
 
         // #[test]
         // TODO: pending a json_path alternative found
+        #[allow(dead_code)]
         fn expression_equal_to_json_should_have_precedence_over_expression_contains() {
             let expected = json!({"name": "jdoe"});
             let priority = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(expected.clone()), ..Default::default() };

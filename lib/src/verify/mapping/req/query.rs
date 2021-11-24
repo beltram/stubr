@@ -43,20 +43,20 @@ mod verify_query_tests {
         let queries = Vec::<(String, String)>::from(&queries);
         assert_eq!(queries.len(), 1);
         assert_eq!(queries.get(0).unwrap().0, "a");
-        assert!(queries.get(0).unwrap().1.contains("b"));
+        assert!(queries.get(0).unwrap().1.contains('b'));
     }
 
     #[test]
     fn matches_to_should_generate_matching_regex() {
         let regex = "[a-z]{4}";
-        let matcher = MatcherValueStub { matches: Some(Value::String(String::from(regex.clone()))), ..Default::default() };
+        let matcher = MatcherValueStub { matches: Some(Value::String(String::from(regex))), ..Default::default() };
         let matcher = serde_json::to_value(matcher).unwrap();
         let query_parameters = vec![(String::from("a"), matcher)];
         let queries = HttpQueryParamsStub { query_parameters: Some(Map::from_iter(query_parameters)) };
         let queries = Vec::<(String, String)>::from(&queries);
         assert_eq!(queries.len(), 1);
         assert_eq!(queries.get(0).unwrap().0, "a");
-        let regex = Regex::from_str(&regex).unwrap();
+        let regex = Regex::from_str(regex).unwrap();
         assert!(regex.is_match(&queries.get(0).unwrap().1));
     }
 }

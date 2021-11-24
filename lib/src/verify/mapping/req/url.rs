@@ -137,7 +137,7 @@ mod verify_url_tests {
         fn should_map_url_pattern() {
             let (path_regex, query_regex) = ("([a-z]{4})", "([a-z]{4})");
             let regex = format!("/api/regex/{}\\?a={}", path_regex, query_regex);
-            let stub: RequestStub = HttpUrlStub { url_pattern: Some(String::from(regex)), ..Default::default() }.into();
+            let stub: RequestStub = HttpUrlStub { url_pattern: Some(regex), ..Default::default() }.into();
             let url = Url::from(&stub);
             assert!(url.path().starts_with("/api/regex/"));
             let regex = Regex::from_str(path_regex).unwrap();

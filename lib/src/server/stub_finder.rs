@@ -100,11 +100,9 @@ mod stub_finder_test {
     #[test]
     fn should_not_find_any_file_when_path_does_not_exist() {
         let from = PathBuf::from("tests/stubs/server/unknown");
-        let files = StubFinder::find_all_stubs(&from).collect::<Vec<PathBuf>>();
-        assert!(files.is_empty());
+        assert_eq!(StubFinder::find_all_stubs(&from).count(), 0);
         let from = PathBuf::from("tests/stubs/server/unknown.json");
-        let files = StubFinder::find_all_stubs(&from).collect::<Vec<PathBuf>>();
-        assert!(files.is_empty());
+        assert_eq!(StubFinder::find_all_stubs(&from).count(), 0);
     }
 
     #[test]

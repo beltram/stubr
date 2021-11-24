@@ -45,20 +45,20 @@ mod verify_header_tests {
         let headers = Vec::<(String, String)>::from(&headers);
         assert_eq!(headers.len(), 1);
         assert_eq!(headers.get(0).unwrap().0, "a");
-        assert!(headers.get(0).unwrap().1.contains("b"));
+        assert!(headers.get(0).unwrap().1.contains('b'));
     }
 
     #[test]
     fn matches_to_should_generate_matching_regex() {
         let regex = "[a-z]{4}";
-        let matcher = MatcherValueStub { matches: Some(Value::String(String::from(regex.clone()))), ..Default::default() };
+        let matcher = MatcherValueStub { matches: Some(Value::String(String::from(regex))), ..Default::default() };
         let matcher = serde_json::to_value(matcher).unwrap();
         let headers = vec![(String::from("a"), matcher)];
         let headers = HttpReqHeadersStub { headers: Some(Map::from_iter(headers)) };
         let headers = Vec::<(String, String)>::from(&headers);
         assert_eq!(headers.len(), 1);
         assert_eq!(headers.get(0).unwrap().0, "a");
-        let regex = Regex::from_str(&regex).unwrap();
+        let regex = Regex::from_str(regex).unwrap();
         assert!(regex.is_match(&headers.get(0).unwrap().1));
     }
 }

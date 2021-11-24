@@ -59,7 +59,7 @@ mod actix_verify_tests {
 
     #[actix_rt::test]
     async fn should_verify_simple() {
-        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok() }));
+        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().await }));
         let mut app = init_service(app).await;
         let stub = JsonStub {
             uuid: None,
