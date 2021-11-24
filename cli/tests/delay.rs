@@ -1,8 +1,8 @@
 use std::time::Duration;
 
+use asserhttp::*;
 use async_std::{io, task};
 use surf::get;
-use asserhttp::*;
 
 use utils::StubrCli;
 

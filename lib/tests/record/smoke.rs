@@ -1,10 +1,11 @@
+use std::time::Duration;
+
 use asserhttp::*;
 use serde_json::json;
 
 use stubr::{RecordConfig, Stubr};
 
 use crate::utils::*;
-use std::time::Duration;
 
 #[tokio::test(flavor = "multi_thread")]
 #[stubr::mock("record/smoke/success.json")]

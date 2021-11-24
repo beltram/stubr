@@ -69,7 +69,7 @@ pub fn record_cfg() -> RecordConfig {
 pub fn relaxed_req_headers() -> Vec<&'static str> {
     vec![
         "accept", "accept-encoding", "content-type", "host", "proxy-connection", "user-agent",
-        "expect", "transfer-encoding", "content-length"
+        "expect", "transfer-encoding", "content-length",
     ]
 }
 

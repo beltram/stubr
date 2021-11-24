@@ -1,13 +1,13 @@
 use std::hash::{Hash, Hasher};
 
+// use super::super::json_path::JsonPathGenerator;
+use itertools::Itertools;
 use json_value_merge::Merge;
 use serde_json::Value;
 
 use crate::model::request::{body::BodyPatternStub, RequestStub};
 
 use super::super::contains::ContainsGenerator;
-// use super::super::json_path::JsonPathGenerator;
-use itertools::Itertools;
 
 impl From<&RequestStub> for Vec<u8> {
     fn from(stub: &RequestStub) -> Self {
@@ -63,7 +63,7 @@ impl PartialBody {
         self.path.as_ref()
             .zip(self.value.to_owned())
             .map(|(_, v)| v)
-            // .map(|(path, value)| JsonPathGenerator::generate_path(path, value))
+        // .map(|(path, value)| JsonPathGenerator::generate_path(path, value))
     }
 }
 

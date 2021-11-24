@@ -20,8 +20,11 @@
 </div>
 <br/>
 
-One of the key benefit of relying upon json files for stubbing your web applications is that they are both portable and language agnostic.  
-This crates aims at introducing a 'producer-driven' way of testing your applications: a producer (which exposes the API) publishes its mocks ; consumer(s) app(s) pull them and can use those stubs in their tests, configuring their http clients to hit them.
+One of the key benefit of relying upon json files for stubbing your web applications is that they are both portable and
+language agnostic.  
+This crates aims at introducing a 'producer-driven' way of testing your applications: a producer (which exposes the API)
+publishes its mocks ; consumer(s) app(s) pull them and can use those stubs in their tests, configuring their http
+clients to hit them.
 
 ## as a producer
 
@@ -39,7 +42,8 @@ If you have some `include` or `exclude` in your `Cargo.toml` make sure it does n
 
 ## as a consumer
 
-In your `Cargo.toml` use `stubr-build` in your `build-dependencies` and also add your producer apps. You also need to invoke it in a `build.rs` file.
+In your `Cargo.toml` use `stubr-build` in your `build-dependencies` and also add your producer apps. You also need to
+invoke it in a `build.rs` file.
 
 ```toml
 [package]
@@ -57,7 +61,8 @@ Then in your `build.rs`:
 fn main() { stubr_build::stubr_consumer() }
 ```
 
-In order to extract stubs (invoke the build script), `cargo build` has to be invoked. So think about executing it before tests in your CI or locally.  
+In order to extract stubs (invoke the build script), `cargo build` has to be invoked. So think about executing it before
+tests in your CI or locally.
 
 To mount those stubs in a server you can then use a macro
 

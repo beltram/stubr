@@ -144,7 +144,7 @@ mod verify_url_tests {
             assert!(regex.is_match(url.as_str()));
             let mut queries = url.query_pairs();
             assert_eq!(queries.count(), 1);
-            let (k,v) = queries.next().unwrap();
+            let (k, v) = queries.next().unwrap();
             assert_eq!(k, Cow::Borrowed("a"));
             assert!(Regex::from_str(query_regex).unwrap().is_match(&v.to_string()));
         }

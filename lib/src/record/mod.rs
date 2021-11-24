@@ -8,7 +8,6 @@ use reqwest::Client as ReqwestClient;
 use tokio::sync::mpsc::Sender;
 
 use config::RecordConfig;
-use self::http::RecordedExchange;
 use logger::RecordLogger;
 use proxy::Proxy;
 use writer::StubWriter;
@@ -19,6 +18,8 @@ use crate::isahc_client;
 use crate::reqwest_client;
 
 use super::model::JsonStub;
+
+use self::http::RecordedExchange;
 
 mod http;
 mod proxy;

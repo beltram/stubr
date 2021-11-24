@@ -6,7 +6,7 @@ mod actix;
 mod stub_finder;
 mod mapping;
 
-#[async_trait(?Send)]
+#[async_trait(? Send)]
 pub trait StubrVerify {
     async fn verify(self);
 }

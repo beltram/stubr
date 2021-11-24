@@ -22,8 +22,8 @@
 
 ## #[stubr::mock]
 
-Starts a Stubr mock server and creates a `stubr` variable which can be used to call the server e.g. `stubr.uri()`.
-It supports both standard and async test functions.
+Starts a Stubr mock server and creates a `stubr` variable which can be used to call the server e.g. `stubr.uri()`. It
+supports both standard and async test functions.
 
 ```rust
 use isahc;
@@ -38,11 +38,11 @@ fn simple_test() {
 
 ## #[stubr::record]
 
-Can also be used for recording with `#[stubr::record]`. It will spawn a standalone proxy which will record all http exchanges.  
-A `recorder` variable is created so that you can interact with the proxy.
-You then need to configure your http client to use this proxy. With `record-isahc` or `record-reqwest` features you can get
-an http client configured to hit the recorder proxy.
-It supports both standard and async test functions.
+Can also be used for recording with `#[stubr::record]`. It will spawn a standalone proxy which will record all http
+exchanges.  
+A `recorder` variable is created so that you can interact with the proxy. You then need to configure your http client to
+use this proxy. With `record-isahc` or `record-reqwest` features you can get an http client configured to hit the
+recorder proxy. It supports both standard and async test functions.
 
 ```rust
 use isahc;

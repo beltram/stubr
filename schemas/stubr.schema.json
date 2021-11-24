@@ -148,7 +148,10 @@
                 "properties": {
                   "equalToJson": {
                     "description": "Request body must be strictly equal to this",
-                    "type": ["object", "array"]
+                    "type": [
+                      "object",
+                      "array"
+                    ]
                   },
                   "ignoreExtraElements": {
                     "description": "Ignore extra json fields supplied in request body",
@@ -227,7 +230,10 @@
         },
         "jsonBody": {
           "description": "Json response body, adds 'Content-Type:application/json' header in the response",
-          "type": ["object", "array"]
+          "type": [
+            "object",
+            "array"
+          ]
         },
         "headers": {
           "description": "Response headers",

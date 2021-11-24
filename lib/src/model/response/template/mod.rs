@@ -10,10 +10,10 @@ use helpers::{
     datetime::NowHelper,
     json_path::JsonPathHelper,
     numbers::NumberHelper,
+    size::SizeHelper,
     string::StringHelper,
     trim::TrimHelper,
     url_encode::UrlEncodingHelper,
-    size::SizeHelper,
 };
 
 use crate::{cloud::opentracing::OpenTracing, model::response::ResponseStub};

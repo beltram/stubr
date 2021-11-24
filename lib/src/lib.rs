@@ -82,21 +82,21 @@ extern crate lazy_static;
 
 #[cfg(feature = "record")]
 pub use record::{config::RecordConfig, StubrRecord};
-#[cfg(feature = "record")]
-pub use record::core::Record;
 #[cfg(all(feature = "record", feature = "record-isahc"))]
 pub use record::client::isahc_client;
 #[cfg(all(feature = "record", feature = "record-reqwest"))]
 pub use record::client::reqwest_client;
+#[cfg(feature = "record")]
+pub use record::core::Record;
 pub use server::{config::Config, Stubr};
 #[cfg(feature = "attributes")]
 pub use stubr_attributes::apps;
 #[cfg(feature = "attributes")]
 pub use stubr_attributes::mock;
-#[cfg(feature = "verify")]
-pub use verify::StubrVerify;
 #[cfg(all(feature = "record", feature = "attributes"))]
 pub use stubr_attributes::record;
+#[cfg(feature = "verify")]
+pub use verify::StubrVerify;
 
 mod model;
 mod server;

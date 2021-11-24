@@ -37,7 +37,7 @@ mod req_queries_mapping_tests {
     fn should_map_single_query() {
         let req = Request::get("http://localhost?a=1");
         let mut exchange = RecordedExchange { 0: RecordedRequest(req), ..Default::default() };
-        let expected = Map::from_iter(vec![("a".to_string(), json!({"equalTo": "1"})), ]);
+        let expected = Map::from_iter(vec![("a".to_string(), json!({"equalTo": "1"}))]);
         assert_eq!(
             HttpQueryParamsStub::from(&mut exchange),
             HttpQueryParamsStub { query_parameters: Some(expected) }

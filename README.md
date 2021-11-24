@@ -57,7 +57,7 @@ We list here all the capabilities supported by the original [Wiremock](https://g
 track down which ones are implemented by stubr. For having a view of what is supported in a json stub refer to the
 [Wiremock cheat sheet](https://github.com/beltram/stubr/tree/main/lib#wiremock-cheat-sheet).
 
-*Items marked with (\*) are exclusive to stubr*  
+*Items marked with (\*) are exclusive to stubr*
 
 <details open>
 <summary><b>Global</b></summary>
@@ -72,13 +72,13 @@ track down which ones are implemented by stubr. For having a view of what is sup
 <summary><b><a href="http://wiremock.org/docs/request-matching/"> Request matching</a></b></summary>
 
 * [x] body
-  * [x] `equalToJson`
-  * [x] `ignoreExtraElements`
-  * [x] `ignoreArrayOrder`
-  * [x] `matchesJsonPath`
-  * [x] `binaryEqualTo`
-  * [x] `expression`
-  * [x] `contains`
+    * [x] `equalToJson`
+    * [x] `ignoreExtraElements`
+    * [x] `ignoreArrayOrder`
+    * [x] `matchesJsonPath`
+    * [x] `binaryEqualTo`
+    * [x] `expression`
+    * [x] `contains`
 * [x] method (GET, POST, ANY etc...)
 * [x] url
     * [x] `url`
@@ -162,7 +162,7 @@ track down which ones are implemented by stubr. For having a view of what is sup
 
 # Docker
 
-A docker image is published [here](https://github.com/users/beltram/packages/container/package/stubr) with each release.  
+A docker image is published [here](https://github.com/users/beltram/packages/container/package/stubr) with each release.
 
 You can play with it with the following commands:
 
@@ -200,26 +200,28 @@ mv stubs stubr &&
 helm install hello-stubr ./stubr
 ```
 
-For the hurry ones who also have [k3d](https://k3d.io/) installed locally you can bootstrap a Kubernetes cluster
-locally and install stubr chart on it with the following command
+For the hurry ones who also have [k3d](https://k3d.io/) installed locally you can bootstrap a Kubernetes cluster locally
+and install stubr chart on it with the following command
+
 ```bash
 curl https://raw.githubusercontent.com/beltram/stubr/main/charts/example/run.sh | sh
 ```
 
 # benchmark
 
-Performance matters for `stubr` because it is meant to be a lighter version of [Wiremock](https://github.com/tomakehurst/wiremock).
+Performance matters for `stubr` because it is meant to be a lighter version
+of [Wiremock](https://github.com/tomakehurst/wiremock).
 
 ### comparing to wiremock
 
 A very simple benchmark comparing `stubr` to wiremock is
-available [here](https://github.com/beltram/stubr/blob/main/bench/report.md).  
+available [here](https://github.com/beltram/stubr/blob/main/bench/report.md).
 
 ### cargo bench
 
 A benchmark of `stubr` itself, powered by [criterion](https://crates.io/crates/criterion) is available for each release.
-The latest is available [here](https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz).
-It aims at tracking down progresses/regressions made.  
+The latest is available [here](https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz). It aims at
+tracking down progresses/regressions made.
 
 I'm still looking for a way to turn this into something more ergonomic, especially I'd like to provide a way to compare
 2 benchmarks. Meanwhile, you can download the latest benchmark with these commands.
@@ -231,25 +233,24 @@ curl -L https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz |
 
 Then open `./stubr-bench/report/index.html` in your browser.
 
-
-
 # IDE completion
 
-A json schema is also maintained [here](schemas/stubr.schema.json) to provide completion in IDE. It just contains completion
-for features implemented in stubr and should alleviate you from a bit of pain when writing json from scratch.
+A json schema is also maintained [here](schemas/stubr.schema.json) to provide completion in IDE. It just contains
+completion for features implemented in stubr and should alleviate you from a bit of pain when writing json from scratch.
 
 <details open>
 <summary><b>IntelliJ</b></summary>
 
-*Manual installation is required pending the schema is added to [schemastore](https://github.com/SchemaStore/schemastore)*
+*Manual installation is required pending the schema is added
+to [schemastore](https://github.com/SchemaStore/schemastore)*
 
 * Go to `Settings > Languages & Frameworks > Schemas & DTDs > JSON Schema Mappings`
 * Add a mapping (click on the upper `+`)
 * Then supply the following
-  * name: `stubr`
-  * Schema file or URL: `https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json`
-  * Schema version: `JSON Schema version 7`
-  * File path pattern: `stubs/*.json` (and `mappings/*.json` if you want to use it for original wiremock stubs)
+    * name: `stubr`
+    * Schema file or URL: `https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json`
+    * Schema version: `JSON Schema version 7`
+    * File path pattern: `stubs/*.json` (and `mappings/*.json` if you want to use it for original wiremock stubs)
 * The `Apply`
 
 </details>

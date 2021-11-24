@@ -1,4 +1,4 @@
-use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext, PathAndJson};
+use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, PathAndJson, RenderContext};
 use serde_json::Value;
 
 pub struct SizeHelper;

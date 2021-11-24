@@ -22,11 +22,12 @@
 
 # use it
 
-You can use `stubr` as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into json stubs.  
+You can use `stubr` as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into
+json stubs.  
 To get a list of all available options run `stubr --help`
 
 The simplest usage is for serving Wiremock stubs under a directory (or just a single file).  
-For example let's generate a simple stub.  
+For example let's generate a simple stub.
 
 ```bash
 echo "{\"request\": {\"method\": \"GET\"}, \"response\": { \"status\": 200 }}" > hello.json
@@ -96,13 +97,14 @@ stubr completion bash
 
 # recording
 
-In order to record http traffic, `stubr` can act as a proxy to dump this traffic into json stubs on your local filesystem.
-Recording can be started with the `stubr record` command. Stubs will be grouped by hosts. You can then play them back
-using `stubr`.
+In order to record http traffic, `stubr` can act as a proxy to dump this traffic into json stubs on your local
+filesystem. Recording can be started with the `stubr record` command. Stubs will be grouped by hosts. You can then play
+them back using `stubr`.
 
 ### example
 
 *Using [httpie](https://httpie.io/)*
+
 ```bash
 stubr record -p 3030
 http jsonplaceholder.typicode.com/users --proxy http://localhost:3030

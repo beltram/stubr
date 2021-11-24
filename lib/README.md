@@ -29,7 +29,8 @@ publishes [Wiremock](https://github.com/tomakehurst/wiremock)
 e.g. [Spring Boot](https://spring.io/projects/spring-boot)
 with [Spring Cloud Contract](https://spring.io/projects/spring-cloud-contract).
 
-You can use [stubr-build](https://crates.io/crates/stubr-build) to share stubs between a producer project and a consumer one.  
+You can use [stubr-build](https://crates.io/crates/stubr-build) to share stubs between a producer project and a consumer
+one.
 
 Also available as a [cli](https://crates.io/crates/stubr-cli).
 
@@ -173,14 +174,14 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
 
 # recording
 
-Stubr can be used to record http traffic in your unit tests and dump them into json stubs.
-Currently, integration is quite limited but much more (actix, warp, rocket, tide) are around the corner.  
+Stubr can be used to record http traffic in your unit tests and dump them into json stubs. Currently, integration is
+quite limited but much more (actix, warp, rocket, tide) are around the corner.
 
 The recorder acts as a standalone proxy server, so you need to configure your http client to use it.  
 You can use the `record-isahc` feature to get a configured [isahc](https://github.com/sagebind/isahc) client with
-`Stubr::record().isahc_client()` or the `record-reqwest` feature to get a configured 
-[reqwest](https://github.com/seanmonstar/reqwest) client with `Stubr::record().reqwest_client()`.
-Your stubs will then be stored under `target/stubs/localhost`
+`Stubr::record().isahc_client()` or the `record-reqwest` feature to get a configured
+[reqwest](https://github.com/seanmonstar/reqwest) client with `Stubr::record().reqwest_client()`. Your stubs will then
+be stored under `target/stubs/localhost`
 
 ```rust
 use stubr::Stubr;
