@@ -18,7 +18,7 @@ wiremock = "0.5.8"
 anyhow = { version = "1.0.48", default-features = false }
 async-trait = "0.1.51"
 serde_json = { version = "1.0.71", default-features = false }
-http-types = "2.12.0"
+http-types = { version = "2.12.0", default-features = false }
 itertools = "0.10.1"
 const_format = "0.2.22"
 regex = "1.4.6"
