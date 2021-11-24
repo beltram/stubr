@@ -21,7 +21,7 @@ serde_json = { version = "1.0.71", default-features = false }
 http-types = { version = "2.12.0", default-features = false }
 itertools = { version = "0.10.1", default-features = false }
 const_format = "0.2.22"
-regex = "1.4.6"
+regex = { version = "1.4.6", default-features = false }
 jsonpath_lib = "0.3.0"
 #jsonpath_lib = { git = "https://github.com/beltram/jsonpath", rev = "ca0bcfcdc8c3eb9ae86459aad31a7a59a1f00a9f" }
 handlebars = "=4.1.5"
