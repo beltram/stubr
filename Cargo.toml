@@ -13,6 +13,7 @@ members = [
 [profile.release]
 lto = "fat"
 codegen-units = 1
+panic = "abort"
 
 [profile.dev]
 # improves compilation performances on macos
