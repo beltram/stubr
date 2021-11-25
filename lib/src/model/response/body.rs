@@ -142,7 +142,7 @@ impl HandlebarTemplatable for BodyStub {
                 self.register_json_body_template(array.iter());
             }
         } else if let Some(body_file) = self.body_file_name.as_ref() {
-            self.register(body_file.path.as_str(), body_file.content.clone());
+            self.register(body_file.path.as_str(), &body_file.content);
         }
     }
 
