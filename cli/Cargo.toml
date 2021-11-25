@@ -20,7 +20,7 @@ path = "src/main.rs"
 stubr = { path = "../lib", version = "0.4.11", features = ["record"], default-features = false }
 anyhow = { version = "1.0.48", default-features = false }
 directories = "4.0.1"
-clap = "3.0.0-beta.5"
+clap = { version = "3.0.0-beta.5", default-features = false, features = ["derive"] }
 clap_generate = "3.0.0-beta.5"
 colored = "2.0.0"
 humantime = "2.1.0"
@@ -37,5 +37,5 @@ asserhttp = { version = "0.2.3", features = ["surf"] }
 async-std = { version = "1.10.0", features = ["attributes"] }
 
 [features]
-default = []
+default = ["clap/color", "clap/suggestions"]
 cloud = ["stubr/cloud"]
