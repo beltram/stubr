@@ -10,7 +10,7 @@ jobs:
   check:
     strategy:
       matrix:
-        os: [ macos-latest, windows-latest, ubuntu-latest ]
+        os: [ macos-11, windows-latest, ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2.4.0
@@ -39,7 +39,7 @@ jobs:
             to-file: stubr-linux.tar.gz
             args: --best --lzma
             strip: true
-          - os: macos-latest
+          - os: macos-11
             file: stubr
             from-file: ./target/release/stubr
             to-file: stubr-macos.tar.gz
@@ -69,7 +69,7 @@ jobs:
           strip: ${{ matrix.strip }}
         continue-on-error: true
       - name: compression/tar
-        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-11' }}
         run: |
           cd target/release
           tar czf ${{ matrix.to-file }} ${{ matrix.file }}
