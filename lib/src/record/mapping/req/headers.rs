@@ -50,7 +50,7 @@ mod req_url_mapping_tests {
         let mut exchange = RecordedExchange { 0: RecordedRequest(req), ..Default::default() };
         let expected = Map::from_iter(vec![("x-key".to_string(), json!({"equalTo": "value"}))]);
         assert_eq!(
-            HttpReqHeadersStub::from((&mut exchange, RecordConfig::default())),
+            HttpReqHeadersStub::from((&mut exchange, &RecordConfig::default())),
             HttpReqHeadersStub { headers: Some(expected) }
         )
     }
@@ -66,7 +66,7 @@ mod req_url_mapping_tests {
             ("x-b".to_string(), json!({"equalTo": "value-b"})),
         ]);
         assert_eq!(
-            HttpReqHeadersStub::from((&mut exchange, RecordConfig::default())),
+            HttpReqHeadersStub::from((&mut exchange, &RecordConfig::default())),
             HttpReqHeadersStub { headers: Some(expected) }
         )
     }
@@ -76,7 +76,7 @@ mod req_url_mapping_tests {
         let req = Request::get("http://localhost");
         let mut exchange = RecordedExchange { 0: RecordedRequest(req), ..Default::default() };
         assert_eq!(
-            HttpReqHeadersStub::from((&mut exchange, RecordConfig::default())),
+            HttpReqHeadersStub::from((&mut exchange, &RecordConfig::default())),
             HttpReqHeadersStub { headers: None }
         )
     }
@@ -88,7 +88,7 @@ mod req_url_mapping_tests {
         let mut exchange = RecordedExchange { 0: RecordedRequest(req), ..Default::default() };
         let expected = Map::from_iter(vec![("cache-control".to_string(), json!({"equalTo": "no-cache, no-transform"}))]);
         assert_eq!(
-            HttpReqHeadersStub::from((&mut exchange, RecordConfig::default())),
+            HttpReqHeadersStub::from((&mut exchange, &RecordConfig::default())),
             HttpReqHeadersStub { headers: Some(expected) }
         )
     }
@@ -102,7 +102,7 @@ mod req_url_mapping_tests {
         let expected = Map::from_iter(vec![("x-b".to_string(), json!({"equalTo": "b"}))]);
         let cfg = RecordConfig { except_request_headers: Some(vec!["x-a"]), ..Default::default() };
         assert_eq!(
-            HttpReqHeadersStub::from((&mut exchange, cfg)),
+            HttpReqHeadersStub::from((&mut exchange, &cfg)),
             HttpReqHeadersStub { headers: Some(expected) }
         )
     }

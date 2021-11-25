@@ -62,7 +62,7 @@ impl Proxy {
     }
 
     async fn reply(mut exchange: RecordedExchange, cfg: RecordConfig, then: fn(RecordInput)) -> Result<impl Reply, Rejection> {
-        then((&mut exchange, cfg));
+        then((&mut exchange, &cfg));
         Ok(exchange.1)
     }
 }

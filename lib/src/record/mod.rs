@@ -33,7 +33,7 @@ mod logger;
 pub mod core;
 pub mod record_client;
 
-type RecordInput<'a> = (&'a mut RecordedExchange, RecordConfig);
+type RecordInput<'a> = (&'a mut RecordedExchange, &'a RecordConfig);
 
 pub struct StubrRecord {
     addr: SocketAddr,
@@ -53,9 +53,9 @@ impl StubrRecord {
             let method = ex.req().method().to_string();
             let url = ex.req().url().clone();
             let status: u16 = ex.resp().status().into();
-            let stub = JsonStub::from((ex, cfg.clone()));
+            let stub = JsonStub::from((ex, cfg));
             let writer = StubWriter { stub };
-            writer.write(&host, cfg.output)
+            writer.write(&host, cfg.output.as_ref())
                 .map(|f| RecordLogger::success(f, status, &method, &url))
                 .unwrap_or_else(|e| RecordLogger::error(e, status, &method, &url));
         });

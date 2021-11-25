@@ -9,7 +9,7 @@ impl From<RecordInput<'_>> for JsonStub {
     fn from((ex, cfg): RecordInput) -> Self {
         Self {
             uuid: None,
-            request: RequestStub::from((&mut *ex, cfg.clone())),
+            request: RequestStub::from((&mut *ex, cfg)),
             response: ResponseStub::from((&mut *ex, cfg)),
         }
     }

@@ -32,9 +32,9 @@ impl Record for ReqwestRequestBuilder {
         let host = req.0.url().host_str().unwrap().to_string();
         let mut exchange = RecordedExchange(req, resp);
 
-        let stub = JsonStub::from((&mut exchange, cfg.clone()));
+        let stub = JsonStub::from((&mut exchange, &cfg));
         let writer = StubWriter { stub };
-        writer.write(&host, cfg.output).unwrap();
+        writer.write(&host, cfg.output.as_ref()).unwrap();
         self
     }
 }

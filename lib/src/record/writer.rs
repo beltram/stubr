@@ -18,7 +18,7 @@ pub(crate) struct StubWriter {
 impl StubWriter {
     const RECORDED_TEST_DIR: &'static str = "stubs";
 
-    pub(crate) fn write(&self, host: &str, output: Option<PathBuf>) -> anyhow::Result<PathBuf> {
+    pub(crate) fn write(&self, host: &str, output: Option<&PathBuf>) -> anyhow::Result<PathBuf> {
         let output = self.output_and_create(host, output);
         let file = output.join(self.stub_name());
         File::create(&file)
@@ -44,8 +44,8 @@ impl StubWriter {
             .map(|it| format!("{}-", it))
     }
 
-    fn output_and_create(&self, host: &str, output: Option<PathBuf>) -> PathBuf {
-        let output = output.unwrap_or_else(Self::default_output).join(self.dir_name(host));
+    fn output_and_create(&self, host: &str, output: Option<&PathBuf>) -> PathBuf {
+        let output = output.map(|it| it.to_path_buf()).unwrap_or_else(Self::default_output).join(self.dir_name(host));
         if !output.exists() {
             create_dir_all(&output)
                 .unwrap_or_else(|_| panic!("Failed creating recorded stubs output directory at '{:?}'", &output));

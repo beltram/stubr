@@ -47,7 +47,7 @@ mod resp_header_mapping_tests {
         let mut exchange = RecordedExchange { 1: RecordedResponse(resp), ..Default::default() };
         let expected = Map::from_iter(vec![("x-key".to_string(), json!("value"))]);
         assert_eq!(
-            HttpRespHeadersStub::from((&mut exchange, RecordConfig::default())),
+            HttpRespHeadersStub::from((&mut exchange, &RecordConfig::default())),
             HttpRespHeadersStub { headers: Some(expected) }
         )
     }
@@ -63,7 +63,7 @@ mod resp_header_mapping_tests {
             ("x-b".to_string(), json!("value-b")),
         ]);
         assert_eq!(
-            HttpRespHeadersStub::from((&mut exchange, RecordConfig::default())),
+            HttpRespHeadersStub::from((&mut exchange, &RecordConfig::default())),
             HttpRespHeadersStub { headers: Some(expected) }
         )
     }
@@ -73,7 +73,7 @@ mod resp_header_mapping_tests {
         let resp = Response::new(200);
         let mut exchange = RecordedExchange { 1: RecordedResponse(resp), ..Default::default() };
         assert_eq!(
-            HttpRespHeadersStub::from((&mut exchange, RecordConfig::default())),
+            HttpRespHeadersStub::from((&mut exchange, &RecordConfig::default())),
             HttpRespHeadersStub { headers: None }
         )
     }
@@ -85,7 +85,7 @@ mod resp_header_mapping_tests {
         let mut exchange = RecordedExchange { 1: RecordedResponse(resp), ..Default::default() };
         let expected = Map::from_iter(vec![("cache-control".to_string(), json!("no-cache, no-transform"))]);
         assert_eq!(
-            HttpRespHeadersStub::from((&mut exchange, RecordConfig::default())),
+            HttpRespHeadersStub::from((&mut exchange, &RecordConfig::default())),
             HttpRespHeadersStub { headers: Some(expected) }
         )
     }
@@ -99,7 +99,7 @@ mod resp_header_mapping_tests {
         let expected = Map::from_iter(vec![("x-b".to_string(), json!("b"))]);
         let cfg = RecordConfig { except_response_headers: Some(vec!["x-a"]), ..Default::default() };
         assert_eq!(
-            HttpRespHeadersStub::from((&mut exchange, cfg)),
+            HttpRespHeadersStub::from((&mut exchange, &cfg)),
             HttpRespHeadersStub { headers: Some(expected) }
         )
     }
