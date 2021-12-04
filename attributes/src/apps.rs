@@ -163,7 +163,7 @@ mod apps_tests {
 
         #[test]
         fn should_accept_str_app() {
-            let path = Lit::Str(LitStr::new("stubr-producer", Span::call_site()));
+            let path = Lit::Str(LitStr::new("stub-producer", Span::call_site()));
             let args = vec![NestedMeta::from(path)];
             let transformed = apps_transform(args, quote! { fn a() {} });
             assert!(transformed.is_ok())

@@ -44,9 +44,9 @@ dependencies = [
  "actix-rt 2.4.0",
  "actix-web",
  "asserhttp",
+ "stub-producer",
  "stubr",
  "stubr-build",
- "stubr-producer",
 ]
 
 [[package]]
@@ -3765,6 +3765,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 
 [[package]]
+name = "stub-producer"
+version = "0.0.1"
+
+[[package]]
 name = "stubr"
 version = "0.4.11"
 dependencies = [
@@ -3864,14 +3868,10 @@ dependencies = [
  "asserhttp",
  "async-std",
  "isahc 1.6.0",
+ "stub-producer",
  "stubr",
  "stubr-build",
- "stubr-producer",
 ]
-
-[[package]]
-name = "stubr-producer"
-version = "0.0.1"
 
 [[package]]
 name = "subtle"

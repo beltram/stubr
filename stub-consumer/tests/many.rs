@@ -5,7 +5,7 @@ use stubr::Stubr;
 
 #[async_std::test]
 async fn app_should_run_producer_stubs() {
-    let apps = Stubr::apps(&["stubr-producer", "actix-producer"]).await;
+    let apps = Stubr::apps(&["stub-producer", "actix-producer"]).await;
     let (simple, actix) = (apps.get(0).unwrap(), apps.get(1).unwrap());
     isahc::get_async(simple.uri()).await.expect_status_ok();
     isahc::post_async(simple.uri(), AsyncBody::empty()).await.expect_status_created();
@@ -16,7 +16,7 @@ async fn app_should_run_producer_stubs() {
 
 #[test]
 fn blocking_app_should_run_producer_stubs() {
-    let apps = Stubr::apps_blocking(&["stubr-producer", "actix-producer"]);
+    let apps = Stubr::apps_blocking(&["stub-producer", "actix-producer"]);
     let (simple, actix) = (apps.get(0).unwrap(), apps.get(1).unwrap());
     isahc::get(simple.uri()).expect_status_ok();
     isahc::post(simple.uri(), Body::empty()).expect_status_created();

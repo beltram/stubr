@@ -6,7 +6,7 @@ publish = false
 
 [build-dependencies]
 stubr-build = { path = "../build", version = "0.4.11" }
-stubr-producer = { path = "../stub-producer" }
+stub-producer = { path = "../stub-producer" }
 
 [dependencies]
 actix-web = "3.3.2"
