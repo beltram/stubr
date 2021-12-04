@@ -24,4 +24,4 @@ itertools = { version = "0.10.1", default-features = false }
 [dev-dependencies]
 isahc = "1.6.0"
 async-std = "1.10.0"
-asserhttp = "0.2.3"
+asserhttp = "0.2.4"

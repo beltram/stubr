@@ -33,7 +33,7 @@ async-std = "1.10.0"
 surf = "2.3.2"
 isahc = { version = "1.6.0", features = ["json"] }
 assert_cmd = "2.0.2"
-asserhttp = { version = "0.2.3", features = ["surf"] }
+asserhttp = { version = "0.2.4", features = ["surf"] }
 async-std = { version = "1.10.0", features = ["attributes"] }
 
 [features]
