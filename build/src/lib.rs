@@ -57,14 +57,14 @@ impl StubrConsumer {
             .join(self.package.name())
             .into_path_unlocked();
         if !output_dir.exists() { create_dir_all(&output_dir).unwrap(); }
-        self.find_all_stubs().iter()
+        self.find_all_stubs()
             .for_each(|(name, paths)| {
-                let target = output_dir.join(name);
+                let target = output_dir.join(&name);
                 if !target.exists() { create_dir_all(&target).unwrap(); } else {
                     remove_dir_all(&target).unwrap();
                     create_dir(&target).unwrap();
                 }
-                match fs_extra::copy_items(paths, target, &CopyOptions::default()) {
+                match fs_extra::copy_items(&paths, target, &CopyOptions::default()) {
                     Ok(_) => {}
                     Err(CopyError { kind, .. }) => {
                         if let ErrorKind::AlreadyExists = kind {} else {
@@ -75,14 +75,13 @@ impl StubrConsumer {
             })
     }
 
-    fn find_all_stubs(&self) -> Vec<(String, Vec<PathBuf>)> {
+    fn find_all_stubs(&self) -> impl Iterator<Item=(String, Vec<PathBuf>)> + '_ {
         self.build_dependencies()
-            .filter_map(|d| {
+            .filter_map(move |d| {
                 self.src_path(d)
                     .map(|p| (d.package_name().to_string(), self.find_stubs(p)))
             })
             .filter(|(_, files)| !files.is_empty())
-            .collect()
     }
 
     fn src_path(&self, dep: &Dependency) -> Option<PathBuf> {
