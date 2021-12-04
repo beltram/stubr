@@ -109,7 +109,7 @@ impl StubrConsumer {
     }
 
     fn build_dependencies(&self) -> impl Iterator<Item=&Dependency> {
-        self.package.dependencies().into_iter()
+        self.package.dependencies().iter()
             .filter(|d| d.is_build())
     }
 
