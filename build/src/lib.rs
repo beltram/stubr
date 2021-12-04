@@ -76,7 +76,7 @@ impl StubrConsumer {
     }
 
     fn find_all_stubs(&self) -> Vec<(String, Vec<PathBuf>)> {
-        self.build_dependencies().iter()
+        self.build_dependencies()
             .filter_map(|d| {
                 self.src_path(d)
                     .map(|p| (d.package_name().to_string(), self.find_stubs(p)))
@@ -109,11 +109,9 @@ impl StubrConsumer {
             })
     }
 
-    fn build_dependencies(&self) -> Vec<Dependency> {
-        self.package.dependencies().iter()
+    fn build_dependencies(&self) -> impl Iterator<Item=&Dependency> {
+        self.package.dependencies().into_iter()
             .filter(|d| d.is_build())
-            .map(|it| it.to_owned())
-            .collect()
     }
 
     fn find_stubs(&self, path: PathBuf) -> Vec<PathBuf> {
