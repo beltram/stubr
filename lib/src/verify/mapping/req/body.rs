@@ -141,7 +141,7 @@ mod verify_body_tests {
         #[should_panic(expected = "'!!!' must be Base64 encoded")]
         #[test]
         fn binary_equal_to_should_fail_when_not_base64() {
-            PartialBody::from(&BodyPatternStub { binary_equal_to: Some(String::from("!!!")), ..Default::default() });
+            let _ = PartialBody::from(&BodyPatternStub { binary_equal_to: Some(String::from("!!!")), ..Default::default() });
         }
     }
 
