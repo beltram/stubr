@@ -19,7 +19,7 @@ proc-macro = true
 syn = "1.0.82"
 quote = "1.0.10"
 proc-macro2 = "1.0.33"
-itertools = { version = "0.10.1", default-features = false }
+itertools = { version = "0.10.3", default-features = false }
 
 [dev-dependencies]
 isahc = "1.6.0"
