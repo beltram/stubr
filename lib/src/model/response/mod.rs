@@ -1,6 +1,5 @@
 use std::hash::{Hash, Hasher};
 
-use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use wiremock::ResponseTemplate;
 
@@ -43,10 +42,9 @@ impl ResponseStub {
         self.transformers.iter().any(|it| it == Self::RESPONSE_TEMPLATE)
     }
 
-    pub fn defined_header_keys(&self) -> Vec<&str> {
+    pub fn defined_header_keys(&self) -> Option<impl Iterator<Item=&str>> {
         self.headers.headers.as_ref()
-            .map(|headers| headers.keys().map(|it| it.as_str()).collect_vec())
-            .unwrap_or_default()
+            .map(|headers| headers.keys().map(String::as_str))
     }
 
     pub fn status(&self) -> u16 {

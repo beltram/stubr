@@ -51,7 +51,9 @@ pub struct StubTemplate {
 impl Respond for StubTemplate {
     fn respond(&self, req: &Request) -> ResponseTemplate {
         let mut resp = self.template.clone();
-        resp = OpenTracing(req, self.response.defined_header_keys()).add_opentracing_header(resp);
+        if let Some(mut headers) = self.response.defined_header_keys() {
+            resp = OpenTracing(req).add_opentracing_header(resp, &mut headers);
+        }
         if self.requires_templating {
             let data = HandlebarsData::from(req);
             resp = self.response.body.render_response_template(resp, &data);
