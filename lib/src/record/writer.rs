@@ -61,11 +61,13 @@ impl StubWriter {
                 .filter(|&h| h != "127.0.0.1")
                 .map(|h| h.replace(|c: char| !c.is_alphanumeric(), "."))
                 .map(|h| {
-                    url.port()
-                        .map(|p| (h.clone(), format!("-{}", p.to_string())))
-                        .unwrap_or_else(|| (h, String::new()))
+                    if let Some(p) = url.port() {
+                        (h, format!("-{}", p))
+                    } else {
+                        (h, String::new())
+                    }
                 })
-                .unwrap_or((String::from("localhost"), String::new()));
+                .unwrap_or(("localhost".to_string(), String::new()));
             format!("{}{}", host, port)
         } else {
             String::from("default")
