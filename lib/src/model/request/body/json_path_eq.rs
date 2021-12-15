@@ -25,7 +25,7 @@ impl TryFrom<&BodyPatternStub> for JsonPathEqMatcher {
         if body.is_by_json_path_eq() {
             body.expression.as_ref()
                 .and_then(|path| body.equal_to_json.as_ref().map(|eq| (path, eq)))
-                .map(|(path, eq)| JsonPathEqMatcher(path.to_string(), eq.to_owned()))
+                .map(|(path, eq)| Self(path.to_string(), eq.to_owned()))
                 .ok_or_else(|| anyhow::Error::msg("No json path with eq matcher found"))
         } else { anyhow::Result::Err(anyhow::Error::msg("No json path with eq matcher found")) }
     }
