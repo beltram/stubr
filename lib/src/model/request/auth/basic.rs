@@ -11,17 +11,20 @@ pub struct BasicAuthStub {
     password: String,
 }
 
+lazy_static! {
+    pub(crate) static ref AUTHORIZATION_HEADER: HeaderName = HeaderName::from_str("authorization").unwrap();
+}
+
 pub struct BasicAuthMatcher(String);
 
 impl BasicAuthMatcher {
-    const AUTHORIZATION_HEADER: &'static str = "authorization";
     const BASIC_PREFIX: &'static str = "Basic";
 }
 
+
 impl Match for BasicAuthMatcher {
     fn matches(&self, req: &Request) -> bool {
-        HeaderName::from_str(Self::AUTHORIZATION_HEADER).ok()
-            .and_then(|k| req.headers.get(&k))
+            req.headers.get(&AUTHORIZATION_HEADER)
             .map(|v| v.as_str() == self.0.as_str())
             .unwrap_or_default()
     }
