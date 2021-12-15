@@ -20,6 +20,6 @@ impl TryFrom<&BodyPatternStub> for BinaryEqualMatcher {
             .filter(|_| body.is_by_binary_equality())
             .and_then(|it| base64::decode(it).ok())
             .map(Self)
-            .ok_or_else(|| anyhow::Error::msg("No body matcher by binary equality"))
+            .ok_or_else(|| anyhow::Error::msg(""))
     }
 }

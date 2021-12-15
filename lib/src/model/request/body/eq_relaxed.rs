@@ -50,6 +50,6 @@ impl TryFrom<&BodyPatternStub> for JsonBodyRelaxedMatcher {
         body.equal_to_json.as_ref()
             .filter(|_| is_relaxed && body.is_by_json_equality())
             .map(|v| Self { value: v.to_owned(), is_ignore_extra_elements, is_ignore_array_order })
-            .ok_or_else(|| anyhow::Error::msg("No body matcher by relaxed json equality"))
+            .ok_or_else(|| anyhow::Error::msg(""))
     }
 }

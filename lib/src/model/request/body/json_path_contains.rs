@@ -29,7 +29,7 @@ impl TryFrom<&BodyPatternStub> for JsonPathContainsMatcher {
             body.expression.as_ref()
                 .and_then(|path| body.contains.as_ref().map(|contains| (path, contains)))
                 .map(|(path, contains)| Self(path.to_string(), contains.to_owned()))
-                .ok_or_else(|| anyhow::Error::msg("No json path with contains matcher found"))
-        } else { anyhow::Result::Err(anyhow::Error::msg("No json path with contains matcher found")) }
+                .ok_or_else(|| anyhow::Error::msg(""))
+        } else { anyhow::Result::Err(anyhow::Error::msg("")) }
     }
 }

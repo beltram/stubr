@@ -14,6 +14,6 @@ impl TryFrom<&BodyPatternStub> for BodyExactMatcher {
         body.equal_to_json.as_ref()
             .filter(|_| is_exact_matching)
             .map(body_json)
-            .ok_or_else(|| anyhow::Error::msg("No body matcher by json equality"))
+            .ok_or_else(|| anyhow::Error::msg(""))
     }
 }
