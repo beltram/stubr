@@ -7,7 +7,7 @@ impl From<&HttpQueryParamsStub> for Vec<(String, String)> {
         queries.get_queries()
             .map(|iter| {
                 iter.filter_map(|RequestMatcherStub { key, value }| {
-                    Some(key.to_string())
+                    Some(key)
                         .zip(value.as_ref().and_then(|it| it.try_into().ok()))
                 }).collect()
             }).unwrap_or_default()
