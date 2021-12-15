@@ -17,12 +17,18 @@ impl Match for HeaderCaseInsensitiveMatcher {
     }
 }
 
-impl From<&HttpReqHeadersStub> for Vec<HeaderCaseInsensitiveMatcher> {
-    fn from(headers: &HttpReqHeadersStub) -> Self {
-        headers.get_headers().iter()
-            .filter(|h| h.is_case_insensitive())
-            .map(HeaderCaseInsensitiveMatcher::try_from).flatten()
-            .collect_vec()
+impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderCaseInsensitiveMatcher> {
+    type Error = anyhow::Error;
+
+    fn try_from(headers: &HttpReqHeadersStub) -> anyhow::Result<Self> {
+        headers.get_headers()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter
+                    .filter(|h| h.is_case_insensitive())
+                    .filter_map(|it| HeaderCaseInsensitiveMatcher::try_from(&it).ok())
+                    .collect_vec()
+            })
     }
 }
 

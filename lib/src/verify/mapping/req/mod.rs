@@ -20,8 +20,10 @@ impl From<&JsonStub> for StdRequest {
 impl From<&RequestStub> for Request {
     fn from(stub: &RequestStub) -> Self {
         let mut req = Request::new(Method::from(&stub.method), Url::from(stub));
-        for (k, v) in Vec::<(String, String)>::from(&stub.headers) {
-            req.append_header(k.as_str(), v.as_str())
+        if let Ok(headers) = Vec::<(String, String)>::try_from(&stub.headers) {
+            for (k, v) in headers {
+                req.append_header(k.as_str(), v.as_str())
+            }
         }
         req.set_body(Vec::<u8>::from(stub));
         req

@@ -17,12 +17,18 @@ impl Match for HeaderContainsMatcher {
     }
 }
 
-impl From<&HttpReqHeadersStub> for Vec<HeaderContainsMatcher> {
-    fn from(headers: &HttpReqHeadersStub) -> Self {
-        headers.get_headers().iter()
-            .filter(|h| h.is_contains())
-            .map(HeaderContainsMatcher::try_from).flatten()
-            .collect_vec()
+impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderContainsMatcher> {
+    type Error = anyhow::Error;
+
+    fn try_from(headers: &HttpReqHeadersStub) -> anyhow::Result<Self> {
+        headers.get_headers()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter
+                    .filter(|h| h.is_contains())
+                    .filter_map(|it| HeaderContainsMatcher::try_from(&it).ok())
+                    .collect_vec()
+            })
     }
 }
 

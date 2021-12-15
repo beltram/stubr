@@ -1,7 +1,5 @@
-use std::convert::TryFrom;
-use std::hash::{Hash, Hasher};
+use std::{convert::TryFrom, hash::{Hash, Hasher}};
 
-use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use wiremock::{matchers::HeaderExactMatcher, MockBuilder};
@@ -28,31 +26,29 @@ pub struct HttpReqHeadersStub {
 
 impl MockRegistrable for HttpReqHeadersStub {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
-        for exact in Vec::<HeaderExactMatcher>::from(self) {
-            mock = mock.and(exact);
+        if let Ok(matchers) = Vec::<HeaderExactMatcher>::try_from(self) {
+            for exact in matchers { mock = mock.and(exact); }
         }
-        for case_insensitive in Vec::<HeaderCaseInsensitiveMatcher>::from(self) {
-            mock = mock.and(case_insensitive);
+        if let Ok(matchers) = Vec::<HeaderCaseInsensitiveMatcher>::try_from(self) {
+            for case_insensitive in matchers { mock = mock.and(case_insensitive); }
         }
-        for contains in Vec::<HeaderContainsMatcher>::from(self) {
-            mock = mock.and(contains);
+        if let Ok(matchers) = Vec::<HeaderContainsMatcher>::try_from(self) {
+            for contains in matchers { mock = mock.and(contains); }
         }
-        for matches in Vec::<HeaderRegexMatcher>::from(self) {
-            mock = mock.and(matches);
+        if let Ok(matchers) = Vec::<HeaderRegexMatcher>::try_from(self) {
+            for matches in matchers { mock = mock.and(matches); }
         }
-        for absent in Vec::<HeaderAbsentMatcher>::from(self) {
-            mock = mock.and(absent);
+        if let Ok(matchers) = Vec::<HeaderAbsentMatcher>::try_from(self) {
+            for absent in matchers { mock = mock.and(absent); }
         }
         mock
     }
 }
 
 impl HttpReqHeadersStub {
-    pub fn get_headers(&self) -> Vec<RequestMatcherStub> {
+    pub fn get_headers(&self) -> Option<impl Iterator<Item=RequestMatcherStub> + '_> {
         self.headers.as_ref()
-            .map(|h| h.iter().map(RequestMatcherStub::try_from))
-            .map(|it| it.flatten().collect_vec())
-            .unwrap_or_default()
+            .map(|h| h.iter().filter_map(|it| RequestMatcherStub::try_from(it).ok()))
     }
 }
 

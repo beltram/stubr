@@ -2,14 +2,20 @@ use std::convert::TryInto;
 
 use crate::model::request::{headers::HttpReqHeadersStub, matcher::RequestMatcherStub};
 
-impl From<&HttpReqHeadersStub> for Vec<(String, String)> {
-    fn from(headers: &HttpReqHeadersStub) -> Self {
-        headers.get_headers().iter()
-            .filter_map(|RequestMatcherStub { key, value }| {
-                Some(key.to_string())
-                    .zip(value.as_ref().and_then(|it| it.try_into().ok()))
+impl TryFrom<&HttpReqHeadersStub> for Vec<(String, String)> {
+    type Error = anyhow::Error;
+
+    fn try_from(headers: &HttpReqHeadersStub) -> anyhow::Result<Self> {
+        headers.get_headers()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter
+                    .filter_map(|RequestMatcherStub { key, value }| {
+                        Some(key.to_string())
+                            .zip(value.as_ref().and_then(|it| it.try_into().ok()))
+                    })
+                    .collect()
             })
-            .collect()
     }
 }
 
@@ -30,7 +36,7 @@ mod verify_header_tests {
         let matcher = serde_json::to_value(matcher).unwrap();
         let headers = vec![(String::from("a"), matcher)];
         let headers = HttpReqHeadersStub { headers: Some(Map::from_iter(headers)) };
-        let headers = Vec::<(String, String)>::from(&headers);
+        let headers = Vec::<(String, String)>::try_from(&headers).unwrap();
         assert_eq!(headers.len(), 1);
         assert_eq!(headers.get(0).unwrap().0, "a");
         assert_eq!(headers.get(0).unwrap().1, "bcd");
@@ -42,7 +48,7 @@ mod verify_header_tests {
         let matcher = serde_json::to_value(matcher).unwrap();
         let headers = vec![(String::from("a"), matcher)];
         let headers = HttpReqHeadersStub { headers: Some(Map::from_iter(headers)) };
-        let headers = Vec::<(String, String)>::from(&headers);
+        let headers = Vec::<(String, String)>::try_from(&headers).unwrap();
         assert_eq!(headers.len(), 1);
         assert_eq!(headers.get(0).unwrap().0, "a");
         assert!(headers.get(0).unwrap().1.contains('b'));
@@ -55,7 +61,7 @@ mod verify_header_tests {
         let matcher = serde_json::to_value(matcher).unwrap();
         let headers = vec![(String::from("a"), matcher)];
         let headers = HttpReqHeadersStub { headers: Some(Map::from_iter(headers)) };
-        let headers = Vec::<(String, String)>::from(&headers);
+        let headers = Vec::<(String, String)>::try_from(&headers).unwrap();
         assert_eq!(headers.len(), 1);
         assert_eq!(headers.get(0).unwrap().0, "a");
         let regex = Regex::from_str(regex).unwrap();

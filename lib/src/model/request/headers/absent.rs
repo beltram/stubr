@@ -16,13 +16,18 @@ impl Match for HeaderAbsentMatcher {
     }
 }
 
-impl From<&HttpReqHeadersStub> for Vec<HeaderAbsentMatcher> {
-    fn from(headers: &HttpReqHeadersStub) -> Self {
-        headers.get_headers().iter()
-            .filter(|h| h.is_absent())
-            .map(HeaderAbsentMatcher::try_from)
-            .flatten()
-            .collect_vec()
+impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderAbsentMatcher> {
+    type Error = anyhow::Error;
+
+    fn try_from(headers: &HttpReqHeadersStub) -> Result<Self, Self::Error> {
+        headers.get_headers()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter
+                    .filter(|h| h.is_absent())
+                    .filter_map(|it| HeaderAbsentMatcher::try_from(&it).ok())
+                    .collect_vec()
+            })
     }
 }
 
