@@ -11,8 +11,7 @@ impl TryFrom<&HttpReqHeadersStub> for Vec<(String, String)> {
             .map(|iter| {
                 iter
                     .filter_map(|RequestMatcherStub { key, value }| {
-                        Some(key.to_string())
-                            .zip(value.as_ref().and_then(|it| it.try_into().ok()))
+                        Some(key).zip(value.as_ref().and_then(|it| it.try_into().ok()))
                     })
                     .collect()
             })
