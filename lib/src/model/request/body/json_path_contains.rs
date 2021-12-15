@@ -25,11 +25,10 @@ impl TryFrom<&BodyPatternStub> for JsonPathContainsMatcher {
     type Error = anyhow::Error;
 
     fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
-        if body.is_by_json_path_contains() {
-            body.expression.as_ref()
-                .and_then(|path| body.contains.as_ref().map(|contains| (path, contains)))
-                .map(|(path, contains)| Self(path.to_string(), contains.to_owned()))
-                .ok_or_else(|| anyhow::Error::msg(""))
-        } else { anyhow::Result::Err(anyhow::Error::msg("")) }
+        body.expression.as_ref()
+            .filter(|_| body.is_by_json_path_contains())
+            .and_then(|path| body.contains.as_ref().map(|contains| (path, contains)))
+            .map(|(path, contains)| Self(path.to_string(), contains.to_owned()))
+            .ok_or_else(|| anyhow::Error::msg(""))
     }
 }
