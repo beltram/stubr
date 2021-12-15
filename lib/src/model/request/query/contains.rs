@@ -16,12 +16,17 @@ impl Match for QueryContainsMatcher {
     }
 }
 
-impl From<&HttpQueryParamsStub> for Vec<QueryContainsMatcher> {
-    fn from(queries: &HttpQueryParamsStub) -> Self {
-        queries.get_queries().iter()
-            .filter(|h| h.is_contains())
-            .map(QueryContainsMatcher::try_from).flatten()
-            .collect_vec()
+impl TryFrom<&HttpQueryParamsStub> for Vec<QueryContainsMatcher> {
+    type Error = anyhow::Error;
+
+    fn try_from(queries: &HttpQueryParamsStub) -> anyhow::Result<Self> {
+        queries.get_queries()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter.filter(|h| h.is_contains())
+                    .filter_map(|it| QueryContainsMatcher::try_from(&it).ok())
+                    .collect_vec()
+            })
     }
 }
 

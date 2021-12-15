@@ -5,12 +5,17 @@ use wiremock::matchers::{query_param, QueryParamExactMatcher};
 
 use super::{HttpQueryParamsStub, super::matcher::RequestMatcherStub};
 
-impl From<&HttpQueryParamsStub> for Vec<QueryParamExactMatcher> {
-    fn from(queries: &HttpQueryParamsStub) -> Self {
-        queries.get_queries().iter()
-            .filter(|q| q.is_exact_match())
-            .map(QueryParamExactMatcher::try_from).flatten()
-            .collect_vec()
+impl TryFrom<&HttpQueryParamsStub> for Vec<QueryParamExactMatcher> {
+    type Error = anyhow::Error;
+
+    fn try_from(queries: &HttpQueryParamsStub) -> anyhow::Result<Self> {
+        queries.get_queries()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter.filter(|q| q.is_exact_match())
+                    .filter_map(|it| QueryParamExactMatcher::try_from(&it).ok())
+                    .collect_vec()
+            })
     }
 }
 

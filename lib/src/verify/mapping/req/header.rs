@@ -2,19 +2,14 @@ use std::convert::TryInto;
 
 use crate::model::request::{headers::HttpReqHeadersStub, matcher::RequestMatcherStub};
 
-impl TryFrom<&HttpReqHeadersStub> for Vec<(String, String)> {
-    type Error = anyhow::Error;
-
-    fn try_from(headers: &HttpReqHeadersStub) -> anyhow::Result<Self> {
+impl From<&HttpReqHeadersStub> for Vec<(String, String)> {
+    fn from(headers: &HttpReqHeadersStub) -> Self {
         headers.get_headers()
-            .ok_or_else(|| anyhow::Error::msg(""))
             .map(|iter| {
-                iter
-                    .filter_map(|RequestMatcherStub { key, value }| {
-                        Some(key).zip(value.as_ref().and_then(|it| it.try_into().ok()))
-                    })
-                    .collect()
-            })
+                iter.filter_map(|RequestMatcherStub { key, value }| {
+                    Some(key).zip(value.as_ref().and_then(|it| it.try_into().ok()))
+                }).collect()
+            }).unwrap_or_default()
     }
 }
 

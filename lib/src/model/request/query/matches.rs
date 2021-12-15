@@ -23,12 +23,17 @@ impl Match for QueryRegexMatcher {
     }
 }
 
-impl From<&HttpQueryParamsStub> for Vec<QueryRegexMatcher> {
-    fn from(queries: &HttpQueryParamsStub) -> Self {
-        queries.get_queries().iter()
-            .filter(|q| q.is_by_regex())
-            .map(QueryRegexMatcher::try_from).flatten()
-            .collect_vec()
+impl TryFrom<&HttpQueryParamsStub> for Vec<QueryRegexMatcher> {
+    type Error = anyhow::Error;
+
+    fn try_from(queries: &HttpQueryParamsStub) -> anyhow::Result<Self> {
+        queries.get_queries()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter.filter(|q| q.is_by_regex())
+                    .filter_map(|it| QueryRegexMatcher::try_from(&it).ok())
+                    .collect_vec()
+            })
     }
 }
 

@@ -14,13 +14,17 @@ impl Match for QueryAbsentMatcher {
     }
 }
 
-impl From<&HttpQueryParamsStub> for Vec<QueryAbsentMatcher> {
-    fn from(queries: &HttpQueryParamsStub) -> Self {
-        queries.get_queries().iter()
-            .filter(|it| it.is_absent())
-            .map(QueryAbsentMatcher::try_from)
-            .flatten()
-            .collect_vec()
+impl TryFrom<&HttpQueryParamsStub> for Vec<QueryAbsentMatcher> {
+    type Error = anyhow::Error;
+
+    fn try_from(queries: &HttpQueryParamsStub) -> anyhow::Result<Self> {
+        queries.get_queries()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter.filter(|it| it.is_absent())
+                    .filter_map(|it| QueryAbsentMatcher::try_from(&it).ok())
+                    .collect_vec()
+            })
     }
 }
 

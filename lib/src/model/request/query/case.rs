@@ -16,12 +16,17 @@ impl Match for QueryCaseInsensitiveMatcher {
     }
 }
 
-impl From<&HttpQueryParamsStub> for Vec<QueryCaseInsensitiveMatcher> {
-    fn from(queries: &HttpQueryParamsStub) -> Self {
-        queries.get_queries().iter()
-            .filter(|q| q.is_case_insensitive())
-            .map(QueryCaseInsensitiveMatcher::try_from).flatten()
-            .collect_vec()
+impl TryFrom<&HttpQueryParamsStub> for Vec<QueryCaseInsensitiveMatcher> {
+    type Error = anyhow::Error;
+
+    fn try_from(queries: &HttpQueryParamsStub) -> anyhow::Result<Self> {
+        queries.get_queries()
+            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|iter| {
+                iter.filter(|q| q.is_case_insensitive())
+                    .filter_map(|it| QueryCaseInsensitiveMatcher::try_from(&it).ok())
+                    .collect_vec()
+            })
     }
 }
 

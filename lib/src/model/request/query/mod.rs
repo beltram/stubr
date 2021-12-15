@@ -1,7 +1,5 @@
-use std::convert::TryFrom;
-use std::hash::{Hash, Hasher};
+use std::{convert::TryFrom, hash::{Hash, Hasher}};
 
-use itertools::Itertools;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use wiremock::{matchers::QueryParamExactMatcher, MockBuilder};
@@ -29,31 +27,29 @@ pub struct HttpQueryParamsStub {
 
 impl MockRegistrable for HttpQueryParamsStub {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
-        for exact in Vec::<QueryParamExactMatcher>::from(self) {
-            mock = mock.and(exact);
+        if let Ok(matchers) = Vec::<QueryParamExactMatcher>::try_from(self) {
+            for exact in matchers { mock = mock.and(exact); }
         }
-        for case in Vec::<QueryCaseInsensitiveMatcher>::from(self) {
-            mock = mock.and(case);
+        if let Ok(matchers) = Vec::<QueryCaseInsensitiveMatcher>::try_from(self) {
+            for case in matchers { mock = mock.and(case); }
         }
-        for contains in Vec::<QueryContainsMatcher>::from(self) {
-            mock = mock.and(contains);
+        if let Ok(matchers) = Vec::<QueryContainsMatcher>::try_from(self) {
+            for contains in matchers { mock = mock.and(contains); }
         }
-        for regex in Vec::<QueryRegexMatcher>::from(self) {
-            mock = mock.and(regex);
+        if let Ok(matchers) = Vec::<QueryRegexMatcher>::try_from(self) {
+            for regex in matchers { mock = mock.and(regex); }
         }
-        for absent in Vec::<QueryAbsentMatcher>::from(self) {
-            mock = mock.and(absent);
+        if let Ok(matchers) = Vec::<QueryAbsentMatcher>::try_from(self) {
+            for absent in matchers { mock = mock.and(absent); }
         }
         mock
     }
 }
 
 impl HttpQueryParamsStub {
-    pub fn get_queries(&self) -> Vec<RequestMatcherStub> {
+    pub fn get_queries(&self) -> Option<impl Iterator<Item=RequestMatcherStub> + '_> {
         self.query_parameters.as_ref()
-            .map(|h| h.iter().map(RequestMatcherStub::try_from))
-            .map(|it| it.flatten().collect_vec())
-            .unwrap_or_default()
+            .map(|h| h.iter().filter_map(|it| RequestMatcherStub::try_from(it).ok()))
     }
 }
 

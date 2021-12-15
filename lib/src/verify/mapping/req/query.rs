@@ -4,12 +4,13 @@ use crate::model::request::{matcher::RequestMatcherStub, query::HttpQueryParamsS
 
 impl From<&HttpQueryParamsStub> for Vec<(String, String)> {
     fn from(queries: &HttpQueryParamsStub) -> Self {
-        queries.get_queries().iter()
-            .filter_map(|RequestMatcherStub { key, value }| {
-                Some(key.to_string())
-                    .zip(value.as_ref().and_then(|it| it.try_into().ok()))
-            })
-            .collect()
+        queries.get_queries()
+            .map(|iter| {
+                iter.filter_map(|RequestMatcherStub { key, value }| {
+                    Some(key.to_string())
+                        .zip(value.as_ref().and_then(|it| it.try_into().ok()))
+                }).collect()
+            }).unwrap_or_default()
     }
 }
 
