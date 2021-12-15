@@ -55,6 +55,7 @@ warp-reverse-proxy = { version = "0.4.0", optional = true, default-features = fa
 tokio = { version = "1.14.0", optional = true }
 
 [dev-dependencies]
+async-std = { version = "1.10.0", features = ["attributes"] }
 stubr = { path = ".", features = ["record", "record-isahc", "record-reqwest", "verify-actix"] }
 surf = "2.3.2"
 tempfile = "3.2.0"
