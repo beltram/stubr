@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/body-equal-to-json-extra",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "name": "john.doe"
+        },
+        "ignoreExtraElements": true
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}

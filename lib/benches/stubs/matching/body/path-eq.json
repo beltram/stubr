@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/matches-json-path-eq",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.consoles[?(@.name == 'xbox')]"
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}

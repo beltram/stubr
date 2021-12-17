@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/body-equal-to-json-order",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "names": [
+            "john",
+            "doe"
+          ]
+        },
+        "ignoreArrayOrder": true
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}

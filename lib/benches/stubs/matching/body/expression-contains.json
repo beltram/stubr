@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/expression-contains",
+    "bodyPatterns": [
+      {
+        "expression": "$.person",
+        "contains": "o"
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}

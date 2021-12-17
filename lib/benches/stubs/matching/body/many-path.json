@@ -1,0 +1,41 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/matches-many-json-path",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.a"
+      },
+      {
+        "matchesJsonPath": "$.b"
+      },
+      {
+        "matchesJsonPath": "$.c"
+      },
+      {
+        "matchesJsonPath": "$.d"
+      },
+      {
+        "matchesJsonPath": "$.e"
+      },
+      {
+        "matchesJsonPath": "$.f"
+      },
+      {
+        "matchesJsonPath": "$.g"
+      },
+      {
+        "matchesJsonPath": "$.h"
+      },
+      {
+        "matchesJsonPath": "$.i"
+      },
+      {
+        "matchesJsonPath": "$.j"
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}

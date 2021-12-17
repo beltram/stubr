@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/matches-json-path",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.name"
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}

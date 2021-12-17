@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/api/expression-eq",
+    "bodyPatterns": [
+      {
+        "expression": "$.person",
+        "equalToJson": {
+          "name": "john.doe"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}
