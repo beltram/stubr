@@ -1,7 +1,7 @@
 source ./bench/scenario.sh
 source ./bench/stub-provider.sh
 # metadata
-export OUTPUT=bench/report.md
+export OUTPUT=bench/README.md
 
 
 # print statistics

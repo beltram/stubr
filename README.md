@@ -215,7 +215,7 @@ of [Wiremock](https://github.com/tomakehurst/wiremock).
 ### comparing to wiremock
 
 A very simple benchmark comparing `stubr` to wiremock is
-available [here](https://github.com/beltram/stubr/blob/main/bench/report.md).
+available [here](https://github.com/beltram/stubr/blob/main/bench/README.md).
 
 ### cargo bench
 

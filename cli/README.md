@@ -123,4 +123,4 @@ Also available as a [crate](https://crates.io/crates/stubr) for recording traffi
 # benchmark
 
 A very simple benchmark comparing stubr to wiremock is
-available [here](https://github.com/beltram/stubr/blob/main/bench/report.md)
+available [here](https://github.com/beltram/stubr/blob/main/bench/README.md)
