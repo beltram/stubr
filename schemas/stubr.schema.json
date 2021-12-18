@@ -6,6 +6,10 @@
       "description": "Unique stub identifier",
       "type": "string"
     },
+    "uuid": {
+      "description": "Unique stub identifier",
+      "type": "string"
+    },
     "request": {
       "description": "Request matching",
       "type": "object",
