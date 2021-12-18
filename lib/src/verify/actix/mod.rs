@@ -64,6 +64,7 @@ mod actix_verify_tests {
         let stub = JsonStub {
             id: None,
             uuid: None,
+            priority: None,
             request: RequestStub { method: HttpMethodStub::from("GET"), ..Default::default() },
             response: ResponseStub { status: Some(200), ..Default::default() },
         };

@@ -16,7 +16,7 @@ async fn should_allow_custom_output() {
         ..Default::default()
     };
     Stubr::record_with(cfg).isahc_client().get(stubr.path("/status/200")).expect_status_ok();
-    assert!(output.join("localhost").join("status-200-11600032152953516803.json").exists())
+    assert!(output.join("localhost").join("status-200-18222164705783036073.json").exists())
 }
 
 #[tokio::test(flavor = "multi_thread")]

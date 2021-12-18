@@ -10,6 +10,7 @@ impl From<RecordInput<'_>> for JsonStub {
         Self {
             id: None,
             uuid: None,
+            priority: None,
             request: RequestStub::from((&mut *ex, cfg)),
             response: ResponseStub::from((&mut *ex, cfg)),
         }

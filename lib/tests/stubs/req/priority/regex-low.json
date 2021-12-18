@@ -1,0 +1,10 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/([a-z]{4})"
+  },
+  "response": {
+    "status": 201
+  }
+}

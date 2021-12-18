@@ -1,0 +1,10 @@
+{
+  "priority": 2,
+  "request": {
+    "method": "GET",
+    "urlPath": "/abcd"
+  },
+  "response": {
+    "status": 200
+  }
+}

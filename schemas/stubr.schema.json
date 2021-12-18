@@ -10,6 +10,10 @@
       "description": "Unique stub identifier",
       "type": "string"
     },
+    "priority": {
+      "description": "Matching priority. Helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest. Defaults to 5.",
+      "type": "integer"
+    },
     "request": {
       "description": "Request matching",
       "type": "object",
