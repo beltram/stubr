@@ -14,6 +14,8 @@ pub mod response;
 #[derive(Serialize, Deserialize, Debug, Hash, Default)]
 pub struct JsonStub {
     #[serde(skip_serializing)]
+    pub id: Option<String>,
+    #[serde(skip_serializing)]
     pub uuid: Option<String>,
     pub request: RequestStub,
     pub response: ResponseStub,

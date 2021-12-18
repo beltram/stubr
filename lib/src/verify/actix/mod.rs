@@ -62,6 +62,7 @@ mod actix_verify_tests {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().await }));
         let mut app = init_service(app).await;
         let stub = JsonStub {
+            id: None,
             uuid: None,
             request: RequestStub { method: HttpMethodStub::from("GET"), ..Default::default() },
             response: ResponseStub { status: Some(200), ..Default::default() },
