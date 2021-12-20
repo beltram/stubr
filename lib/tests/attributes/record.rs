@@ -10,7 +10,7 @@ mod smoke {
     #[test]
     fn should_succeed() {
         recorder.isahc_client().get(stubr.path("/smoke/ok")).expect_status_ok();
-        assert_recorded_stub_exists("smoke-ok-9931321115210409608")
+        assert_recorded_stub_exists("smoke-ok-13650776394535007238")
     }
 
     #[should_panic]
@@ -28,7 +28,7 @@ mod smoke {
         recorder.reqwest_client().get(stubr.path("/smoke/async/ok"))
             .send().await
             .expect_status_ok();
-        assert_recorded_stub_exists("smoke-async-ok-8462943008179436946")
+        assert_recorded_stub_exists("smoke-async-ok-17590825183643269848")
     }
 
     #[should_panic]
@@ -53,7 +53,7 @@ mod port {
     fn should_succeed() {
         let client = HttpClient::builder().proxy("http://127.0.0.1:3241".parse().ok()).build().unwrap();
         client.get(stubr.path("/smoke/port")).expect_status_ok();
-        assert_recorded_stub_exists("smoke-port-7681494402952634027")
+        assert_recorded_stub_exists("smoke-port-17214821908814364530")
     }
 
     #[should_panic]

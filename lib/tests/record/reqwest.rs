@@ -16,17 +16,15 @@ fn should_record_from_reqwest_client() {
     ReqwestBlockingClientBuilder::new().build().unwrap()
         .get(stubr.path("/record-client/reqwest"))
         .record_with(cfg);
-    assert_recorded_stub_eq("record-client-reqwest-1024385884503042741", json!(
-                                    {
-                                        "request": {
-                                            "method": "GET",
-                                            "urlPath": "/record-client/reqwest"
-                                        },
-                                        "response": {
-                                            "status": 200
-                                        }
-                                    }
-    ))
+    assert_recorded_stub_eq("record-client-reqwest-3605273010342106504", json!({
+        "request": {
+            "method": "GET",
+            "urlPath": "/record-client/reqwest"
+        },
+        "response": {
+            "status": 200
+        }
+    }))
 }
 
 
@@ -41,15 +39,13 @@ fn should_record_from_reqwest_client_ko() {
     ReqwestBlockingClientBuilder::new().build().unwrap()
         .get(stubr.path("/record-client/reqwest/ko"))
         .record_with(cfg);
-    assert_recorded_stub_eq("record-client-reqwest-ko-3875024637254819038", json!(
-                                    {
-                                        "request": {
-                                            "method": "GET",
-                                            "urlPath": "/record-client/reqwest/ko"
-                                        },
-                                        "response": {
-                                            "status": 404
-                                        }
-                                    }
-    ))
+    assert_recorded_stub_eq("record-client-reqwest-ko-4731586543051769414", json!({
+        "request": {
+            "method": "GET",
+            "urlPath": "/record-client/reqwest/ko"
+        },
+        "response": {
+            "status": 404
+        }
+    }))
 }

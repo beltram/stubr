@@ -17,6 +17,7 @@ pub struct JsonStub {
     pub id: Option<String>,
     #[serde(skip_serializing)]
     pub uuid: Option<String>,
+    #[serde(skip_serializing)]
     pub priority: Option<u8>,
     pub request: RequestStub,
     pub response: ResponseStub,

@@ -10,7 +10,7 @@ use crate::utils::*;
 async fn proxy_should_forward_status_200() {
     isahc::get(stubr.path("/status/200")).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().get(stubr.path("/status/200")).expect_status_ok();
-    assert_recorded_stub_eq("status-200-1330526116653087821", json!({
+    assert_recorded_stub_eq("status-200-18222164705783036073", json!({
         "request": {
             "method": "GET",
             "urlPath": "/status/200"
@@ -24,7 +24,7 @@ async fn proxy_should_forward_status_200() {
 async fn proxy_should_forward_status_400() {
     isahc::get(stubr.path("/status/400")).expect_status_bad_request();
     Stubr::record_with(record_cfg()).isahc_client().get(stubr.path("/status/400")).expect_status_bad_request();
-    assert_recorded_stub_eq("status-400-13127736630424190359", json!({
+    assert_recorded_stub_eq("status-400-647064033098296391", json!({
         "request": {
             "method": "GET",
             "urlPath": "/status/400"
@@ -38,7 +38,7 @@ async fn proxy_should_forward_status_400() {
 async fn proxy_should_forward_status_500() {
     isahc::get(stubr.path("/status/500")).expect_status_internal_server_error();
     Stubr::record_with(record_cfg()).isahc_client().get(stubr.path("/status/500")).expect_status_internal_server_error();
-    assert_recorded_stub_eq("status-500-13973602113803580223", json!({
+    assert_recorded_stub_eq("status-500-5463962723275393157", json!({
         "request": {
             "method": "GET",
             "urlPath": "/status/500"
