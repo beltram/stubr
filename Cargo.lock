@@ -3824,7 +3824,7 @@ dependencies = [
 
 [[package]]
 name = "stubr-attributes"
-version = "0.4.11"
+version = "0.4.12"
 dependencies = [
  "asserhttp",
  "async-std",
