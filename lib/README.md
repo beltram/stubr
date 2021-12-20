@@ -88,6 +88,7 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
 ```json
 {
   "id": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e", // (optional) unique stub identifier. Returned in 'Matched-Stub-Id' header
+  "priority": 1, // (optional) helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest
   "request": {
     "method": "GET", // (optional) http method. Can be "ANY" to match any method. Defaults to "ANY"
     "urlPath": "/api/exact-url", // exact uri match
