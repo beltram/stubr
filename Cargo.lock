@@ -3776,7 +3776,7 @@ version = "0.0.1"
 
 [[package]]
 name = "stubr"
-version = "0.4.11"
+version = "0.4.12"
 dependencies = [
  "actix-http",
  "actix-rt 2.5.0",
@@ -3824,7 +3824,7 @@ dependencies = [
 
 [[package]]
 name = "stubr-attributes"
-version = "0.4.11"
+version = "0.4.12"
 dependencies = [
  "asserhttp",
  "async-std",
@@ -3837,7 +3837,7 @@ dependencies = [
 
 [[package]]
 name = "stubr-build"
-version = "0.4.11"
+version = "0.4.12"
 dependencies = [
  "anyhow",
  "cargo",
@@ -3847,7 +3847,7 @@ dependencies = [
 
 [[package]]
 name = "stubr-cli"
-version = "0.4.11"
+version = "0.4.12"
 dependencies = [
  "anyhow",
  "asserhttp",

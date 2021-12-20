@@ -50,7 +50,7 @@ invoke it in a `build.rs` file.
 build = "build.rs"
 
 [build-dependencies]
-stubr-build = "0.4.11"
+stubr-build = "0.4.12"
 producer-a = "<version>"
 producer-b = "<version>"
 ```
