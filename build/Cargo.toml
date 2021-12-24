@@ -11,7 +11,7 @@ keywords = ["mock", "test", "contract", "http"]
 categories = ["development-tools::testing"]
 
 [dependencies]
-anyhow = { version = "1.0.51", default-features = false }
+anyhow = { version = "1.0.52", default-features = false }
 cargo = "0.58.0"
 cargo-util = "0.1.1"
 fs_extra = "1.2.0"
