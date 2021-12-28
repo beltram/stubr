@@ -961,9 +961,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.0.0-rc.8"
+version = "3.0.0-rc.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "484f17839417b695a6f4a75c20e49820ba0a1d00aa41ebd8ba0e5dfe0fbc3b74"
+checksum = "c7843ae7a539bef687e018bf9edf7e87728024b29d02b0f8409726be8880ae1a"
 dependencies = [
  "atty",
  "bitflags",
@@ -978,9 +978,9 @@ dependencies = [
 
 [[package]]
 name = "clap_derive"
-version = "3.0.0-rc.8"
+version = "3.0.0-rc.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a86d4ec799f94ddc4a4a4edf652f89b360219905f86edcb8abe5974dfef135b8"
+checksum = "cae3cc2f259ea636871f5da15b0ac033f1821d7a5506c3d1bfbdde201f14c803"
 dependencies = [
  "heck",
  "proc-macro-error",
@@ -991,11 +991,11 @@ dependencies = [
 
 [[package]]
 name = "clap_generate"
-version = "3.0.0-rc.8"
+version = "3.0.0-rc.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "46edf9e899ef90f3cefafb75dfae4c52746911cb905408bdf147a4bfe6fd72aa"
+checksum = "c85d334a8eeb937cb285ab86e9eb141a3639ab8b0eb9b20677edbd00ccdda8f5"
 dependencies = [
- "clap 3.0.0-rc.8",
+ "clap 3.0.0-rc.9",
 ]
 
 [[package]]
@@ -3060,9 +3060,9 @@ checksum = "dbf0c48bc1d91375ae5c3cd81e3722dff1abcf81a30960240640d223f59fe0e5"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.35"
+version = "1.0.36"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "392a54546fda6b7cc663379d0e6ce8b324cf88aecc5a499838e1be9781bdce2e"
+checksum = "c7342d5883fbccae1cc37a2353b09c87c9b0f3afd73f5fb9bba687a1f733b029"
 dependencies = [
  "unicode-xid",
 ]
@@ -3853,7 +3853,7 @@ dependencies = [
  "asserhttp",
  "assert_cmd",
  "async-std",
- "clap 3.0.0-rc.8",
+ "clap 3.0.0-rc.9",
  "clap_generate",
  "colored",
  "directories",
