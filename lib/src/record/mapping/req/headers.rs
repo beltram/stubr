@@ -34,8 +34,6 @@ impl From<RecordInput<'_>> for HttpReqHeadersStub {
 
 #[cfg(test)]
 mod req_url_mapping_tests {
-    use std::iter::FromIterator;
-
     use http_types::Request;
     use serde_json::{json, Map};
 

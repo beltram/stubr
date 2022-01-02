@@ -24,8 +24,6 @@ impl Verifier<'_> for HeaderVerifier {
 
 #[cfg(test)]
 mod header_verify_tests {
-    use std::iter::FromIterator;
-
     use http_types::{Request, Response};
     use serde_json::{Map, Value};
 

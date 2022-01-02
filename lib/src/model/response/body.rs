@@ -3,7 +3,6 @@ use std::{
     fs::OpenOptions,
     i64,
     io::Read,
-    iter::FromIterator,
     path::PathBuf,
     str::{from_utf8, FromStr},
 };

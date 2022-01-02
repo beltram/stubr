@@ -221,8 +221,6 @@ mod verify_url_tests {
     }
 
     mod query {
-        use std::iter::FromIterator;
-
         use serde_json::{Map, Value};
 
         use crate::model::request::{matcher::MatcherValueStub, query::HttpQueryParamsStub};

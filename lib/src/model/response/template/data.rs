@@ -46,7 +46,7 @@ impl<'a> From<&'a Request> for RequestData<'a> {
 
 #[cfg(test)]
 mod request_data_tests {
-    use std::{borrow::Cow, collections::HashMap, iter::FromIterator, str::FromStr};
+    use std::{borrow::Cow, collections::HashMap, str::FromStr};
 
     use http_types::{headers::{HeaderName, HeaderValue, HeaderValues}, Method, Url};
     use itertools::Itertools;

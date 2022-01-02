@@ -14,7 +14,7 @@ impl From<&HttpQueryParamsStub> for Vec<(String, String)> {
 
 #[cfg(test)]
 mod verify_query_tests {
-    use std::{iter::FromIterator, str::FromStr};
+    use std::str::FromStr;
 
     use regex::Regex;
     use serde_json::{Map, Value};

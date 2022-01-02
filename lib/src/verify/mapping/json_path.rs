@@ -1,5 +1,3 @@
-// use std::iter::FromIterator;
-
 // use jsonpath_lib::{ParserNodeVisitor, ParserTokenHandler, ParseToken, StrRange};
 use serde_json::Value;
 

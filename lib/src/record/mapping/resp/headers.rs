@@ -31,8 +31,6 @@ impl From<RecordInput<'_>> for HttpRespHeadersStub {
 
 #[cfg(test)]
 mod resp_header_mapping_tests {
-    use std::iter::FromIterator;
-
     use http_types::Response;
     use serde_json::{json, Map};
 

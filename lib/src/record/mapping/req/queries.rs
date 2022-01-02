@@ -24,8 +24,6 @@ impl From<&mut RecordedExchange> for HttpQueryParamsStub {
 
 #[cfg(test)]
 mod req_queries_mapping_tests {
-    use std::iter::FromIterator;
-
     use http_types::Request;
     use serde_json::json;
 

@@ -1,7 +1,4 @@
-use std::{
-    iter::FromIterator,
-    str::FromStr,
-};
+use std::str::FromStr;
 
 use http_types::{
     Body as HttpBody,
@@ -207,8 +204,6 @@ mod http_tests {
     }
 
     mod req_headers {
-        use std::iter::FromIterator;
-
         use itertools::Itertools;
         use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 

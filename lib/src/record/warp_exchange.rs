@@ -1,4 +1,4 @@
-use std::{iter::FromIterator, str::FromStr};
+use std::str::FromStr;
 
 use http_types::{
     Body as HttpBody,
@@ -232,8 +232,6 @@ mod http_tests {
     }
 
     mod req_headers {
-        use std::iter::FromIterator;
-
         use itertools::Itertools;
         use warp::http::header::{HeaderName as WarpHeaderName, HeaderValue as WarpHeaderValue};
 

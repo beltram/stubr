@@ -1,4 +1,4 @@
-use std::{iter::FromIterator, str::FromStr};
+use std::str::FromStr;
 
 use actix_http::body::{Body as ActixBody, ResponseBody as ActixResponseBody};
 use actix_web::dev::ServiceResponse as ActixServiceResponse;
@@ -63,8 +63,6 @@ mod actix_resp_mapping_tests {
     }
 
     mod headers {
-        use std::iter::FromIterator;
-
         use http_types::headers::{HeaderValue, HeaderValues};
 
         use super::*;

@@ -32,7 +32,7 @@ impl From<&RequestStub> for Request {
 
 #[cfg(test)]
 mod verify_req_tests {
-    use std::{borrow::Cow, iter::FromIterator};
+    use std::borrow::Cow;
 
     use serde_json::{Map, Value};
 
