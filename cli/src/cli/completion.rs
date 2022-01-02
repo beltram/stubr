@@ -1,7 +1,7 @@
 use std::{fs::create_dir_all, path::PathBuf};
 
 use clap::{App, IntoApp, Parser};
-use clap_generate::{generate_to, Generator, generators::{Bash, Zsh}};
+use clap_complete::{generate_to, Generator, Shell::{Bash, Zsh}};
 use directories::UserDirs;
 
 use crate::cli::Cli;
@@ -24,8 +24,8 @@ impl Shell {
 
     fn create_completion_for(&self, mut app: App) {
         match self {
-            Shell::Bash => self.create_completion::<Bash>(&mut app, Bash),
-            Shell::Zsh => self.create_completion::<Zsh>(&mut app, Zsh),
+            Shell::Bash => self.create_completion(&mut app, Bash),
+            Shell::Zsh => self.create_completion(&mut app, Zsh),
         }
     }
 
