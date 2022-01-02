@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, hash::{Hash, Hasher}};
+use std::hash::{Hash, Hasher};
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};

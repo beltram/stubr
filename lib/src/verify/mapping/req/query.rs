@@ -1,5 +1,3 @@
-use std::convert::TryInto;
-
 use crate::model::request::{matcher::RequestMatcherStub, query::HttpQueryParamsStub};
 
 impl From<&HttpQueryParamsStub> for Vec<(String, String)> {

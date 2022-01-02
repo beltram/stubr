@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, ops::Not};
+use std::ops::Not;
 
 use itertools::Itertools;
 use regex::Regex;

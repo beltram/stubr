@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use itertools::Itertools;
 use wiremock::matchers::{query_param, QueryParamExactMatcher};
 

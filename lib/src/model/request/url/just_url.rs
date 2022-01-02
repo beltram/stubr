@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use http_types::Url;
 use itertools::Itertools;
 use wiremock::matchers::{path, PathExactMatcher, query_param, QueryParamExactMatcher};

@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use proc_macro2::{Ident, TokenStream};
 use quote::{quote, ToTokens};
 use syn::{AttributeArgs, ItemFn, Lit, LitStr, NestedMeta};

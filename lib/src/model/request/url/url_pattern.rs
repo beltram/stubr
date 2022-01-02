@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, str::FromStr};
+use std::str::FromStr;
 
 use regex::Regex;
 use wiremock::{Match, Request};

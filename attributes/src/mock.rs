@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use itertools::Itertools;
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};

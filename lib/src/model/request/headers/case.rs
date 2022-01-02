@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, str::FromStr};
+use std::str::FromStr;
 
 use http_types::headers::HeaderName;
 use itertools::Itertools;

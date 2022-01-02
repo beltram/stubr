@@ -1,5 +1,4 @@
 use std::{
-    convert::TryInto,
     env::current_dir,
     ffi::OsStr,
     fs::DirEntry,

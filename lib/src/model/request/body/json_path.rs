@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use jsonpath_lib::Compiled;
 use serde_json::{from_slice as deserialize, Value};
 use wiremock::{Match, Request};

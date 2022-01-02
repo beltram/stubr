@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, fs::OpenOptions, path::PathBuf};
+use std::{fs::OpenOptions, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 use wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};

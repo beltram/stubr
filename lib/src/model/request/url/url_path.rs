@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use wiremock::matchers::{path, PathExactMatcher};
 
 use super::HttpUrlStub;

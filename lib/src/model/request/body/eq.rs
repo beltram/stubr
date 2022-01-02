@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use wiremock::matchers::{body_json, BodyExactMatcher};
 
 use super::BodyPatternStub;

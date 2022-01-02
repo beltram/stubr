@@ -63,7 +63,6 @@ mod actix_resp_mapping_tests {
     }
 
     mod headers {
-        use std::convert::TryInto;
         use std::iter::FromIterator;
 
         use http_types::headers::{HeaderValue, HeaderValues};

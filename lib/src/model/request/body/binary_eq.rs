@@ -1,5 +1,3 @@
-use std::convert::TryFrom;
-
 use wiremock::{Match, Request};
 
 use super::BodyPatternStub;

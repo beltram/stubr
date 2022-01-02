@@ -1,5 +1,3 @@
-use std::convert::TryInto;
-
 use crate::model::request::{headers::HttpReqHeadersStub, matcher::RequestMatcherStub};
 
 impl From<&HttpReqHeadersStub> for Vec<(String, String)> {
