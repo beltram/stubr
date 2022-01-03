@@ -19,6 +19,11 @@ jobs:
           profile: minimal
           toolchain: stable
       - uses: Swatinem/rust-cache@v1
+      - name: invalidate build script cache
+        continue-on-error: true
+        run: |
+          find target/debug/.fingerprint/actix-consumer-* -name "dep-build-script-build-script-build" -type f -delete
+          find target/debug/.fingerprint/stubr-consumer-* -name "dep-build-script-build-script-build" -type f -delete
       - name: cargo/build
         run: cargo build
       - name: cargo/test
