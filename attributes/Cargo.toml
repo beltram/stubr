@@ -16,7 +16,7 @@ include = ["/src/*", "/Cargo.toml"]
 proc-macro = true
 
 [dependencies]
-syn = { version = "1.0.84", features = ["full"] }
+syn = { version = "1.0.85", features = ["full"] }
 quote = "1.0.14"
 proc-macro2 = "1.0.36"
 itertools = "0.10.3"
