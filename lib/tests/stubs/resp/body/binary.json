@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "base64Body": "YmVsdHJhbQ=="
+  }
+}

@@ -130,6 +130,7 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
       "surnames": [ "jdoe", "johnny" ]
     },
     "body": "Hello World !", // text response (automatically adds 'Content-Type:text/plain' header)
+    "base64Body": "AQID", // binary Base 64 body
     "bodyFileName": "tests/stubs/response.json", // path to a .json or .txt file containing the response
     "headers": {
       "Content-Type": "application/pdf" // returns this response header

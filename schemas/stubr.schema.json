@@ -232,6 +232,10 @@
           "description": "Text response body, adds 'Content-Type:application/text' header in the response",
           "type": "string"
         },
+        "base64Body": {
+          "description": "Binary Base 64 response body",
+          "type": "string"
+        },
         "bodyFileName": {
           "description": "Relative path to a .json or .txt file containing response body",
           "type": "string"

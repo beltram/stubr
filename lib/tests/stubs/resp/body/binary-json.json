@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "base64Body": "eyJuYW1lIjoiam9obiJ9",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -29,6 +29,9 @@ pub struct BodyStub {
     /// json body
     #[serde(skip_serializing_if = "Option::is_none")]
     pub json_body: Option<Value>,
+    /// binary Base 64 encoded body
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub base_64_body: Option<String>,
     /// relative path to raw body content
     #[serde(default, skip_serializing, deserialize_with = "deserialize_body_file")]
     pub body_file_name: Option<BodyFile>,
@@ -109,6 +112,11 @@ impl BodyStub {
             _ => Value::from(raw)
         }
     }
+
+    fn binary_body(&self) -> Option<Vec<u8>> {
+        self.base_64_body.as_ref()
+            .and_then(|b| base64::decode(b).ok())
+    }
 }
 
 fn deserialize_body_file<'de, D>(path: D) -> Result<Option<BodyFile>, D::Error> where D: Deserializer<'de> {
@@ -148,6 +156,8 @@ impl HandlebarTemplatable for BodyStub {
     fn render_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
         if let Some(body) = self.body.as_ref() {
             template = template.set_body_string(self.render(body, data));
+        } else if let Some(binary) = self.binary_body() {
+            template = template.set_body_bytes(binary);
         } else if let Some(json_body) = self.render_json_body(self.json_body.as_ref(), data) {
             template = template.set_body_json(json_body);
         } else if let Some(body_file) = self.body_file_name.as_ref() {
@@ -161,6 +171,7 @@ impl HandlebarTemplatable for BodyStub {
 impl ResponseAppender for BodyStub {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
         if let Some(text) = self.body.as_ref() { resp = resp.set_body_string(text) }
+        if let Some(binary) = self.binary_body() { resp = resp.set_body_bytes(binary) }
         if let Some(json) = self.json_body.as_ref() { resp = resp.set_body_json(json) }
         if let Some(body_file) = self.body_file_name.as_ref() { resp = body_file.add(resp) }
         resp
