@@ -1,8 +1,6 @@
 use asserhttp::*;
 use surf::get;
 
-use crate::utils::*;
-
 #[async_std::test]
 #[stubr::mock("req/url/url-path-pattern.json")]
 async fn should_map_request_url_path_pattern_uri() {

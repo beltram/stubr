@@ -2,8 +2,6 @@ use asserhttp::*;
 use serde_json::json;
 use surf::get;
 
-use crate::utils::*;
-
 #[async_std::test]
 #[stubr::mock("resp/template/smoke/in-body.json")]
 async fn should_template_in_body() {

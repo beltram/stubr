@@ -8,10 +8,6 @@ pub use stubr::Stubr;
 pub trait UriAndQuery {
     fn get_uri(&self) -> String;
 
-    fn path(&self, path: &str) -> String {
-        format!("{}{}", self.get_uri(), path)
-    }
-
     fn path_query(&self, path: &str, key: &str, value: &str) -> String {
         format!("{}{}?{}={}", self.get_uri(), path, key, value)
     }

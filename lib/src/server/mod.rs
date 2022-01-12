@@ -128,6 +128,11 @@ impl Stubr {
         self.instance.uri()
     }
 
+    /// Get running server address and concatenate a path to it
+    pub fn path(&self, path: &str) -> String {
+        format!("{}{}", self.uri(), path)
+    }
+
     async fn start_on(port: u16) -> Self {
         if let Ok(listener) = TcpListener::bind(format!("{}:{}", Self::HOST, port)) {
             Self {

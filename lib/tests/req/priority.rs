@@ -1,7 +1,5 @@
 use asserhttp::*;
 
-use crate::utils::*;
-
 #[async_std::test]
 #[stubr::mock("req/priority/exact-high.json", "req/priority/regex-low.json")]
 async fn should_prioritize_exact_as_highest_priority() {
