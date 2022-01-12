@@ -170,10 +170,10 @@ impl HandlebarTemplatable for BodyStub {
 
 impl ResponseAppender for BodyStub {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
-        if let Some(text) = self.body.as_ref() { resp = resp.set_body_string(text) }
-        if let Some(binary) = self.binary_body() { resp = resp.set_body_bytes(binary) }
         if let Some(json) = self.json_body.as_ref() { resp = resp.set_body_json(json) }
-        if let Some(body_file) = self.body_file_name.as_ref() { resp = body_file.add(resp) }
+        else if let Some(text) = self.body.as_ref() { resp = resp.set_body_string(text) }
+        else if let Some(body_file) = self.body_file_name.as_ref() { resp = body_file.add(resp) }
+        else if let Some(binary) = self.binary_body() { resp = resp.set_body_bytes(binary) }
         resp
     }
 }
