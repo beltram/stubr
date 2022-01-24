@@ -17,7 +17,7 @@ stubr-attributes = { path = "../attributes", version = "0.4.13", optional = true
 wiremock = "0.5.10"
 anyhow = { version = "1.0.52", default-features = false }
 async-trait = "0.1.52"
-serde_json = { version = "1.0.75", default-features = false }
+serde_json = { version = "1.0.78", default-features = false }
 http-types = { version = "2.12.0", default-features = false }
 itertools = "0.10.3"
 const_format = "0.2.22"
