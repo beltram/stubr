@@ -11,6 +11,11 @@
     <img src="https://img.shields.io/crates/v/stubr.svg?style=flat-square"
     alt="Crates.io version" />
   </a>
+  <!-- Minimum Supported Rust Version -->
+  <a href="rust: 1.56.1+">
+    <img src="https://img.shields.io/badge/rust-1.56.1%2B-green.svg"
+      alt="rust: 1.56.1+" />
+  </a>
   <!-- Downloads -->
   <a href="https://crates.io/crates/stubr">
     <img src="https://img.shields.io/crates/d/stubr.svg?style=flat-square"
