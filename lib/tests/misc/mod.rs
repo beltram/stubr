@@ -6,3 +6,4 @@ pub mod probes;
 pub mod pub_api;
 pub mod wiremock_iso;
 pub mod tokio;
+pub mod jwt;

@@ -128,7 +128,7 @@
           }
         },
         "basicAuth": {
-          "description": "For exact Basic authentication matching",
+          "description": "For exact Basic authorization request matching",
           "type": "object",
           "required": [
             "password",
@@ -141,6 +141,16 @@
             },
             "password": {
               "description": "Basic password",
+              "type": "string"
+            }
+          }
+        },
+        "jwtAuth": {
+          "description": "For Bearer authorization request matching with a JWT",
+          "type": "object",
+          "properties": {
+            "equalTo": {
+              "description": "Plain JWT token without 'Bearer ' prefix",
               "type": "string"
             }
           }

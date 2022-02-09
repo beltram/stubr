@@ -104,6 +104,7 @@ track down which ones are implemented by stubr. For having a view of what is sup
     * [x] `caseInsensitive`
     * [x] `absent`
 * [x] basic auth
+* [x] (*) jwt auth
 
 </details>
 

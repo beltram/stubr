@@ -1,8 +1,7 @@
-use std::str::FromStr;
-
-use http_types::headers::HeaderName;
 use serde::{Deserialize, Serialize};
 use wiremock::{Match, Request};
+
+use super::AUTHORIZATION_HEADER;
 
 #[derive(Serialize, Deserialize, Debug, Default, Hash)]
 #[serde(default, rename_all = "camelCase")]
@@ -11,16 +10,11 @@ pub struct BasicAuthStub {
     password: String,
 }
 
-lazy_static! {
-    pub(crate) static ref AUTHORIZATION_HEADER: HeaderName = HeaderName::from_str("authorization").unwrap();
-}
-
 pub struct BasicAuthMatcher(String);
 
 impl BasicAuthMatcher {
     const BASIC_PREFIX: &'static str = "Basic";
 }
-
 
 impl Match for BasicAuthMatcher {
     fn matches(&self, req: &Request) -> bool {
@@ -31,8 +25,8 @@ impl Match for BasicAuthMatcher {
 }
 
 impl From<&BasicAuthStub> for BasicAuthMatcher {
-    fn from(dto: &BasicAuthStub) -> Self {
-        let value = base64::encode(format!("{}:{}", dto.username, dto.password));
+    fn from(stub: &BasicAuthStub) -> Self {
+        let value = base64::encode(format!("{}:{}", stub.username, stub.password));
         Self(format!("{} {}", Self::BASIC_PREFIX, value))
     }
 }

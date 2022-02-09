@@ -108,8 +108,11 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
       // .. then all matchers described above for query parameters are also applicable here
     },
     "basicAuth" : { // exact Basic authentication matching
-      "username" : "user",
-      "password" : "pass"
+      "username": "user",
+      "password": "pass"
+    },
+    "jwtAuth": {
+      "equalTo": "eyJhbGciOiJSUzI1NiJ9.e30.MBkQ..." // plain JWT token
     },
     "bodyPatterns": [
       { "equalToJson": {"name": "bob"} }, // strict json request body equality
