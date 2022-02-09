@@ -251,6 +251,6 @@ to [schemastore](https://github.com/SchemaStore/schemastore)*
     * Schema file or URL: `https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json`
     * Schema version: `JSON Schema version 7`
     * File path pattern: `stubs/*.json` (and `mappings/*.json` if you want to use it for original wiremock stubs)
-* The `Apply`
+* Then `Apply`
 
 </details>
