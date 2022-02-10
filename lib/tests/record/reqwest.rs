@@ -16,7 +16,7 @@ fn should_record_from_reqwest_client() {
     ReqwestBlockingClientBuilder::new().build().unwrap()
         .get(stubr.path("/record-client/reqwest"))
         .record_with(cfg);
-    assert_recorded_stub_eq("record-client-reqwest-3605273010342106504", json!({
+    assert_recorded_stub_eq("record-client-reqwest-17934677986753600968", json!({
         "request": {
             "method": "GET",
             "urlPath": "/record-client/reqwest"
@@ -39,7 +39,7 @@ fn should_record_from_reqwest_client_ko() {
     ReqwestBlockingClientBuilder::new().build().unwrap()
         .get(stubr.path("/record-client/reqwest/ko"))
         .record_with(cfg);
-    assert_recorded_stub_eq("record-client-reqwest-ko-4731586543051769414", json!({
+    assert_recorded_stub_eq("record-client-reqwest-ko-15261495417896979192", json!({
         "request": {
             "method": "GET",
             "urlPath": "/record-client/reqwest/ko"

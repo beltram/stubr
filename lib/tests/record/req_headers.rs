@@ -13,7 +13,7 @@ async fn proxy_should_forward_request_headers() {
     Stubr::record_with(record_cfg()).isahc_client()
         .send(req_header(stubr.path("/headers/req/one"), &[("x-a", "a")]))
         .expect_status_ok();
-    assert_recorded_stub_eq("headers-req-one-4578245765011141906", json!({
+    assert_recorded_stub_eq("headers-req-one-3603143203592242792", json!({
         "request": {
             "method": "GET",
             "urlPath": "/headers/req/one",
@@ -32,7 +32,7 @@ async fn proxy_should_forward_many_request_headers() {
     Stubr::record_with(record_cfg()).isahc_client()
         .send(req_header(stubr.path("/headers/req/many"), &[("x-a", "a"), ("x-b", "b")]))
         .expect_status_ok();
-    assert_recorded_stub_eq("headers-req-many-11443770392462244132", json!({
+    assert_recorded_stub_eq("headers-req-many-2405737596588286623", json!({
         "request": {
             "method": "GET",
             "urlPath": "/headers/req/many",

@@ -12,7 +12,7 @@ async fn proxy_should_forward_json_request_body() {
     Stubr::record_with(record_cfg()).isahc_client()
         .post(stubr.path("/body/req/json"), json!({"a": { "b": "c" }}).to_string())
         .expect_status_ok();
-    assert_recorded_stub_eq("body-req-json-5699068410059559100", json!({
+    assert_recorded_stub_eq("body-req-json-1875300994429885227", json!({
         "request": {
             "method": "POST",
             "urlPath": "/body/req/json",

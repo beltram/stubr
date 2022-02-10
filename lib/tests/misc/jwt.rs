@@ -48,7 +48,7 @@ mod alg {
 
         #[async_std::test]
         #[stubr::mock("req/jwt/alg/rs-256.json")]
-        async fn should_match_alg_header() {
+        async fn should_match_alg() {
             get(stubr.uri())
                 .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
                 .expect_status_ok();
@@ -74,6 +74,58 @@ mod alg {
         #[stubr::mock("req/jwt/alg/rs-256.json")]
         async fn should_fail_when_missing_authorization_header() {
             get(stubr.uri()).await.expect_status_not_found();
+        }
+    }
+
+    mod one_of {
+        use super::*;
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/one-of-rs-hs-256.json")]
+        async fn should_match_one_of_alg() {
+            get(stubr.uri())
+                .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
+                .expect_status_ok();
+            get(stubr.uri())
+                .header("Authorization", format!("Bearer {}", HS_256_TOKEN)).await
+                .expect_status_ok();
+        }
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/one-of-rs-256.json")]
+        async fn should_fail_when_absent() {
+            get(stubr.uri())
+                .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
+                .expect_status_ok();
+            get(stubr.uri())
+                .header("Authorization", format!("Bearer {}", HS_256_TOKEN)).await
+                .expect_status_not_found();
+        }
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/one-of-empty.json")]
+        async fn should_fail_when_one_of_empty() {
+            get(stubr.uri())
+                .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
+                .expect_status_not_found();
+            get(stubr.uri())
+                .header("Authorization", format!("Bearer {}", HS_256_TOKEN)).await
+                .expect_status_not_found();
+        }
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/one-of-rs-hs-256.json")]
+        async fn should_fail_when_authorization_header_absent() {
+            get(stubr.uri()).await.expect_status_not_found();
+        }
+
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/one-of-rs-hs-256.json")]
+        async fn should_fail_when_missing_bearer_prefix() {
+            get(stubr.uri())
+                .header("Authorization", RS_256_TOKEN).await
+                .expect_status_not_found();
         }
     }
 }

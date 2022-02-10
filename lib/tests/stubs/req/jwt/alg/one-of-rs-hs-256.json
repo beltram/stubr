@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "jwtAuth": {
+      "alg": {
+        "oneOf": [
+          "RS256",
+          "HS256"
+        ]
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

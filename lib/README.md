@@ -114,7 +114,8 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
     "jwtAuth": {
       "equalTo": "eyJhbGciOiJSUzI1NiJ9.e30.MBkQ..." // plain JWT token
       "alg": {
-        "equalTo": "RS256" // JWT algorithm by equality matcher
+        "equalTo": "RS256", // JWT algorithm by equality matcher
+        "oneOf": ["RS256", "HS256"] // JWT must contain one of these algorithms
       }
     },
     "bodyPatterns": [

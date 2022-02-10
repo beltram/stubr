@@ -1,9 +1,6 @@
 use serde::{Deserialize, Serialize};
 use wiremock::MockBuilder;
 
-use alg::JwtAlgStub;
-use eq::JwtExactMatcher;
-
 use super::super::MockRegistrable;
 
 mod eq;
@@ -13,12 +10,12 @@ mod alg;
 #[serde(default, rename_all = "camelCase")]
 pub struct JwtAuthStub {
     equal_to: Option<String>,
-    alg: Option<JwtAlgStub>,
+    alg: Option<alg::JwtAlgStub>,
 }
 
 impl MockRegistrable for JwtAuthStub {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
-        if let Ok(eq) = JwtExactMatcher::try_from(self) {
+        if let Ok(eq) = eq::JwtExactMatcher::try_from(self) {
             mock = mock.and(eq)
         }
         if let Some(alg) = self.alg.as_ref() {
