@@ -113,6 +113,9 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
     },
     "jwtAuth": {
       "equalTo": "eyJhbGciOiJSUzI1NiJ9.e30.MBkQ..." // plain JWT token
+      "alg": {
+        "equalTo": "RS256" // JWT algorithm by equality matcher
+      }
     },
     "bodyPatterns": [
       { "equalToJson": {"name": "bob"} }, // strict json request body equality

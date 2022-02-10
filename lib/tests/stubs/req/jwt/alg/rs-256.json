@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "jwtAuth": {
+      "alg": {
+        "equalTo": "RS256"
+      }
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

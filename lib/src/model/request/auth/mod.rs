@@ -12,6 +12,8 @@ use super::MockRegistrable;
 mod basic;
 mod jwt;
 
+const BEARER_PREFIX: &'static str = "Bearer";
+
 #[derive(Serialize, Deserialize, Debug, Default, Hash)]
 #[serde(default, rename_all = "camelCase")]
 pub struct AuthStub {

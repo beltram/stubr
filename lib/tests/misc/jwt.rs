@@ -36,3 +36,44 @@ mod eq {
         get(stubr.uri()).await.expect_status_not_found();
     }
 }
+
+mod alg {
+    use super::*;
+
+    const RS_256_TOKEN: &str = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.e30.upI8kdqCUNUUgd1IrUpjNDDiif7yJZT_pI03g_DW6-aFIxEZD_kszt6E33_cjiUv6tWkutqTDgLr8XfKzFVfBKUTA9QDhpY9Imavnu-CW5k6xSUdiSiwo5b7EyMGBO7bRPN9b0L3OL2CzqowqOalYiqY0lldy1IDUgD_n5Cm0CFLpMOipb_vGf2KJFYmR8T_oZOAJzf6FYbZKFhjujeXiVLah2kj2qIZMIws9Q5t485udznl_gNlQwcnVB3bqEd6_msgUOo0ZRkyctQz9rZ70-JBviwXzhiqoeDGeiqJeRbaWLOjhmpWlwc6DJgRgP1H59dzV9htOWjST6cs8vpG2A";
+    const HS_256_TOKEN: &str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.Et9HFtf9R3GEMA0IICOfFMVXY7kkTX1wr4qCyhIf58U";
+
+    mod eq {
+        use super::*;
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/rs-256.json")]
+        async fn should_match_alg_header() {
+            get(stubr.uri())
+                .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
+                .expect_status_ok();
+        }
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/rs-256.json")]
+        async fn should_fail_when_different_alg() {
+            get(stubr.uri())
+                .header("Authorization", format!("Bearer {}", HS_256_TOKEN)).await
+                .expect_status_not_found();
+        }
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/rs-256.json")]
+        async fn should_fail_when_missing_bearer_prefix() {
+            get(stubr.uri())
+                .header("Authorization", RS_256_TOKEN).await
+                .expect_status_not_found();
+        }
+
+        #[async_std::test]
+        #[stubr::mock("req/jwt/alg/rs-256.json")]
+        async fn should_fail_when_missing_authorization_header() {
+            get(stubr.uri()).await.expect_status_not_found();
+        }
+    }
+}

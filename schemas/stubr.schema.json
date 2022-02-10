@@ -152,6 +152,30 @@
             "equalTo": {
               "description": "Plain JWT token without 'Bearer ' prefix",
               "type": "string"
+            },
+            "alg": {
+              "type": "object",
+              "description": "JWT algorithm request matching",
+              "properties": {
+                "equalTo": {
+                  "type": "string",
+                  "description": "JWT algorithm by strict equality",
+                  "enum": [
+                    "HS256",
+                    "HS384",
+                    "HS512",
+                    "ES256",
+                    "ES384",
+                    "RS256",
+                    "RS384",
+                    "RS512",
+                    "PS256",
+                    "PS384",
+                    "PS512",
+                    "EdDSA"
+                  ]
+                }
+              }
             }
           }
         },

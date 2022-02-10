@@ -1,12 +1,8 @@
 use wiremock::{Match, Request};
 
-use super::{JwtAuthStub, super::AUTHORIZATION_HEADER};
+use super::{JwtAuthStub, super::{AUTHORIZATION_HEADER, BEARER_PREFIX}};
 
 pub struct JwtExactMatcher(String);
-
-impl JwtExactMatcher {
-    const BEARER_PREFIX: &'static str = "Bearer";
-}
 
 impl Match for JwtExactMatcher {
     fn matches(&self, req: &Request) -> bool {
@@ -21,7 +17,7 @@ impl TryFrom<&JwtAuthStub> for JwtExactMatcher {
 
     fn try_from(stub: &JwtAuthStub) -> anyhow::Result<Self> {
         stub.equal_to.as_ref()
-            .map(|eq| Self(format!("{} {}", Self::BEARER_PREFIX, eq)))
+            .map(|eq| Self(format!("{} {}", BEARER_PREFIX, eq)))
             .ok_or_else(|| anyhow::Error::msg(""))
     }
 }
