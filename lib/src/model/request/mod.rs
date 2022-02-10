@@ -16,6 +16,7 @@ pub mod matcher;
 pub mod method;
 pub mod body;
 pub mod auth;
+pub mod json;
 
 #[derive(Serialize, Deserialize, Debug, Default, Hash)]
 #[serde(default, rename_all = "camelCase")]

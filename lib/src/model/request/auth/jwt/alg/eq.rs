@@ -3,17 +3,15 @@ use std::str::FromStr;
 use jsonwebtoken::Algorithm;
 use wiremock::{Match, Request};
 
-use super::{JwtAlgStub, super::super::{AUTHORIZATION_HEADER, BEARER_PREFIX}};
+use crate::model::request::auth::helpers::RequestAuthExtension;
+
+use super::JwtAlgStub;
 
 pub struct JwtAlgExactMatcher(Algorithm);
 
 impl Match for JwtAlgExactMatcher {
     fn matches(&self, req: &Request) -> bool {
-        req.headers.get(&AUTHORIZATION_HEADER)
-            .map(|v| v.as_str())
-            .filter(|h| h.contains(BEARER_PREFIX))
-            .map(|h| &h[BEARER_PREFIX.len() + 1..])
-            .and_then(|jwt| jsonwebtoken::decode_header(jwt).ok())
+        req.jwt_header()
             .map(|h| h.alg == self.0)
             .unwrap_or_default()
     }

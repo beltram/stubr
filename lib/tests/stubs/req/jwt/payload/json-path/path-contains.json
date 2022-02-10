@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "jwtAuth": {
+      "payloadPatterns": [
+        {
+          "expression": "$.user.name",
+          "contains": "j"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "jwtAuth": {
+      "payloadPatterns": [
+        {
+          "matchesJsonPath": "$.user.name"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}

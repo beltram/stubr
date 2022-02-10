@@ -11,6 +11,7 @@ use super::MockRegistrable;
 
 mod basic;
 mod jwt;
+mod helpers;
 
 const BEARER_PREFIX: &'static str = "Bearer";
 

@@ -2,17 +2,11 @@ use std::hash::{Hash, Hasher};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use wiremock::{matchers::BodyExactMatcher, MockBuilder};
-
-use binary_eq::BinaryEqualMatcher;
-use eq_relaxed::JsonBodyRelaxedMatcher;
-use json_path::JsonPathMatcher;
-use json_path_contains::JsonPathContainsMatcher;
-use json_path_eq::JsonPathEqMatcher;
+use wiremock::MockBuilder;
 
 use super::MockRegistrable;
 
-mod eq;
+pub mod eq;
 mod diff;
 mod eq_relaxed;
 mod json_path;
@@ -20,7 +14,7 @@ mod json_path_eq;
 mod json_path_contains;
 mod binary_eq;
 
-#[derive(Serialize, Deserialize, Debug, Default, Eq)]
+#[derive(Serialize, Deserialize, Debug, Default, Eq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct BodyPatternStub {
     /// strict equality
@@ -88,22 +82,22 @@ impl BodyPatternStub {
 impl MockRegistrable for Vec<BodyPatternStub> {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
         for body_pattern in self {
-            if let Ok(exact_json) = BodyExactMatcher::try_from(body_pattern) {
+            if let Ok(exact_json) = eq::BodyExactMatcher::try_from(body_pattern) {
                 mock = mock.and(exact_json)
             }
-            if let Ok(relaxed_exact_json) = JsonBodyRelaxedMatcher::try_from(body_pattern) {
+            if let Ok(relaxed_exact_json) = eq_relaxed::JsonBodyRelaxedMatcher::try_from(body_pattern) {
                 mock = mock.and(relaxed_exact_json)
             }
-            if let Ok(json_path) = JsonPathMatcher::try_from(body_pattern) {
+            if let Ok(json_path) = json_path::JsonBodyPathMatcher::try_from(body_pattern) {
                 mock = mock.and(json_path)
             }
-            if let Ok(json_path_eq) = JsonPathEqMatcher::try_from(body_pattern) {
+            if let Ok(json_path_eq) = json_path_eq::JsonBodyPathEqMatcher::try_from(body_pattern) {
                 mock = mock.and(json_path_eq)
             }
-            if let Ok(json_path_contains) = JsonPathContainsMatcher::try_from(body_pattern) {
+            if let Ok(json_path_contains) = json_path_contains::JsonBodyPathContainsMatcher::try_from(body_pattern) {
                 mock = mock.and(json_path_contains)
             }
-            if let Ok(binary_equal) = BinaryEqualMatcher::try_from(body_pattern) {
+            if let Ok(binary_equal) = binary_eq::BinaryEqualMatcher::try_from(body_pattern) {
                 mock = mock.and(binary_equal)
             }
         }

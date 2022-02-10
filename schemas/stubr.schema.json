@@ -176,6 +176,73 @@
                   ]
                 }
               }
+            },
+            "payloadPatterns": {
+              "description": "Allows defining many JWT payload matchers",
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "equalToJson": {
+                        "description": "JWT payload must be strictly equal to this",
+                        "type": [
+                          "object",
+                          "array"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "matchesJsonPath": {
+                        "description": "JWT payload must match this json path",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "expression",
+                      "contains"
+                    ],
+                    "properties": {
+                      "expression": {
+                        "description": "JWT payload must match this json path",
+                        "type": "string"
+                      },
+                      "contains": {
+                        "description": "Matched json path must contain this string",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "expression",
+                      "equalToJson"
+                    ],
+                    "properties": {
+                      "expression": {
+                        "description": "JWT payload must match this json path",
+                        "type": "string"
+                      },
+                      "equalToJson": {
+                        "description": "Matched json path must be equal to this",
+                        "type": [
+                          "object",
+                          "array"
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
             }
           }
         },
@@ -230,6 +297,26 @@
                   "contains": {
                     "description": "Matched json path must contain this string",
                     "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "required": [
+                  "expression",
+                  "equalToJson"
+                ],
+                "properties": {
+                  "expression": {
+                    "description": "Request body must match this json path",
+                    "type": "string"
+                  },
+                  "equalToJson": {
+                    "description": "Matched json path must be equal to this",
+                    "type": [
+                      "object",
+                      "array"
+                    ]
                   }
                 }
               },

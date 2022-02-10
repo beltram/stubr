@@ -1,22 +1,22 @@
-use jsonpath_lib::select as matches_json_path;
 use serde_json::{from_slice as deserialize, Value};
 use wiremock::{Match, Request};
 
-use super::BodyPatternStub;
+use super::{
+    BodyPatternStub,
+    super::json::{json_path_eq::JsonPathEqMatcher, JsonMatcher},
+};
 
-pub struct JsonPathEqMatcher(String, Value);
+pub struct JsonBodyPathEqMatcher(String, Value);
 
-impl Match for JsonPathEqMatcher {
+impl Match for JsonBodyPathEqMatcher {
     fn matches(&self, req: &Request) -> bool {
         deserialize::<Value>(&req.body).ok().as_ref()
-            .and_then(|it| matches_json_path(it, &self.0).ok())
-            .filter(|matched| !matched.is_empty())
-            .filter(|matched| matched.iter().all(|&it| it == &self.1))
-            .is_some()
+            .map(|json| JsonPathEqMatcher(&self.0, &self.1).matches(json))
+            .unwrap_or_default()
     }
 }
 
-impl TryFrom<&BodyPatternStub> for JsonPathEqMatcher {
+impl TryFrom<&BodyPatternStub> for JsonBodyPathEqMatcher {
     type Error = anyhow::Error;
 
     fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {

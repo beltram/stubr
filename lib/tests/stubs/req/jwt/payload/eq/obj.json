@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "jwtAuth": {
+      "payloadPatterns": [
+        {
+          "equalToJson": {
+            "user": {
+              "name": "jdoe"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200
+  }
+}
