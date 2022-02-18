@@ -13,7 +13,7 @@ mod basic;
 mod jwt;
 mod helpers;
 
-const BEARER_PREFIX: &'static str = "Bearer";
+const BEARER_PREFIX: &str = "Bearer";
 
 #[derive(Serialize, Deserialize, Debug, Default, Hash)]
 #[serde(default, rename_all = "camelCase")]

@@ -6,7 +6,7 @@ pub struct JsonPathContainsMatcher<'a>(pub &'a String, pub &'a String);
 
 impl<'a> JsonMatcher<'a> for JsonPathContainsMatcher<'a> {
     fn matches(&self, json: &'a Value) -> bool {
-        jsonpath_lib::select(json, &self.0).ok()
+        jsonpath_lib::select(json, self.0).ok()
             .filter(|matched| !matched.is_empty())
             .filter(|matched| {
                 matched.iter()
