@@ -1,6 +1,6 @@
 use std::{fs::create_dir_all, path::PathBuf};
 
-use clap::{App, IntoApp, Parser};
+use clap::{Command, IntoApp, Parser};
 use clap_complete::{generate_to, Generator, Shell::{Bash, Zsh}};
 use directories::UserDirs;
 
@@ -19,17 +19,17 @@ impl Shell {
     const BASH_DIR: &'static str = ".bash_completion.d";
 
     pub(crate) fn generate_and_install(&self) {
-        self.create_completion_for(Cli::into_app())
+        self.create_completion_for(Cli::command())
     }
 
-    fn create_completion_for(&self, mut app: App) {
+    fn create_completion_for(&self, mut app: Command) {
         match self {
             Shell::Bash => self.create_completion(&mut app, Bash),
             Shell::Zsh => self.create_completion(&mut app, Zsh),
         }
     }
 
-    fn create_completion<G: Generator>(&self, app: &mut App, generator: G) {
+    fn create_completion<G: Generator>(&self, app: &mut Command, generator: G) {
         let bin_name = app.get_name().to_string();
         let dir = self.completion_dir();
         generate_to::<G, _, _>(generator, app, &bin_name, &dir)
