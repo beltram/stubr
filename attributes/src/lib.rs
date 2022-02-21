@@ -1,3 +1,37 @@
+//!
+//! Macros in this crate simplify starting a [stubr](https://docs.rs/stubr/) server in your tests.
+//!
+//! ## without macros
+//!
+//! ```no_run
+//! use stubr;
+//! use asserhttp::*;
+//! use isahc;
+//!
+//! #[async_std::test]
+//! async fn boring_test() {
+//!     let stubr = Stubr::start("tests/stubs").await;
+//!     isahc::get_async(stubr.uri()).await.expect_status_ok();
+//! }
+//! ```
+//!
+//! ## with macros
+//! ```no_run
+//! # use stubr_attributes as stubr;
+//! use asserhttp::*;
+//! use isahc;
+//!
+//! #[async_std::test]
+//! #[stubr::mock]
+//! async fn boring_test() {
+//!     isahc::get_async(stubr.uri()).await.expect_status_ok();
+//! }
+//! ```
+//!
+//! Macros are available for:
+//! * [starting local stub files](macro@mock)
+//! * [starting a recorder server](macro@record)
+//! * [starting another app's stubs](macro@apps) imported by [stubr-build](https://docs.rs/stubr-build)
 extern crate proc_macro;
 
 use proc_macro::TokenStream;

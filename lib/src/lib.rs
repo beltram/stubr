@@ -15,7 +15,6 @@
 //! use asserhttp::*;
 //!
 //! #[async_std::test]
-//! #[stubr::mock]
 //! async fn simple_async() {
 //!     // supply a directory containing json stubs. Invalid files are just ignored
 //!     let stubr = Stubr::start("tests/stubs").await;
@@ -27,7 +26,6 @@
 //! }
 //!
 //! #[test]
-//! #[stubr::mock]
 //! fn simple_blocking() {
 //!     // can also be used in a blocking way
 //!     let stubr = Stubr::start_blocking("tests/stubs");
