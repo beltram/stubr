@@ -21,7 +21,8 @@
 Starts a Stubr mock server and creates a `stubr` variable which can be used to call the server e.g. `stubr.uri()`. It
 supports both standard and async test functions.
 
-```rust
+```rust, no_run
+use stubr;
 use isahc;
 use asserhttp::*; // optional
 
@@ -40,7 +41,8 @@ A `recorder` variable is created so that you can interact with the proxy. You th
 use this proxy. With `record-isahc` or `record-reqwest` features you can get an http client configured to hit the
 recorder proxy. It supports both standard and async test functions.
 
-```rust
+```rust, no_run
+use stubr;
 use isahc;
 use asserhttp::*; // optional
 
@@ -50,5 +52,25 @@ use asserhttp::*; // optional
 fn simple_test() {
     recorder.isahc_client().get(stubr.uri()).expect_status_ok();
     // a recorded stub has been created under 'target/stubs'
+}
+```
+
+## #[stubr::apps]
+
+Starts a Stubr server for each remote app name supplied.  
+Those remote apps' stubs are imported by [stubr-build](https://docs.rs/stubr-build) and will help you test your app's
+dependencies over other apps/microservices using http.
+
+```rust, no_run
+use isahc;
+use stubr;
+use asserhttp::*; // optional
+
+#[test]
+#[stubr::apps("producer-a", "producer-b")] // <- start a server for each app
+fn using_producers() {
+    // a binding is created for each app supplied with the name of the app
+    isahc::get(producer_a.uri()).expect_status_ok();
+    isahc::get(producer_b.uri()).expect_status_ok();
 }
 ```

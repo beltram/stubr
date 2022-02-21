@@ -1,44 +1,8 @@
-//!
-//! Macros in this crate simplify starting a [stubr](https://docs.rs/stubr/) server in your tests.
-//!
-//! ## without macros
-//!
-//! ```no_run
-//! use stubr;
-//! use asserhttp::*;
-//! use isahc;
-//!
-//! #[async_std::test]
-//! async fn boring_test() {
-//!     let stubr = Stubr::start("tests/stubs").await;
-//!     isahc::get_async(stubr.uri()).await.expect_status_ok();
-//! }
-//! ```
-//!
-//! ## with macros
-//! ```no_run
-//! # use stubr_attributes as stubr;
-//! use asserhttp::*;
-//! use isahc;
-//!
-//! #[async_std::test]
-//! #[stubr::mock]
-//! async fn boring_test() {
-//!     isahc::get_async(stubr.uri()).await.expect_status_ok();
-//! }
-//! ```
-//!
-//! Macros are available for:
-//! * [starting local stub files](macro@mock)
-//! * [starting a recorder server](macro@record)
-//! * [starting another app's stubs](macro@apps) imported by [stubr-build](https://docs.rs/stubr-build)
+#![doc = include_str ! ("../README.md")]
+
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
-
-use apps::apps_transform;
-use mock::mock_transform;
-use record::record_transform;
 
 mod mock;
 mod record;
@@ -90,7 +54,7 @@ mod apps;
 #[proc_macro_attribute]
 pub fn mock(args: TokenStream, item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);
-    mock_transform(args, item.into()).unwrap().into()
+    mock::mock_transform(args, item.into()).unwrap().into()
 }
 
 /// Starts a Stubr recorder server and creates a `recorder` variable which can be used to call the server e.g. `stubr.isahc_client()`.
@@ -130,7 +94,7 @@ pub fn mock(args: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn record(args: TokenStream, item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);
-    record_transform(args, item.into()).unwrap().into()
+    record::record_transform(args, item.into()).unwrap().into()
 }
 
 /// Starts a Stubr server for each remote app name supplied.
@@ -152,5 +116,5 @@ pub fn record(args: TokenStream, item: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn apps(args: TokenStream, item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);
-    apps_transform(args, item.into()).unwrap().into()
+    apps::apps_transform(args, item.into()).unwrap().into()
 }
