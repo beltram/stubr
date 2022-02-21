@@ -10,7 +10,7 @@ license = "Apache-2.0"
 keywords = ["macro", "mock", "test", "contract", "http"]
 categories = ["command-line-utilities", "development-tools::testing"]
 
-include = ["/src/*", "/Cargo.toml"]
+include = ["/src/*", "/Cargo.toml", "/README.md"]
 
 [lib]
 proc-macro = true
