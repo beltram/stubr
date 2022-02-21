@@ -1,7 +1,7 @@
 <h1 align="center">stubr</h1>
 <div align="center">
  <strong>
-   Wiremock reimplemented in Rust
+   Wiremock rewritten in Rust
  </strong>
 </div>
 <br />
