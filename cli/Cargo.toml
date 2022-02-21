@@ -18,7 +18,7 @@ path = "src/main.rs"
 
 [dependencies]
 stubr = { path = "../lib", version = "0.4.13", features = ["record"], default-features = false }
-anyhow = { version = "1.0.53", default-features = false }
+anyhow = { version = "1.0.54", default-features = false }
 directories = "4.0.1"
 clap = { version = "3.1.0", default-features = false, features = ["derive"] }
 clap_complete = "3.1.0"
