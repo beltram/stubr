@@ -1,6 +1,6 @@
 [package]
 name = "stubr"
-version = "0.4.13"
+version = "0.4.14"
 edition = "2021"
 authors = ["Beltram Maldant"]
 description = "Wiremock implemented in Rust"
@@ -13,7 +13,7 @@ categories = ["command-line-utilities", "development-tools::testing"]
 include = ["/src/*", "/Cargo.toml"]
 
 [dependencies]
-stubr-attributes = { path = "../attributes", version = "0.4.13", optional = true }
+stubr-attributes = { path = "../attributes", version = "0.4.14", optional = true }
 wiremock = "0.5.10"
 anyhow = { version = "1.0.54", default-features = false }
 async-trait = "0.1.52"
