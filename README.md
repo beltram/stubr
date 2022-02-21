@@ -33,7 +33,7 @@
   </a>
   <!-- CI status -->
   <a href="https://github.com/beltram/stubr/actions">
-    <img src="https://github.com/beltram/stubr/workflows/ci/badge.svg?style=flat-square"
+    <img src="https://github.com/beltram/stubr/workflows/ci/badge.svg?style=flat-square&branch=main"
       alt="ci" />
   </a>
   <!-- Code coverage -->
