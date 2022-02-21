@@ -22,7 +22,7 @@ Starts a Stubr mock server and creates a `stubr` variable which can be used to c
 supports both standard and async test functions.
 
 ```rust, no_run
-use stubr;
+# use stubr_attributes as stubr;
 use isahc;
 use asserhttp::*; // optional
 
@@ -42,7 +42,7 @@ use this proxy. With `record-isahc` or `record-reqwest` features you can get an 
 recorder proxy. It supports both standard and async test functions.
 
 ```rust, no_run
-use stubr;
+# use stubr_attributes as stubr;
 use isahc;
 use asserhttp::*; // optional
 
@@ -62,8 +62,8 @@ Those remote apps' stubs are imported by [stubr-build](https://docs.rs/stubr-bui
 dependencies over other apps/microservices using http.
 
 ```rust, no_run
+# use stubr_attributes as stubr;
 use isahc;
-use stubr;
 use asserhttp::*; // optional
 
 #[test]
