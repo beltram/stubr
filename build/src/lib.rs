@@ -1,3 +1,5 @@
+#![doc = include_str ! ("../README.md")]
+
 use std::{
     fs::{canonicalize, create_dir, create_dir_all, remove_dir_all},
     path::PathBuf,
