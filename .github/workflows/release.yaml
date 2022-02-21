@@ -115,10 +115,10 @@ jobs:
           profile: minimal
           toolchain: stable
       - uses: Swatinem/rust-cache@v1
-      - name: publish plugin
-        run: |
-          cd build
-          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
+#      - name: publish plugin
+#        run: |
+#          cd build
+#          cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
       - name: publish attributes
         run: |
           cd attributes
