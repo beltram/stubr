@@ -41,7 +41,6 @@ lazy_static! {
 }
 
 impl PartialBody {
-
     fn is_partial(&self) -> bool {
         self.path.is_some()
     }
@@ -73,8 +72,6 @@ impl From<&BodyPatternStub> for PartialBody {
             base64::decode(binary_equal_to)
                 .unwrap_or_else(|_| panic!("'{}' must be Base64 encoded", binary_equal_to))
                 .into()
-        } else if stub.equal_to_json.is_some() && stub.expression.is_none() {
-            stub.equal_to_json.as_ref().unwrap().to_owned().into()
         } else if let Some(expression) = stub.expression.as_ref() {
             if let Some(equal_to_json) = stub.equal_to_json.as_ref() {
                 PartialBody { path: Some(expression.to_string()), value: Some(equal_to_json.to_owned()), ..Default::default() }
@@ -82,6 +79,8 @@ impl From<&BodyPatternStub> for PartialBody {
                 let value = ContainsGenerator::generate_string_containing(contains.to_string());
                 PartialBody { path: Some(expression.to_string()), value: Some(Value::String(value)), ..Default::default() }
             } else { PartialBody::default() }
+        } else if let Some(eq) = stub.equal_to_json.as_ref() {
+            eq.to_owned().into()
         } else if let Some(json_path) = stub.matches_json_path.as_ref() {
             PartialBody { path: Some(json_path.to_owned()), ..Default::default() }
         } else { PartialBody::default() }
