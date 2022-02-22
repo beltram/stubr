@@ -122,9 +122,9 @@ mod verify_body_tests {
 
         #[test]
         fn equal_to_json_should_generate_strictly_equal() {
-            let expected = json!({"name": "john", "age": 42});
-            let stub = BodyPatternStub { equal_to_json: Some(expected.clone()), ..Default::default() };
-            assert_eq!(PartialBody::from(&stub).to_value().unwrap(), expected);
+            let json = json!({"name": "john", "age": 42});
+            let stub = BodyPatternStub { equal_to_json: Some(json.clone()), ..Default::default() };
+            assert_eq!(PartialBody::from(&stub).to_value().unwrap(), json);
         }
     }
 
@@ -149,12 +149,12 @@ mod verify_body_tests {
 
         #[test]
         fn expression_contains_should_generate_containing() {
-            let stub = BodyPatternStub {
+            let by_contains = BodyPatternStub {
                 expression: Some(String::from("$.name")),
                 contains: Some(String::from("a")),
                 ..Default::default()
             };
-            let stub = RequestStub { body_patterns: vec![stub], ..Default::default() };
+            let stub = RequestStub { body_patterns: vec![by_contains], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
             let name = body.as_object().unwrap().get("name").unwrap();
             assert!(name.as_str().unwrap().contains('a'));
@@ -162,16 +162,15 @@ mod verify_body_tests {
 
         #[test]
         fn expression_equal_to_json_should_generate_strictly_equal() {
-            let expected = json!({"name": "john", "age": 42});
-            let stub = BodyPatternStub {
+            let owner = json!({"name": "john", "age": 42});
+            let by_eq = BodyPatternStub {
                 expression: Some(String::from("$.owner")),
-                equal_to_json: Some(expected.clone()),
+                equal_to_json: Some(owner.clone()),
                 ..Default::default()
             };
-            let stub = RequestStub { body_patterns: vec![stub], ..Default::default() };
+            let stub = RequestStub { body_patterns: vec![by_eq], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
-            let owner = body.as_object().unwrap().get("owner").unwrap();
-            assert_eq!(owner, &expected);
+            assert_eq!(body, json!({"owner": owner}));
         }
     }
 
@@ -180,54 +179,48 @@ mod verify_body_tests {
 
         #[test]
         fn many_expression_equal_to_json_should_generate_combined() {
-            let expected_sender = json!({"name": "alice"});
-            let expected_receiver = json!({"name": "bob"});
+            let alice = json!({"name": "alice"});
             let sender = BodyPatternStub {
                 expression: Some(String::from("$.sender")),
-                equal_to_json: Some(expected_sender.clone()),
+                equal_to_json: Some(alice.clone()),
                 ..Default::default()
             };
+            let bob = json!({"name": "bob"});
             let receiver = BodyPatternStub {
                 expression: Some(String::from("$.receiver")),
-                equal_to_json: Some(expected_receiver.clone()),
+                equal_to_json: Some(bob.clone()),
                 ..Default::default()
             };
             let stub = RequestStub { body_patterns: vec![sender, receiver], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
-            let body = body.as_object().unwrap();
-            assert_eq!(body.get("sender").unwrap(), &expected_sender);
-            assert_eq!(body.get("receiver").unwrap(), &expected_receiver);
+            assert_eq!(body, json!({"sender": alice, "receiver": bob}));
         }
 
         #[test]
         fn many_expression_equal_to_json_should_merge_paths() {
-            let name = json!({"name": "alice"});
-            let age = json!({"name": "bob"});
-            let alice = BodyPatternStub {
+            let alice = json!({"name": "alice"});
+            let alice_stub = BodyPatternStub {
                 expression: Some(String::from("$.person.alice")),
-                equal_to_json: Some(name),
+                equal_to_json: Some(alice.clone()),
                 ..Default::default()
             };
-            let bob = BodyPatternStub {
+            let bob = json!({"name": "bob"});
+            let bob_stub = BodyPatternStub {
                 expression: Some(String::from("$.person.bob")),
-                equal_to_json: Some(age),
+                equal_to_json: Some(bob.clone()),
                 ..Default::default()
             };
-            let stub = RequestStub { body_patterns: vec![alice, bob], ..Default::default() };
+            let stub = RequestStub { body_patterns: vec![alice_stub, bob_stub], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
-            let body = body.as_object().unwrap();
-            assert_eq!(body.get("person").unwrap(), &json!({
-                "alice": {"name": "alice"},
-                "bob": {"name": "bob"}
-            }));
+            assert_eq!(body, json!({"person": {"alice": alice, "bob": bob}}));
         }
 
         #[test]
         fn many_expression_equal_to_json_and_contains_should_generate_combined() {
-            let expected_sender = json!({"name": "alice"});
+            let alice = json!({"name": "alice"});
             let sender = BodyPatternStub {
                 expression: Some(String::from("$.sender")),
-                equal_to_json: Some(expected_sender.clone()),
+                equal_to_json: Some(alice.clone()),
                 ..Default::default()
             };
             let receiver = BodyPatternStub {
@@ -238,7 +231,7 @@ mod verify_body_tests {
             let stub = RequestStub { body_patterns: vec![sender, receiver], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
             let body = body.as_object().unwrap();
-            assert_eq!(body.get("sender").unwrap(), &expected_sender);
+            assert_eq!(body.get("sender").unwrap(), &alice);
             assert!(body.get("receiver").unwrap().as_str().unwrap().contains('b'));
         }
 
@@ -267,14 +260,30 @@ mod verify_body_tests {
 
         #[test]
         fn matches_json_path_should_generate_containing_empty_json() {
-            let stub = BodyPatternStub {
+            let jsonpath = BodyPatternStub {
                 matches_json_path: Some(String::from("$.name")),
                 ..Default::default()
             };
-            let stub = RequestStub { body_patterns: vec![stub], ..Default::default() };
+            let stub = RequestStub { body_patterns: vec![jsonpath], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
-            let name = body.as_object().unwrap().get("name").unwrap();
-            assert!(name.as_object().unwrap().is_empty());
+            assert_eq!(body, json!({"name": {}}));
+        }
+
+        #[test]
+        fn matches_json_path_and_expression_should_generate_valid_json() {
+            let owner = json!({"name": "john", "age": 42});
+            let by_jsonpath = BodyPatternStub {
+                matches_json_path: Some(String::from("$.other")),
+                ..Default::default()
+            };
+            let by_eq = BodyPatternStub {
+                expression: Some(String::from("$.owner")),
+                equal_to_json: Some(owner.clone()),
+                ..Default::default()
+            };
+            let stub = RequestStub { body_patterns: vec![by_jsonpath, by_eq], ..Default::default() };
+            let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
+            assert_eq!(body, json!({"other": {}, "owner": owner}));
         }
     }
 
@@ -299,33 +308,32 @@ mod verify_body_tests {
 
         #[test]
         fn equal_to_json_should_have_precedence_over_expression() {
-            let expected = json!({"name": "jdoe"});
-            let priority = BodyPatternStub { equal_to_json: Some(expected.clone()), ..Default::default() };
-            let other = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(expected.clone()), ..Default::default() };
+            let jdoe = json!({"name": "jdoe"});
+            let priority = BodyPatternStub { equal_to_json: Some(jdoe.clone()), ..Default::default() };
+            let other = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(jdoe.clone()), ..Default::default() };
             let stub = RequestStub { body_patterns: vec![priority, other], ..Default::default() };
-            assert_eq!(Vec::<u8>::from(&stub), expected.to_string().as_bytes());
+            let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
+            assert_eq!(body, jdoe);
         }
 
         #[test]
         fn expression_equal_to_json_should_have_precedence_over_expression_contains() {
-            let expected = json!({"name": "jdoe"});
-            let priority = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(expected.clone()), ..Default::default() };
+            let jdoe = json!({"name": "jdoe"});
+            let priority = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(jdoe.clone()), ..Default::default() };
             let other = BodyPatternStub { expression: Some(String::from("$.owner")), contains: Some(String::from("a")), ..Default::default() };
             let stub = RequestStub { body_patterns: vec![priority, other], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
-            let owner = body.as_object().unwrap().get("owner").unwrap();
-            assert_eq!(owner, &expected);
+            assert_eq!(body, json!({"owner": jdoe}));
         }
 
         #[test]
         fn expression_should_have_precedence_over_matches_json_path() {
-            let expected = json!({"name": "jdoe"});
-            let priority = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(expected.clone()), ..Default::default() };
+            let jdoe = json!({"name": "jdoe"});
+            let priority = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(jdoe.clone()), ..Default::default() };
             let other = BodyPatternStub { matches_json_path: Some(String::from("$.owner")), ..Default::default() };
             let stub = RequestStub { body_patterns: vec![priority, other], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
-            let owner = body.as_object().unwrap().get("owner").unwrap();
-            assert_eq!(owner, &expected);
+            assert_eq!(body, json!({"owner": jdoe}));
         }
     }
 }
