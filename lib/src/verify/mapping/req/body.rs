@@ -2,11 +2,12 @@ use std::hash::{Hash, Hasher};
 
 use itertools::Itertools;
 use json_value_merge::Merge;
-use serde_json::Value;
+use serde_json::{json, Value};
 
 use crate::model::request::{body::BodyPatternStub, RequestStub};
+use crate::verify::mapping::jsonpath::JsonGeneratorIterator;
 
-use super::super::{contains::ContainsGenerator, json_path::JsonPathGenerator};
+use super::super::{contains::ContainsGenerator, jsonpath::JsonPathGenerator};
 
 impl From<&RequestStub> for Vec<u8> {
     fn from(stub: &RequestStub) -> Self {
@@ -37,7 +38,7 @@ struct PartialBody {
 }
 
 lazy_static! {
-    pub static ref EMPTY_JSON_OBJECT: Value = Value::Object(serde_json::Map::default());
+    pub static ref EMPTY_JSON_OBJECT: Value = serde_json::json!({});
 }
 
 impl PartialBody {
@@ -62,7 +63,7 @@ impl PartialBody {
 
     fn to_partial_value(&self) -> Option<Value> {
         self.path.as_ref()
-            .map(|path| JsonPathGenerator::generate_path(path, self.value.as_ref().unwrap_or(&EMPTY_JSON_OBJECT)))
+            .and_then(|path| JsonPathGenerator(path).next(self.value.clone().unwrap_or_else(|| json!({}))))
     }
 }
 
@@ -284,6 +285,40 @@ mod verify_body_tests {
             let stub = RequestStub { body_patterns: vec![by_jsonpath, by_eq], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
             assert_eq!(body, json!({"other": {}, "owner": owner}));
+        }
+    }
+
+    mod json_path_filtering {
+        use super::*;
+
+        mod eq {
+            use super::*;
+
+            #[test]
+            fn matches_json_path_eq_should_generate_containing_filters() {
+                let jsonpath_alice = BodyPatternStub {
+                    matches_json_path: Some(String::from("$.users[?(@.name == 'alice')]")),
+                    ..Default::default()
+                };
+                let stub = RequestStub { body_patterns: vec![jsonpath_alice], ..Default::default() };
+                let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
+                assert_eq!(body, json!({"users": [{"name": "alice"}]}));
+            }
+
+            #[test]
+            fn matches_many_json_path_eq_should_generate_containing_filters() {
+                let jsonpath_alice = BodyPatternStub {
+                    matches_json_path: Some(String::from("$.users[?(@.name == 'alice')]")),
+                    ..Default::default()
+                };
+                let jsonpath_bob = BodyPatternStub {
+                    matches_json_path: Some(String::from("$.users[?(@.name == 'bob')]")),
+                    ..Default::default()
+                };
+                let stub = RequestStub { body_patterns: vec![jsonpath_alice, jsonpath_bob], ..Default::default() };
+                let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
+                assert_eq!(body, json!({"users": [{"name": "alice"}, {"name": "bob"}]}));
+            }
         }
     }
 
