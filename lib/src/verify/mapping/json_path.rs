@@ -8,7 +8,7 @@ pub struct JsonPathGenerator;
 
 impl JsonPathGenerator {
     #[allow(dead_code)]
-    pub fn generate_path(path: &str, value: Value) -> Value {
+    pub fn generate_path(path: &str, value: &Value) -> Value {
         JsonPath::compile(path).ok()
             .and_then(|p: JsonPath| {
                 p.segments().iter()
@@ -41,13 +41,13 @@ mod json_path_generator_tests {
 
     #[test]
     fn should_generate_simple() {
-        let value = JsonPathGenerator::generate_path("$.a", json!({"name": "doe"}));
+        let value = JsonPathGenerator::generate_path("$.a", &json!({"name": "doe"}));
         assert_eq!(value, json!({"a": {"name": "doe"}}));
     }
 
     #[test]
     fn should_generate_nested_path() {
-        let value = JsonPathGenerator::generate_path("$.a.b.c", json!({"name": "doe"}));
+        let value = JsonPathGenerator::generate_path("$.a.b.c", &json!({"name": "doe"}));
         assert_eq!(value, json!({"a": { "b": { "c": {"name": "doe"} } }}));
     }
 }

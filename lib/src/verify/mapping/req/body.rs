@@ -36,7 +36,12 @@ struct PartialBody {
     value: Option<Value>,
 }
 
+lazy_static! {
+    pub static ref EMPTY_JSON_OBJECT: Value = Value::Object(serde_json::Map::default());
+}
+
 impl PartialBody {
+
     fn is_partial(&self) -> bool {
         self.path.is_some()
     }
@@ -46,9 +51,7 @@ impl PartialBody {
         if !self.is_partial() {
             self.bytes.to_owned()
                 .or_else(|| self.to_value().as_ref().and_then(|it| serde_json::to_vec::<Value>(it).ok()))
-        } else {
-            None
-        }
+        } else { None }
     }
 
     #[allow(clippy::wrong_self_convention)]
@@ -60,20 +63,7 @@ impl PartialBody {
 
     fn to_partial_value(&self) -> Option<Value> {
         self.path.as_ref()
-            .zip(self.value.to_owned())
-            .map(|(path, value)| JsonPathGenerator::generate_path(path, value))
-    }
-}
-
-impl From<Vec<u8>> for PartialBody {
-    fn from(bytes: Vec<u8>) -> Self {
-        Self { bytes: Some(bytes), ..Default::default() }
-    }
-}
-
-impl From<Value> for PartialBody {
-    fn from(value: Value) -> Self {
-        Self { value: Some(value), ..Default::default() }
+            .map(|path| JsonPathGenerator::generate_path(path, self.value.as_ref().unwrap_or(&EMPTY_JSON_OBJECT)))
     }
 }
 
@@ -92,9 +82,21 @@ impl From<&BodyPatternStub> for PartialBody {
                 let value = ContainsGenerator::generate_string_containing(contains.to_string());
                 PartialBody { path: Some(expression.to_string()), value: Some(Value::String(value)), ..Default::default() }
             } else { PartialBody::default() }
-        } else {
-            PartialBody::default()
-        }
+        } else if let Some(json_path) = stub.matches_json_path.as_ref() {
+            PartialBody { path: Some(json_path.to_owned()), ..Default::default() }
+        } else { PartialBody::default() }
+    }
+}
+
+impl From<Vec<u8>> for PartialBody {
+    fn from(bytes: Vec<u8>) -> Self {
+        Self { bytes: Some(bytes), ..Default::default() }
+    }
+}
+
+impl From<Value> for PartialBody {
+    fn from(value: Value) -> Self {
+        Self { value: Some(value), ..Default::default() }
     }
 }
 
@@ -261,6 +263,22 @@ mod verify_body_tests {
         }
     }
 
+    mod json_path {
+        use super::*;
+
+        #[test]
+        fn matches_json_path_should_generate_containing_empty_json() {
+            let stub = BodyPatternStub {
+                matches_json_path: Some(String::from("$.name")),
+                ..Default::default()
+            };
+            let stub = RequestStub { body_patterns: vec![stub], ..Default::default() };
+            let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
+            let name = body.as_object().unwrap().get("name").unwrap();
+            assert!(name.as_object().unwrap().is_empty());
+        }
+    }
+
     mod precedence {
         use super::*;
 
@@ -294,6 +312,17 @@ mod verify_body_tests {
             let expected = json!({"name": "jdoe"});
             let priority = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(expected.clone()), ..Default::default() };
             let other = BodyPatternStub { expression: Some(String::from("$.owner")), contains: Some(String::from("a")), ..Default::default() };
+            let stub = RequestStub { body_patterns: vec![priority, other], ..Default::default() };
+            let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
+            let owner = body.as_object().unwrap().get("owner").unwrap();
+            assert_eq!(owner, &expected);
+        }
+
+        #[test]
+        fn expression_should_have_precedence_over_matches_json_path() {
+            let expected = json!({"name": "jdoe"});
+            let priority = BodyPatternStub { expression: Some(String::from("$.owner")), equal_to_json: Some(expected.clone()), ..Default::default() };
+            let other = BodyPatternStub { matches_json_path: Some(String::from("$.owner")), ..Default::default() };
             let stub = RequestStub { body_patterns: vec![priority, other], ..Default::default() };
             let body = serde_json::from_slice::<Value>(&Vec::<u8>::from(&stub)).unwrap();
             let owner = body.as_object().unwrap().get("owner").unwrap();
