@@ -5,10 +5,24 @@ use super::JsonGeneratorIterator;
 
 pub struct LitGenerator<'a>(pub &'a ExprLit, pub Option<&'a BinOp>);
 
+impl JsonGeneratorIterator for LitGenerator<'_> {
+    fn next(self, _: Value) -> Option<Value> {
+        match self.0 {
+            ExprLit::Int(i) => self.int(i),
+            ExprLit::String(s) => self.str(s),
+            ExprLit::Bool(b) => self.boolean(b),
+            ExprLit::Null(_) => self.null(),
+            _ => None
+        }
+    }
+}
+
 impl LitGenerator<'_> {
     fn int(&self, raw: &IntLit) -> Option<Value> {
         self.1.and_then(|op| match op {
-            BinOp::Eq(_) => Some(json!(raw.as_int())),
+            BinOp::Eq(_) | BinOp::Le(_) | BinOp::Ge(_) => Some(json!(raw.as_int())),
+            BinOp::Lt(_) => Some(json!(raw.as_int() - 1)),
+            BinOp::Gt(_) => Some(json!(raw.as_int() + 1)),
             _ => None
         })
     }
@@ -35,18 +49,6 @@ impl LitGenerator<'_> {
     }
 }
 
-impl JsonGeneratorIterator for LitGenerator<'_> {
-    fn next(self, _: Value) -> Option<Value> {
-        match self.0 {
-            ExprLit::Int(i) => self.int(i),
-            ExprLit::String(s) => self.str(s),
-            ExprLit::Bool(b) => self.boolean(b),
-            ExprLit::Null(_) => self.null(),
-            _ => None
-        }
-    }
-}
-
 #[cfg(test)]
 mod jsonpath_generator_lit {
     use super::{*, super::JsonPathGenerator};
@@ -67,6 +69,32 @@ mod jsonpath_generator_lit {
         #[test]
         fn eq_should_generate() {
             let value = JsonPathGenerator("$.users[?(@.a == 42)]").next(json!({})).unwrap();
+            assert_eq!(value, json!({"users": [{"a": 42}]}));
+        }
+
+        #[test]
+        fn lt_should_generate() {
+            let value = JsonPathGenerator("$.users[?(@.a < 42)]").next(json!({})).unwrap();
+            assert_eq!(value, json!({"users": [{"a": 41}]}));
+            let value = JsonPathGenerator("$.users[?(@.a < 0)]").next(json!({})).unwrap();
+            assert_eq!(value, json!({"users": [{"a": -1}]}));
+        }
+
+        #[test]
+        fn gt_should_generate() {
+            let value = JsonPathGenerator("$.users[?(@.a > 42)]").next(json!({})).unwrap();
+            assert_eq!(value, json!({"users": [{"a": 43}]}));
+        }
+
+        #[test]
+        fn le_should_generate() {
+            let value = JsonPathGenerator("$.users[?(@.a <= 42)]").next(json!({})).unwrap();
+            assert_eq!(value, json!({"users": [{"a": 42}]}));
+        }
+
+        #[test]
+        fn ge_should_generate() {
+            let value = JsonPathGenerator("$.users[?(@.a >= 42)]").next(json!({})).unwrap();
             assert_eq!(value, json!({"users": [{"a": 42}]}));
         }
     }
