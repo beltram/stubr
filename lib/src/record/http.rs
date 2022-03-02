@@ -5,10 +5,13 @@ use http_types::StatusCode;
 use itertools::Itertools;
 use warp::{http::Response as WarpResponse, hyper::Body as WarpBody, Reply};
 
+#[derive(Debug, Clone)]
 pub struct RecordedRequest(pub HttpRequest);
 
+#[derive(Debug, Clone)]
 pub struct RecordedResponse(pub HttpResponse);
 
+/// Intermediate representation of the request/response to be mapped further on into a stub
 pub struct RecordedExchange(pub RecordedRequest, pub RecordedResponse);
 
 impl RecordedExchange {

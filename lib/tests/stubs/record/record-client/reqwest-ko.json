@@ -4,6 +4,6 @@
     "method": "GET"
   },
   "response": {
-    "status": 404
+    "status": 500
   }
 }

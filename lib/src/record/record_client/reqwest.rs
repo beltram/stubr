@@ -23,7 +23,7 @@ use crate::{
 };
 
 impl Record for ReqwestRequestBuilder {
-    fn record_with(&mut self, cfg: RecordConfig) -> &mut Self {
+    fn record_with(self, cfg: RecordConfig) -> Self {
         let req = RecordedRequest::from(self.try_clone().and_then(|it| it.build().ok()).unwrap());
         let resp = RecordedResponse::from(self.try_clone().and_then(|it| it.send().ok()).unwrap());
         let host = req.0.url().host_str().unwrap().to_string();
@@ -82,7 +82,6 @@ impl From<Response> for RecordedResponse {
         Self(http_resp)
     }
 }
-
 
 #[cfg(test)]
 mod http_tests {
