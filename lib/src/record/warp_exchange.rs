@@ -40,9 +40,9 @@ impl From<WarpRequest> for RecordedRequest {
     fn from(req: WarpRequest) -> Self {
         let method = HttpMethod::from_str(req.method.as_str()).unwrap_or(HttpMethod::Get);
         let path = req.path;
-        let path = path.strip_prefix('/').unwrap_or_else(|| path.as_str());
+        let path = path.strip_prefix('/').unwrap_or(path.as_str());
         let addr = req.addr;
-        let addr = addr.strip_suffix('/').unwrap_or_else(|| addr.as_str());
+        let addr = addr.strip_suffix('/').unwrap_or(addr.as_str());
         let queries = req.queries.map(|q| format!("?{}", q)).unwrap_or_default();
         let url = Url::from_str(&format!("{}/{}{}", addr, path, queries)).unwrap();
         let mut http_req = HttpRequest::new(method, url.as_str());

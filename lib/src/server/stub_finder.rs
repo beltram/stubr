@@ -63,7 +63,7 @@ impl StubFinder {
                 == Some(name.to_string())
         };
         let debug = is_named(path, "debug");
-        let target = path.parent().map(|p| is_named(&p.to_path_buf(), "target")).unwrap_or_default();
+        let target = path.parent().map(|p| is_named(p, "target")).unwrap_or_default();
         debug && target
     }
 }

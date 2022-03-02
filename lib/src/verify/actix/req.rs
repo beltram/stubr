@@ -8,7 +8,7 @@ use super::super::mapping::req::StdRequest;
 
 impl From<&mut StdRequest> for TestRequest {
     fn from(req: &mut StdRequest) -> Self {
-        let method = HttpMethod::from_str(&req.0.method().to_string()).expect("Unknown http method");
+        let method = HttpMethod::from_str(req.0.method().as_ref()).expect("Unknown http method");
         let mut test_req = Self::default();
         let original_headers = req.0.header_names().into_iter()
             .filter_map(|k| req.0.header(k).map(|v| (k, v)));
