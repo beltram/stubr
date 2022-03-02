@@ -30,9 +30,13 @@ impl UriAndQuery for Stubr {
 }
 
 pub fn assert_recorded_stub_eq(id: &str, expected: Value) {
-    let mut content = String::new();
-    File::open(stub_file(id)).unwrap().read_to_string(&mut content).unwrap();
-    let content: Value = serde_json::from_str(content.as_str()).unwrap();
+    let content = File::open(stub_file(id)).ok()
+        .and_then(|mut f| {
+            let mut content = String::new();
+            f.read_to_string(&mut content).ok().map(|_| content)
+        })
+        .and_then(|c| serde_json::from_str::<Value>(c.as_str()).ok())
+        .unwrap_or_else(|| panic!("File {} not found", id));
     assert_eq!(content, expected);
 }
 

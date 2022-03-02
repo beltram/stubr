@@ -86,6 +86,8 @@ pub use record::client::isahc_client;
 pub use record::client::reqwest_client;
 #[cfg(feature = "record")]
 pub use record::core::Record;
+#[cfg(feature = "record-actix")]
+pub use record::record_client::actix::{ActixRecord, ActixRecordMiddleware};
 pub use server::{config::Config, Stubr};
 #[cfg(feature = "attributes")]
 pub use stubr_attributes::apps;

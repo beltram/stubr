@@ -54,7 +54,7 @@ impl StubWriter {
     }
 
     fn dir_name(&self, host: &str) -> String {
-        if host == "127.0.0.1" {
+        if host == "127.0.0.1" || host == "localhost" {
             String::from("localhost")
         } else if let Ok(url) = Url::from_str(host) {
             let (host, port) = url.host_str()

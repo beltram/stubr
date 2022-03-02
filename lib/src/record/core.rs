@@ -1,10 +1,9 @@
 use crate::RecordConfig;
 
-pub trait Record {
-    fn record(&mut self) -> &mut Self {
+pub trait Record where Self: Sized {
+    fn record(self) -> Self {
         self.record_with(RecordConfig::default())
     }
 
-    fn record_with(&mut self, cfg: RecordConfig) -> &mut Self;
+    fn record_with(self, cfg: RecordConfig) -> Self;
 }
-

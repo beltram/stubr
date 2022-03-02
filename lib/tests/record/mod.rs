@@ -10,3 +10,4 @@ pub mod smoke;
 pub mod config;
 pub mod client;
 pub mod reqwest;
+pub mod actix;
