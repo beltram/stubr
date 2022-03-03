@@ -7,6 +7,6 @@ mod stub_finder;
 mod mapping;
 
 #[async_trait(? Send)]
-pub trait StubrVerify {
+pub trait StubrVerify<T> {
     async fn verify(self);
 }

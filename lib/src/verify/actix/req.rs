@@ -13,7 +13,7 @@ impl From<&mut StdRequest> for TestRequest {
         let original_headers = req.0.header_names().into_iter()
             .filter_map(|k| req.0.header(k).map(|v| (k, v)));
         for (k, v) in original_headers {
-            test_req = test_req.header(k.as_str(), v.as_str());
+            test_req = test_req.insert_header((k.as_str(), v.as_str()));
         }
         test_req
             .method(method)
@@ -24,7 +24,7 @@ impl From<&mut StdRequest> for TestRequest {
 
 #[cfg(test)]
 mod actix_req_mapping_tests {
-    use actix_http::http::Method;
+    use actix_http::Method;
     use http_types::Request;
 
     use super::*;
@@ -140,7 +140,7 @@ mod actix_req_mapping_tests {
     }
 
     mod header {
-        use actix_http::http::HeaderValue;
+        use actix_http::header::HeaderValue;
 
         use super::*;
 
@@ -182,7 +182,6 @@ mod actix_req_mapping_tests {
 
     mod body {
         use actix_http::HttpMessage;
-        use actix_web::web::Buf;
         use futures::TryStreamExt;
 
         use super::*;
@@ -195,7 +194,7 @@ mod actix_req_mapping_tests {
             let mut test_req = TestRequest::from(&mut StdRequest(req)).to_srv_request();
             let mut body = vec![];
             while let Ok(Some(chunk)) = test_req.take_payload().try_next().await {
-                body.append(&mut chunk.bytes().to_vec());
+                body.append(&mut chunk.as_ref().to_vec());
             }
             assert_eq!(body.as_slice(), input);
         }
@@ -206,7 +205,7 @@ mod actix_req_mapping_tests {
             let mut test_req = TestRequest::from(&mut StdRequest(req)).to_srv_request();
             let mut body = vec![];
             while let Ok(Some(chunk)) = test_req.take_payload().try_next().await {
-                body.append(&mut chunk.bytes().to_vec());
+                body.append(&mut chunk.as_ref().to_vec());
             }
             assert!(body.as_slice().is_empty());
         }

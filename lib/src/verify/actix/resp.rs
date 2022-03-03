@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use actix_http::body::{Body as ActixBody, ResponseBody as ActixResponseBody};
+use actix_http::body::MessageBody;
 use actix_web::dev::ServiceResponse as ActixServiceResponse;
 use http_types::{
     headers::HeaderName as HttpHeaderName,
@@ -12,7 +12,7 @@ use http_types::{
 use super::super::mapping::resp::StdResponse;
 
 impl From<ActixServiceResponse> for StdResponse {
-    fn from(mut resp: ActixServiceResponse) -> Self {
+    fn from(resp: ActixServiceResponse) -> Self {
         let status = resp.status();
         let mut std_resp = Response::new(status.as_u16());
         resp.headers().into_iter()
@@ -24,8 +24,8 @@ impl From<ActixServiceResponse> for StdResponse {
                 k.zip(v)
             })
             .for_each(|(k, v)| std_resp.append_header(k, &v));
-        if let ActixResponseBody::Body(ActixBody::Bytes(body)) = resp.take_body() {
-            std_resp.set_body(body.as_ref())
+        if let Ok(b) = resp.into_body().try_into_bytes() {
+            std_resp.set_body(b.as_ref())
         }
         Self(std_resp)
     }
@@ -35,7 +35,7 @@ impl From<ActixServiceResponse> for StdResponse {
 mod actix_resp_mapping_tests {
     use std::str::FromStr;
 
-    use actix_http::Response as ActixResponse;
+    use actix_web::HttpResponse as ActixResponse;
     use actix_web::{HttpRequest, test::TestRequest};
 
     use super::*;
@@ -69,14 +69,14 @@ mod actix_resp_mapping_tests {
 
         #[test]
         fn should_map_single_header() {
-            let resp = ActixResponse::Ok().header("a", "b").finish();
+            let resp = ActixResponse::Ok().insert_header(("a", "b")).finish();
             let std_resp = StdResponse::from(ActixServiceResponse::new(req(), resp)).0;
             assert_eq!(std_resp.header("a").unwrap().get(0), HeaderValue::from_str("b").ok().as_ref());
         }
 
         #[test]
         fn should_map_many_header() {
-            let resp = ActixResponse::Ok().header("a", "b").header("c", "d").finish();
+            let resp = ActixResponse::Ok().insert_header(("a", "b")).insert_header(("c", "d")).finish();
             let std_resp = StdResponse::from(ActixServiceResponse::new(req(), resp)).0;
             assert_eq!(std_resp.header("a").unwrap().get(0), HeaderValue::from_str("b").ok().as_ref());
             assert_eq!(std_resp.header("c").unwrap().get(0), HeaderValue::from_str("d").ok().as_ref());
@@ -86,12 +86,12 @@ mod actix_resp_mapping_tests {
         fn should_not_fail_when_no_headers() {
             let resp = ActixResponse::Ok().finish();
             let std_resp = StdResponse::from(ActixServiceResponse::new(req(), resp)).0;
-            assert_eq!(std_resp.header_names().into_iter().count(), 0);
+            assert_eq!(std_resp.header_names().into_iter().count(), 1);
         }
 
         #[test]
         fn should_map_multi_header() {
-            let resp = ActixResponse::Ok().header("a", "b, c").finish();
+            let resp = ActixResponse::Ok().insert_header(("a", "b, c")).finish();
             let std_resp = StdResponse::from(ActixServiceResponse::new(req(), resp)).0;
             let expected = HeaderValues::from_iter(vec!["b".try_into().unwrap(), "c".try_into().unwrap()]);
             assert!(std_resp.header("a").unwrap().iter().eq(expected.iter()));
@@ -105,7 +105,7 @@ mod actix_resp_mapping_tests {
 
         #[async_std::test]
         async fn should_map_json_body() {
-            let resp = ActixResponse::Ok().body(json!({"a": "b"}));
+            let resp = ActixResponse::Ok().body(json!({"a": "b"}).to_string());
             let mut std_resp = StdResponse::from(ActixServiceResponse::new(req(), resp)).0;
             assert_eq!(std_resp.body_json::<Value>().await.unwrap(), json!({"a": "b"}));
         }
