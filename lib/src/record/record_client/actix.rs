@@ -1,16 +1,13 @@
 use std::{future::Future, pin::Pin, str::FromStr, task::{Context, Poll}};
 
-use actix_http::{
-    body::{Body as ActixBody, ResponseBody as ActixResponseBody},
-    Error as ActixError,
-    HttpMessage,
-    Payload,
-};
+use actix_http::{HttpMessage, Payload};
+use actix_http::body::MessageBody;
 use actix_service::{Service, Transform};
 use actix_web::dev::{
     ServiceRequest as ActixRequest,
     ServiceResponse as ActixServiceResponse,
 };
+use actix_web::error::Error as ActixError;
 use futures::{executor::block_on, StreamExt};
 use futures_util::{future::ok, future::Ready, TryStreamExt};
 use http::uri::Scheme;
@@ -34,14 +31,13 @@ use crate::{
 #[derive(Default)]
 pub struct ActixRecord(pub RecordConfig);
 
-impl<S> Transform<S> for ActixRecord
-    where S: Service<Request=ActixRequest, Response=ActixServiceResponse<ActixBody>, Error=ActixError>,
+impl<S> Transform<S, ActixRequest> for ActixRecord
+    where S: Service<ActixRequest, Response=ActixServiceResponse, Error=ActixError>,
 {
-    type Request = ActixRequest;
-    type Response = ActixServiceResponse<ActixBody>;
+    type Response = ActixServiceResponse;
     type Error = ActixError;
-    type InitError = ();
     type Transform = ActixRecordMiddleware<S>;
+    type InitError = ();
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
     fn new_transform(&self, service: S) -> Self::Future {
@@ -51,19 +47,18 @@ impl<S> Transform<S> for ActixRecord
 
 pub struct ActixRecordMiddleware<S>(S, RecordConfig);
 
-impl<S> Service for ActixRecordMiddleware<S>
-    where S: Service<Request=ActixRequest, Response=ActixServiceResponse<ActixBody>, Error=ActixError>,
+impl<S> Service<ActixRequest> for ActixRecordMiddleware<S>
+    where S: Service<ActixRequest, Response=ActixServiceResponse, Error=ActixError>,
 {
-    type Request = ActixRequest;
-    type Response = ActixServiceResponse<ActixBody>;
+    type Response = ActixServiceResponse;
     type Error = ActixError;
     type Future = ActixRecordResponse<S>;
 
-    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+    fn poll_ready(&self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         self.0.poll_ready(cx)
     }
 
-    fn call(&mut self, mut req: ActixRequest) -> Self::Future {
+    fn call(&self, mut req: ActixRequest) -> Self::Future {
         ActixRecordResponse {
             req: RecordedRequest::from(&mut req),
             cfg: self.1.clone(),
@@ -73,7 +68,7 @@ impl<S> Service for ActixRecordMiddleware<S>
 }
 
 #[pin_project::pin_project]
-pub struct ActixRecordResponse<S: Service> {
+pub struct ActixRecordResponse<S: Service<ActixRequest>> {
     req: RecordedRequest,
     cfg: RecordConfig,
     #[pin]
@@ -81,16 +76,17 @@ pub struct ActixRecordResponse<S: Service> {
 }
 
 impl<S> Future for ActixRecordResponse<S>
-    where S: Service<Request=ActixRequest, Response=ActixServiceResponse<ActixBody>, Error=ActixError>,
+    where S: Service<ActixRequest, Response=ActixServiceResponse, Error=ActixError>,
 {
-    type Output = Result<ActixServiceResponse<ActixBody>, ActixError>;
+    type Output = Result<ActixServiceResponse, ActixError>;
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         let this = self.project();
         match futures_util::ready!(this.fut.poll(cx)) {
-            Ok(mut resp) => {
+            Ok(resp) => {
                 let host = this.req.0.url().host_str().unwrap().to_string();
-                let mut exchange = RecordedExchange(this.req.clone(), RecordedResponse::from(&mut resp));
+                let RecordedResponsePair(resp, rec_resp) = RecordedResponsePair::from(resp);
+                let mut exchange = RecordedExchange(this.req.clone(), rec_resp);
                 let stub = JsonStub::from((&mut exchange, &*this.cfg));
                 let writer = StubWriter { stub };
                 writer.write(&host, this.cfg.output.as_ref()).unwrap();
@@ -120,9 +116,9 @@ impl From<&mut ActixRequest> for RecordedRequest {
                 k.zip(v)
             })
             .for_each(|(k, v)| http_req.append_header(k, &v));
-        if let Payload::H1(b) = req.take_payload() {
+        if let Payload::H1 { payload } = req.take_payload() {
             let buf: Vec<u8> = block_on(async move {
-                b.into_stream()
+                payload.into_stream()
                     .map(|it| it.map(|b| b.to_vec()).unwrap_or_default())
                     .collect::<Vec<Vec<u8>>>()
                     .await
@@ -136,8 +132,10 @@ impl From<&mut ActixRequest> for RecordedRequest {
     }
 }
 
-impl From<&mut ActixServiceResponse<ActixBody>> for RecordedResponse {
-    fn from(resp: &mut ActixServiceResponse<ActixBody>) -> Self {
+struct RecordedResponsePair(ActixServiceResponse, RecordedResponse);
+
+impl From<ActixServiceResponse> for RecordedResponsePair {
+    fn from(mut resp: ActixServiceResponse) -> Self {
         let status = resp.status().as_u16();
         let mut http_resp = HttpResponse::new(status);
         resp.headers().iter()
@@ -149,16 +147,19 @@ impl From<&mut ActixServiceResponse<ActixBody>> for RecordedResponse {
                 k.zip(v)
             })
             .for_each(|(k, v)| http_resp.append_header(k, &v));
-        if let ActixResponseBody::Body(ActixBody::Bytes(b)) = resp.response().body() {
-            http_resp.set_body(b.as_ref());
-        }
-        Self(http_resp)
+        let mut resp_cpy = actix_web::HttpResponse::build(resp.response().status());
+        resp.response().headers().iter().for_each(|h| { resp_cpy.insert_header(h); });
+        let req = resp.request().to_owned();
+        let bytes = resp.into_body().try_into_bytes().unwrap_or_default();
+        resp = ActixServiceResponse::new(req, resp_cpy.body(bytes.clone()));
+        http_resp.set_body(bytes.as_ref());
+        RecordedResponsePair(resp, RecordedResponse(http_resp))
     }
 }
 
 #[cfg(test)]
 mod http_tests {
-    use actix_http::Response as ActixResponse;
+    use actix_web::HttpResponse as ActixResponse;
     use actix_web::test::TestRequest;
     use async_std::task::block_on;
     use http::status::StatusCode as ActixStatus;
@@ -271,7 +272,7 @@ mod http_tests {
 
         #[test]
         fn should_map_one_req_header() {
-            let mut input = TestRequest::get().header("x-a", "a").to_srv_request();
+            let mut input = TestRequest::get().insert_header(("x-a", "a")).to_srv_request();
             let output = RecordedRequest::from(&mut input);
             let ha = output.0.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
@@ -288,7 +289,7 @@ mod http_tests {
 
         #[test]
         fn should_map_many_req_header() {
-            let mut input = TestRequest::get().header("x-a", "a").header("x-b", "b").to_srv_request();
+            let mut input = TestRequest::get().insert_header(("x-a", "a")).insert_header(("x-b", "b")).to_srv_request();
             let output = RecordedRequest::from(&mut input).0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
@@ -298,7 +299,7 @@ mod http_tests {
 
         #[test]
         fn should_map_multi_req_header() {
-            let mut input = TestRequest::get().header("x-m", "a, b").to_srv_request();
+            let mut input = TestRequest::get().insert_header(("x-m", "a, b")).to_srv_request();
             let output = RecordedRequest::from(&mut input).0;
             let multi = output.header("x-m").unwrap();
             assert_eq!(multi.get(0).unwrap().as_str(), "a");
@@ -345,32 +346,32 @@ mod http_tests {
 
         #[test]
         fn should_map_continue_100() {
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::CONTINUE));
-            assert_eq!(RecordedResponse::from(&mut input).0.status(), StatusCode::Continue)
+            let input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::CONTINUE));
+            assert_eq!(RecordedResponsePair::from(input).1.0.status(), StatusCode::Continue)
         }
 
         #[test]
         fn should_map_ok_200() {
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::OK));
-            assert_eq!(RecordedResponse::from(&mut input).0.status(), StatusCode::Ok)
+            let input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::OK));
+            assert_eq!(RecordedResponsePair::from(input).1.0.status(), StatusCode::Ok)
         }
 
         #[test]
         fn should_map_moved_permanently_301() {
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::MOVED_PERMANENTLY));
-            assert_eq!(RecordedResponse::from(&mut input).0.status(), StatusCode::MovedPermanently)
+            let input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::MOVED_PERMANENTLY));
+            assert_eq!(RecordedResponsePair::from(input).1.0.status(), StatusCode::MovedPermanently)
         }
 
         #[test]
         fn should_map_bad_request_400() {
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::BAD_REQUEST));
-            assert_eq!(RecordedResponse::from(&mut input).0.status(), StatusCode::BadRequest)
+            let input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::BAD_REQUEST));
+            assert_eq!(RecordedResponsePair::from(input).1.0.status(), StatusCode::BadRequest)
         }
 
         #[test]
         fn should_map_server_error_500() {
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::INTERNAL_SERVER_ERROR));
-            assert_eq!(RecordedResponse::from(&mut input).0.status(), StatusCode::InternalServerError)
+            let input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::INTERNAL_SERVER_ERROR));
+            assert_eq!(RecordedResponsePair::from(input).1.0.status(), StatusCode::InternalServerError)
         }
     }
 
@@ -380,29 +381,28 @@ mod http_tests {
         #[test]
         fn should_map_one_resp_header() {
             let input = block_on(async move {
-                ActixResponse::Ok().header("x-a", "a").await
+                ActixResponse::Ok().insert_header(("x-a", "a")).await
             }).unwrap();
-            let mut input = ActixServiceResponse::new(req(), input);
-            let output = RecordedResponse::from(&mut input).0;
+            let input = ActixServiceResponse::new(req(), input);
+            let output = RecordedResponsePair::from(input).1.0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
         }
 
         #[test]
         fn should_not_fail_when_no_resp_header() {
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::OK));
-            let output = RecordedResponse::from(&mut input).0;
-            assert_eq!(output.header_names().collect_vec().len(), 0);
-            assert_eq!(output.header_values().collect_vec().len(), 0);
+            let input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::OK));
+            let output = RecordedResponsePair::from(input).1.0;
+            assert_eq!(output.header_names().collect_vec().len(), 1);
         }
 
         #[test]
         fn should_map_many_resp_header() {
             let input = block_on(async move {
-                ActixResponse::Ok().header("x-a", "a").header("x-b", "b").await
+                ActixResponse::Ok().insert_header(("x-a", "a")).insert_header(("x-b", "b")).await
             }).unwrap();
-            let mut input = ActixServiceResponse::new(req(), input);
-            let output = RecordedResponse::from(&mut input).0;
+            let input = ActixServiceResponse::new(req(), input);
+            let output = RecordedResponsePair::from(input).1.0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
             let ha = output.header("x-b").unwrap().get(0);
@@ -412,10 +412,10 @@ mod http_tests {
         #[test]
         fn should_map_multi_resp_header() {
             let input = block_on(async move {
-                ActixResponse::Ok().header("x-m", "a, b").await
+                ActixResponse::Ok().insert_header(("x-m", "a, b")).await
             }).unwrap();
-            let mut input = ActixServiceResponse::new(req(), input);
-            let output = RecordedResponse::from(&mut input).0;
+            let input = ActixServiceResponse::new(req(), input);
+            let output = RecordedResponsePair::from(input).1.0;
             let multi = output.header("x-m").unwrap();
             assert_eq!(multi.get(0).unwrap().as_str(), "a");
             assert_eq!(multi.get(1).unwrap().as_str(), "b");
@@ -430,8 +430,8 @@ mod http_tests {
         #[test]
         fn should_map_json_resp_body() {
             let input_body = json!({"a": "b"});
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::Ok().body(input_body.clone()));
-            let mut output = RecordedResponse::from(&mut input).0;
+            let input = ActixServiceResponse::new(req(), ActixResponse::Ok().body(input_body.to_string()));
+            let mut output = RecordedResponsePair::from(input).1.0;
             let body = block_on(async move { output.body_json::<Value>().await.unwrap() });
             assert_eq!(body, input_body);
         }
@@ -439,29 +439,27 @@ mod http_tests {
         #[test]
         fn should_map_binary_resp_body() {
             let input_body = "Hello World!";
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::Ok().body(input_body));
-            let mut output = RecordedResponse::from(&mut input).0;
+            let input = ActixServiceResponse::new(req(), ActixResponse::Ok().body(input_body));
+            let mut output = RecordedResponsePair::from(input).1.0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert_eq!(body.as_slice(), input_body.as_bytes());
         }
 
         #[test]
         fn should_not_fail_when_body_empty() {
-            let mut input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::OK));
-            let mut output = RecordedResponse::from(&mut input).0;
+            let input = ActixServiceResponse::new(req(), ActixResponse::new(ActixStatus::OK));
+            let mut output = RecordedResponsePair::from(input).1.0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert!(body.is_empty());
         }
 
         #[test]
         fn should_not_alter_remote_content_type() {
-            let input = block_on(async move {
-                ActixResponse::Ok()
-                    .header("content-type", "application/xml")
-                    .body("a").await
-            }).unwrap();
-            let mut input = ActixServiceResponse::new(req(), input);
-            let output = RecordedResponse::from(&mut input).0;
+            let input = ActixResponse::Ok()
+                .insert_header(("content-type", "application/xml"))
+                .body("a");
+            let input = ActixServiceResponse::new(req(), input);
+            let output = RecordedResponsePair::from(input).1.0;
             let content_type = output.header("content-type").unwrap().get(0);
             assert_eq!(content_type.unwrap().as_str(), "application/xml");
         }
