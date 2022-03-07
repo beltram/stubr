@@ -1,6 +1,6 @@
 use crate::model::request::method::HttpMethodStub;
 
-use super::super::super::http::RecordedExchange;
+use super::super::super::RecordedExchange;
 
 impl From<&mut RecordedExchange> for HttpMethodStub {
     fn from(ex: &mut RecordedExchange) -> Self {
@@ -12,7 +12,7 @@ impl From<&mut RecordedExchange> for HttpMethodStub {
 mod req_method_mapping_tests {
     use http_types::Request;
 
-    use crate::record::http::RecordedRequest;
+    use crate::record::RecordedRequest;
 
     use super::*;
 

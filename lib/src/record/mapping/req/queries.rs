@@ -2,7 +2,7 @@ use serde_json::{Map, Value};
 
 use crate::model::request::{matcher::MatcherValueStub, query::HttpQueryParamsStub};
 
-use super::super::super::http::RecordedExchange;
+use super::super::super::RecordedExchange;
 
 impl From<&mut RecordedExchange> for HttpQueryParamsStub {
     fn from(ex: &mut RecordedExchange) -> Self {
@@ -27,7 +27,7 @@ mod req_queries_mapping_tests {
     use http_types::Request;
     use serde_json::json;
 
-    use crate::record::http::RecordedRequest;
+    use crate::record::RecordedRequest;
 
     use super::*;
 

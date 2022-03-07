@@ -1,13 +1,14 @@
 use std::{future::Future, pin::Pin, str::FromStr, task::{Context, Poll}};
 
-use actix_http::{HttpMessage, Payload};
-use actix_http::body::MessageBody;
+use actix_http::{HttpMessage, Payload, body::MessageBody};
 use actix_service::{Service, Transform};
-use actix_web::dev::{
-    ServiceRequest as ActixRequest,
-    ServiceResponse as ActixServiceResponse,
+use actix_web::{
+    dev::{
+        ServiceRequest as ActixRequest,
+        ServiceResponse as ActixServiceResponse,
+    },
+    error::Error as ActixError
 };
-use actix_web::error::Error as ActixError;
 use futures::{executor::block_on, StreamExt};
 use futures_util::{future::ok, future::Ready, TryStreamExt};
 use http::uri::Scheme;
@@ -21,10 +22,7 @@ use http_types::{
 
 use crate::{
     model::JsonStub,
-    record::{
-        http::{RecordedExchange, RecordedRequest, RecordedResponse},
-        writer::StubWriter,
-    },
+    record::{RecordedExchange, RecordedRequest, RecordedResponse, writer::StubWriter},
     RecordConfig,
 };
 
@@ -84,6 +82,7 @@ impl<S> Future for ActixRecordResponse<S>
         let this = self.project();
         match futures_util::ready!(this.fut.poll(cx)) {
             Ok(resp) => {
+                let resp: ActixServiceResponse = resp;
                 let host = this.req.0.url().host_str().unwrap().to_string();
                 let RecordedResponsePair(resp, rec_resp) = RecordedResponsePair::from(resp);
                 let mut exchange = RecordedExchange(this.req.clone(), rec_resp);

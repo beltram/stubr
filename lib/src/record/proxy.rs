@@ -9,7 +9,7 @@ use crate::record::{port::PortAllocator, RecordInput};
 
 use super::{
     config::RecordConfig,
-    http::RecordedExchange,
+    RecordedExchange,
     warp_exchange::{WarpExchange, WarpRequest, WarpResponse},
 };
 

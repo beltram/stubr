@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 
 #[cfg(feature = "verify-actix")]
-mod actix;
+pub mod actix;
 
 mod stub_finder;
 mod mapping;

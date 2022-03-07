@@ -80,10 +80,15 @@ dependencies = [
 
 [[package]]
 name = "actix-producer"
-version = "0.0.1"
+version = "0.1.0"
 dependencies = [
- "actix-rt",
  "actix-web",
+ "anyhow",
+ "asserhttp",
+ "derive_more",
+ "itertools",
+ "serde",
+ "serde_json",
  "stubr",
 ]
 

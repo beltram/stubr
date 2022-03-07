@@ -1,15 +1,22 @@
+#[cfg(feature = "record")]
 use std::net::SocketAddr;
 
+use http_types::{Request as HttpRequest, Response as HttpResponse};
 #[cfg(feature = "record-isahc")]
 use isahc::HttpClient as IsahcClient;
+#[cfg(feature = "record")]
 use log::{error, info};
 #[cfg(feature = "record-reqwest")]
 use reqwest::Client as ReqwestClient;
+#[cfg(feature = "record")]
 use tokio::sync::mpsc::Sender;
 
 use config::RecordConfig;
+#[cfg(feature = "record")]
 use logger::RecordLogger;
+#[cfg(feature = "record")]
 use proxy::Proxy;
+#[cfg(feature = "record")]
 use writer::StubWriter;
 
 #[cfg(feature = "record-isahc")]
@@ -17,29 +24,52 @@ use crate::isahc_client;
 #[cfg(feature = "record-reqwest")]
 use crate::reqwest_client;
 
+#[cfg(feature = "record")]
 use super::model::JsonStub;
 
-use self::http::RecordedExchange;
-
+#[cfg(feature = "record")]
 mod http;
+#[cfg(feature = "record")]
 mod proxy;
 mod mapping;
 pub mod config;
+#[cfg(feature = "record")]
 mod warp_exchange;
 pub mod client;
+#[cfg(feature = "record")]
 mod port;
 mod writer;
+#[cfg(feature = "record")]
 mod logger;
 pub mod core;
 pub mod record_client;
 
+#[derive(Debug, Clone)]
+pub struct RecordedRequest(pub HttpRequest);
+
+#[derive(Debug, Clone)]
+pub struct RecordedResponse(pub HttpResponse);
+
+/// Intermediate representation of the request/response to be mapped further on into a stub
+pub struct RecordedExchange(pub RecordedRequest, pub RecordedResponse);
+
+impl RecordedExchange {
+    const DEFAULT_HOST: &'static str = "localhost";
+
+    pub fn req(&self) -> &HttpRequest { &self.0.0 }
+    pub fn resp(&self) -> &HttpResponse { &self.1.0 }
+    pub fn host(&self) -> &str { self.req().host().unwrap_or(Self::DEFAULT_HOST) }
+}
+
 type RecordInput<'a> = (&'a mut RecordedExchange, &'a RecordConfig);
 
+#[cfg(feature = "record")]
 pub struct StubrRecord {
     addr: SocketAddr,
     tx: Sender<String>,
 }
 
+#[cfg(feature = "record")]
 impl StubrRecord {
     /// Get recorder base uri.
     /// Use this to configure your http client proxy configuration.
@@ -73,6 +103,7 @@ impl StubrRecord {
     }
 }
 
+#[cfg(feature = "record")]
 impl Drop for StubrRecord {
     fn drop(&mut self) {
         async_std::task::block_on(async {

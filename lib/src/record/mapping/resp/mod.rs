@@ -19,7 +19,7 @@ impl From<RecordInput<'_>> for ResponseStub {
 mod status_mapping_tests {
     use http_types::Response;
 
-    use crate::{record::http::{RecordedExchange, RecordedResponse}, RecordConfig};
+    use crate::{record::{RecordedExchange, RecordedResponse}, RecordConfig};
 
     use super::*;
 

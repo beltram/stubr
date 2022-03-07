@@ -1,6 +1,6 @@
 use crate::model::request::url::HttpUrlStub;
 
-use super::super::super::http::RecordedExchange;
+use super::super::super::RecordedExchange;
 
 impl From<&mut RecordedExchange> for HttpUrlStub {
     fn from(ex: &mut RecordedExchange) -> Self {
@@ -14,7 +14,7 @@ impl From<&mut RecordedExchange> for HttpUrlStub {
 mod req_url_mapping_tests {
     use http_types::Request;
 
-    use crate::record::http::RecordedRequest;
+    use crate::record::RecordedRequest;
 
     use super::*;
 
