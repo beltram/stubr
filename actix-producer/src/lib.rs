@@ -1,6 +1,4 @@
-use actix_web::{get, HttpResponse, Responder};
-
-#[get("/")]
-pub async fn ok() -> impl Responder {
-    HttpResponse::Ok()
-}
+pub mod api;
+pub mod repository;
+pub mod model;
+pub mod error;

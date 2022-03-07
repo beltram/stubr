@@ -79,7 +79,9 @@
 extern crate lazy_static;
 
 #[cfg(feature = "record")]
-pub use record::{config::RecordConfig, StubrRecord};
+pub use record::StubrRecord;
+#[cfg(any(feature = "record-actix", feature = "record"))]
+pub use record::config::RecordConfig;
 #[cfg(all(feature = "record", feature = "record-isahc"))]
 pub use record::client::isahc_client;
 #[cfg(all(feature = "record", feature = "record-reqwest"))]
@@ -97,11 +99,13 @@ pub use stubr_attributes::mock;
 pub use stubr_attributes::record;
 #[cfg(feature = "verify")]
 pub use verify::StubrVerify;
+#[cfg(feature = "verify-actix")]
+pub use verify::actix::lifecycle::ActixVerifyLifecycle;
 
 mod model;
 mod server;
 mod cloud;
-#[cfg(feature = "record")]
+#[cfg(any(feature = "record", feature = "record-actix", feature = "record-isahc", feature = "record-reqwest"))]
 mod record;
 #[cfg(feature = "verify")]
 mod verify;

@@ -16,7 +16,7 @@ use crate::{
     model::JsonStub,
     record::{
         core::Record,
-        http::{RecordedExchange, RecordedRequest, RecordedResponse},
+        RecordedExchange, RecordedRequest, RecordedResponse,
         writer::StubWriter,
     },
     RecordConfig,

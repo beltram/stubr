@@ -13,6 +13,7 @@ use super::{
 
 mod req;
 mod resp;
+pub mod lifecycle;
 
 #[async_trait(? Send)]
 impl<A, T> StubrVerify<T> for A where
@@ -20,7 +21,7 @@ impl<A, T> StubrVerify<T> for A where
     T: ServiceFactory<ActixRequest, Config=AppConfig, Response=ServiceResponse>,
     <T as ServiceFactory<ActixRequest>>::InitError: Debug,
 {
-    async fn verify(self) {
+    async fn verify(mut self) {
         let srv = self.into_factory();
         let app = srv.new_service(AppConfig::default()).await.unwrap();
         for (stub, name) in ProducerStubFinder::find_stubs() {

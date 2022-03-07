@@ -15,7 +15,7 @@ use warp::{
     hyper::body::Bytes,
 };
 
-use crate::record::http::{RecordedExchange, RecordedRequest, RecordedResponse};
+use super::{RecordedExchange, RecordedRequest, RecordedResponse};
 
 pub struct WarpRequest {
     pub method: WarpMethod,

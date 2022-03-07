@@ -3,7 +3,7 @@ use serde_json::Value;
 
 use crate::model::request::body::BodyPatternStub;
 
-use super::super::super::http::RecordedExchange;
+use super::super::super::RecordedExchange;
 
 impl From<&mut RecordedExchange> for Vec<BodyPatternStub> {
     fn from(ex: &mut RecordedExchange) -> Self {
@@ -19,7 +19,7 @@ mod req_body_mapping_tests {
     use http_types::Request;
     use serde_json::json;
 
-    use crate::record::http::RecordedRequest;
+    use crate::record::RecordedRequest;
 
     use super::*;
 
