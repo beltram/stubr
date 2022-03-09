@@ -381,7 +381,8 @@
         },
         "fixedDelayMilliseconds": {
           "description": "Local delay in milliseconds this stub will simulate",
-          "type": "integer"
+          "type": "integer",
+          "minimum": 0
         },
         "body": {
           "description": "Text response body, adds 'Content-Type:application/text' header in the response",
