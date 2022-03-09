@@ -4,11 +4,15 @@
   "properties": {
     "id": {
       "description": "Unique stub identifier",
-      "type": "string"
+      "type": "string",
+      "format": "uuid",
+      "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
     },
     "uuid": {
       "description": "Unique stub identifier",
-      "type": "string"
+      "type": "string",
+      "format": "uuid",
+      "pattern": "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
     },
     "priority": {
       "description": "Matching priority. Helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest. Defaults to 5.",
