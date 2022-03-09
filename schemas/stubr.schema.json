@@ -16,7 +16,9 @@
     },
     "priority": {
       "description": "Matching priority. Helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest. Defaults to 5.",
-      "type": "integer"
+      "type": "integer",
+      "maximum": 255,
+      "minimum": 1
     },
     "request": {
       "description": "Request matching",
