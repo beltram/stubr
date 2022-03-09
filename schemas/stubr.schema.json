@@ -351,7 +351,10 @@
         },
         "body": {
           "description": "Text response body, adds 'Content-Type:application/text' header in the response",
-          "type": "string"
+          "type": "string",
+          "x-intellij-language-injection": {
+            "language": "Handlebars"
+          }
         },
         "base64Body": {
           "description": "Binary Base 64 response body",
