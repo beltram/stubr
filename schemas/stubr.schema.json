@@ -57,7 +57,8 @@
         },
         "url": {
           "description": "Url and query parameters exact matching",
-          "type": "string"
+          "type": "string",
+          "format": "uri-reference"
         },
         "queryParameters": {
           "description": "Query parameters",
