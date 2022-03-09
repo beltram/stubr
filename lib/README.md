@@ -125,6 +125,7 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
       { "matchesJsonPath": "$.consoles[?(@.name == 'xbox')]" }, // must match json path + equality
       { "matchesJsonPath": "$.consoles[?(@.price > 200)]" }, // must match json path + bound
       { "expression": "$.name", "contains": "o" }, // must match json path + contain the letter 'o'
+      { "expression": "$.user", "equalToJson": { "name": "bob" } }, // must match json path + be equal
       { "binaryEqualTo": "AQID" /* Base 64 */ } // byte array equality
     ]
   },
