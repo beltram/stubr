@@ -279,7 +279,10 @@
                 "properties": {
                   "matchesJsonPath": {
                     "description": "Request body must match this json path",
-                    "type": "string"
+                    "type": "string",
+                    "x-intellij-language-injection": {
+                      "language": "JSONPath"
+                    }
                   }
                 }
               },
@@ -292,7 +295,10 @@
                 "properties": {
                   "expression": {
                     "description": "Request body must match this json path",
-                    "type": "string"
+                    "type": "string",
+                    "x-intellij-language-injection": {
+                      "language": "JSONPath"
+                    }
                   },
                   "contains": {
                     "description": "Matched json path must contain this string",
@@ -309,7 +315,10 @@
                 "properties": {
                   "expression": {
                     "description": "Request body must match this json path",
-                    "type": "string"
+                    "type": "string",
+                    "x-intellij-language-injection": {
+                      "language": "JSONPath"
+                    }
                   },
                   "equalToJson": {
                     "description": "Matched json path must be equal to this",
