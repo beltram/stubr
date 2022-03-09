@@ -42,12 +42,18 @@
         "urlPathPattern": {
           "description": "Url matching by regex",
           "type": "string",
-          "format": "regex"
+          "format": "regex",
+          "x-intellij-language-injection": {
+            "language": "RegExp"
+          }
         },
         "urlPattern": {
           "description": "Url and query parameters must match regex",
           "type": "string",
-          "format": "regex"
+          "format": "regex",
+          "x-intellij-language-injection": {
+            "language": "RegExp"
+          }
         },
         "url": {
           "description": "Url and query parameters exact matching",
@@ -77,12 +83,18 @@
                     "matches": {
                       "description": "Must match the regex",
                       "type": "string",
-                      "format": "regex"
+                      "format": "regex",
+                      "x-intellij-language-injection": {
+                        "language": "RegExp"
+                      }
                     },
                     "doesNotMatch": {
                       "description": "Must not match the regex",
                       "type": "string",
-                      "format": "regex"
+                      "format": "regex",
+                      "x-intellij-language-injection": {
+                        "language": "RegExp"
+                      }
                     }
                   }
                 }
@@ -114,12 +126,18 @@
                     "matches": {
                       "description": "Must match the regex",
                       "type": "string",
-                      "format": "regex"
+                      "format": "regex",
+                      "x-intellij-language-injection": {
+                        "language": "RegExp"
+                      }
                     },
                     "doesNotMatch": {
                       "description": "Must not match the regex",
                       "type": "string",
-                      "format": "regex"
+                      "format": "regex",
+                      "x-intellij-language-injection": {
+                        "language": "RegExp"
+                      }
                     }
                   }
                 }
