@@ -369,11 +369,74 @@
           "type": [
             "object",
             "array"
-          ]
+          ],
+          "patternProperties": {
+            "^.*$": {
+              "x-intellij-language-injection": {
+                "language": "Handlebars"
+              },
+              "patternProperties": {
+                "^.*$": {
+                  "x-intellij-language-injection": {
+                    "language": "Handlebars"
+                  },
+                  "patternProperties": {
+                    "^.*$": {
+                      "x-intellij-language-injection": {
+                        "language": "Handlebars"
+                      },
+                      "patternProperties": {
+                        "^.*$": {
+                          "x-intellij-language-injection": {
+                            "language": "Handlebars"
+                          },
+                          "patternProperties": {
+                            "^.*$": {
+                              "x-intellij-language-injection": {
+                                "language": "Handlebars"
+                              },
+                              "patternProperties": {
+                                "^.*$": {
+                                  "x-intellij-language-injection": {
+                                    "language": "Handlebars"
+                                  },
+                                  "patternProperties": {
+                                    "^.*$": {
+                                      "x-intellij-language-injection": {
+                                        "language": "Handlebars"
+                                      },
+                                      "patternProperties": {
+                                        "^.*$": {
+                                          "x-intellij-language-injection": {
+                                            "language": "Handlebars"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
         "headers": {
           "description": "Response headers",
-          "type": "object"
+          "type": "object",
+          "patternProperties": {
+            "^.*$": {
+              "x-intellij-language-injection": {
+                "language": "Handlebars"
+              }
+            }
+          }
         },
         "transformers": {
           "description": "Enables predefined response transformations",
