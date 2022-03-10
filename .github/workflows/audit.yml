@@ -16,5 +16,6 @@ jobs:
           profile: minimal
           toolchain: stable
       - uses: actions-rs/audit-check@v1
+        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
