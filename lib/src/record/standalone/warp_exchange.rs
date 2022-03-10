@@ -15,7 +15,7 @@ use warp::{
     hyper::body::Bytes,
 };
 
-use super::{RecordedExchange, RecordedRequest, RecordedResponse};
+use super::super::{RecordedExchange, RecordedRequest, RecordedResponse};
 
 pub struct WarpRequest {
     pub method: WarpMethod,

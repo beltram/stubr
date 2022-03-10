@@ -5,11 +5,9 @@ use tokio::sync::mpsc::{channel, Sender};
 use warp::{Filter, filters::{host::Authority, path::FullPath}, http::HeaderMap, hyper::body::Bytes, Rejection, Reply};
 use warp_reverse_proxy::{extract_request_data_filter, Method, proxy_to_and_forward_response, QueryParameters};
 
-use crate::record::{port::PortAllocator, RecordInput};
-
 use super::{
-    config::RecordConfig,
-    RecordedExchange,
+    port::PortAllocator,
+    super::{config::RecordConfig, RecordedExchange, RecordInput},
     warp_exchange::{WarpExchange, WarpRequest, WarpResponse},
 };
 

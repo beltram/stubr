@@ -78,34 +78,34 @@
 #[macro_use]
 extern crate lazy_static;
 
-#[cfg(feature = "record")]
-pub use record::StubrRecord;
-#[cfg(any(feature = "record-actix", feature = "record"))]
-pub use record::config::RecordConfig;
-#[cfg(all(feature = "record", feature = "record-isahc"))]
+#[cfg(all(feature = "record-standalone", feature = "record-isahc"))]
 pub use record::client::isahc_client;
-#[cfg(all(feature = "record", feature = "record-reqwest"))]
+#[cfg(all(feature = "record-standalone", feature = "record-reqwest"))]
 pub use record::client::reqwest_client;
-#[cfg(feature = "record")]
+#[cfg(any(feature = "record-actix", feature = "record-standalone"))]
+pub use record::config::RecordConfig;
+#[cfg(feature = "record-standalone")]
 pub use record::core::Record;
 #[cfg(feature = "record-actix")]
 pub use record::record_client::actix::{ActixRecord, ActixRecordMiddleware};
+#[cfg(feature = "record-standalone")]
+pub use record::standalone::StubrRecord;
 pub use server::{config::Config, Stubr};
 #[cfg(feature = "attributes")]
 pub use stubr_attributes::apps;
 #[cfg(feature = "attributes")]
 pub use stubr_attributes::mock;
-#[cfg(all(feature = "record", feature = "attributes"))]
+#[cfg(all(feature = "record-standalone", feature = "attributes"))]
 pub use stubr_attributes::record;
-#[cfg(feature = "verify")]
-pub use verify::StubrVerify;
 #[cfg(feature = "verify-actix")]
 pub use verify::actix::lifecycle::ActixVerifyLifecycle;
+#[cfg(feature = "verify")]
+pub use verify::StubrVerify;
 
 mod model;
 mod server;
 mod cloud;
-#[cfg(any(feature = "record", feature = "record-actix", feature = "record-isahc", feature = "record-reqwest"))]
+#[cfg(any(feature = "record-standalone", feature = "record-actix", feature = "record-isahc", feature = "record-reqwest"))]
 mod record;
 #[cfg(feature = "verify")]
 mod verify;

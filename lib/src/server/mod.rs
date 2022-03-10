@@ -10,8 +10,8 @@ use any_stub::AnyStubs;
 use stub_finder::StubFinder;
 
 use crate::{cloud::probe::HttpProbe, Config, model::JsonStub};
-#[cfg(feature = "record")]
-use crate::record::{config::RecordConfig, StubrRecord};
+#[cfg(feature = "record-standalone")]
+use crate::record::{config::RecordConfig, standalone::StubrRecord};
 
 mod any_stub;
 pub mod stub_finder;
@@ -72,13 +72,13 @@ impl Stubr {
     }
 
     /// Proxies requests and converts them into stubs
-    #[cfg(feature = "record")]
+    #[cfg(feature = "record-standalone")]
     pub fn record() -> StubrRecord {
         StubrRecord::record(RecordConfig::default())
     }
 
     /// Proxies requests and converts them into stubs
-    #[cfg(feature = "record")]
+    #[cfg(feature = "record-standalone")]
     pub fn record_with(config: RecordConfig) -> StubrRecord {
         StubrRecord::record(config)
     }

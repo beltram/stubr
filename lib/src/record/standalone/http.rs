@@ -1,14 +1,12 @@
 use async_std::task::block_on;
 #[cfg(test)]
-use http_types::{Request as HttpRequest, Response as HttpResponse};
-#[cfg(test)]
-use http_types::StatusCode;
+use http_types::{Request as HttpRequest, Response as HttpResponse, StatusCode};
 use itertools::Itertools;
 use warp::{http::Response as WarpResponse, hyper::Body as WarpBody, Reply};
 
 #[cfg(test)]
-use super::{RecordedExchange, RecordedRequest};
-use super::RecordedResponse;
+use super::super::{RecordedExchange, RecordedRequest};
+use super::super::RecordedResponse;
 
 impl Reply for RecordedResponse {
     fn into_response(mut self) -> WarpResponse<WarpBody> {
