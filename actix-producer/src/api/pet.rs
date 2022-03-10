@@ -11,7 +11,6 @@ pub async fn find_all(db: web::Data<PetRepository>) -> Result<impl Responder, Ap
     db.find_all()
         .map(web::Json)
         .map(|crabs| (crabs, StatusCode::PARTIAL_CONTENT))
-        .map_err(|e| e.into())
 }
 
 #[post("/pets")]
@@ -19,5 +18,4 @@ pub async fn create(crab: web::Json<Pet>, db: web::Data<PetRepository>) -> Resul
     db.create(crab.0)
         .map(web::Json)
         .map(|crabs| (crabs, StatusCode::CREATED))
-        .map_err(|e| e.into())
 }
