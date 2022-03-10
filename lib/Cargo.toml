@@ -95,6 +95,6 @@ verify = ["rand", "rand_xorshift", "regex-syntax", "rand_regex", "json_value_mer
 verify-actix = ["verify", "actix-web", "actix-http", "actix-service", "pin-project", "futures-util"]
 record-isahc = ["isahc"]
 record-reqwest = ["reqwest"]
-record-actix = ["actix-web", "actix-http", "actix-service"]
+record-actix = ["actix-web", "actix-http", "actix-service", "futures-util", "pin-project"]
 attributes = ["stubr-attributes"]
 record-standalone = ["warp", "warp-reverse-proxy", "tokio"]
