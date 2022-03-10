@@ -12,14 +12,13 @@ use http_types::{
 };
 use reqwest::blocking::{Request, RequestBuilder as ReqwestRequestBuilder, Response};
 
-use crate::{
-    model::JsonStub,
-    record::{
-        core::Record,
-        RecordedExchange, RecordedRequest, RecordedResponse,
-        writer::StubWriter,
-    },
+use crate::model::JsonStub;
+
+use super::super::{
+    core::Record,
     RecordConfig,
+    RecordedExchange, RecordedRequest, RecordedResponse,
+    writer::StubWriter,
 };
 
 impl Record for ReqwestRequestBuilder {
