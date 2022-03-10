@@ -1,4 +1,4 @@
-use crate::RecordConfig;
+use super::RecordConfig;
 
 pub trait Record where Self: Sized {
     fn record(self) -> Self {
