@@ -22,6 +22,6 @@ proc-macro2 = "1.0.36"
 itertools = "0.10.3"
 
 [dev-dependencies]
-isahc = "1.6.0"
+isahc = "1.7.0"
 async-std = "1.10.0"
 asserhttp = "0.4.0"
