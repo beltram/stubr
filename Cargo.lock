@@ -2518,9 +2518,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.9.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da32515d9f6e6e489d7bc9d84c71b060db7247dc035bbe44eac88cf87486d8d5"
+checksum = "87f3e037eac156d1775da914196f0f37741a274155e34a0b7e427c35d2a2ecb9"
 
 [[package]]
 name = "oorandom"
@@ -4306,9 +4306,9 @@ dependencies = [
 
 [[package]]
 name = "warp-reverse-proxy"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "739e7af2d6331da89ac0f4f0745e6deb9417830530264b719c13f0a507840562"
+checksum = "21bb86f4c86d0fb386acf34fa5360ea0e8a082835e05296da2286c38a3316283"
 dependencies = [
  "hyper",
  "once_cell",
