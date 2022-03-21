@@ -7,9 +7,7 @@ use actix_web::{
 use actix_web::web::Data;
 use futures_util::future::LocalBoxFuture;
 
-pub struct ActixVerifyLifecycle<T> {
-    pub before_each: fn(&T),
-}
+pub struct ActixVerifyLifecycle<T>(pub fn(&T));
 
 impl<S, B, T> Transform<S, ServiceRequest> for ActixVerifyLifecycle<T> where
     S: Service<ServiceRequest, Response=ServiceResponse<B>, Error=Error>,
@@ -19,12 +17,12 @@ impl<S, B, T> Transform<S, ServiceRequest> for ActixVerifyLifecycle<T> where
 {
     type Response = ServiceResponse<B>;
     type Error = Error;
-    type InitError = ();
     type Transform = ActixVerifyLifecycleMiddleware<S, T>;
+    type InitError = ();
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
     fn new_transform(&self, service: S) -> Self::Future {
-        ready(Ok(ActixVerifyLifecycleMiddleware { service, before_each: self.before_each }))
+        ready(Ok(ActixVerifyLifecycleMiddleware { service, before_each: self.0 }))
     }
 }
 
