@@ -50,6 +50,6 @@ impl<S, B, T> Service<ServiceRequest> for ActixVerifyLifecycleMiddleware<S, T>
             (self.before_each)(data);
         }
         let fut = self.service.call(ServiceRequest::from_parts(http_req, payload));
-        Box::pin(async move { Ok(fut.await?) })
+        Box::pin(async move { fut.await })
     }
 }
