@@ -39,8 +39,8 @@ mod create {
     async fn create_should_create_one() {
         let pet = Pet { name: String::from("new"), ..Default::default() };
         let app = App::new().app_data(empty_pet_repository())
-            .service(pet::create);
-            // .wrap(ActixRecord::default());
+            .service(pet::create)
+            .wrap(ActixRecord::default());
         let req = TestRequest::post().uri("/pets").set_json(pet.clone()).to_request();
         call_service(&init_service(app).await, req).await
             .expect_status_created()
@@ -55,8 +55,8 @@ mod create {
     async fn create_should_conflict_when_already_exists_by_name() {
         let pet = fake_pets().get(0).unwrap().to_owned();
         let app = App::new().app_data(fake_pet_repository())
-            .service(pet::create);
-            // .wrap(ActixRecord::default());
+            .service(pet::create)
+            .wrap(ActixRecord::default());
         let req = TestRequest::post().uri("/pets").set_json(pet.clone()).to_request();
         call_service(&init_service(app).await, req).await
             .expect_status_conflict();

@@ -1,16 +1,25 @@
-use std::{future::Future, pin::Pin, str::FromStr, task::{Context, Poll}};
+use std::{io, str::FromStr};
 
-use actix_http::{HttpMessage, Payload, body::MessageBody};
+use actix_http::{body::MessageBody, Payload};
 use actix_service::{Service, Transform};
 use actix_web::{
     dev::{
+        forward_ready,
         ServiceRequest as ActixRequest,
+        ServiceRequest,
         ServiceResponse as ActixServiceResponse,
     },
-    error::Error as ActixError
+    error::Error as ActixError,
+    web::Bytes,
 };
-use futures::{executor::block_on, StreamExt};
-use futures_util::{future::ok, future::Ready, TryStreamExt};
+use futures::executor::block_on;
+use futures_util::{
+    AsyncReadExt,
+    future::LocalBoxFuture,
+    future::ok,
+    future::Ready,
+    TryStreamExt,
+};
 use http::uri::Scheme;
 use http_types::{
     headers::{HeaderName as HttpHeaderName, HeaderValue as HttpHeaderValue, HeaderValues as HttpHeaderValues},
@@ -20,17 +29,16 @@ use http_types::{
     Url,
 };
 
-use crate::{
-    model::JsonStub,
-    record::{RecordedExchange, RecordedRequest, RecordedResponse, writer::StubWriter},
-    RecordConfig,
-};
+use crate::model::JsonStub;
+
+use super::super::{config::RecordConfig, RecordedExchange, RecordedRequest, RecordedResponse, writer::StubWriter};
 
 #[derive(Default)]
 pub struct ActixRecord(pub RecordConfig);
 
 impl<S> Transform<S, ActixRequest> for ActixRecord
     where S: Service<ActixRequest, Response=ActixServiceResponse, Error=ActixError>,
+          S::Future: 'static,
 {
     type Response = ActixServiceResponse;
     type Error = ActixError;
@@ -39,65 +47,47 @@ impl<S> Transform<S, ActixRequest> for ActixRecord
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
     fn new_transform(&self, service: S) -> Self::Future {
-        ok(ActixRecordMiddleware(service, self.0.to_owned()))
+        ok(ActixRecordMiddleware { service, cfg: self.0.to_owned() })
     }
 }
 
-pub struct ActixRecordMiddleware<S>(S, RecordConfig);
+pub struct ActixRecordMiddleware<S> {
+    service: S,
+    cfg: RecordConfig,
+}
 
 impl<S> Service<ActixRequest> for ActixRecordMiddleware<S>
     where S: Service<ActixRequest, Response=ActixServiceResponse, Error=ActixError>,
+          S::Future: 'static,
 {
     type Response = ActixServiceResponse;
     type Error = ActixError;
-    type Future = ActixRecordResponse<S>;
+    type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
 
-    fn poll_ready(&self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        self.0.poll_ready(cx)
-    }
+    forward_ready!(service);
 
-    fn call(&self, mut req: ActixRequest) -> Self::Future {
-        ActixRecordResponse {
-            req: RecordedRequest::from(&mut req),
-            cfg: self.1.clone(),
-            fut: self.0.call(req),
-        }
-    }
-}
-
-#[pin_project::pin_project]
-pub struct ActixRecordResponse<S: Service<ActixRequest>> {
-    req: RecordedRequest,
-    cfg: RecordConfig,
-    #[pin]
-    fut: S::Future,
-}
-
-impl<S> Future for ActixRecordResponse<S>
-    where S: Service<ActixRequest, Response=ActixServiceResponse, Error=ActixError>,
-{
-    type Output = Result<ActixServiceResponse, ActixError>;
-
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let this = self.project();
-        match futures_util::ready!(this.fut.poll(cx)) {
-            Ok(resp) => {
-                let resp: ActixServiceResponse = resp;
-                let host = this.req.0.url().host_str().unwrap().to_string();
-                let RecordedResponsePair(resp, rec_resp) = RecordedResponsePair::from(resp);
-                let mut exchange = RecordedExchange(this.req.clone(), rec_resp);
-                let stub = JsonStub::from((&mut exchange, &*this.cfg));
-                let writer = StubWriter { stub };
-                writer.write(&host, this.cfg.output.as_ref()).unwrap();
-                Poll::Ready(Ok(resp))
-            }
-            Err(e) => Poll::Ready(Err(e)),
-        }
+    fn call(&self, req: ActixRequest) -> Self::Future {
+        let cfg = self.cfg.clone();
+        let (http_req, payload) = req.into_parts();
+        let RecordedRequestPair(rec_req, payload) = RecordedRequestPair::from((&http_req, payload));
+        let fut = self.service.call(ServiceRequest::from_parts(http_req, payload));
+        Box::pin(async move {
+            let resp: ActixServiceResponse = fut.await?;
+            let host = rec_req.0.url().host_str().unwrap().to_string();
+            let RecordedResponsePair(resp, rec_resp) = RecordedResponsePair::from(resp);
+            let mut exchange = RecordedExchange(rec_req, rec_resp);
+            let stub = JsonStub::from((&mut exchange, &cfg));
+            let writer = StubWriter { stub };
+            writer.write(&host, cfg.output.as_ref()).unwrap();
+            Ok(resp)
+        })
     }
 }
 
-impl From<&mut ActixRequest> for RecordedRequest {
-    fn from(req: &mut ActixRequest) -> Self {
+struct RecordedRequestPair(RecordedRequest, Payload);
+
+impl From<(&actix_web::HttpRequest, Payload)> for RecordedRequestPair {
+    fn from((req, rec_payload): (&actix_web::HttpRequest, Payload)) -> Self {
         let method = HttpMethod::from_str(req.method().as_str()).unwrap_or(HttpMethod::Get);
         let path = req.uri().path();
         let scheme = req.uri().scheme().unwrap_or(&Scheme::HTTP);
@@ -115,19 +105,20 @@ impl From<&mut ActixRequest> for RecordedRequest {
                 k.zip(v)
             })
             .for_each(|(k, v)| http_req.append_header(k, &v));
-        if let Payload::H1 { payload } = req.take_payload() {
-            let buf: Vec<u8> = block_on(async move {
-                payload.into_stream()
-                    .map(|it| it.map(|b| b.to_vec()).unwrap_or_default())
-                    .collect::<Vec<Vec<u8>>>()
-                    .await
-            })
-                .into_iter()
-                .flatten()
-                .collect();
-            http_req.set_body(buf.as_slice());
+        if let Payload::H1 { payload } = rec_payload {
+            let mut buf = Vec::new();
+            let mut reader = payload
+                .map_err(|_| io::Error::from(io::ErrorKind::NotFound))
+                .into_async_read();
+            block_on(async { reader.read_to_end(&mut buf).await.unwrap() });
+            let buf = Box::leak(Box::new(buf)).as_slice();
+            http_req.set_body(buf);
+            let (mut payload_sender, payload) = actix_http::h1::Payload::create(true);
+            payload_sender.feed_data(Bytes::from(buf));
+            Self(RecordedRequest(http_req), Payload::from(payload))
+        } else {
+            Self(RecordedRequest(http_req), Payload::None)
         }
-        Self(http_req)
     }
 }
 
@@ -158,8 +149,7 @@ impl From<ActixServiceResponse> for RecordedResponsePair {
 
 #[cfg(test)]
 mod http_tests {
-    use actix_web::HttpResponse as ActixResponse;
-    use actix_web::test::TestRequest;
+    use actix_web::{HttpResponse as ActixResponse, test::TestRequest};
     use async_std::task::block_on;
     use http::status::StatusCode as ActixStatus;
     use itertools::Itertools;
@@ -173,27 +163,27 @@ mod http_tests {
 
         #[test]
         fn should_map_method_get() {
-            assert_eq!(RecordedRequest::from(&mut TestRequest::get().to_srv_request()).0.method(), Method::Get)
+            assert_eq!(RecordedRequestPair::from((&TestRequest::get().to_http_request(), Payload::None)).0.0.method(), Method::Get)
         }
 
         #[test]
         fn should_map_method_post() {
-            assert_eq!(RecordedRequest::from(&mut TestRequest::post().to_srv_request()).0.method(), Method::Post)
+            assert_eq!(RecordedRequestPair::from((&TestRequest::post().to_http_request(), Payload::None)).0.0.method(), Method::Post)
         }
 
         #[test]
         fn should_map_method_put() {
-            assert_eq!(RecordedRequest::from(&mut TestRequest::put().to_srv_request()).0.method(), Method::Put)
+            assert_eq!(RecordedRequestPair::from((&TestRequest::put().to_http_request(), Payload::None)).0.0.method(), Method::Put)
         }
 
         #[test]
         fn should_map_method_patch() {
-            assert_eq!(RecordedRequest::from(&mut TestRequest::patch().to_srv_request()).0.method(), Method::Patch)
+            assert_eq!(RecordedRequestPair::from((&TestRequest::patch().to_http_request(), Payload::None)).0.0.method(), Method::Patch)
         }
 
         #[test]
         fn should_map_method_delete() {
-            assert_eq!(RecordedRequest::from(&mut TestRequest::delete().to_srv_request()).0.method(), Method::Delete)
+            assert_eq!(RecordedRequestPair::from((&TestRequest::delete().to_http_request(), Payload::None)).0.0.method(), Method::Delete)
         }
     }
 
@@ -202,38 +192,38 @@ mod http_tests {
 
         #[test]
         fn should_map_scheme() {
-            let mut input = TestRequest::get().uri("https://github.com:8080").to_srv_request();
-            assert_eq!(RecordedRequest::from(&mut input).0.url().scheme(), "https")
+            let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
+            assert_eq!(RecordedRequestPair::from((&input, Payload::None)).0.0.url().scheme(), "https")
         }
 
         #[test]
         fn should_map_host() {
-            let mut input = TestRequest::get().uri("https://github.com:8080").to_srv_request();
-            assert_eq!(RecordedRequest::from(&mut input).0.url().host_str(), Some("github.com"))
+            let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
+            assert_eq!(RecordedRequestPair::from((&input, Payload::None)).0.0.url().host_str(), Some("github.com"))
         }
 
         #[test]
         fn should_map_port() {
-            let mut input = TestRequest::get().uri("https://github.com:8080").to_srv_request();
-            assert_eq!(RecordedRequest::from(&mut input).0.url().port(), Some(8080))
+            let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
+            assert_eq!(RecordedRequestPair::from((&input, Payload::None)).0.0.url().port(), Some(8080))
         }
 
         #[test]
         fn should_not_fail_when_port_missing() {
-            let mut input = TestRequest::get().uri("https://github.com").to_srv_request();
-            assert!(RecordedRequest::from(&mut input).0.url().port().is_none())
+            let input = TestRequest::get().uri("https://github.com").to_http_request();
+            assert!(RecordedRequestPair::from((&input, Payload::None)).0.0.url().port().is_none())
         }
 
         #[test]
         fn should_map_path() {
-            let mut input = TestRequest::get().uri("https://github.com:8080/api/colors").to_srv_request();
-            assert_eq!(RecordedRequest::from(&mut input).0.url().path(), "/api/colors")
+            let input = TestRequest::get().uri("https://github.com:8080/api/colors").to_http_request();
+            assert_eq!(RecordedRequestPair::from((&input, Payload::None)).0.0.url().path(), "/api/colors")
         }
 
         #[test]
         fn should_not_fail_when_path_missing() {
-            let mut input = TestRequest::get().uri("https://github.com:8080").to_srv_request();
-            assert_eq!(RecordedRequest::from(&mut input).0.url().path(), "/")
+            let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
+            assert_eq!(RecordedRequestPair::from((&input, Payload::None)).0.0.url().path(), "/")
         }
     }
 
@@ -244,23 +234,23 @@ mod http_tests {
 
         #[test]
         fn should_map_one_query_param() {
-            let mut input = TestRequest::get().uri("https://github.com:8080?a=1").to_srv_request();
-            let output = RecordedRequest::from(&mut input);
-            let mut queries = output.0.url().query_pairs();
+            let input = TestRequest::get().uri("https://github.com:8080?a=1").to_http_request();
+            let output = RecordedRequestPair::from((&input, Payload::None));
+            let mut queries = output.0.0.url().query_pairs();
             assert_eq!(queries.next(), Some((Cow::Borrowed("a"), Cow::Borrowed("1"))))
         }
 
         #[test]
         fn should_not_fail_when_no_query_param() {
-            let mut input = TestRequest::get().uri("https://github.com:8080").to_srv_request();
-            assert!(RecordedRequest::from(&mut input).0.url().query_pairs().next().is_none())
+            let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
+            assert!(RecordedRequestPair::from((&input, Payload::None)).0.0.url().query_pairs().next().is_none())
         }
 
         #[test]
         fn should_map_many_query_param() {
-            let mut input = TestRequest::get().uri("https://github.com:8080?a=1&b=2").to_srv_request();
-            let output = RecordedRequest::from(&mut input);
-            let mut queries = output.0.url().query_pairs();
+            let input = TestRequest::get().uri("https://github.com:8080?a=1&b=2").to_http_request();
+            let output = RecordedRequestPair::from((&input, Payload::None));
+            let mut queries = output.0.0.url().query_pairs();
             assert_eq!(queries.next(), Some((Cow::Borrowed("a"), Cow::Borrowed("1"))));
             assert_eq!(queries.next(), Some((Cow::Borrowed("b"), Cow::Borrowed("2"))))
         }
@@ -271,16 +261,16 @@ mod http_tests {
 
         #[test]
         fn should_map_one_req_header() {
-            let mut input = TestRequest::get().insert_header(("x-a", "a")).to_srv_request();
-            let output = RecordedRequest::from(&mut input);
-            let ha = output.0.header("x-a").unwrap().get(0);
+            let input = TestRequest::get().insert_header(("x-a", "a")).to_http_request();
+            let output = RecordedRequestPair::from((&input, Payload::None));
+            let ha = output.0.0.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
         }
 
         #[test]
         fn should_not_fail_when_no_req_header() {
-            let mut input = TestRequest::get().to_srv_request();
-            let mut output = RecordedRequest::from(&mut input).0;
+            let input = TestRequest::get().to_http_request();
+            let mut output = RecordedRequestPair::from((&input, Payload::None)).0.0;
             output.remove_header("content-type");
             assert!(output.header_names().collect_vec().is_empty());
             assert!(output.header_values().collect_vec().is_empty());
@@ -288,8 +278,8 @@ mod http_tests {
 
         #[test]
         fn should_map_many_req_header() {
-            let mut input = TestRequest::get().insert_header(("x-a", "a")).insert_header(("x-b", "b")).to_srv_request();
-            let output = RecordedRequest::from(&mut input).0;
+            let input = TestRequest::get().insert_header(("x-a", "a")).insert_header(("x-b", "b")).to_http_request();
+            let output = RecordedRequestPair::from((&input, Payload::None)).0.0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
             let hb = output.header("x-b").unwrap().get(0);
@@ -298,8 +288,8 @@ mod http_tests {
 
         #[test]
         fn should_map_multi_req_header() {
-            let mut input = TestRequest::get().insert_header(("x-m", "a, b")).to_srv_request();
-            let output = RecordedRequest::from(&mut input).0;
+            let input = TestRequest::get().insert_header(("x-m", "a, b")).to_http_request();
+            let output = RecordedRequestPair::from((&input, Payload::None)).0.0;
             let multi = output.header("x-m").unwrap();
             assert_eq!(multi.get(0).unwrap().as_str(), "a");
             assert_eq!(multi.get(1).unwrap().as_str(), "b");
@@ -315,24 +305,24 @@ mod http_tests {
         #[test]
         fn should_map_json_req_body() {
             let input_body = json!({"a": "b"});
-            let mut input = TestRequest::post().set_json(&input_body).to_srv_request();
-            let mut output = RecordedRequest::from(&mut input).0;
+            let (req, payload) = TestRequest::post().set_json(&input_body).to_http_parts();
+            let mut output = RecordedRequestPair::from((&req, payload)).0.0;
             let body = block_on(async move { output.body_json::<Value>().await.unwrap() });
             assert_eq!(body, input_body);
         }
 
         #[test]
         fn should_map_text_req_body() {
-            let mut input = TestRequest::post().set_payload("Hello World!").to_srv_request();
-            let mut output = RecordedRequest::from(&mut input).0;
+            let (req, payload) = TestRequest::post().set_payload("Hello World!").to_http_parts();
+            let mut output = RecordedRequestPair::from((&req, payload)).0.0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert_eq!(&body, b"Hello World!");
         }
 
         #[test]
         fn should_not_fail_when_req_body_empty() {
-            let mut input = TestRequest::post().set_payload(String::new()).to_srv_request();
-            let mut output = RecordedRequest::from(&mut input).0;
+            let (req, payload) = TestRequest::post().set_payload(String::new()).to_http_parts();
+            let mut output = RecordedRequestPair::from((&req, payload)).0.0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert!(body.is_empty());
         }

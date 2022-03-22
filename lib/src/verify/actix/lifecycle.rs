@@ -3,8 +3,8 @@ use std::future::{ready, Ready};
 use actix_web::{
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
     Error,
+    web::Data,
 };
-use actix_web::web::Data;
 use futures_util::future::LocalBoxFuture;
 
 pub struct ActixVerifyLifecycle<T>(pub fn(&T));
@@ -50,9 +50,6 @@ impl<S, B, T> Service<ServiceRequest> for ActixVerifyLifecycleMiddleware<S, T>
             (self.before_each)(data);
         }
         let fut = self.service.call(ServiceRequest::from_parts(http_req, payload));
-        Box::pin(async move {
-            let res = fut.await?;
-            Ok(res)
-        })
+        Box::pin(async move { Ok(fut.await?) })
     }
 }
