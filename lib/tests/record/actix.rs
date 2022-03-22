@@ -17,7 +17,7 @@ async fn should_record_from_actix_integration_test() {
     let app = App::new()
         .route(uri, web::get().to(|| async { HttpResponse::Ok().await }))
         .wrap(ActixRecord(cfg));
-    call_service(&mut init_service(app).await, TestRequest::get().uri(uri).to_request()).await
+    call_service(&init_service(app).await, TestRequest::get().uri(uri).to_request()).await
         .expect_status_ok();
     assert_recorded_stub_eq("record-client-actix-16130797866386136017", json!({
         "request": {
@@ -41,7 +41,7 @@ async fn should_record_from_actix_failing_integration_test() {
     let app = App::new()
         .route(uri, web::get().to(|| async { HttpResponse::InternalServerError().await }))
         .wrap(ActixRecord(cfg));
-    call_service(&mut init_service(app).await, TestRequest::get().uri(uri).to_request()).await
+    call_service(&init_service(app).await, TestRequest::get().uri(uri).to_request()).await
         .expect_status_internal_server_error();
     assert_recorded_stub_eq("record-client-actix-ko-1285333804481209254", json!({
         "request": {
