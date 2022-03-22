@@ -45,7 +45,7 @@ impl BodyStub {
     pub const OBJECT_IDENTIFIER: &'static str = "[object]";
     pub const ARRAY_IDENTIFIER: &'static str = "[array]";
 
-    fn register_json_body_template<'a, T>(&self, json_values: T) where T: Iterator<Item=&'a JsonValue> {
+    pub fn register_json_body_template<'a, T>(&self, json_values: T) where T: Iterator<Item=&'a JsonValue> {
         json_values.into_iter().for_each(|value| {
             match value {
                 Value::String(s) => self.register(s, s),
@@ -56,7 +56,7 @@ impl BodyStub {
         });
     }
 
-    fn render_json_body(&self, json_body: Option<&Value>, data: &HandlebarsData) -> Option<Value> {
+    pub fn render_json_body(&self, json_body: Option<&Value>, data: &HandlebarsData) -> Option<Value> {
         json_body
             .and_then(|it| it.as_object().map(|o| self.render_json_obj(o, data)))
             .or_else(|| json_body.and_then(Value::as_array).map(|a| self.render_json_array(a, data)))

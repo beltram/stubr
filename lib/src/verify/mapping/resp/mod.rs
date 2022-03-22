@@ -17,7 +17,7 @@ mod body;
 pub struct StdResponse(pub Response);
 
 trait Verifier<'a> {
-    fn verify(stub: &'a ResponseStub, name: &'a str, req: &'a StdRequest, resp: &'a mut StdResponse);
+    fn verify(stub: &'a ResponseStub, name: &'a str, req: &'a mut StdRequest, resp: &'a mut StdResponse);
 }
 
 pub struct RequestAndStub {
@@ -27,10 +27,11 @@ pub struct RequestAndStub {
 }
 
 impl RequestAndStub {
-    pub fn verify(self, mut resp: StdResponse) {
-        StatusVerifier::verify(&self.stub, self.name(), &self.req, &mut resp);
-        HeaderVerifier::verify(&self.stub, self.name(), &self.req, &mut resp);
-        BodyVerifier::verify(&self.stub, self.name(), &self.req, &mut resp);
+    pub fn verify(mut self, mut resp: StdResponse) {
+        let name = self.name().to_string();
+        HeaderVerifier::verify(&self.stub, &name, &mut self.req, &mut resp);
+        StatusVerifier::verify(&self.stub, &name, &mut self.req, &mut resp);
+        BodyVerifier::verify(&self.stub, &name, &mut self.req, &mut resp);
     }
 
     fn name(&self) -> &str {
@@ -49,8 +50,8 @@ mod resp_verify_tests {
     #[test]
     fn should_verify() {
         let stub = ResponseStub { status: Some(200), ..Default::default() };
-        let req = StdRequest(Request::get("http://localhost/"));
+        let mut req = StdRequest(Request::get("http://localhost/"));
         let mut resp = StdResponse(Response::new(200));
-        StatusVerifier::verify(&stub, "ok", &req, &mut resp);
+        StatusVerifier::verify(&stub, "ok", &mut req, &mut resp);
     }
 }

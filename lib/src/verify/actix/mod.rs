@@ -25,8 +25,8 @@ impl<A, T> StubrVerify<T> for A where
         let srv = self.into_factory();
         let app = srv.new_service(AppConfig::default()).await.unwrap();
         for (stub, name) in ProducerStubFinder::find_stubs() {
-            let mut req = StdRequest::from(&stub);
-            let test_req = TestRequest::from(&mut req).to_request();
+            let req = StdRequest::from(&stub);
+            let test_req = TestRequest::from(&req).set_payload(Vec::<u8>::from(&stub.request)).to_request();
             let resp: StdResponse = app.call(test_req).await
                 .unwrap_or_else(|_| panic!("Failed verifying stub {:?}", name))
                 .into();

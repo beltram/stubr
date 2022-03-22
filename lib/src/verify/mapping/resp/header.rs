@@ -5,7 +5,7 @@ use super::{StdResponse, super::req::StdRequest, Verifier};
 pub struct HeaderVerifier;
 
 impl Verifier<'_> for HeaderVerifier {
-    fn verify(stub: &'_ ResponseStub, name: &'_ str, _req: &'_ StdRequest, resp: &'_ mut StdResponse) {
+    fn verify(stub: &'_ ResponseStub, name: &'_ str, _req: &'_ mut StdRequest, resp: &'_ mut StdResponse) {
         if let Some(expected) = stub.headers.headers.as_ref() {
             for (expected_key, expected_value) in expected {
                 if let Some(actual_value) = resp.0.header(expected_key.as_str()).and_then(|it| it.get(0)) {
@@ -40,11 +40,11 @@ mod header_verify_tests {
             },
             ..Default::default()
         };
-        let req = StdRequest(Request::get("http://localhost/"));
+        let mut  req = StdRequest(Request::get("http://localhost/"));
         let mut resp = Response::new(200);
         resp.append_header("x-a", "b");
         let mut resp = StdResponse(resp);
-        HeaderVerifier::verify(&stub, "one-header", &req, &mut resp);
+        HeaderVerifier::verify(&stub, "one-header", &mut req, &mut resp);
     }
 
     #[test]
@@ -59,12 +59,12 @@ mod header_verify_tests {
             },
             ..Default::default()
         };
-        let req = StdRequest(Request::get("http://localhost/"));
+        let mut req = StdRequest(Request::get("http://localhost/"));
         let mut resp = Response::new(200);
         resp.append_header("x-a", "b");
         resp.append_header("x-c", "d");
         let mut resp = StdResponse(resp);
-        HeaderVerifier::verify(&stub, "many-header", &req, &mut resp);
+        HeaderVerifier::verify(&stub, "many-header", &mut req, &mut resp);
     }
 
     #[should_panic(expected = "Verification failed for stub 'missing-key'. Expected one response header with key 'x-a' but none found")]
@@ -77,9 +77,9 @@ mod header_verify_tests {
             },
             ..Default::default()
         };
-        let req = StdRequest(Request::get("http://localhost/"));
+        let mut req = StdRequest(Request::get("http://localhost/"));
         let mut resp = StdResponse(Response::new(200));
-        HeaderVerifier::verify(&stub, "missing-key", &req, &mut resp);
+        HeaderVerifier::verify(&stub, "missing-key", &mut req, &mut resp);
     }
 
     #[should_panic(expected = "Verification failed for stub 'wrong-value'. Expected response header 'x-a' to have value 'b' but was 'c'")]
@@ -92,10 +92,10 @@ mod header_verify_tests {
             },
             ..Default::default()
         };
-        let req = StdRequest(Request::get("http://localhost/"));
+        let mut req = StdRequest(Request::get("http://localhost/"));
         let mut resp = Response::new(200);
         resp.append_header("x-a", "c");
         let mut resp = StdResponse(resp);
-        HeaderVerifier::verify(&stub, "wrong-value", &req, &mut resp);
+        HeaderVerifier::verify(&stub, "wrong-value", &mut req, &mut resp);
     }
 }

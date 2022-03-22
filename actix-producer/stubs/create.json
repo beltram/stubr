@@ -19,8 +19,11 @@
     "status": 201,
     "jsonBody": {
       "id": 2,
-      "name": "new"
+      "name": "{{jsonPath request.body '$.name'}}"
     },
+    "transformers": [
+      "response-template"
+    ],
     "headers": {
       "content-type": "application/json"
     }
