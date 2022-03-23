@@ -218,5 +218,19 @@ mod body_verify_tests {
             resp.set_body(path);
             BodyVerifier::verify(&stub, "text", &mut StdRequest(req), &mut StdResponse(resp));
         }
+
+        #[test]
+        fn should_verify_json_body_from_path_segments() {
+            let id = 1;
+            let stub = ResponseStub {
+                body: BodyStub { json_body: Some(json!({"id": "{{request.pathSegments.[0]}}"})), ..Default::default() },
+                transformers: vec![String::from("response-template")],
+                ..Default::default()
+            };
+            let req = Request::get(format!("http://localhost/{}", id).as_str());
+            let mut resp = Response::new(200);
+            resp.set_body(json!({"id": id}));
+            BodyVerifier::verify(&stub, "json", &mut StdRequest(req), &mut StdResponse(resp));
+        }
     }
 }

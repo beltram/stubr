@@ -6,11 +6,12 @@
   "response": {
     "status": 200,
     "jsonBody": {
-      "id": 1,
+      "id": "{{request.pathSegments.[1]}}",
       "name": "rex"
     },
     "headers": {
       "content-type": "application/json"
-    }
+    },
+    "transformers": ["response-template"]
   }
 }
