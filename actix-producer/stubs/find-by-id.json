@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/pets/1"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "id": 1,
+      "name": "rex"
+    },
+    "headers": {
+      "content-type": "application/json"
+    }
+  }
+}

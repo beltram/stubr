@@ -15,6 +15,17 @@ impl PetRepository {
             .map(|db| db.iter().map(|e| e.to_owned()).collect::<Vec<Pet>>())
     }
 
+    pub fn find_by_id(&self, id: usize) -> Result<Pet, ApiError> {
+        self.0.lock()
+            .map_err(|_| ApiError::InternalError)
+            .and_then(|db| {
+                db.iter()
+                    .find(|p| p.id == Some(id))
+                    .map(|p| p.to_owned())
+                    .ok_or_else(|| ApiError::NotFound)
+            })
+    }
+
     pub fn create(&self, mut entity: Pet) -> Result<Pet, ApiError> {
         let id = self.len() + 1;
         self.0.lock()

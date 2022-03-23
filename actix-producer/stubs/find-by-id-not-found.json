@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/pets/999"
+  },
+  "response": {
+    "status": 404
+  }
+}

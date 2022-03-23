@@ -32,6 +32,34 @@ mod find_all {
     }
 }
 
+mod find_by_id {
+    use super::*;
+
+    #[actix_web::test]
+    async fn find_by_id_should_find_one() {
+        let app = App::new().app_data(fake_pet_repository())
+            .service(pet::find_by_id)
+            .wrap(ActixRecord::default());
+        let pets = fake_pets();
+        let to_find = pets.get(0).unwrap();
+        let req = TestRequest::get().uri(&format!("/pets/{}", to_find.id.unwrap())).to_request();
+        call_service(&init_service(app).await, req).await
+            .expect_status_ok()
+            .expect_content_type_json()
+            .expect_body_json(|p: Pet| assert_eq!(&p, to_find));
+    }
+
+    #[actix_web::test]
+    async fn find_by_id_should_not_find_any() {
+        let app = App::new().app_data(fake_pet_repository())
+            .service(pet::find_by_id)
+            .wrap(ActixRecord::default());
+        let req = TestRequest::get().uri("/pets/999").to_request();
+        call_service(&init_service(app).await, req).await
+            .expect_status_not_found();
+    }
+}
+
 mod create {
     use super::*;
 

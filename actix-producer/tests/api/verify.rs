@@ -10,6 +10,7 @@ async fn should_verify() {
     App::new()
         .app_data(fake_pet_repository())
         .service(pet::find_all)
+        .service(pet::find_by_id)
         .service(pet::create)
         .wrap(ActixVerifyLifecycle::<PetRepository>(|repo| {
             repo.delete_all()
