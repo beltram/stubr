@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/pets",
+    "headers": {
+      "content-type": {
+        "equalTo": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "name": "rex"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 409
+  }
+}
