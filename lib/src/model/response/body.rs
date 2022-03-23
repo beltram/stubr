@@ -82,34 +82,43 @@ impl BodyStub {
         }).collect_vec())
     }
 
+    /// Tries to dynamically guess the "actual" json type of the string
     fn cast_to_value(raw: String) -> Value {
-        let len = raw.len();
-        match raw {
-            o if o.ends_with(Self::OBJECT_IDENTIFIER) => {
-                Value::from_str(&o[..len - Self::OBJECT_IDENTIFIER.len()].to_string())
-                    .unwrap_or_default()
+        if let Ok(i) = raw.parse::<i32>() {
+            Value::from(i)
+        } else if let Ok(b) = raw.parse::<bool>() {
+            Value::from(b)
+        } else if &raw == "null" {
+            Value::Null
+        } else {
+            let len = raw.len();
+            match raw {
+                o if o.ends_with(Self::OBJECT_IDENTIFIER) => {
+                    Value::from_str(&o[..len - Self::OBJECT_IDENTIFIER.len()].to_string())
+                        .unwrap_or_default()
+                }
+                a if a.ends_with(Self::ARRAY_IDENTIFIER) => {
+                    Value::from_str(&a[..len - Self::ARRAY_IDENTIFIER.len()].to_string())
+                        .unwrap_or_default()
+                }
+                b if b.ends_with(Self::BOOL_IDENTIFIER) => {
+                    bool::from_str(&b[..len - Self::BOOL_IDENTIFIER.len()].to_string())
+                        .map(Value::from)
+                        .unwrap_or_default()
+                }
+                n if n.ends_with(Self::NUMBER_IDENTIFIER) => {
+                    i64::from_str(&n[..len - Self::NUMBER_IDENTIFIER.len()].to_string())
+                        .map(Value::from)
+                        .unwrap_or_default()
+                }
+                f if f.ends_with(Self::FLOAT_IDENTIFIER) => {
+                    f64::from_str(&f[..len - Self::FLOAT_IDENTIFIER.len()].to_string())
+                        .map(Value::from)
+                        .unwrap_or_default()
+                }
+                n if n.ends_with(Self::NULL_IDENTIFIER) => Value::Null,
+                _ => Value::from(raw)
             }
-            a if a.ends_with(Self::ARRAY_IDENTIFIER) => {
-                Value::from_str(&a[..len - Self::ARRAY_IDENTIFIER.len()].to_string())
-                    .unwrap_or_default()
-            }
-            b if b.ends_with(Self::BOOL_IDENTIFIER) => {
-                bool::from_str(&b[..len - Self::BOOL_IDENTIFIER.len()].to_string())
-                    .map(Value::from)
-                    .unwrap_or_default()
-            }
-            n if n.ends_with(Self::NUMBER_IDENTIFIER) => {
-                i64::from_str(&n[..len - Self::NUMBER_IDENTIFIER.len()].to_string())
-                    .map(Value::from)
-                    .unwrap_or_default()
-            }
-            f if f.ends_with(Self::FLOAT_IDENTIFIER) => {
-                f64::from_str(&f[..len - Self::FLOAT_IDENTIFIER.len()].to_string())
-                    .map(Value::from)
-                    .unwrap_or_default()
-            }
-            n if n.ends_with(Self::NULL_IDENTIFIER) => Value::Null,
-            _ => Value::from(raw)
         }
     }
 
@@ -170,10 +179,7 @@ impl HandlebarTemplatable for BodyStub {
 
 impl ResponseAppender for BodyStub {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
-        if let Some(json) = self.json_body.as_ref() { resp = resp.set_body_json(json) }
-        else if let Some(text) = self.body.as_ref() { resp = resp.set_body_string(text) }
-        else if let Some(body_file) = self.body_file_name.as_ref() { resp = body_file.add(resp) }
-        else if let Some(binary) = self.binary_body() { resp = resp.set_body_bytes(binary) }
+        if let Some(json) = self.json_body.as_ref() { resp = resp.set_body_json(json) } else if let Some(text) = self.body.as_ref() { resp = resp.set_body_string(text) } else if let Some(body_file) = self.body_file_name.as_ref() { resp = body_file.add(resp) } else if let Some(binary) = self.binary_body() { resp = resp.set_body_bytes(binary) }
         resp
     }
 }

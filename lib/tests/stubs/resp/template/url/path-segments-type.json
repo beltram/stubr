@@ -1,0 +1,15 @@
+{
+  "request": {
+    "urlPathPattern": "/path/segments/(.)+",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "path": "{{request.pathSegments.[2]}}"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  }
+}
