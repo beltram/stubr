@@ -30,7 +30,7 @@ impl Verifier<'_> for BodyVerifier {
                     stub.body.register_json_body_template(arr.iter())
                 }
                 let expected = stub.body.render_json_body(Some(expected), &HandlebarsData::from(req.0.borrow_mut()))
-                    .expect(&format!("Failed rendering response template for '{}'", name));
+                    .unwrap_or_else(|| panic!("Failed rendering response template for '{}'", name));
                 assert_eq!(actual, &expected, "Verification failed for stub '{}'. Expected json response body to be '{}' but was '{}'", name, expected, actual);
             } else {
                 assert_eq!(actual, expected, "Verification failed for stub '{}'. Expected json response body to be '{}' but was '{}'", name, expected, actual);
