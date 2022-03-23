@@ -1,7 +1,7 @@
-use actix_web::{App, test::{call_service, init_service, TestRequest}};
+use actix_web::{App, test::{call_service, init_service, TestRequest}, web};
 use asserhttp::*;
 
-use actix_consumer::{api::store, model::store::Store};
+use actix_consumer::{api::store, client::pet::PetClient, model::{pet::Pet, store::Store}};
 use stubr::ActixRecord;
 
 use crate::utils::*;
@@ -36,8 +36,11 @@ mod find_by_id {
     use super::*;
 
     #[actix_web::test]
+    #[stubr::apps("actix-producer")]
     async fn find_by_id_should_find_one() {
-        let app = App::new().app_data(fake_store_repository())
+        let app = App::new()
+            .app_data(web::Data::new(PetClient::from(actix_producer.uri())))
+            .app_data(fake_store_repository())
             .service(store::find_by_id)
             .wrap(ActixRecord::default());
         let stores = fake_stores();
@@ -50,8 +53,11 @@ mod find_by_id {
     }
 
     #[actix_web::test]
+    #[stubr::apps("actix-producer")]
     async fn find_by_id_should_not_find_any() {
-        let app = App::new().app_data(fake_store_repository())
+        let app = App::new()
+            .app_data(web::Data::new(PetClient::from(actix_producer.uri())))
+            .app_data(fake_store_repository())
             .service(store::find_by_id)
             .wrap(ActixRecord::default());
         let req = TestRequest::get().uri("/stores/999").to_request();
@@ -64,9 +70,13 @@ mod create {
     use super::*;
 
     #[actix_web::test]
+    #[stubr::apps("actix-producer")]
     async fn create_should_create_one() {
-        let store = Store { name: String::from("new"), ..Default::default() };
-        let app = App::new().app_data(empty_store_repository())
+        let pet = Pet { name: String::from("new"), ..Default::default() };
+        let store = Store { name: String::from("new"), pets: vec![pet.clone()], ..Default::default() };
+        let app = App::new()
+            .app_data(web::Data::new(PetClient::from(actix_producer.uri())))
+            .app_data(empty_store_repository())
             .service(store::create)
             .wrap(ActixRecord::default());
         let req = TestRequest::post().uri("/stores").set_json(store.clone()).to_request();
@@ -76,13 +86,21 @@ mod create {
             .expect_body_json(|b: Store| {
                 assert!(b.id.is_some());
                 assert_eq!(b.name, store.name);
+                assert!(!b.pets.is_empty());
+                let p = b.pets.get(0).unwrap();
+                assert!(p.id.is_some());
+                assert_eq!(p.name, pet.name);
             });
     }
 
     #[actix_web::test]
+    #[stubr::apps("actix-producer")]
     async fn create_should_conflict_when_already_exists_by_name() {
-        let store = fake_stores().get(0).unwrap().to_owned();
-        let app = App::new().app_data(fake_store_repository())
+        let mut store = fake_stores().get(0).unwrap().to_owned();
+        store.id = None;
+        let app = App::new()
+            .app_data(web::Data::new(PetClient::from(actix_producer.uri())))
+            .app_data(fake_store_repository())
             .service(store::create)
             .wrap(ActixRecord::default());
         let req = TestRequest::post().uri("/stores").set_json(store.clone()).to_request();

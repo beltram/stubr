@@ -10,7 +10,12 @@
     "bodyPatterns": [
       {
         "equalToJson": {
-          "name": "new"
+          "name": "new",
+          "pets": [
+            {
+              "name": "new"
+            }
+          ]
         }
       }
     ]
@@ -19,7 +24,13 @@
     "status": 201,
     "jsonBody": {
       "id": 2,
-      "name": "{{jsonPath request.body '$.name'}}"
+      "name": "{{jsonPath request.body '$.name'}}",
+      "pets": [
+        {
+          "id": 2,
+          "name": "new"
+        }
+      ]
     },
     "headers": {
       "content-type": "application/json"

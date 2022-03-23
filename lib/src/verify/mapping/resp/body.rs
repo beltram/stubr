@@ -21,7 +21,7 @@ impl Verifier<'_> for BodyVerifier {
     fn verify(stub: &'_ ResponseStub, name: &'_ str, req: &'_ mut StdRequest, resp: &'_ mut StdResponse) {
         if let Some(expected) = stub.body.json_body.as_ref() {
             let actual = block_on(async move { resp.0.body_json::<Value>().await.ok() });
-            assert!(actual.is_some(), "Verification failed for stub '{}'. Expected json response body to be '{}' but none present", name, expected);
+            assert!(actual.is_some(), "\nVerification failed for stub '{}'. Expected json response body to be '{}' but none present", name, expected);
             let actual = actual.as_ref().unwrap();
             if stub.requires_response_templating() {
                 if let Some(obj) = expected.as_object() {
@@ -31,20 +31,20 @@ impl Verifier<'_> for BodyVerifier {
                 }
                 let expected = stub.body.render_json_body(Some(expected), &HandlebarsData::from(req.0.borrow_mut()))
                     .unwrap_or_else(|| panic!("Failed rendering response template for '{}'", name));
-                assert_eq!(actual, &expected, "Verification failed for stub '{}'. Expected json response body to be '{}' but was '{}'", name, expected, actual);
+                assert_eq!(actual, &expected, "\nVerification failed for stub '{}'. Expected json response body to be '{}' but was '{}'", name, expected, actual);
             } else {
-                assert_eq!(actual, expected, "Verification failed for stub '{}'. Expected json response body to be '{}' but was '{}'", name, expected, actual);
+                assert_eq!(actual, expected, "\nVerification failed for stub '{}'. Expected json response body to be '{}' but was '{}'", name, expected, actual);
             }
         } else if let Some(expected) = stub.body.body.as_ref() {
             let actual = block_on(async move { resp.0.body_string().await.ok() }).filter(|it| !it.is_empty());
-            assert!(actual.is_some(), "Verification failed for stub '{}'. Expected text response body to be '{}' but none present", name, expected);
+            assert!(actual.is_some(), "\nVerification failed for stub '{}'. Expected text response body to be '{}' but none present", name, expected);
             let actual = actual.as_ref().unwrap();
             if stub.requires_response_templating() {
                 stub.body.register(expected, expected);
                 let expected = stub.body.render(expected, &HandlebarsData::from(req.0.borrow_mut()));
-                assert_eq!(actual, &expected, "Verification failed for stub '{}'. Expected text response body to be '{}' but was '{}'", name, expected, actual);
+                assert_eq!(actual, &expected, "\nVerification failed for stub '{}'. Expected text response body to be '{}' but was '{}'", name, expected, actual);
             } else {
-                assert_eq!(actual, expected, "Verification failed for stub '{}'. Expected text response body to be '{}' but was '{}'", name, expected, actual);
+                assert_eq!(actual, expected, "\nVerification failed for stub '{}'. Expected text response body to be '{}' but was '{}'", name, expected, actual);
             }
         }
     }

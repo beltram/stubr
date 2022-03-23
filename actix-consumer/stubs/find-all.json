@@ -8,7 +8,13 @@
     "jsonBody": [
       {
         "id": 1,
-        "name": "jardiland"
+        "name": "jardiland",
+        "pets": [
+          {
+            "id": 1,
+            "name": "rex"
+          }
+        ]
       }
     ],
     "headers": {

@@ -7,11 +7,19 @@
     "status": 200,
     "jsonBody": {
       "id": "{{request.pathSegments.[1]}}",
-      "name": "jardiland"
+      "name": "jardiland",
+      "pets": [
+        {
+          "id": 1,
+          "name": "rex"
+        }
+      ]
     },
     "headers": {
       "content-type": "application/json"
     },
-    "transformers": ["response-template"]
+    "transformers": [
+      "response-template"
+    ]
   }
 }

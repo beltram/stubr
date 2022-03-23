@@ -10,7 +10,8 @@
     "bodyPatterns": [
       {
         "equalToJson": {
-          "name": "jardiland"
+          "name": "jardiland",
+          "pets": []
         }
       }
     ]

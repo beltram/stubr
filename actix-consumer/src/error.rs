@@ -23,3 +23,9 @@ impl ResponseError for ApiError {
         }
     }
 }
+
+impl From<reqwest::Error> for ApiError {
+    fn from(_: reqwest::Error) -> Self {
+        ApiError::InternalError
+    }
+}

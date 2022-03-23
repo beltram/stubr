@@ -23,14 +23,16 @@ dependencies = [
 name = "actix-consumer"
 version = "0.0.1"
 dependencies = [
+ "actix-producer",
  "actix-web",
  "anyhow",
  "asserhttp",
  "derive_more",
+ "futures",
  "itertools",
+ "reqwest",
  "serde",
  "serde_json",
- "stub-producer",
  "stubr",
  "stubr-build",
 ]
