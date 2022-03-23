@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/stores",
+    "headers": {
+      "content-type": {
+        "equalTo": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "name": "new"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "id": 2,
+      "name": "{{jsonPath request.body '$.name'}}"
+    },
+    "headers": {
+      "content-type": "application/json"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

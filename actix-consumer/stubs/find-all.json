@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/stores"
+  },
+  "response": {
+    "status": 206,
+    "jsonBody": [
+      {
+        "id": 1,
+        "name": "jardiland"
+      }
+    ],
+    "headers": {
+      "content-type": "application/json"
+    }
+  }
+}

@@ -8,6 +8,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(PetRepository::init())
             .service(pet::find_all)
+            .service(pet::find_by_id)
             .service(pet::create)
     })
         .bind("127.0.0.1:8080")?

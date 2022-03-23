@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/stores/999"
+  },
+  "response": {
+    "status": 404
+  }
+}

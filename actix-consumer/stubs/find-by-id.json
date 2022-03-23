@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/stores/1"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "id": "{{request.pathSegments.[1]}}",
+      "name": "jardiland"
+    },
+    "headers": {
+      "content-type": "application/json"
+    },
+    "transformers": ["response-template"]
+  }
+}
