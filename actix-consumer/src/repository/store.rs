@@ -22,7 +22,7 @@ impl StoreRepository {
                 db.iter()
                     .find(|p| p.id == Some(id))
                     .map(|p| p.to_owned())
-                    .ok_or_else(|| ApiError::NotFound)
+                    .ok_or(ApiError::NotFound)
             })
     }
 

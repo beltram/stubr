@@ -16,7 +16,6 @@ pub fn fake_stores() -> Vec<Store> {
             id: Some(1),
             name: String::from("jardiland"),
             pets: vec![Pet { id: Some(1), name: String::from("rex") }],
-            ..Default::default()
         },
     ]
 }

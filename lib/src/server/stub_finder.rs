@@ -44,7 +44,7 @@ impl StubFinder {
         env::var("CARGO_PKG_NAME").ok()
             .map(|pkg| Self::output_dir().join(Self::LOCAL_DIR).join(pkg).join(name))
             .filter(|path| path.exists())
-            .expect(&format!("Could not find app '{}'", name))
+            .unwrap_or_else(|| panic!("Could not find app '{}'", name))
     }
 
     pub fn output_dir() -> PathBuf {
