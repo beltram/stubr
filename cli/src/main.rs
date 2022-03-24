@@ -10,6 +10,6 @@ mod record;
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let now = Instant::now();
-    Logger::init();
+    Logger::init()?;
     Cli::parse().run(now).await
 }
