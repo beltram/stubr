@@ -23,14 +23,15 @@ impl<A, T> StubrVerify<T> for A where
 {
     async fn verify(mut self) {
         let srv = self.into_factory();
-        let app = srv.new_service(AppConfig::default()).await.unwrap();
-        for (stub, name) in ProducerStubFinder::find_stubs() {
-            let req = StdRequest::from(&stub);
-            let test_req = TestRequest::from(&req).set_payload(Vec::<u8>::from(&stub.request)).to_request();
-            let resp: StdResponse = app.call(test_req).await
-                .unwrap_or_else(|_| panic!("Failed verifying stub {:?}", name))
-                .into();
-            RequestAndStub { req, stub: stub.response, name }.verify(resp);
-        };
+        if let Ok(app) = srv.new_service(AppConfig::default()).await {
+            for (stub, name) in ProducerStubFinder::find_stubs() {
+                let req = StdRequest::from(&stub);
+                let test_req = TestRequest::from(&req).set_payload(Vec::<u8>::from(&stub.request)).to_request();
+                let resp: StdResponse = app.call(test_req).await
+                    .unwrap_or_else(|_| panic!("Failed verifying stub {:?}", name))
+                    .into();
+                RequestAndStub { req, stub: stub.response, name }.verify(resp);
+            };
+        }
     }
 }
