@@ -12,8 +12,8 @@ pub(crate) struct ProducerStubFinder;
 impl ProducerStubFinder {
     pub(crate) fn find_stubs() -> Vec<(JsonStub, OsString)> {
         Self::stub_dir()
-            .and_then(|it| it.read_dir().ok())
-            .map(|dir| dir.map(|it| it.unwrap().path()).collect())
+            .and_then(|d| d.read_dir().ok())
+            .map(|d| d.filter_map(Result::ok).map(|dir| dir.path()).collect())
             .map(Self::map_json_stub)
             .unwrap_or_default()
     }
