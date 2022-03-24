@@ -9,6 +9,7 @@ use super::{
     mapping::{req::StdRequest, resp::{RequestAndStub, StdResponse}},
     stub_finder::ProducerStubFinder,
     StubrVerify,
+    VerifyExcept,
 };
 
 mod req;
@@ -21,10 +22,10 @@ impl<A, T> StubrVerify<T> for A where
     T: ServiceFactory<ActixRequest, Config=AppConfig, Response=ServiceResponse>,
     <T as ServiceFactory<ActixRequest>>::InitError: Debug,
 {
-    async fn verify(mut self) {
+    async fn verify_except<N>(self, except: impl VerifyExcept<N> + 'async_trait) {
         let srv = self.into_factory();
         if let Ok(app) = srv.new_service(AppConfig::default()).await {
-            for (stub, name) in ProducerStubFinder::find_stubs() {
+            for (stub, name) in ProducerStubFinder::find_stubs(except) {
                 let req = StdRequest::from(&stub);
                 let test_req = TestRequest::from(&req).set_payload(Vec::<u8>::from(&stub.request)).to_request();
                 let resp: StdResponse = app.call(test_req).await

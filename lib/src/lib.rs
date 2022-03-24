@@ -100,7 +100,7 @@ pub use stubr_attributes::record;
 #[cfg(feature = "verify-actix")]
 pub use verify::actix::lifecycle::ActixVerifyLifecycle;
 #[cfg(feature = "verify")]
-pub use verify::StubrVerify;
+pub use verify::{StubrVerify, VerifyExcept};
 
 mod model;
 mod server;

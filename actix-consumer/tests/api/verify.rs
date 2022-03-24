@@ -19,6 +19,6 @@ async fn should_verify() {
                 .and_then(|_| repo.insert_all(fake_stores()))
                 .unwrap()
         }))
-        .verify()
+        .verify_except(|stub| stub == "cannot-succeed")
         .await;
 }
