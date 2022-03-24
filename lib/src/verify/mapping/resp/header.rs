@@ -40,7 +40,7 @@ mod header_verify_tests {
             },
             ..Default::default()
         };
-        let mut  req = StdRequest(Request::get("http://localhost/"));
+        let mut req = StdRequest(Request::get("http://localhost/"));
         let mut resp = Response::new(200);
         resp.append_header("x-a", "b");
         let mut resp = StdResponse(resp);

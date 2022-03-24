@@ -12,6 +12,8 @@
     "headers": {
       "content-type": "application/json"
     },
-    "transformers": ["response-template"]
+    "transformers": [
+      "response-template"
+    ]
   }
 }

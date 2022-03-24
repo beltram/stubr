@@ -34,7 +34,7 @@ mod resp_header_mapping_tests {
     use http_types::Response;
     use serde_json::{json, Map};
 
-    use crate::{record::{RecordedResponse, RecordedExchange}, RecordConfig};
+    use crate::{record::{RecordedExchange, RecordedResponse}, RecordConfig};
 
     use super::*;
 

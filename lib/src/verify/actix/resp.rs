@@ -35,8 +35,8 @@ impl From<ActixServiceResponse> for StdResponse {
 mod actix_resp_mapping_tests {
     use std::str::FromStr;
 
-    use actix_web::HttpResponse as ActixResponse;
     use actix_web::{HttpRequest, test::TestRequest};
+    use actix_web::HttpResponse as ActixResponse;
 
     use super::*;
 

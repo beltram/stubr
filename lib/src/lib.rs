@@ -21,7 +21,7 @@
 //!     // or just mount a single file
 //!     let stubr = Stubr::start("tests/stubs/hello.json").await;
 //!     // or configure it (more configurations to come)
-//!     let stubr = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default () }).await;
+//!     let stubr = Stubr::start_with("tests/stubs", Config { port: Some(8080), ..Default::default() }).await;
 //!     isahc::get_async(stubr.uri()).await.expect_status_ok();
 //! }
 //!
@@ -29,7 +29,7 @@
 //! fn simple_blocking() {
 //!     // can also be used in a blocking way
 //!     let stubr = Stubr::start_blocking("tests/stubs");
-//!     let stubr = Stubr::start_blocking_with("tests/stubs", Config { port: Some(8080), ..Default::default () });
+//!     let stubr = Stubr::start_blocking_with("tests/stubs", Config { port: Some(8080), ..Default::default() });
 //!     isahc::get(stubr.uri()).expect_status_ok();
 //! }
 //! ```

@@ -37,7 +37,7 @@ mod req_url_mapping_tests {
     use http_types::Request;
     use serde_json::{json, Map};
 
-    use crate::{record::{RecordedRequest, RecordedExchange}, RecordConfig};
+    use crate::{record::{RecordedExchange, RecordedRequest}, RecordConfig};
 
     use super::*;
 

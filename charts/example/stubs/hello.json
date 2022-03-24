@@ -1,1 +1,8 @@
-{"request": {"method": "GET"}, "response": { "body": "Hello stubr" }}
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "body": "Hello stubr"
+  }
+}
