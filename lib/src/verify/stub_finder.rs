@@ -18,14 +18,14 @@ impl ProducerStubFinder {
             .unwrap_or_default()
     }
 
+    fn stub_dir() -> Option<PathBuf> {
+        current_dir().map(|it| it.join("stubs")).ok()
+    }
+
     fn map_json_stub(files: Vec<PathBuf>) -> Vec<(JsonStub, OsString)> {
         files.iter()
             .filter_map(|path| OpenOptions::new().read(true).open(path).ok().zip(path.file_name()))
             .filter_map(|(file, name)| serde_json::from_reader(file).ok().zip(Some(name.to_os_string())))
             .collect()
-    }
-
-    fn stub_dir() -> Option<PathBuf> {
-        current_dir().map(|it| it.join("stubs")).ok()
     }
 }
