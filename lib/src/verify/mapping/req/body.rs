@@ -4,10 +4,13 @@ use itertools::Itertools;
 use json_value_merge::Merge;
 use serde_json::{json, Value};
 
-use crate::model::request::{body::BodyPatternStub, RequestStub};
-use crate::verify::mapping::jsonpath::JsonGeneratorIterator;
+use crate::{
+    model::request::{body::BodyPatternStub, RequestStub},
+    verify::mapping::jsonpath::JsonGeneratorIterator,
+    gen::contains::StringRndGenerator
+};
 
-use super::super::{contains::ContainsGenerator, jsonpath::JsonPathGenerator};
+use super::super::jsonpath::JsonPathGenerator;
 
 impl From<&RequestStub> for Vec<u8> {
     fn from(stub: &RequestStub) -> Self {
@@ -77,7 +80,7 @@ impl From<&BodyPatternStub> for PartialBody {
             if let Some(equal_to_json) = stub.equal_to_json.as_ref() {
                 PartialBody { path: Some(expression.to_string()), value: Some(equal_to_json.to_owned()), ..Default::default() }
             } else if let Some(contains) = stub.contains.as_ref() {
-                let value = ContainsGenerator::generate_string_containing(contains.to_string());
+                let value = StringRndGenerator::generate_string_containing(contains.to_string());
                 PartialBody { path: Some(expression.to_string()), value: Some(Value::String(value)), ..Default::default() }
             } else { PartialBody::default() }
         } else if let Some(eq) = stub.equal_to_json.as_ref() {

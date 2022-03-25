@@ -1,11 +1,6 @@
-use std::str::FromStr;
-
 use http_types::Url;
-use regex::Regex;
 
-use crate::model::request::RequestStub;
-
-use super::super::regex::RegexStub;
+use crate::{gen::regex::RegexRndGenerator, model::request::RequestStub};
 
 struct UrlStubMapper;
 
@@ -14,7 +9,9 @@ impl UrlStubMapper {
         Self::url_matcher(stub)
             .map(|(url, is_pattern)| {
                 if is_pattern {
-                    RegexStub(Regex::from_str(url).unwrap()).into()
+                    RegexRndGenerator::try_from(url.as_str()).ok()
+                        .and_then(|g| g.try_generate().ok())
+                        .unwrap()
                 } else { url.to_string() }
             })
             .unwrap_or_default()

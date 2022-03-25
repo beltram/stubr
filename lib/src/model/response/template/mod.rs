@@ -6,6 +6,7 @@ use wiremock::{Request, Respond, ResponseTemplate};
 
 use data::HandlebarsData;
 use helpers::{
+    any_regex::AnyRegex,
     base64::Base64Helper,
     datetime::NowHelper,
     json_path::JsonPathHelper,
@@ -38,6 +39,7 @@ lazy_static! {
         handlebars.register_helper(StringHelper::UPPER, Box::new(StringHelper));
         handlebars.register_helper(StringHelper::LOWER, Box::new(StringHelper));
         handlebars.register_helper(SizeHelper::NAME, Box::new(SizeHelper));
+        handlebars.register_helper(AnyRegex::NAME, Box::new(AnyRegex));
         RwLock::new(handlebars)
     };
 }

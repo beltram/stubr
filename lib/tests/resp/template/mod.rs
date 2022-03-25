@@ -12,3 +12,4 @@ pub mod base64;
 pub mod url_encode;
 pub mod string;
 pub mod size;
+pub mod any;

@@ -2,12 +2,12 @@ use std::str::FromStr;
 
 use anyhow::Error;
 use itertools::Itertools;
-use regex::Regex;
 use serde_json::Value;
 
-use crate::{model::request::matcher::MatcherValueStub, verify::mapping::regex::RegexStub};
-
-use super::super::contains::ContainsGenerator;
+use crate::{
+    gen::{contains::StringRndGenerator, regex::RegexRndGenerator},
+    model::request::matcher::MatcherValueStub,
+};
 
 struct MatcherValueStubMapper;
 
@@ -30,14 +30,13 @@ impl MatcherValueStubMapper {
 
     fn map_contains(value: &str) -> Option<String> {
         i64::from_str(value).ok()
-            .map(ContainsGenerator::generate_number_containing)
-            .or_else(|| Some(ContainsGenerator::generate_string_containing(value.to_string())))
+            .map(StringRndGenerator::generate_number_containing)
+            .or_else(|| Some(StringRndGenerator::generate_string_containing(value.to_string())))
     }
 
     fn map_matches(value: &str) -> Option<String> {
-        Regex::from_str(value).ok()
-            .map(RegexStub)
-            .map(RegexStub::into)
+        RegexRndGenerator::try_from(value).ok()
+            .and_then(|g| g.try_generate().ok())
     }
 }
 
@@ -138,7 +137,7 @@ mod verify_matcher_tests {
         fn should_generate_param_matching_string() {
             let regex = String::from("[a-z]{4}");
             let matcher = MatcherValueStub { matches: Some(Value::String(regex.clone())), ..Default::default() };
-            let regex = Regex::from_str(&regex).unwrap();
+            let regex = regex::Regex::from_str(&regex).unwrap();
             assert!(regex.is_match(&String::try_from(&matcher).unwrap()));
         }
     }
