@@ -81,22 +81,17 @@ impl Cli {
     }
 
     fn dir(&self) -> Option<PathBuf> {
-        current_dir().ok()
-            .and_then(|current| {
-                self.dir.as_ref()
-                    .map(|d| current.join(d))
-                    .or(Some(current))
-            })
+        let current = current_dir().ok()?;
+        self.dir.as_ref()
+            .map(|d| current.join(d))
+            .or(Some(current))
     }
 
     fn root_dir(&self) -> Option<PathBuf> {
-        current_dir().ok()
-            .and_then(|current| {
-                self.root_dir.as_ref()
-                    .filter(|&it| Self::does_contains_mappings_folder(it))
-                    .map(|it| it.join(Self::MAPPINGS_FOLDER))
-                    .map(|it| current.join(it))
-            })
+        let current = current_dir().ok()?;
+        self.root_dir.as_ref()
+            .filter(|root| Self::does_contains_mappings_folder(root))
+            .map(|root| current.join(root.join(Self::MAPPINGS_FOLDER)))
     }
 
     fn does_contains_mappings_folder(input: &Path) -> bool {
@@ -111,15 +106,15 @@ impl Cli {
     }
 
     fn global_delay_milliseconds(&self) -> Option<u64> {
-        self.delay.as_ref()
-            .and_then(|it| humantime::parse_duration(it.as_str()).ok())
-            .and_then(|it| it.as_millis().try_into().ok())
+        humantime::parse_duration(self.delay.as_deref()?).ok()
+            ?.as_millis()
+            .try_into().ok()
     }
 
     fn latency_milliseconds(&self) -> Option<u64> {
-        self.latency.as_ref()
-            .and_then(|it| humantime::parse_duration(it.as_str()).ok())
-            .and_then(|it| it.as_millis().try_into().ok())
+        humantime::parse_duration(self.latency.as_deref()?).ok()
+            ?.as_millis()
+            .try_into().ok()
     }
 }
 

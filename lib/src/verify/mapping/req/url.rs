@@ -9,17 +9,17 @@ impl UrlStubMapper {
         Self::url_matcher(stub)
             .map(|(url, is_pattern)| {
                 if is_pattern {
-                    RegexRndGenerator(url.as_str()).try_generate().unwrap()
+                    RegexRndGenerator(url).try_generate().unwrap()
                 } else { url.to_string() }
             })
             .unwrap_or_default()
     }
 
-    fn url_matcher(stub: &RequestStub) -> Option<(&String, bool)> {
-        stub.url.url.as_ref().map(|it| (it, false))
-            .or_else(|| stub.url.url_path.as_ref().map(|it| (it, false)))
-            .or_else(|| stub.url.url_pattern.as_ref().map(|it| (it, true)))
-            .or_else(|| stub.url.url_path_pattern.as_ref().map(|it| (it, true)))
+    fn url_matcher(stub: &RequestStub) -> Option<(&str, bool)> {
+        stub.url.url.as_deref().map(|u| (u, false))
+            .or_else(|| stub.url.url_path.as_deref().map(|u| (u, false)))
+            .or_else(|| stub.url.url_pattern.as_deref().map(|u| (u, true)))
+            .or_else(|| stub.url.url_path_pattern.as_deref().map(|u| (u, true)))
     }
 }
 

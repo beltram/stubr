@@ -39,8 +39,7 @@ impl<'a> OpenTracing<'a> {
     }
 
     fn req_header(&'a self, key: &'a str) -> Option<&'a str> {
-        HeaderName::from_str(key).ok().as_ref()
-            .and_then(|k| self.0.headers.get(k))
+        self.0.headers.get(HeaderName::from_str(key).ok().as_ref()?)
             .map(|v| v.as_str())
     }
 }

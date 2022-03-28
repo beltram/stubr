@@ -17,26 +17,26 @@ impl BodyFile {
     const TEXT_EXT: &'static str = "txt";
 
     fn maybe_as_json(&self) -> Option<Value> {
-        self.extension.as_ref()
-            .filter(|ext| ext.as_str() == Self::JSON_EXT)
+        self.extension.as_deref()
+            .filter(|&ext| ext == Self::JSON_EXT)
             .and_then(|_| serde_json::from_str::<Value>(self.content.as_str()).ok())
     }
 
     fn maybe_as_text(&self) -> Option<String> {
-        self.extension.as_ref()
-            .filter(|ext| ext.as_str() == Self::TEXT_EXT)
+        self.extension.as_deref()
+            .filter(|&ext| ext == Self::TEXT_EXT)
             .map(|_| self.content.to_owned())
     }
 
     fn is_json(&self) -> bool {
-        self.extension.as_ref()
-            .map(|ext| ext.as_str() == Self::JSON_EXT)
+        self.extension.as_deref()
+            .map(|ext| ext == Self::JSON_EXT)
             .unwrap_or_default()
     }
 
     fn is_text(&self) -> bool {
-        self.extension.as_ref()
-            .map(|ext| ext.as_str() == Self::TEXT_EXT)
+        self.extension.as_deref()
+            .map(|ext| ext == Self::TEXT_EXT)
             .unwrap_or_default()
     }
 }

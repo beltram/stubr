@@ -71,7 +71,7 @@ impl RequestMatcherStub {
 
     pub fn equal_to_as_str(&self) -> Option<String> {
         self.value.as_ref()
-            .and_then(|it| it.equal_to.as_ref())
+            ?.equal_to.as_ref()
             .and_then(|v| {
                 v.as_str().map(ToString::to_string)
                     .or_else(|| v.as_bool().map(|b| b.to_string()))
@@ -81,15 +81,15 @@ impl RequestMatcherStub {
 
     pub fn matches_as_regex(&self) -> Option<Regex> {
         self.value.as_ref()
-            .and_then(|it| it.matches.as_ref())
-            .and_then(|v| v.as_str())
+            ?.matches.as_ref()
+            ?.as_str()
             .and_then(|it| Regex::from_str(it).ok())
     }
 
     pub fn does_not_match_as_regex(&self) -> Option<Regex> {
         self.value.as_ref()
-            .and_then(|it| it.does_not_match.as_ref())
-            .and_then(|v| v.as_str())
+            ?.does_not_match.as_ref()
+            ?.as_str()
             .and_then(|it| Regex::from_str(it).ok())
     }
 
