@@ -4,6 +4,7 @@ version = "0.0.1"
 edition = "2021"
 publish = false
 build = "build.rs"
+license = "Apache-2.0"
 
 [build-dependencies]
 stubr-build = { path = "../build", version = "0.4.14" }

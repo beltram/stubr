@@ -1,0 +1,14 @@
+# run `cargo deny check licenses && cargo deny check sources`
+[licenses]
+unlicensed = "allow"
+copyleft = "allow"
+allow-osi-fsf-free = "both"
+default = "deny"
+confidence-threshold = 0.8
+exceptions = []
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []
