@@ -1,12 +1,11 @@
 use std::{
     f64,
+    ffi::OsStr,
     fs::OpenOptions,
-    i64,
     io::Read,
     path::PathBuf,
     str::{from_utf8, FromStr},
 };
-use std::ffi::OsStr;
 
 use handlebars::JsonValue;
 use itertools::Itertools;
@@ -38,10 +37,6 @@ pub struct BodyStub {
 }
 
 impl BodyStub {
-    pub const BOOL_IDENTIFIER: &'static str = "[bool]";
-    pub const NUMBER_IDENTIFIER: &'static str = "[number]";
-    pub const FLOAT_IDENTIFIER: &'static str = "[float]";
-    pub const NULL_IDENTIFIER: &'static str = "[null]";
     pub const OBJECT_IDENTIFIER: &'static str = "[object]";
     pub const ARRAY_IDENTIFIER: &'static str = "[array]";
 
@@ -88,6 +83,8 @@ impl BodyStub {
             Value::from(i)
         } else if let Ok(b) = raw.parse::<bool>() {
             Value::from(b)
+        } else if let Ok(f) = raw.parse::<f64>() {
+            Value::from(f)
         } else if &raw == "null" {
             Value::Null
         } else {
@@ -101,22 +98,6 @@ impl BodyStub {
                     Value::from_str(&a[..len - Self::ARRAY_IDENTIFIER.len()].to_string())
                         .unwrap_or_default()
                 }
-                b if b.ends_with(Self::BOOL_IDENTIFIER) => {
-                    bool::from_str(&b[..len - Self::BOOL_IDENTIFIER.len()].to_string())
-                        .map(Value::from)
-                        .unwrap_or_default()
-                }
-                n if n.ends_with(Self::NUMBER_IDENTIFIER) => {
-                    i64::from_str(&n[..len - Self::NUMBER_IDENTIFIER.len()].to_string())
-                        .map(Value::from)
-                        .unwrap_or_default()
-                }
-                f if f.ends_with(Self::FLOAT_IDENTIFIER) => {
-                    f64::from_str(&f[..len - Self::FLOAT_IDENTIFIER.len()].to_string())
-                        .map(Value::from)
-                        .unwrap_or_default()
-                }
-                n if n.ends_with(Self::NULL_IDENTIFIER) => Value::Null,
                 _ => Value::from(raw)
             }
         }
@@ -179,7 +160,15 @@ impl HandlebarTemplatable for BodyStub {
 
 impl ResponseAppender for BodyStub {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
-        if let Some(json) = self.json_body.as_ref() { resp = resp.set_body_json(json) } else if let Some(text) = self.body.as_ref() { resp = resp.set_body_string(text) } else if let Some(body_file) = self.body_file_name.as_ref() { resp = body_file.add(resp) } else if let Some(binary) = self.binary_body() { resp = resp.set_body_bytes(binary) }
+        if let Some(json) = self.json_body.as_ref() {
+            resp = resp.set_body_json(json)
+        } else if let Some(text) = self.body.as_ref() {
+            resp = resp.set_body_string(text)
+        } else if let Some(body_file) = self.body_file_name.as_ref() {
+            resp = body_file.add(resp)
+        } else if let Some(binary) = self.binary_body() {
+            resp = resp.set_body_bytes(binary)
+        }
         resp
     }
 }

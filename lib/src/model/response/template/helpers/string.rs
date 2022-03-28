@@ -1,29 +1,7 @@
-use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
+use handlebars::{Context, Handlebars, Helper, HelperDef, RenderContext, RenderError, ScopedJson};
+use serde_json::Value;
 
 pub struct StringHelper;
-
-impl HelperDef for StringHelper {
-    fn call<'reg: 'rc, 'rc>(
-        &self,
-        h: &Helper<'reg, 'rc>,
-        _r: &'reg Handlebars<'reg>,
-        _ctx: &'rc Context,
-        _rc: &mut RenderContext<'reg, 'rc>,
-        out: &mut dyn Output,
-    ) -> HelperResult {
-        let value = Self::value(h).unwrap_or_default();
-        if Self::is_uppercase(h) {
-            out.write(value.to_uppercase().as_str()).unwrap();
-        } else if Self::is_lowercase(h) {
-            out.write(value.to_lowercase().as_str()).unwrap();
-        } else if Self::is_capitalize(h) {
-            out.write(Self::capitalize(value).as_str()).unwrap();
-        } else if Self::is_decapitalize(h) {
-            out.write(Self::decapitalize(value).as_str()).unwrap();
-        }
-        Ok(())
-    }
-}
 
 impl StringHelper {
     pub const CAPITALIZE: &'static str = "capitalize";
@@ -34,21 +12,35 @@ impl StringHelper {
     fn value<'a>(h: &'a Helper) -> Option<&'a str> {
         h.params().get(0)?.value().as_str()
     }
-    fn is_capitalize(h: &Helper) -> bool { h.name() == Self::CAPITALIZE }
-    fn is_decapitalize(h: &Helper) -> bool { h.name() == Self::DECAPITALIZE }
-    fn is_uppercase(h: &Helper) -> bool { h.name() == Self::UPPER }
-    fn is_lowercase(h: &Helper) -> bool { h.name() == Self::LOWER }
 
     fn capitalize(value: &str) -> String {
-        value.char_indices()
-            .map(|(i, c)| if i == 0 { c.to_ascii_uppercase() } else { c })
-            .collect()
+        Self::map_first(value, char::to_ascii_uppercase)
     }
 
     fn decapitalize(value: &str) -> String {
-        value.char_indices()
-            .map(|(i, c)| if i == 0 { c.to_ascii_lowercase() } else { c })
-            .collect()
+        Self::map_first(value, char::to_ascii_lowercase)
+    }
+
+    fn map_first(value: &str, transform: fn(&char) -> char) -> String {
+        value.char_indices().map(|(i, c)| if i == 0 { transform(&c) } else { c }).collect()
+    }
+}
+
+impl HelperDef for StringHelper {
+    fn call_inner<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
+        Self::value(h)
+            .map(|value| {
+                match h.name() {
+                    Self::UPPER => value.to_uppercase(),
+                    Self::LOWER => value.to_lowercase(),
+                    Self::CAPITALIZE => Self::capitalize(value),
+                    Self::DECAPITALIZE => Self::decapitalize(value),
+                    _ => panic!("Unexpected error")
+                }
+            })
+            .ok_or_else(|| RenderError::new("Invalid string case transform response template"))
+            .map(Value::from)
+            .map(ScopedJson::from)
     }
 }
 

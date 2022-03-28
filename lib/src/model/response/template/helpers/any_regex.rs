@@ -1,4 +1,6 @@
-use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext, RenderError};
+use anyhow::anyhow;
+use handlebars::{Context, Handlebars, Helper, HelperDef, RenderContext, RenderError, ScopedJson};
+use serde_json::Value;
 
 use crate::gen::regex::RegexRndGenerator;
 
@@ -17,21 +19,19 @@ impl AnyRegex {
 }
 
 impl HelperDef for AnyRegex {
-    fn call<'reg: 'rc, 'rc>(
-        &self,
-        h: &Helper<'reg, 'rc>,
-        _r: &'reg Handlebars<'reg>,
-        _ctx: &'rc Context,
-        _rc: &mut RenderContext<'reg, 'rc>,
-        out: &mut dyn Output,
-    ) -> HelperResult {
+    fn call_inner<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
         match h.name() {
-            Self::ANY_REGEX => Self::read_regex(h).and_then(|r| RegexRndGenerator(r.as_str()).try_generate().ok()),
-            Self::ANY_NON_BLANK => RegexRndGenerator(Self::NON_BLANK_REGEX).try_generate().ok(),
-            Self::ANY_NON_EMPTY => RegexRndGenerator(Self::NON_EMPTY_REGEX).try_generate().ok(),
-            _ => None
+            Self::ANY_REGEX => {
+                Self::read_regex(h)
+                    .ok_or_else(|| anyhow!("Missing regex for '{}' helper", h.name()))
+                    .and_then(|r| RegexRndGenerator(r.as_str()).try_generate())
+            }
+            Self::ANY_NON_BLANK => RegexRndGenerator(Self::NON_BLANK_REGEX).try_generate(),
+            Self::ANY_NON_EMPTY => RegexRndGenerator(Self::NON_EMPTY_REGEX).try_generate(),
+            _ => Err(anyhow!("Unexpected error"))
         }
-            .and_then(|regex| out.write(&regex).ok())
-            .ok_or_else(|| RenderError::new(&format!("Failed rendering '{}' helper", h.name())))
+            .map_err(|e| RenderError::new(e.to_string()))
+            .map(Value::from)
+            .map(ScopedJson::from)
     }
 }

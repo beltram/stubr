@@ -1,4 +1,4 @@
-use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, PathAndJson, RenderContext};
+use handlebars::{Context, Handlebars, Helper, HelperDef, PathAndJson, RenderContext, RenderError, ScopedJson};
 use serde_json::Value;
 
 pub struct SizeHelper;
@@ -6,11 +6,10 @@ pub struct SizeHelper;
 impl SizeHelper {
     pub const NAME: &'static str = "size";
 
-    fn value<'a>(h: &'a Helper) -> String {
+    fn value<'a>(h: &'a Helper) -> Option<String> {
         h.params().get(0)
             .map(Self::infer_len)
-            .unwrap_or_default()
-            .to_string()
+            .map(|s| s.to_string())
     }
 
     fn infer_len(json: &PathAndJson) -> usize {
@@ -24,15 +23,10 @@ impl SizeHelper {
 }
 
 impl HelperDef for SizeHelper {
-    fn call<'reg: 'rc, 'rc>(
-        &self,
-        h: &Helper<'reg, 'rc>,
-        _r: &'reg Handlebars<'reg>,
-        _ctx: &'rc Context,
-        _rc: &mut RenderContext<'reg, 'rc>,
-        out: &mut dyn Output,
-    ) -> HelperResult {
-        out.write(Self::value(h).as_str()).unwrap();
-        Ok(())
+    fn call_inner<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
+        Self::value(h)
+            .ok_or_else(|| RenderError::new("Invalid size response template"))
+            .map(Value::from)
+            .map(ScopedJson::from)
     }
 }
