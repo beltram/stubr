@@ -39,7 +39,9 @@ lazy_static! {
         handlebars.register_helper(StringHelper::UPPER, Box::new(StringHelper));
         handlebars.register_helper(StringHelper::LOWER, Box::new(StringHelper));
         handlebars.register_helper(SizeHelper::NAME, Box::new(SizeHelper));
-        handlebars.register_helper(AnyRegex::NAME, Box::new(AnyRegex));
+        handlebars.register_helper(AnyRegex::ANY_REGEX, Box::new(AnyRegex));
+        handlebars.register_helper(AnyRegex::ANY_NON_BLANK, Box::new(AnyRegex));
+        handlebars.register_helper(AnyRegex::ANY_NON_EMPTY, Box::new(AnyRegex));
         RwLock::new(handlebars)
     };
 }

@@ -35,8 +35,7 @@ impl MatcherValueStubMapper {
     }
 
     fn map_matches(value: &str) -> Option<String> {
-        RegexRndGenerator::try_from(value).ok()
-            .and_then(|g| g.try_generate().ok())
+        RegexRndGenerator(value).try_generate().ok()
     }
 }
 

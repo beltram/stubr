@@ -9,9 +9,7 @@ impl UrlStubMapper {
         Self::url_matcher(stub)
             .map(|(url, is_pattern)| {
                 if is_pattern {
-                    RegexRndGenerator::try_from(url.as_str()).ok()
-                        .and_then(|g| g.try_generate().ok())
-                        .unwrap()
+                    RegexRndGenerator(url.as_str()).try_generate().unwrap()
                 } else { url.to_string() }
             })
             .unwrap_or_default()
