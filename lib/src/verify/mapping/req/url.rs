@@ -7,10 +7,12 @@ struct UrlStubMapper;
 impl UrlStubMapper {
     fn url_from_matcher(stub: &RequestStub) -> String {
         Self::url_matcher(stub)
-            .map(|(url, is_pattern)| {
+            .and_then(|(url, is_pattern)| {
                 if is_pattern {
-                    RegexRndGenerator(url).try_generate().unwrap()
-                } else { url.to_string() }
+                    RegexRndGenerator(url).try_generate().ok()
+                } else {
+                    Some(url.to_string())
+                }
             })
             .unwrap_or_default()
     }
@@ -23,15 +25,16 @@ impl UrlStubMapper {
     }
 }
 
-impl From<&RequestStub> for Url {
-    fn from(stub: &RequestStub) -> Self {
+impl TryFrom<&RequestStub> for Url {
+    type Error = anyhow::Error;
+
+    fn try_from(stub: &RequestStub) -> anyhow::Result<Self> {
         const BASE_URL: &str = "http://localhost/";
-        let url = Self::parse(BASE_URL).unwrap();
-        let mut url = url.join(&UrlStubMapper::url_from_matcher(stub)).unwrap();
+        let mut url = Self::parse(BASE_URL)?.join(&UrlStubMapper::url_from_matcher(stub))?;
         for (k, v) in Vec::<(String, String)>::from(&stub.queries).iter() {
             url.query_pairs_mut().append_pair(k, v);
         }
-        url
+        Ok(url)
     }
 }
 
@@ -49,13 +52,13 @@ mod verify_url_tests {
         #[test]
         fn should_map_exact_path() {
             let stub: RequestStub = HttpUrlStub { url: Some(String::from("/api/exact")), ..Default::default() }.into();
-            assert_eq!(Url::from(&stub).path(), "/api/exact")
+            assert_eq!(Url::try_from(&stub).unwrap().path(), "/api/exact")
         }
 
         #[test]
         fn should_map_exact_path_and_query() {
             let stub: RequestStub = HttpUrlStub { url: Some(String::from("/api/exact?a=b")), ..Default::default() }.into();
-            let url = Url::from(&stub);
+            let url = Url::try_from(&stub).unwrap();
             assert_eq!(url.path(), "/api/exact");
             let mut queries = url.query_pairs();
             assert_eq!(queries.count(), 1);
@@ -65,7 +68,7 @@ mod verify_url_tests {
         #[test]
         fn should_map_exact_path_and_queries() {
             let stub: RequestStub = HttpUrlStub { url: Some(String::from("/api/exact?a=b&c=d&e=f")), ..Default::default() }.into();
-            let url = Url::from(&stub);
+            let url = Url::try_from(&stub).unwrap();
             assert_eq!(url.path(), "/api/exact");
             let mut queries = url.query_pairs();
             assert_eq!(queries.count(), 3);
@@ -77,7 +80,7 @@ mod verify_url_tests {
         #[test]
         fn should_not_fail_when_path_missing() {
             let stub: RequestStub = HttpUrlStub { url: None, ..Default::default() }.into();
-            assert_eq!(Url::from(&stub).path(), "/")
+            assert_eq!(Url::try_from(&stub).unwrap().path(), "/")
         }
     }
 
@@ -87,13 +90,13 @@ mod verify_url_tests {
         #[test]
         fn should_map_exact_path() {
             let stub: RequestStub = HttpUrlStub { url_path: Some(String::from("/api/exact")), ..Default::default() }.into();
-            assert_eq!(Url::from(&stub).path(), "/api/exact")
+            assert_eq!(Url::try_from(&stub).unwrap().path(), "/api/exact")
         }
 
         #[test]
         fn should_not_fail_when_url_path_missing() {
             let stub: RequestStub = HttpUrlStub { url_path: None, ..Default::default() }.into();
-            assert_eq!(Url::from(&stub).path(), "/")
+            assert_eq!(Url::try_from(&stub).unwrap().path(), "/")
         }
     }
 
@@ -108,7 +111,7 @@ mod verify_url_tests {
         fn should_map_url_path_pattern() {
             let regex = "/api/regex/([a-z]{4})";
             let stub: RequestStub = HttpUrlStub { url_path_pattern: Some(String::from(regex)), ..Default::default() }.into();
-            let url = Url::from(&stub);
+            let url = Url::try_from(&stub).unwrap();
             assert!(url.path().starts_with("/api/regex/"));
             let regex = Regex::from_str(regex).unwrap();
             assert!(regex.is_match(url.path()));
@@ -117,7 +120,7 @@ mod verify_url_tests {
         #[test]
         fn should_not_fail_when_url_path_pattern_missing() {
             let stub: RequestStub = HttpUrlStub { url_path_pattern: None, ..Default::default() }.into();
-            assert_eq!(Url::from(&stub).path(), "/")
+            assert_eq!(Url::try_from(&stub).unwrap().path(), "/")
         }
     }
 
@@ -133,7 +136,7 @@ mod verify_url_tests {
             let (path_regex, query_regex) = ("([a-z]{4})", "([a-z]{4})");
             let regex = format!("/api/regex/{}\\?a={}", path_regex, query_regex);
             let stub: RequestStub = HttpUrlStub { url_pattern: Some(regex), ..Default::default() }.into();
-            let url = Url::from(&stub);
+            let url = Url::try_from(&stub).unwrap();
             assert!(url.path().starts_with("/api/regex/"));
             let regex = Regex::from_str(path_regex).unwrap();
             assert!(regex.is_match(url.as_str()));
@@ -147,7 +150,7 @@ mod verify_url_tests {
         #[test]
         fn should_not_fail_when_url_pattern_missing() {
             let stub: RequestStub = HttpUrlStub { url_pattern: None, ..Default::default() }.into();
-            assert_eq!(Url::from(&stub).path(), "/")
+            assert_eq!(Url::try_from(&stub).unwrap().path(), "/")
         }
     }
 
@@ -161,7 +164,7 @@ mod verify_url_tests {
                 url_path: Some(String::from("/url-path")),
                 ..Default::default()
             }.into();
-            assert_eq!(UrlStubMapper::url_matcher(&stub), Some((&String::from("/url"), false)))
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url", false)))
         }
 
         #[test]
@@ -171,7 +174,7 @@ mod verify_url_tests {
                 url_pattern: Some(String::from("/url-pattern")),
                 ..Default::default()
             }.into();
-            assert_eq!(UrlStubMapper::url_matcher(&stub), Some((&String::from("/url"), false)))
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url", false)))
         }
 
         #[test]
@@ -181,7 +184,7 @@ mod verify_url_tests {
                 url_path_pattern: Some(String::from("/url-path-pattern")),
                 ..Default::default()
             }.into();
-            assert_eq!(UrlStubMapper::url_matcher(&stub), Some((&String::from("/url"), false)))
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url", false)))
         }
 
         #[test]
@@ -191,7 +194,7 @@ mod verify_url_tests {
                 url_pattern: Some(String::from("/url-pattern")),
                 ..Default::default()
             }.into();
-            assert_eq!(UrlStubMapper::url_matcher(&stub), Some((&String::from("/url-path"), false)))
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url-path", false)))
         }
 
         #[test]
@@ -201,7 +204,7 @@ mod verify_url_tests {
                 url_path_pattern: Some(String::from("/url-path-pattern")),
                 ..Default::default()
             }.into();
-            assert_eq!(UrlStubMapper::url_matcher(&stub), Some((&String::from("/url-path"), false)))
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url-path", false)))
         }
 
         #[test]
@@ -211,7 +214,7 @@ mod verify_url_tests {
                 url_path_pattern: Some(String::from("/url-path-pattern")),
                 ..Default::default()
             }.into();
-            assert_eq!(UrlStubMapper::url_matcher(&stub), Some((&String::from("/url-pattern"), true)))
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url-pattern", true)))
         }
     }
 
@@ -234,7 +237,7 @@ mod verify_url_tests {
                 query_parameters: Some(Map::from_iter(query_parameters))
             };
             let stub = RequestStub { url, queries, ..Default::default() };
-            let url = Url::from(&stub);
+            let url = Url::try_from(&stub).unwrap();
             assert_eq!(url.path(), "/api/exact");
             let mut queries = url.query_pairs();
             assert_eq!(queries.count(), 3);

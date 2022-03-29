@@ -11,22 +11,26 @@ mod body;
 
 pub struct StdRequest(pub Request);
 
-impl From<&JsonStub> for StdRequest {
-    fn from(stub: &JsonStub) -> Self {
-        Self(Request::from(&stub.request))
+impl TryFrom<&JsonStub> for StdRequest {
+    type Error = anyhow::Error;
+
+    fn try_from(stub: &JsonStub) -> anyhow::Result<Self> {
+        Ok(Self(Request::try_from(&stub.request)?))
     }
 }
 
-impl From<&RequestStub> for Request {
-    fn from(stub: &RequestStub) -> Self {
-        let mut req = Request::new(Method::from(&stub.method), Url::from(stub));
+impl TryFrom<&RequestStub> for Request {
+    type Error = anyhow::Error;
+
+    fn try_from(stub: &RequestStub) -> anyhow::Result<Self> {
+        let mut req = Request::new(Method::from(&stub.method), Url::try_from(stub)?);
         if let Ok(headers) = Vec::<(String, String)>::try_from(&stub.headers) {
             for (k, v) in headers {
                 req.append_header(k.as_str(), v.as_str())
             }
         }
         req.set_body(Vec::<u8>::from(stub));
-        req
+        Ok(req)
     }
 }
 
@@ -68,7 +72,7 @@ mod verify_req_tests {
             },
             ..Default::default()
         };
-        let req = Request::from(&stub);
+        let req = Request::try_from(&stub).unwrap();
         assert_eq!(req.method(), Method::Post);
         assert_eq!(req.url().path(), "/api/url");
         let mut queries = req.url().query_pairs();
