@@ -3,7 +3,7 @@ use std::ops::Not;
 use handlebars::{Context, Handlebars, Helper, HelperDef, RenderContext, RenderError, ScopedJson};
 use serde_json::Value;
 
-use super::traits::ValueExt;
+use super::utils_str::ValueExt;
 
 pub struct NumberHelper;
 

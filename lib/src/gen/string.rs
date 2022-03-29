@@ -4,7 +4,7 @@ pub struct StringRndGenerator;
 
 impl StringRndGenerator {
     const OFFSET: usize = 5;
-    const CHARSET: &'static [u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789)(*&^%$#@!~";
+    const CHARSET: &'static [u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     pub fn generate_string_containing(value: String) -> String {
         format!("{}{}{}{}{}", value, Self::rand_str(Self::OFFSET), value, Self::rand_str(Self::OFFSET), value)

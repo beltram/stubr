@@ -31,16 +31,14 @@ impl HelperDef for JsonPathHelper {
             .filter(|param| Self::is_supported_helper(param))
             .and_then(|param| Self::get_json_path(h.params()).and_then(|p| Self::extract(param.value(), p)))
             .ok_or_else(|| RenderError::new("Invalid jsonpath response template"))
-            .and_then(|rendered| {
-                match rendered {
-                    Value::Null => out.write("null"),
-                    Value::Bool(b) => out.write(&b.to_string()),
-                    Value::Number(n) => out.write(&n.to_string()),
-                    Value::String(s) => out.write(&s),
-                    Value::Array(a) => out.write(&(serde_json::to_string(&a)? + BodyStub::ARRAY_IDENTIFIER)),
-                    Value::Object(o) => out.write(&(serde_json::to_string(&o)? + BodyStub::OBJECT_IDENTIFIER)),
-                }
-                    .map_err(RenderError::from)
+            .map(|rendered| match rendered {
+                Value::Null => "null".to_string(),
+                Value::Bool(b) => b.to_string(),
+                Value::Number(n) => n.to_string(),
+                Value::String(s) => s,
+                Value::Array(a) => serde_json::to_string(&a).unwrap_or_default() + BodyStub::ARRAY_IDENTIFIER,
+                Value::Object(o) => serde_json::to_string(&o).unwrap_or_default() + BodyStub::OBJECT_IDENTIFIER,
             })
+            .and_then(|v| out.write(&v).map_err(RenderError::from))
     }
 }

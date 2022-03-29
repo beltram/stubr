@@ -6,7 +6,7 @@ use handlebars::{Context, Handlebars, Helper, HelperDef, RenderContext, RenderEr
 use humantime::parse_duration;
 use serde_json::Value;
 
-use super::traits::ValueExt;
+use super::utils_str::ValueExt;
 
 pub struct NowHelper;
 

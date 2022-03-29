@@ -6,7 +6,7 @@ use wiremock::{Request, Respond, ResponseTemplate};
 
 use data::HandlebarsData;
 use helpers::{
-    any_regex::AnyRegex,
+    any::{non_blank::AnyNonBlank, non_empty::AnyNonEmpty, regex::AnyRegex},
     base64::Base64Helper,
     datetime::NowHelper,
     json_path::JsonPathHelper,
@@ -20,6 +20,8 @@ use helpers::{
 use crate::{cloud::opentracing::OpenTracing, model::response::ResponseStub};
 
 pub mod data;
+pub mod verify;
+pub mod utils;
 mod req_ext;
 mod helpers;
 
@@ -39,9 +41,9 @@ lazy_static! {
         handlebars.register_helper(StringHelper::UPPER, Box::new(StringHelper));
         handlebars.register_helper(StringHelper::LOWER, Box::new(StringHelper));
         handlebars.register_helper(SizeHelper::NAME, Box::new(SizeHelper));
-        handlebars.register_helper(AnyRegex::ANY_REGEX, Box::new(AnyRegex));
-        handlebars.register_helper(AnyRegex::ANY_NON_BLANK, Box::new(AnyRegex));
-        handlebars.register_helper(AnyRegex::ANY_NON_EMPTY, Box::new(AnyRegex));
+        handlebars.register_helper(AnyRegex::NAME, Box::new(AnyRegex));
+        handlebars.register_helper(AnyNonBlank::NAME, Box::new(AnyNonBlank));
+        handlebars.register_helper(AnyNonEmpty::NAME, Box::new(AnyNonEmpty));
         RwLock::new(handlebars)
     };
 }
@@ -75,9 +77,19 @@ pub trait HandlebarTemplatable {
         }
     }
 
+    /// Template has to be registered first before being rendered here
+    /// Better for performances
     fn render<T: Serialize>(&self, name: &str, data: &T) -> String {
         HANDLEBARS.read().ok()
             .and_then(|it| it.render(name, data).ok())
+            .unwrap_or_default()
+    }
+
+    /// Template does not have to be registered first
+    /// Simpler
+    fn render_template<T: Serialize>(&self, name: &str, data: &T) -> String {
+        HANDLEBARS.read().ok()
+            .and_then(|it| it.render_template(name, data).ok())
             .unwrap_or_default()
     }
 }

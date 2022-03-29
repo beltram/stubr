@@ -5,14 +5,17 @@ use wiremock::Request as WiremockRequest;
 
 use super::req_ext::{Headers, Queries, RequestExt};
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Debug, Default)]
 pub struct HandlebarsData<'a> {
-    request: RequestData<'a>,
+    pub request: RequestData<'a>,
+    pub response: Option<&'a [u8]>,
+    pub stub_name: Option<&'a str>,
+    pub is_verify: bool,
 }
 
 #[derive(Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-struct RequestData<'a> {
+pub struct RequestData<'a> {
     path: &'a str,
     path_segments: Option<Vec<&'a str>>,
     url: &'a str,
@@ -23,15 +26,30 @@ struct RequestData<'a> {
     headers: Option<Headers<'a>>,
 }
 
+impl Default for RequestData<'_> {
+    fn default() -> Self {
+        Self {
+            path: Default::default(),
+            path_segments: Default::default(),
+            url: Default::default(),
+            port: Default::default(),
+            method: Method::Get,
+            body: Default::default(),
+            query: Default::default(),
+            headers: Default::default(),
+        }
+    }
+}
+
 impl<'a, T> From<&'a mut T> for HandlebarsData<'a> where &'a mut T: Into<RequestData<'a>> {
     fn from(req: &'a mut T) -> Self {
-        Self { request: req.into() }
+        Self { request: req.into(), ..Default::default() }
     }
 }
 
 impl<'a, T> From<&'a T> for HandlebarsData<'a> where &'a T: Into<RequestData<'a>> {
     fn from(req: &'a T) -> Self {
-        Self { request: req.into() }
+        Self { request: req.into(), ..Default::default() }
     }
 }
 
