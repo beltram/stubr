@@ -22,9 +22,9 @@ impl StringRndGenerator {
     pub fn generate_number_containing(value: i64) -> String {
         let random = rand::thread_rng().gen::<i64>().to_string();
         let value = value.to_string();
-        let value_chars = value.chars().filter(char::is_ascii_digit).collect_vec();
+        let value_chars = value.chars().filter(char::is_ascii_digit);
         let random_chars = random.chars().filter(char::is_ascii_digit).collect_vec();
-        let index = value_chars.len().min(random_chars.len());
+        let index = value_chars.count().min(random_chars.len());
         let (_, end) = random_chars.split_at(index);
         value + end.iter().collect::<String>().as_str()
     }
