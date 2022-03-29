@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use jsonwebtoken::Header;
 use serde_json::Value;
 use wiremock::Request;
@@ -23,10 +22,10 @@ pub trait RequestAuthExtension {
     fn jwt_payload(&self) -> Option<Value> {
         self.jwt()
             .and_then(|jwt| {
-                jwt.split('.').collect_vec()
-                    .get(1)
-                    .and_then(|it| base64::decode(it).ok())
-                    .and_then(|it| serde_json::from_slice(it.as_slice()).ok())
+                jwt.split('.')
+                    .take(2).last()
+                    .and_then(|payload| base64::decode(payload).ok())
+                    .and_then(|payload| serde_json::from_slice(payload.as_slice()).ok())
             })
     }
 }
