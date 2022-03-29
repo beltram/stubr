@@ -5,9 +5,9 @@ use json_value_merge::Merge;
 use serde_json::{json, Value};
 
 use crate::{
+    gen::contains::StringRndGenerator,
     model::request::{body::BodyPatternStub, RequestStub},
     verify::mapping::jsonpath::JsonGeneratorIterator,
-    gen::contains::StringRndGenerator
 };
 
 use super::super::jsonpath::JsonPathGenerator;
@@ -59,13 +59,11 @@ impl PartialBody {
 
     #[allow(clippy::wrong_self_convention)]
     fn to_value(self) -> Option<Value> {
-        if !self.is_partial() {
-            self.value
-        } else { None }
+        if !self.is_partial() { self.value } else { None }
     }
 
     fn to_partial_value(&self) -> Option<Value> {
-        self.path.as_ref()
+        self.path.as_deref()
             .and_then(|path| JsonPathGenerator(path).next(self.value.clone().unwrap_or_else(|| json!({}))))
     }
 }
