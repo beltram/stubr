@@ -6,8 +6,8 @@ impl TryFrom<&HttpUrlStub> for PathRegexMatcher {
     type Error = anyhow::Error;
 
     fn try_from(http_url: &HttpUrlStub) -> anyhow::Result<Self> {
-        http_url.url_path_pattern.as_ref()
-            .map(|it| path_regex(it.as_str()))
+        http_url.url_path_pattern.as_deref()
+            .map(|it| path_regex(it))
             .ok_or_else(|| anyhow::Error::msg("No 'urlPathPattern'"))
     }
 }

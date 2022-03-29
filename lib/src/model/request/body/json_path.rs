@@ -18,9 +18,9 @@ impl TryFrom<&BodyPatternStub> for JsonBodyPathMatcher {
     type Error = anyhow::Error;
 
     fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
-        body.matches_json_path.as_ref()
+        body.matches_json_path.as_deref()
             .filter(|_| body.is_by_json_path())
-            .and_then(|it| jsonpath_lib::Compiled::compile(it.as_str()).ok())
+            .and_then(|jsonpath| jsonpath_lib::Compiled::compile(jsonpath).ok())
             .map(Self)
             .ok_or_else(|| anyhow::Error::msg(""))
     }

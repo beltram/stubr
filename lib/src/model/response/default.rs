@@ -14,8 +14,8 @@ pub struct WiremockIsoResponse<'a>(pub &'a JsonStub);
 impl ResponseAppender for WiremockIsoResponse<'_> {
     fn add(&self, mut resp: ResponseTemplate) -> ResponseTemplate {
         resp = resp.append_header(SERVER, SERVER_HEADER);
-        if let Some(uuid) = self.0.uuid.as_ref() {
-            resp = resp.append_header(MATCHED_STUB_ID_HEADER, uuid.as_str());
+        if let Some(uuid) = self.0.uuid.as_deref() {
+            resp = resp.append_header(MATCHED_STUB_ID_HEADER, uuid);
         }
         resp
     }

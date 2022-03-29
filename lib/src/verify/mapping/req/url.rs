@@ -28,8 +28,8 @@ impl From<&RequestStub> for Url {
         const BASE_URL: &str = "http://localhost/";
         let url = Self::parse(BASE_URL).unwrap();
         let mut url = url.join(&UrlStubMapper::url_from_matcher(stub)).unwrap();
-        for (k, v) in Vec::<(String, String)>::from(&stub.queries).into_iter() {
-            url.query_pairs_mut().append_pair(k.as_str(), v.as_str());
+        for (k, v) in Vec::<(String, String)>::from(&stub.queries).iter() {
+            url.query_pairs_mut().append_pair(k, v);
         }
         url
     }
