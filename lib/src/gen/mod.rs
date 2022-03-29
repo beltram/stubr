@@ -1,2 +1,2 @@
-pub mod contains;
+pub mod string;
 pub mod regex;

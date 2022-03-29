@@ -5,7 +5,7 @@ use json_value_merge::Merge;
 use serde_json::{json, Value};
 
 use crate::{
-    gen::contains::StringRndGenerator,
+    gen::string::StringRndGenerator,
     model::request::{body::BodyPatternStub, RequestStub},
     verify::mapping::jsonpath::JsonGeneratorIterator,
 };

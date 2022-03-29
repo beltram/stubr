@@ -5,7 +5,7 @@ use itertools::Itertools;
 use serde_json::Value;
 
 use crate::{
-    gen::{contains::StringRndGenerator, regex::RegexRndGenerator},
+    gen::{string::StringRndGenerator, regex::RegexRndGenerator},
     model::request::matcher::MatcherValueStub,
 };
 

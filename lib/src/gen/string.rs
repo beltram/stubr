@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use rand::Rng;
 
 pub struct StringRndGenerator;
@@ -23,7 +22,7 @@ impl StringRndGenerator {
         let random = rand::thread_rng().gen::<i64>().to_string();
         let value = value.to_string();
         let value_chars = value.chars().filter(char::is_ascii_digit);
-        let random_chars = random.chars().filter(char::is_ascii_digit).collect_vec();
+        let random_chars = random.chars().filter(char::is_ascii_digit).collect::<Vec<char>>();
         let index = value_chars.count().min(random_chars.len());
         let (_, end) = random_chars.split_at(index);
         value + end.iter().collect::<String>().as_str()
