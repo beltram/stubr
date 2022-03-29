@@ -22,7 +22,7 @@ impl MockRegistrable for JwtPayloadStub {
                 }
             } else if let Some(eq) = body_pattern.equal_to_json.as_ref() {
                 mock = mock.and(eq::JsonPayloadEqMatcher(eq.to_owned()))
-            } else if let Some(matcher) = body_pattern.matches_json_path.as_ref().and_then(|it| JsonPayloadPathMatcher::new(it)) {
+            } else if let Some(matcher) = body_pattern.matches_json_path.as_deref().and_then(|it| JsonPayloadPathMatcher::try_from(it).ok()) {
                 mock = mock.and(matcher)
             }
         }
