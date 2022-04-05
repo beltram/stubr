@@ -6,20 +6,23 @@ use crate::gen::regex::RegexRndGenerator;
 
 use super::{AnyTemplate, super::verify::VerifyDetect};
 
-pub struct AnyNonBlank;
+pub struct AnyNumber;
 
-impl AnyNonBlank {
-    pub const NAME: &'static str = "anyNonBlankString";
-    const NON_BLANK_REGEX: &'static str = "[A-Za-z0-9]+";
+impl AnyNumber {
+    pub const NAME: &'static str = "anyNumber";
+    const NUMBER_REGEX: &'static str = "[+-]?([0-9]*[.])?[0-9]+";
 }
 
-impl AnyTemplate for AnyNonBlank {
+impl AnyTemplate for AnyNumber {
     fn generate<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> anyhow::Result<String> {
-        RegexRndGenerator(Self::NON_BLANK_REGEX).try_generate()
+        RegexRndGenerator(Self::NUMBER_REGEX).try_generate()
     }
 
     fn verify<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
-        assert!(!response.is_empty() && !response.iter().all(|&c| c == 32),
+        let resp = from_utf8(response.as_slice()).ok();
+        let is_float = resp.and_then(|s| s.parse::<f64>().ok()).is_some();
+        let is_int = resp.and_then(|s| s.parse::<i64>().ok()).is_some();
+        assert!(!response.is_empty() && (is_float || is_int),
                 "Verification failed for stub '{}'. Expected response body to match '{}' but was '{}'",
                 ctx.stub_name(), self.expected(h, rc),
                 from_utf8(response.as_slice()).unwrap_or_default()
@@ -27,7 +30,7 @@ impl AnyTemplate for AnyNonBlank {
     }
 }
 
-impl HelperDef for AnyNonBlank {
+impl HelperDef for AnyNumber {
     fn call<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output) -> HelperResult {
         self.render(h, ctx, rc, out)
     }

@@ -9,6 +9,10 @@ use super::{
 pub mod regex;
 pub mod non_blank;
 pub mod non_empty;
+pub mod alpha_numeric;
+pub mod number;
+pub mod float;
+pub mod integer;
 
 pub trait AnyTemplate {
     fn expected<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, rc: &mut RenderContext<'reg, 'rc>) -> String {

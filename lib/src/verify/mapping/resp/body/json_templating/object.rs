@@ -25,6 +25,17 @@ pub struct JsonObjectVerifier<'a> {
 }
 
 impl JsonObjectVerifier<'_> {
+    fn to_bytes(&self, value: &Value) -> Option<Vec<u8>> {
+        match value {
+            Value::String(s) => Some(s.as_bytes().to_vec()),
+            Value::Number(n) => Some(n.to_string().as_bytes().to_vec()),
+            Value::Null => None,
+            Value::Bool(_) => None,
+            Value::Array(_) => None,
+            Value::Object(_) => None,
+        }
+    }
+
     fn cast_to_value(&self, raw: &str) -> Value {
         if let Ok(i) = raw.parse::<i32>() {
             Value::from(i)
@@ -67,7 +78,7 @@ impl Verifier<'_> for JsonObjectVerifier<'_> {
         actual.zip(self.expected.iter().sorted_by_key(|(k, _)| k.as_str()))
             .for_each(|((_, va), (ke, ve))| {
                 if let Some(expected) = ve.as_str().filter(|v| v.has_template_expressions()) {
-                    let response = va.as_str().map(|s| s.as_bytes().to_vec());
+                    let response = self.to_bytes(va);
                     let data = HandlebarsData {
                         request: RequestData::from(req.0.borrow_mut()),
                         response: response.as_deref(),

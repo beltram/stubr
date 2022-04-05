@@ -228,26 +228,101 @@ mod json_body_verify_tests {
         }
     }
 
-    mod any_regex {
+    mod types {
         use super::*;
 
-        #[test]
-        fn should_verify_json_partially_with_any_regex() {
-            verify(
-                "regex",
-                json!({"name": "john", "country": "FR"}),
-                json!({"name": "{{anyRegex '[a-z]+'}}", "country": "{{anyRegex '^[A-Z]{2}$'}}"}),
-            )
+        mod string {
+            use super::*;
+
+            #[test]
+            fn should_verify_json_partially() {
+                verify("regex", json!({"country": "FR"}), json!({"country": "{{anyRegex '^[A-Z]{2}$'}}"}))
+            }
+
+            #[should_panic(expected = "Verification failed for stub 'regex'. Expected response body to match '^[A-Z]{2}$' but was 'FRANCE'")]
+            #[test]
+            fn verify_json_partially_should_fail() {
+                verify("regex", json!({"country": "FRANCE"}), json!({"country": "{{anyRegex '^[A-Z]{2}$'}}"}))
+            }
+
+            #[should_panic(expected = "Verification failed for stub 'regex'. Expected response body to match '^[A-Z]{2}$' but was '42'")]
+            #[test]
+            fn verify_json_partially_should_fail_when_not_string() {
+                verify("regex", json!({"country": 42}), json!({"country": "{{anyRegex '^[A-Z]{2}$'}}"}))
+            }
         }
 
-        #[should_panic(expected = "Verification failed for stub 'regex'. Expected response body to match '^[A-Z]{2}$' but was 'FRANCE'")]
-        #[test]
-        fn verify_json_partially_with_any_regex_should_fail() {
-            verify(
-                "regex",
-                json!({"name": "john", "country": "FRANCE"}),
-                json!({"name": "john", "country": "{{anyRegex '^[A-Z]{2}$'}}"}),
-            )
+        mod number {
+            use super::*;
+
+            #[test]
+            fn should_verify_json_number_partially() {
+                verify("int", json!({"age": 42}), json!({"age": "{{anyNumber}}"}));
+                verify("int", json!({"age": 42.3}), json!({"age": "{{anyNumber}}"}));
+            }
+
+            #[should_panic(expected = "Verification failed for stub 'int'. Expected response body to match '{{anyNumber}}' but was 'abcd'")]
+            #[test]
+            fn verify_json_number_partially_should_fail() {
+                verify("int", json!({"age": "abcd"}), json!({"age": "{{anyNumber}}"}))
+            }
+        }
+
+        mod int {
+            use super::*;
+
+            #[test]
+            fn should_verify_json_int_partially() {
+                verify("int", json!({"age": 42}), json!({"age": "{{anyInt}}"}))
+            }
+
+            #[should_panic(expected = "Verification failed for stub 'int'. Expected response body to match '{{anyInt}}' but was 'abcd'")]
+            #[test]
+            fn verify_json_int_partially_should_fail() {
+                verify("int", json!({"age": "abcd"}), json!({"age": "{{anyInt}}"}))
+            }
+
+            #[should_panic(expected = "Verification failed for stub 'int'. Expected response body to match '{{anyInt}}' but was '42.3'")]
+            #[test]
+            fn verify_json_int_partially_should_fail_when_float() {
+                verify("int", json!({"age": 42.3}), json!({"age": "{{anyInt}}"}))
+            }
+        }
+
+        mod float {
+            use super::*;
+
+            #[test]
+            fn should_verify_json_float_partially() {
+                verify("float", json!({"age": 42.3}), json!({"age": "{{anyFloat}}"}))
+            }
+
+            #[should_panic(expected = "Verification failed for stub 'float'. Expected response body to match '{{anyFloat}}' but was 'abcd'")]
+            #[test]
+            fn verify_json_float_partially_should_fail() {
+                verify("float", json!({"age": "abcd"}), json!({"age": "{{anyFloat}}"}))
+            }
+
+            #[should_panic(expected = "Verification failed for stub 'float'. Expected response body to match '{{anyFloat}}' but was '42'")]
+            #[test]
+            fn verify_json_float_partially_should_fail_when_int() {
+                verify("float", json!({"age": 42}), json!({"age": "{{anyFloat}}"}))
+            }
+        }
+
+        mod alpha_numeric {
+            use super::*;
+
+            #[test]
+            fn should_verify_json_alpha_numeric_partially() {
+                verify("alpha-num", json!({"age": "abcd1234ABCD"}), json!({"age": "{{anyAlphaNumeric}}"}));
+            }
+
+            #[should_panic(expected = "Verification failed for stub 'alpha-num'. Expected response body to match '{{anyAlphaNumeric}}' but was '!?'")]
+            #[test]
+            fn verify_json_alpha_numeric_partially_should_fail() {
+                verify("alpha-num", json!({"age": "!?"}), json!({"age": "{{anyAlphaNumeric}}"}))
+            }
         }
     }
 

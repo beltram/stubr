@@ -35,3 +35,39 @@ async fn should_template_any_non_empty_string() {
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(b.len().gt(&0)));
 }
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/alpha-numeric.json")]
+async fn should_template_any_alpha_numeric() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(b.chars().all(|c| c.is_alphanumeric())));
+}
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/number.json")]
+async fn should_template_any_number() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(b.parse::<i64>().is_ok() || b.parse::<f64>().is_ok()));
+}
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/integer.json")]
+async fn should_template_any_integer() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(b.parse::<i64>().is_ok()));
+}
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/float.json")]
+async fn should_template_any_float() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(b.parse::<f64>().is_ok()));
+}

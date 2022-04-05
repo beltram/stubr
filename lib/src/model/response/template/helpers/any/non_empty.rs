@@ -8,7 +8,7 @@ pub struct AnyNonEmpty;
 
 impl AnyNonEmpty {
     pub const NAME: &'static str = "anyNonEmptyString";
-    pub const NON_EMPTY_REGEX: &'static str = "[A-Za-z0-9 ]+";
+    const NON_EMPTY_REGEX: &'static str = "[A-Za-z0-9 ]+";
 }
 
 impl AnyTemplate for AnyNonEmpty {

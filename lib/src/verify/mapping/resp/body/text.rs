@@ -17,7 +17,7 @@ impl Verifier<'_> for TextBodyVerifier {
     fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ mut StdRequest, resp: &'_ mut StdResponse) {
         if let Some(expected) = stub.body.body.to_owned() {
             let actual = block_on(async move { resp.0.body_string().await.ok() }).filter(|it| !it.is_empty());
-            assert!(actual.is_some(), "\nVerification failed for stub '{}'. Expected text response body to be '{}' but none present", name, expected);
+            assert!(actual.is_some(), "\nVerification failed for stub '{}'. Expected response body to be '{}' but none present", name, expected);
             let actual = actual.unwrap();
             if expected.has_template_expressions() {
                 if stub.requires_response_templating() {
@@ -26,7 +26,7 @@ impl Verifier<'_> for TextBodyVerifier {
                     panic!("\nVerification failed for stub '{}'. No response template transformer present but template elements present in expected response text body '{}'", name, expected)
                 }
             } else {
-                assert_eq!(actual, expected, "\nVerification failed for stub '{}'. Expected text response body to be '{}' but was '{}'", name, expected, actual);
+                assert_eq!(actual, expected, "\nVerification failed for stub '{}'. Expected response body to be '{}' but was '{}'", name, expected, actual);
             }
         }
     }
@@ -49,7 +49,7 @@ mod text_body_verify_tests {
         TextBodyVerifier.verify(&stub, "text", &mut req, &mut StdResponse(resp));
     }
 
-    #[should_panic(expected = "Verification failed for stub 'text'. Expected text response body to be 'alice' but was 'bob'")]
+    #[should_panic(expected = "Verification failed for stub 'text'. Expected response body to be 'alice' but was 'bob'")]
     #[test]
     fn verify_should_fail_when_wrong_text_body_returned() {
         let stub = ResponseStub { body: BodyStub { body: Some("alice".to_string()), ..Default::default() }, ..Default::default() };
@@ -59,7 +59,7 @@ mod text_body_verify_tests {
         TextBodyVerifier.verify(&stub, "text", &mut req, &mut StdResponse(resp));
     }
 
-    #[should_panic(expected = "Verification failed for stub 'text'. Expected text response body to be 'alice' but none present")]
+    #[should_panic(expected = "Verification failed for stub 'text'. Expected response body to be 'alice' but none present")]
     #[test]
     fn verify_should_fail_when_text_body_expected_and_none_present() {
         let stub = ResponseStub { body: BodyStub { body: Some("alice".to_string()), ..Default::default() }, ..Default::default() };

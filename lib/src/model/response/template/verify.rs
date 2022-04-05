@@ -1,5 +1,15 @@
 use handlebars::{RenderContext, Template, template::TemplateElement};
 
+use super::{
+    AnyAlphaNumeric,
+    AnyFloat,
+    AnyInteger,
+    AnyNonBlank,
+    AnyNonEmpty,
+    AnyNumber,
+    AnyRegex,
+};
+
 /// Some templates can be made of many elements e.g. '{{anyNonBlankString}}{{anyNonEmptyString}}'.
 /// In that setup it is impossible to verify them given any String.
 /// Hence the role of this trait is to determine if we can generate assertions from a given template.
@@ -35,7 +45,15 @@ impl Verifiable for RenderContext<'_, '_> {
 }
 
 pub trait Predictable {
-    const RND_NAMES: [&'static str; 3] = ["anyRegex", "anyNonBlankString", "anyNonEmptyString"];
+    const RND_NAMES: [&'static str; 7] = [
+        AnyRegex::NAME,
+        AnyNonBlank::NAME,
+        AnyNonEmpty::NAME,
+        AnyAlphaNumeric::NAME,
+        AnyNumber::NAME,
+        AnyFloat::NAME,
+        AnyInteger::NAME,
+    ];
 
     fn is_predictable(&self) -> bool;
     fn is_rnd(&self) -> bool {
