@@ -131,7 +131,7 @@ mod json_body_verify_tests {
                 )
             }
 
-            #[should_panic(expected = "Verification failed for stub 'any'. Expected json field to be '\"UK\"' but was '\"FR\"'")]
+            #[should_panic(expected = "Verification failed for stub 'any'. Expected json field to be 'UK' but was 'FR'")]
             #[test]
             fn verify_json_should_fail_when_not_templated_not_eq() {
                 verify(

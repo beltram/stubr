@@ -22,7 +22,7 @@ pub trait AnyTemplate {
                 if let Some(response) = ctx.read_response() {
                     self.verify(h, ctx, rc, response)
                 } else {
-                    panic!("Verification failed for stub '{}'. Expected text response body to match '{}' but no response body was present", ctx.stub_name(), self.expected(h, rc))
+                    panic!("Verification failed for stub '{}'. Expected response body to match '{}' but no response body was present", ctx.stub_name(), self.expected(h, rc))
                 }
             } else {
                 panic!("Cannot verify stub '{}' because response body '{}' is not verifiable", ctx.stub_name(), self.expected(h, rc))

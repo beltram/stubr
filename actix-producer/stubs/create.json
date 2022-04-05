@@ -18,7 +18,7 @@
   "response": {
     "status": 201,
     "jsonBody": {
-      "id": "{{anyRegex '[0-9]+'}}",
+      "id": 2,
       "name": "{{jsonPath request.body '$.name'}}"
     },
     "transformers": [

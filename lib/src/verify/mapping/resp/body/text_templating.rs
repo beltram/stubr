@@ -155,7 +155,7 @@ mod text_body_templating_verify_tests {
                 .verify(&stub, "regex", &mut StdRequest(req), &mut StdResponse(resp));
         }
 
-        #[should_panic(expected = "Verification failed for stub 'regex'. Expected text response body to match '[A-Z]{2}' but no response body was present")]
+        #[should_panic(expected = "Verification failed for stub 'regex'. Expected response body to match '[A-Z]{2}' but no response body was present")]
         #[test]
         fn verify_text_body_should_fail_when_body_absent() {
             let expected = "{{anyRegex '[A-Z]{2}'}}".to_string();
@@ -206,7 +206,7 @@ mod text_body_templating_verify_tests {
                 .verify(&stub, "blank", &mut StdRequest(req), &mut StdResponse(resp));
         }
 
-        #[should_panic(expected = "Verification failed for stub 'blank'. Expected text response body to match '{{anyNonBlankString}}' but no response body was present")]
+        #[should_panic(expected = "Verification failed for stub 'blank'. Expected response body to match '{{anyNonBlankString}}' but no response body was present")]
         #[test]
         fn verify_text_body_should_fail_when_body_absent() {
             let expected = "{{anyNonBlankString}}".to_string();
@@ -257,7 +257,7 @@ mod text_body_templating_verify_tests {
                 .verify(&stub, "blank", &mut StdRequest(req), &mut StdResponse(resp));
         }
 
-        #[should_panic(expected = "Verification failed for stub 'blank'. Expected text response body to match '{{anyNonEmptyString}}' but no response body was present")]
+        #[should_panic(expected = "Verification failed for stub 'blank'. Expected response body to match '{{anyNonEmptyString}}' but no response body was present")]
         #[test]
         fn verify_text_body_should_fail_when_body_absent() {
             let expected = "{{anyNonEmptyString}}".to_string();
