@@ -18,7 +18,7 @@ proc-macro = true
 [dependencies]
 syn = { version = "1.0.90", features = ["full"] }
 quote = "1.0.17"
-proc-macro2 = "1.0.36"
+proc-macro2 = "1.0.37"
 itertools = "0.10.3"
 
 [dev-dependencies]
