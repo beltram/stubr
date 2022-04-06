@@ -5,9 +5,9 @@ use wiremock::Request as WiremockRequest;
 
 use super::req_ext::{Headers, Queries, RequestExt};
 
-#[derive(Serialize, Debug, Default)]
+#[derive(Serialize, Debug)]
 pub struct HandlebarsData<'a> {
-    pub request: RequestData<'a>,
+    pub request: &'a RequestData<'a>,
     pub response: Option<&'a [u8]>,
     pub stub_name: Option<&'a str>,
     pub is_verify: bool,
@@ -24,33 +24,6 @@ pub struct RequestData<'a> {
     body: Option<Value>,
     query: Option<Queries<'a>>,
     headers: Option<Headers<'a>>,
-}
-
-impl Default for RequestData<'_> {
-    fn default() -> Self {
-        Self {
-            path: Default::default(),
-            path_segments: Default::default(),
-            url: Default::default(),
-            port: Default::default(),
-            method: Method::Get,
-            body: Default::default(),
-            query: Default::default(),
-            headers: Default::default(),
-        }
-    }
-}
-
-impl<'a, T> From<&'a mut T> for HandlebarsData<'a> where &'a mut T: Into<RequestData<'a>> {
-    fn from(req: &'a mut T) -> Self {
-        Self { request: req.into(), ..Default::default() }
-    }
-}
-
-impl<'a, T> From<&'a T> for HandlebarsData<'a> where &'a T: Into<RequestData<'a>> {
-    fn from(req: &'a T) -> Self {
-        Self { request: req.into(), ..Default::default() }
-    }
 }
 
 impl<'a> From<&'a WiremockRequest> for RequestData<'a> {

@@ -9,7 +9,7 @@ use super::{AnyTemplate, super::verify::VerifyDetect};
 pub struct AnyInteger;
 
 impl AnyInteger {
-    pub const NAME: &'static str = "anyInteger";
+    pub const NAME: &'static str = "anyInt";
     const INT_REGEX: &'static str = "[+-]?[0-9]+";
 }
 

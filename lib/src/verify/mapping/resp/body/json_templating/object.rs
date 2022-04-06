@@ -1,5 +1,3 @@
-use std::borrow::BorrowMut;
-
 use anyhow::anyhow;
 use itertools::Itertools;
 use serde_json::{Map, Value};
@@ -16,7 +14,7 @@ use crate::model::response::{
 
 use super::{
     JsonBodyTemplatingVerifier,
-    super::super::{StdResponse, super::req::StdRequest, Verifier},
+    super::super::{StdResponse, Verifier},
 };
 
 pub struct JsonObjectVerifier<'a> {
@@ -62,7 +60,7 @@ impl<'a> TryFrom<&'a JsonBodyTemplatingVerifier> for JsonObjectVerifier<'a> {
 }
 
 impl Verifier<'_> for JsonObjectVerifier<'_> {
-    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ mut StdRequest, resp: &'_ mut StdResponse) {
+    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ RequestData, resp: &'_ mut StdResponse) {
         let key_diff = self.expected.keys().filter(|k| !self.actual.keys().contains(k)).collect_vec();
         assert!(key_diff.is_empty(),
                 "Verification failed for stub '{}'. Expected json fields '{:?}' were absent from response body",
@@ -80,7 +78,7 @@ impl Verifier<'_> for JsonObjectVerifier<'_> {
                 if let Some(expected) = ve.as_str().filter(|v| v.has_template_expressions()) {
                     let response = self.to_bytes(va);
                     let data = HandlebarsData {
-                        request: RequestData::from(req.0.borrow_mut()),
+                        request: req,
                         response: response.as_deref(),
                         is_verify: true,
                         stub_name: Some(name),

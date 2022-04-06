@@ -1,8 +1,8 @@
 use serde_json::Value;
 
-use crate::model::response::ResponseStub;
+use crate::model::response::{ResponseStub, template::data::RequestData};
 
-use super::super::{StdResponse, super::req::StdRequest, Verifier};
+use super::super::{StdResponse, Verifier};
 
 mod object;
 mod string;
@@ -13,7 +13,7 @@ pub struct JsonBodyTemplatingVerifier {
 }
 
 impl Verifier<'_> for JsonBodyTemplatingVerifier {
-    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ mut StdRequest, resp: &'_ mut StdResponse) {
+    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ RequestData, resp: &'_ mut StdResponse) {
         if let Ok(object_verifier) = object::JsonObjectVerifier::try_from(&self) {
             object_verifier.verify(stub, name, req, resp)
         } else if let Some((actual, expected)) = self.actual.as_array().zip(self.expected.as_array()) {
@@ -54,6 +54,24 @@ mod json_body_verify_tests {
         }
 
         #[test]
+        fn should_verify_many_json_body() {
+            verify(
+                "json",
+                json!({"a": "alice", "b": "wonderland"}),
+                json!({"a": "{{jsonPath request.body '$.a'}}", "b": "{{jsonPath request.body '$.b'}}"}),
+            )
+        }
+
+        #[test]
+        fn should_verify_json_body_alongside_unpredictable() {
+            verify(
+                "json",
+                json!({"id": 23, "name": "alice"}),
+                json!({"id": "{{anyInt}}", "name": "{{jsonPath request.body '$.name'}}"}),
+            )
+        }
+
+        #[test]
         fn should_verify_json_array_body() {
             verify(
                 "json",
@@ -73,7 +91,7 @@ mod json_body_verify_tests {
             let mut resp = Response::new(200);
             resp.set_body(actual.clone());
             JsonBodyTemplatingVerifier { actual, expected }
-                .verify(&stub, "json", &mut StdRequest(req), &mut StdResponse(resp));
+                .verify(&stub, "json", &RequestData::from(&mut req), &mut StdResponse(resp));
         }
 
         #[test]
@@ -257,14 +275,14 @@ mod json_body_verify_tests {
 
             #[test]
             fn should_verify_json_number_partially() {
-                verify("int", json!({"age": 42}), json!({"age": "{{anyNumber}}"}));
-                verify("int", json!({"age": 42.3}), json!({"age": "{{anyNumber}}"}));
+                verify("number", json!({"age": 42}), json!({"age": "{{anyNumber}}"}));
+                verify("number", json!({"age": 42.3}), json!({"age": "{{anyNumber}}"}));
             }
 
-            #[should_panic(expected = "Verification failed for stub 'int'. Expected response body to match '{{anyNumber}}' but was 'abcd'")]
+            #[should_panic(expected = "Verification failed for stub 'number'. Expected response body to match '{{anyNumber}}' but was 'abcd'")]
             #[test]
             fn verify_json_number_partially_should_fail() {
-                verify("int", json!({"age": "abcd"}), json!({"age": "{{anyNumber}}"}))
+                verify("number", json!({"age": "abcd"}), json!({"age": "{{anyNumber}}"}))
             }
         }
 
@@ -337,7 +355,7 @@ mod json_body_verify_tests {
         let mut resp = Response::new(200);
         resp.set_body(actual.clone());
         JsonBodyTemplatingVerifier { actual, expected }
-            .verify(&stub, name, &mut StdRequest(req), &mut StdResponse(resp));
+            .verify(&stub, name, &RequestData::from(&mut req), &mut StdResponse(resp));
     }
 
     fn stub(expected: &Value) -> ResponseStub {

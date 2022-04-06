@@ -1,3 +1,4 @@
+use std::borrow::BorrowMut;
 use std::ffi::OsString;
 
 use http_types::Response;
@@ -6,7 +7,7 @@ use body::BodyVerifier;
 use header::HeaderVerifier;
 use status::StatusVerifier;
 
-use crate::model::response::ResponseStub;
+use crate::model::response::{ResponseStub, template::data::RequestData};
 
 use super::req::StdRequest;
 
@@ -24,7 +25,7 @@ impl Default for StdResponse {
 }
 
 trait Verifier<'a> {
-    fn verify(self, stub: &'a ResponseStub, name: &'a str, req: &'a mut StdRequest, resp: &'a mut StdResponse);
+    fn verify(self, stub: &'a ResponseStub, name: &'a str, req: &'a RequestData, resp: &'a mut StdResponse);
 }
 
 pub struct RequestAndStub {
@@ -36,9 +37,10 @@ pub struct RequestAndStub {
 impl RequestAndStub {
     pub fn verify(mut self, mut resp: StdResponse) {
         let name = self.name().to_string();
-        HeaderVerifier.verify(&self.stub, &name, &mut self.req, &mut resp);
-        StatusVerifier.verify(&self.stub, &name, &mut self.req, &mut resp);
-        BodyVerifier.verify(&self.stub, &name, &mut self.req, &mut resp);
+        let req_data = RequestData::from(self.req.0.borrow_mut());
+        HeaderVerifier.verify(&self.stub, &name, &req_data, &mut resp);
+        StatusVerifier.verify(&self.stub, &name, &req_data, &mut resp);
+        BodyVerifier.verify(&self.stub, &name, &req_data, &mut resp);
     }
 
     fn name(&self) -> &str {
@@ -57,8 +59,8 @@ mod resp_verify_tests {
     #[test]
     fn should_verify() {
         let stub = ResponseStub { status: Some(200), ..Default::default() };
-        let mut req = StdRequest(Request::get("http://localhost/"));
+        let mut req = Request::get("http://localhost/");
         let mut resp = StdResponse(Response::new(200));
-        StatusVerifier.verify(&stub, "ok", &mut req, &mut resp);
+        StatusVerifier.verify(&stub, "ok", &RequestData::from(&mut req), &mut resp);
     }
 }

@@ -26,6 +26,7 @@ use helpers::{
 };
 
 use crate::{cloud::opentracing::OpenTracing, model::response::ResponseStub};
+use crate::model::response::template::data::RequestData;
 
 pub mod data;
 pub mod verify;
@@ -71,7 +72,12 @@ impl Respond for StubTemplate {
         let mut resp = self.template.clone();
         resp = OpenTracing(req).add_opentracing_header(resp, self.response.defined_header_keys());
         if self.requires_templating {
-            let data = HandlebarsData::from(req);
+            let data = HandlebarsData {
+                request: &RequestData::from(req),
+                response: None,
+                stub_name: None,
+                is_verify: false
+            };
             resp = self.response.body.render_response_template(resp, &data);
             resp = self.response.headers.render_response_template(resp, &data);
         }

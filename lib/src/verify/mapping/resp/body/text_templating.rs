@@ -1,20 +1,6 @@
-use std::borrow::BorrowMut;
+use crate::model::response::{ResponseStub, template::{data::{HandlebarsData, RequestData}, HandlebarTemplatable, verify::Predictable}};
 
-use super::super::{
-    StdResponse,
-    super::{
-        req::StdRequest,
-        super::super::model::response::{
-            ResponseStub,
-            template::{
-                data::{HandlebarsData, RequestData},
-                HandlebarTemplatable,
-                verify::Predictable,
-            },
-        },
-    },
-    Verifier,
-};
+use super::super::{StdResponse, Verifier};
 
 pub struct TextBodyTemplatingVerifier {
     pub actual: String,
@@ -22,9 +8,9 @@ pub struct TextBodyTemplatingVerifier {
 }
 
 impl Verifier<'_> for TextBodyTemplatingVerifier {
-    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ mut StdRequest, _: &'_ mut StdResponse) {
+    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ RequestData, _: &'_ mut StdResponse) {
         let data = HandlebarsData {
-            request: RequestData::from(req.0.borrow_mut()),
+            request: req,
             response: Some(self.actual.as_bytes()),
             is_verify: true,
             stub_name: Some(name),
@@ -57,11 +43,11 @@ mod text_body_templating_verify_tests {
                 transformers: vec![String::from("response-template")],
                 ..Default::default()
             };
-            let req = Request::get(format!("http://localhost{}", &actual).as_str());
+            let mut req = Request::get(format!("http://localhost{}", &actual).as_str());
             let mut resp = Response::new(200);
             resp.set_body(actual.as_str());
             TextBodyTemplatingVerifier { actual, expected }
-                .verify(&stub, "text", &mut StdRequest(req), &mut StdResponse(resp));
+                .verify(&stub, "text", &RequestData::from(&mut req), &mut StdResponse(resp));
         }
 
         #[test]
@@ -73,11 +59,11 @@ mod text_body_templating_verify_tests {
                 transformers: vec![String::from("response-template")],
                 ..Default::default()
             };
-            let req = Request::get("http://localhost/one/two/three");
+            let mut req = Request::get("http://localhost/one/two/three");
             let mut resp = Response::new(200);
             resp.set_body(actual.as_str());
             TextBodyTemplatingVerifier { actual, expected }
-                .verify(&stub, "text", &mut StdRequest(req), &mut StdResponse(resp));
+                .verify(&stub, "text", &RequestData::from(&mut req), &mut StdResponse(resp));
         }
 
         #[should_panic(expected = "Verification failed for stub 'text'. Expected response body to be 'three-two-one' but was 'one-two-three'")]
@@ -90,11 +76,11 @@ mod text_body_templating_verify_tests {
                 transformers: vec![String::from("response-template")],
                 ..Default::default()
             };
-            let req = Request::get("http://localhost/one/two/three");
+            let mut req = Request::get("http://localhost/one/two/three");
             let mut resp = Response::new(200);
             resp.set_body(actual.as_str());
             TextBodyTemplatingVerifier { actual, expected }
-                .verify(&stub, "text", &mut StdRequest(req), &mut StdResponse(resp));
+                .verify(&stub, "text", &RequestData::from(&mut req), &mut StdResponse(resp));
         }
     }
 
@@ -278,10 +264,9 @@ mod text_body_templating_verify_tests {
             transformers: vec![String::from("response-template")],
             ..Default::default()
         };
-        let req = Request::get("http://localhost");
         let mut resp = Response::new(200);
         resp.set_body(actual);
         TextBodyTemplatingVerifier { actual: actual.to_string(), expected: expected.to_string() }
-            .verify(&stub, name, &mut StdRequest(req), &mut StdResponse(resp));
+            .verify(&stub, name, &RequestData::from(&mut Request::get("http://localhost")), &mut StdResponse(resp));
     }
 }

@@ -1,20 +1,19 @@
 use async_std::task::block_on;
 
-use crate::model::response::template::utils::TemplateExt;
+use crate::model::response::{
+    ResponseStub,
+    template::{data::RequestData, utils::TemplateExt},
+};
 
 use super::{
-    super::{
-        StdResponse,
-        super::{req::StdRequest, super::super::model::response::ResponseStub},
-        Verifier,
-    },
+    super::{StdResponse, Verifier},
     text_templating::TextBodyTemplatingVerifier,
 };
 
 pub struct TextBodyVerifier;
 
 impl Verifier<'_> for TextBodyVerifier {
-    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ mut StdRequest, resp: &'_ mut StdResponse) {
+    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ RequestData, resp: &'_ mut StdResponse) {
         if let Some(expected) = stub.body.body.to_owned() {
             let actual = block_on(async move { resp.0.body_string().await.ok() }).filter(|it| !it.is_empty());
             assert!(actual.is_some(), "\nVerification failed for stub '{}'. Expected response body to be '{}' but none present", name, expected);
@@ -43,28 +42,28 @@ mod text_body_verify_tests {
     #[test]
     fn should_verify() {
         let stub = ResponseStub { body: BodyStub { body: Some("alice".to_string()), ..Default::default() }, ..Default::default() };
-        let mut req = StdRequest(Request::get("http://localhost/"));
+        let mut req = Request::get("http://localhost/");
         let mut resp = Response::new(200);
         resp.set_body("alice".to_string());
-        TextBodyVerifier.verify(&stub, "text", &mut req, &mut StdResponse(resp));
+        TextBodyVerifier.verify(&stub, "text", &RequestData::from(&mut req), &mut StdResponse(resp));
     }
 
     #[should_panic(expected = "Verification failed for stub 'text'. Expected response body to be 'alice' but was 'bob'")]
     #[test]
     fn verify_should_fail_when_wrong_text_body_returned() {
         let stub = ResponseStub { body: BodyStub { body: Some("alice".to_string()), ..Default::default() }, ..Default::default() };
-        let mut req = StdRequest(Request::get("http://localhost/"));
+        let mut req = Request::get("http://localhost/");
         let mut resp = Response::new(200);
         resp.set_body("bob".to_string());
-        TextBodyVerifier.verify(&stub, "text", &mut req, &mut StdResponse(resp));
+        TextBodyVerifier.verify(&stub, "text", &RequestData::from(&mut req), &mut StdResponse(resp));
     }
 
     #[should_panic(expected = "Verification failed for stub 'text'. Expected response body to be 'alice' but none present")]
     #[test]
     fn verify_should_fail_when_text_body_expected_and_none_present() {
         let stub = ResponseStub { body: BodyStub { body: Some("alice".to_string()), ..Default::default() }, ..Default::default() };
-        let mut req = StdRequest(Request::get("http://localhost/"));
-        TextBodyVerifier.verify(&stub, "text", &mut req, &mut StdResponse(Response::new(200)));
+        let mut req = Request::get("http://localhost/");
+        TextBodyVerifier.verify(&stub, "text", &RequestData::from(&mut req), &mut StdResponse(Response::new(200)));
     }
 
     #[test]
@@ -74,10 +73,10 @@ mod text_body_verify_tests {
             transformers: vec![String::from("response-template")],
             ..Default::default()
         };
-        let mut req = StdRequest(Request::get("http://localhost/"));
+        let mut req = Request::get("http://localhost/");
         let mut resp = Response::new(200);
         resp.set_body("alice".to_string());
-        TextBodyVerifier.verify(&stub, "text", &mut req, &mut StdResponse(resp));
+        TextBodyVerifier.verify(&stub, "text", &RequestData::from(&mut req), &mut StdResponse(resp));
     }
 
     #[should_panic(expected = "Verification failed for stub 'text'. No response template transformer present but template elements present in expected response text body '{{anyNonBlankString}}'")]
@@ -87,9 +86,9 @@ mod text_body_verify_tests {
             body: BodyStub { body: Some("{{anyNonBlankString}}".to_string()), ..Default::default() },
             ..Default::default()
         };
-        let mut req = StdRequest(Request::get("http://localhost/"));
+        let mut req = Request::get("http://localhost/");
         let mut resp = Response::new(200);
         resp.set_body("alice".to_string());
-        TextBodyVerifier.verify(&stub, "text", &mut req, &mut StdResponse(resp));
+        TextBodyVerifier.verify(&stub, "text", &RequestData::from(&mut req), &mut StdResponse(resp));
     }
 }

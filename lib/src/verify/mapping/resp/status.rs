@@ -1,11 +1,11 @@
-use crate::model::response::ResponseStub;
+use crate::model::response::{ResponseStub, template::data::RequestData};
 
-use super::{StdResponse, super::req::StdRequest, Verifier};
+use super::{StdResponse, Verifier};
 
 pub struct StatusVerifier;
 
 impl Verifier<'_> for StatusVerifier {
-    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, _req: &'_ mut StdRequest, resp: &'_ mut StdResponse) {
+    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, _req: &'_ RequestData, resp: &'_ mut StdResponse) {
         let expected = stub.status();
         let actual = u16::from(resp.0.status());
         assert_eq!(actual, expected,
@@ -23,17 +23,19 @@ mod status_verify_tests {
     #[test]
     fn should_verify_200() {
         let stub = ResponseStub { status: Some(200), ..Default::default() };
-        let mut req = StdRequest(Request::get("http://localhost/"));
+        let mut req = Request::get("http://localhost/");
+        let req = RequestData::from(&mut req);
         let mut resp = StdResponse(Response::new(200));
-        StatusVerifier.verify(&stub, "200", &mut req, &mut resp);
+        StatusVerifier.verify(&stub, "200", &req, &mut resp);
     }
 
     #[should_panic(expected = "Verification failed for stub '200'. Expected response status to be '200' but was '201'")]
     #[test]
     fn verify_should_fail_when_wrong_status_returned() {
         let stub = ResponseStub { status: Some(200), ..Default::default() };
-        let mut req = StdRequest(Request::get("http://localhost/"));
+        let mut req = Request::get("http://localhost/");
+        let req = RequestData::from(&mut req);
         let mut resp = StdResponse(Response::new(201));
-        StatusVerifier.verify(&stub, "200", &mut req, &mut resp);
+        StatusVerifier.verify(&stub, "200", &req, &mut resp);
     }
 }

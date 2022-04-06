@@ -1,5 +1,3 @@
-use std::borrow::BorrowMut;
-
 use anyhow::anyhow;
 
 use crate::model::response::{
@@ -13,7 +11,7 @@ use crate::model::response::{
 
 use super::{
     JsonBodyTemplatingVerifier,
-    super::super::{StdResponse, super::req::StdRequest, Verifier},
+    super::super::{StdResponse, Verifier},
 };
 
 pub struct JsonStrVerifier<'a> {
@@ -32,10 +30,10 @@ impl<'a> TryFrom<&'a JsonBodyTemplatingVerifier> for JsonStrVerifier<'a> {
 }
 
 impl Verifier<'_> for JsonStrVerifier<'_> {
-    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ mut StdRequest, _: &'_ mut StdResponse) {
+    fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ RequestData, _: &'_ mut StdResponse) {
         if self.expected.has_template_expressions() {
             let data = HandlebarsData {
-                request: RequestData::from(req.0.borrow_mut()),
+                request: req,
                 response: Some(self.actual.as_bytes()),
                 is_verify: true,
                 stub_name: Some(name),

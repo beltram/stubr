@@ -32,13 +32,13 @@ impl HelperDef for JsonPathHelper {
             .and_then(|param| Self::get_json_path(h.params()).and_then(|p| Self::extract(param.value(), p)))
             .ok_or_else(|| RenderError::new("Invalid jsonpath response template"))
             .map(|rendered| match rendered {
-                Value::Null => "null".to_string(),
-                Value::Bool(b) => b.to_string(),
-                Value::Number(n) => n.to_string(),
-                Value::String(s) => s,
-                Value::Array(a) => serde_json::to_string(&a).unwrap_or_default() + BodyStub::ARRAY_IDENTIFIER,
-                Value::Object(o) => serde_json::to_string(&o).unwrap_or_default() + BodyStub::OBJECT_IDENTIFIER,
-            })
+                    Value::Null => "null".to_string(),
+                    Value::Bool(b) => b.to_string(),
+                    Value::Number(n) => n.to_string(),
+                    Value::String(s) => s,
+                    Value::Array(a) => serde_json::to_string(&a).unwrap_or_default() + BodyStub::ARRAY_IDENTIFIER,
+                    Value::Object(o) => serde_json::to_string(&o).unwrap_or_default() + BodyStub::OBJECT_IDENTIFIER,
+                })
             .and_then(|v| out.write(&v).map_err(RenderError::from))
     }
 }

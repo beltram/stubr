@@ -1,6 +1,7 @@
 use std::{borrow::Cow, collections::HashMap, iter, str::from_utf8};
 
 use futures::executor::block_on;
+use futures_util::AsyncReadExt;
 use itertools::Itertools;
 use serde_json::Value;
 use wiremock::Request;
@@ -96,7 +97,9 @@ impl RequestExt for http_types::Request {
 
     fn body_mut(&mut self) -> Option<Value> {
         block_on(async {
-            self.body_bytes().await.ok()
+            let mut bytes = vec![];
+            self.read_to_end(&mut bytes).await.ok()
+                .map(|_| bytes)
                 .filter(|b| !b.is_empty())
                 .and_then(|b| {
                     serde_json::from_slice::<Value>(b.as_slice()).ok()
