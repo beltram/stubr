@@ -1,7 +1,7 @@
 use std::{borrow::Cow, collections::HashMap, iter, str::from_utf8};
+use async_std::io::ReadExt;
 
 use futures::executor::block_on;
-use futures_util::AsyncReadExt;
 use itertools::Itertools;
 use serde_json::Value;
 use wiremock::Request;
