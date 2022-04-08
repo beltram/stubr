@@ -23,7 +23,7 @@
   "response": {
     "status": 201,
     "jsonBody": {
-      "id": 2,
+      "id": "{{anyU32}}",
       "name": "{{jsonPath request.body '$.name'}}",
       "pets": [
         {
