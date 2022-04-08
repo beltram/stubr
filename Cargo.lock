@@ -3520,7 +3520,6 @@ dependencies = [
  "lazy_static",
  "log",
  "percent-encoding",
- "pin-project",
  "rand 0.8.5",
  "rand_regex",
  "rand_xorshift",

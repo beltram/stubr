@@ -1,11 +1,11 @@
-use std::future::{ready, Ready};
+use std::future::{Future, ready, Ready};
+use std::pin::Pin;
 
 use actix_web::{
     dev::{forward_ready, Service, ServiceRequest, ServiceResponse, Transform},
     Error,
     web::Data,
 };
-use futures_util::future::LocalBoxFuture;
 
 pub struct ActixVerifyLifecycle<T>(pub fn(&T));
 
@@ -40,7 +40,7 @@ impl<S, B, T> Service<ServiceRequest> for ActixVerifyLifecycleMiddleware<S, T>
 {
     type Response = ServiceResponse<B>;
     type Error = Error;
-    type Future = LocalBoxFuture<'static, Result<Self::Response, Self::Error>>;
+    type Future = Pin<Box<dyn Future<Output=Result<Self::Response, Self::Error>> + 'static>>;
 
     forward_ready!(service);
 
