@@ -55,19 +55,86 @@ async fn should_template_any_number() {
 }
 
 #[async_std::test]
-#[stubr::mock("resp/template/any/integer.json")]
-async fn should_template_any_integer() {
-    get(stubr.uri()).await
-        .expect_status_ok()
-        .expect_content_type_text()
-        .expect_body_text(|b: String| assert!(b.parse::<i64>().is_ok()));
-}
-
-#[async_std::test]
 #[stubr::mock("resp/template/any/float.json")]
 async fn should_template_any_float() {
     get(stubr.uri()).await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(b.parse::<f64>().is_ok()));
+}
+
+mod int {
+    use super::*;
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/int/i64.json")]
+    async fn should_template_any_i64() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(b.parse::<i64>().is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/int/u64.json")]
+    async fn should_template_any_u64() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(b.parse::<u64>().is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/int/i32.json")]
+    async fn should_template_any_i32() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(b.parse::<i32>().is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/int/u32.json")]
+    async fn should_template_any_u32() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(b.parse::<u32>().is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/int/i16.json")]
+    async fn should_template_any_i16() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(b.parse::<i16>().is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/int/u16.json")]
+    async fn should_template_any_u16() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(b.parse::<u16>().is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/int/i8.json")]
+    async fn should_template_any_i8() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(b.parse::<i8>().is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/int/u8.json")]
+    async fn should_template_any_u8() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(b.parse::<u8>().is_ok()));
+    }
 }

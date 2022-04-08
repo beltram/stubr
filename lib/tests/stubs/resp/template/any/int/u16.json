@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{anyU16}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

@@ -4,7 +4,7 @@
   },
   "response": {
     "status": 200,
-    "body": "{{anyInt}}",
+    "body": "{{anyU32}}",
     "transformers": [
       "response-template"
     ]

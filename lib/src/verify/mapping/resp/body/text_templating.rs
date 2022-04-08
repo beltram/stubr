@@ -209,25 +209,25 @@ mod text_body_templating_verify_tests {
 
         #[test]
         fn should_verify_body() {
-            verify("integer", "42", "{{anyInt}}");
+            verify("integer", "42", "{{anyI64}}");
         }
 
-        #[should_panic(expected = "Verification failed for stub 'integer'. Expected response body to match '{{anyInt}}' but was 'abcd'")]
+        #[should_panic(expected = "Verification failed for stub 'integer'. Expected response body to match '{{anyI64}}' but was 'abcd'")]
         #[test]
         fn verify_body_should_fail_when_not_integer() {
-            verify("integer", "abcd", "{{anyInt}}")
+            verify("integer", "abcd", "{{anyI64}}")
         }
 
-        #[should_panic(expected = "Verification failed for stub 'integer'. Expected response body to match '{{anyInt}}' but was '42.3'")]
+        #[should_panic(expected = "Verification failed for stub 'integer'. Expected response body to match '{{anyI64}}' but was '42.3'")]
         #[test]
         fn verify_body_should_fail_when_float() {
-            verify("integer", "42.3", "{{anyInt}}")
+            verify("integer", "42.3", "{{anyI64}}")
         }
 
-        #[should_panic(expected = "Verification failed for stub 'integer'. Expected response body to match '{{anyInt}}' but no response body was present")]
+        #[should_panic(expected = "Verification failed for stub 'integer'. Expected response body to match '{{anyI64}}' but no response body was present")]
         #[test]
         fn verify_body_should_fail_when_body_absent() {
-            verify("integer", "", "{{anyInt}}")
+            verify("integer", "", "{{anyI64}}")
         }
     }
 

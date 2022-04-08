@@ -45,14 +45,21 @@ impl Verifiable for RenderContext<'_, '_> {
 }
 
 pub trait Predictable {
-    const RND_NAMES: [&'static str; 7] = [
+    const RND_NAMES: [&'static str; 14] = [
         AnyRegex::NAME,
         AnyNonBlank::NAME,
         AnyNonEmpty::NAME,
         AnyAlphaNumeric::NAME,
         AnyNumber::NAME,
         AnyFloat::NAME,
-        AnyInteger::NAME,
+        AnyInteger::U64,
+        AnyInteger::I64,
+        AnyInteger::U32,
+        AnyInteger::I32,
+        AnyInteger::U16,
+        AnyInteger::I16,
+        AnyInteger::U8,
+        AnyInteger::I8,
     ];
 
     fn is_predictable(&self) -> bool;

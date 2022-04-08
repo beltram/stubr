@@ -56,7 +56,14 @@ lazy_static! {
         handlebars.register_helper(AnyAlphaNumeric::NAME, Box::new(AnyAlphaNumeric));
         handlebars.register_helper(AnyNumber::NAME, Box::new(AnyNumber));
         handlebars.register_helper(AnyFloat::NAME, Box::new(AnyFloat));
-        handlebars.register_helper(AnyInteger::NAME, Box::new(AnyInteger));
+        handlebars.register_helper(AnyInteger::I64, Box::new(AnyInteger));
+        handlebars.register_helper(AnyInteger::U64, Box::new(AnyInteger));
+        handlebars.register_helper(AnyInteger::I32, Box::new(AnyInteger));
+        handlebars.register_helper(AnyInteger::U32, Box::new(AnyInteger));
+        handlebars.register_helper(AnyInteger::I16, Box::new(AnyInteger));
+        handlebars.register_helper(AnyInteger::U16, Box::new(AnyInteger));
+        handlebars.register_helper(AnyInteger::I8, Box::new(AnyInteger));
+        handlebars.register_helper(AnyInteger::U8, Box::new(AnyInteger));
         RwLock::new(handlebars)
     };
 }

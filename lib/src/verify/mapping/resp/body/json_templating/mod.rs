@@ -67,7 +67,7 @@ mod json_body_verify_tests {
             verify(
                 "json",
                 json!({"id": 23, "name": "alice"}),
-                json!({"id": "{{anyInt}}", "name": "{{jsonPath request.body '$.name'}}"}),
+                json!({"id": "{{anyI64}}", "name": "{{jsonPath request.body '$.name'}}"}),
             )
         }
 
@@ -289,21 +289,246 @@ mod json_body_verify_tests {
         mod int {
             use super::*;
 
-            #[test]
-            fn should_verify_json_int_partially() {
-                verify("int", json!({"age": 42}), json!({"age": "{{anyInt}}"}))
+            mod i64 {
+                use super::*;
+
+                #[test]
+                fn should_verify_json_i64_partially() {
+                    verify("i64", json!({"age": i64::MAX}), json!({"age": "{{anyI64}}"}));
+                    verify("i64", json!({"age": i64::MIN}), json!({"age": "{{anyI64}}"}));
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i64'. Expected response body to match '{{anyI64}}' but was '42.3'")]
+                #[test]
+                fn verify_json_i64_partially_should_fail_when_float() {
+                    verify("i64", json!({"age": 42.3}), json!({"age": "{{anyI64}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i64'. Expected response body to match '{{anyI64}}' but was 'abcd'")]
+                #[test]
+                fn verify_json_i64_partially_should_fail_when_string() {
+                    verify("i64", json!({"age": "abcd"}), json!({"age": "{{anyI64}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i64'. Expected response body to match '{{anyI64}}' but was '18446744073709551615'")]
+                #[test]
+                fn verify_json_i64_partially_should_fail_when_too_large() {
+                    verify("i64", json!({"age": u64::MAX}), json!({"age": "{{anyI64}}"}))
+                }
             }
 
-            #[should_panic(expected = "Verification failed for stub 'int'. Expected response body to match '{{anyInt}}' but was 'abcd'")]
-            #[test]
-            fn verify_json_int_partially_should_fail() {
-                verify("int", json!({"age": "abcd"}), json!({"age": "{{anyInt}}"}))
+            mod u64 {
+                use super::*;
+
+                #[test]
+                fn should_verify_json_u64_partially() {
+                    verify("u64", json!({"age": u64::MAX}), json!({"age": "{{anyU64}}"}));
+                    verify("u64", json!({"age": u64::MIN}), json!({"age": "{{anyU64}}"}));
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u64'. Expected response body to match '{{anyU64}}' but was '42.3'")]
+                #[test]
+                fn verify_json_u64_partially_should_fail_when_float() {
+                    verify("u64", json!({"age": 42.3}), json!({"age": "{{anyU64}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u64'. Expected response body to match '{{anyU64}}' but was 'abcd'")]
+                #[test]
+                fn verify_json_u64_partially_should_fail_when_string() {
+                    verify("u64", json!({"age": "abcd"}), json!({"age": "{{anyU64}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u64'. Expected response body to match '{{anyU64}}' but was '-9223372036854775808'")]
+                #[test]
+                fn verify_json_u64_partially_should_fail_when_negative() {
+                    verify("u64", json!({"age": i64::MIN}), json!({"age": "{{anyU64}}"}))
+                }
             }
 
-            #[should_panic(expected = "Verification failed for stub 'int'. Expected response body to match '{{anyInt}}' but was '42.3'")]
-            #[test]
-            fn verify_json_int_partially_should_fail_when_float() {
-                verify("int", json!({"age": 42.3}), json!({"age": "{{anyInt}}"}))
+            mod i32 {
+                use super::*;
+
+                #[test]
+                fn should_verify_json_i32_partially() {
+                    verify("i32", json!({"age": i32::MAX}), json!({"age": "{{anyI32}}"}));
+                    verify("i32", json!({"age": i32::MIN}), json!({"age": "{{anyI32}}"}));
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i32'. Expected response body to match '{{anyI32}}' but was '42.3'")]
+                #[test]
+                fn verify_json_i32_partially_should_fail_when_float() {
+                    verify("i32", json!({"age": 42.3}), json!({"age": "{{anyI32}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i32'. Expected response body to match '{{anyI32}}' but was 'abcd'")]
+                #[test]
+                fn verify_json_i32_partially_should_fail_when_string() {
+                    verify("i32", json!({"age": "abcd"}), json!({"age": "{{anyI32}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i32'. Expected response body to match '{{anyI32}}' but was '4294967295'")]
+                #[test]
+                fn verify_json_i32_partially_should_fail_when_too_large() {
+                    verify("i32", json!({"age": u32::MAX}), json!({"age": "{{anyI32}}"}))
+                }
+            }
+
+            mod u32 {
+                use super::*;
+
+                #[test]
+                fn should_verify_json_u32_partially() {
+                    verify("u32", json!({"age": u32::MAX}), json!({"age": "{{anyU32}}"}));
+                    verify("u32", json!({"age": u32::MIN}), json!({"age": "{{anyU32}}"}));
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u32'. Expected response body to match '{{anyU32}}' but was '42.3'")]
+                #[test]
+                fn verify_json_u32_partially_should_fail_when_float() {
+                    verify("u32", json!({"age": 42.3}), json!({"age": "{{anyU32}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u32'. Expected response body to match '{{anyU32}}' but was 'abcd'")]
+                #[test]
+                fn verify_json_u32_partially_should_fail_when_string() {
+                    verify("u32", json!({"age": "abcd"}), json!({"age": "{{anyU32}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u32'. Expected response body to match '{{anyU32}}' but was '-2147483648'")]
+                #[test]
+                fn verify_json_u32_partially_should_fail_when_negative() {
+                    verify("u32", json!({"age": i32::MIN}), json!({"age": "{{anyU32}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u32'. Expected response body to match '{{anyU32}}' but was '18446744073709551615'")]
+                #[test]
+                fn verify_json_u32_partially_should_fail_when_too_large() {
+                    verify("u32", json!({"age": u64::MAX}), json!({"age": "{{anyU32}}"}))
+                }
+            }
+
+            mod i16 {
+                use super::*;
+
+                #[test]
+                fn should_verify_json_i16_partially() {
+                    verify("i16", json!({"age": i16::MAX}), json!({"age": "{{anyI16}}"}));
+                    verify("i16", json!({"age": i16::MIN}), json!({"age": "{{anyI16}}"}));
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i16'. Expected response body to match '{{anyI16}}' but was '42.3'")]
+                #[test]
+                fn verify_json_i16_partially_should_fail_when_float() {
+                    verify("i16", json!({"age": 42.3}), json!({"age": "{{anyI16}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i16'. Expected response body to match '{{anyI16}}' but was 'abcd'")]
+                #[test]
+                fn verify_json_i16_partially_should_fail_when_string() {
+                    verify("i16", json!({"age": "abcd"}), json!({"age": "{{anyI16}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i16'. Expected response body to match '{{anyI16}}' but was '65535'")]
+                #[test]
+                fn verify_json_i16_partially_should_fail_when_too_large() {
+                    verify("i16", json!({"age": u16::MAX}), json!({"age": "{{anyI16}}"}))
+                }
+            }
+
+            mod u16 {
+                use super::*;
+
+                #[test]
+                fn should_verify_json_u16_partially() {
+                    verify("u16", json!({"age": u16::MAX}), json!({"age": "{{anyU16}}"}));
+                    verify("u16", json!({"age": u16::MIN}), json!({"age": "{{anyU16}}"}));
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u16'. Expected response body to match '{{anyU16}}' but was '42.3'")]
+                #[test]
+                fn verify_json_u16_partially_should_fail_when_float() {
+                    verify("u16", json!({"age": 42.3}), json!({"age": "{{anyU16}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u16'. Expected response body to match '{{anyU16}}' but was 'abcd'")]
+                #[test]
+                fn verify_json_u16_partially_should_fail_when_string() {
+                    verify("u16", json!({"age": "abcd"}), json!({"age": "{{anyU16}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u16'. Expected response body to match '{{anyU16}}' but was '-32768'")]
+                #[test]
+                fn verify_json_u16_partially_should_fail_when_negative() {
+                    verify("u16", json!({"age": i16::MIN}), json!({"age": "{{anyU16}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u16'. Expected response body to match '{{anyU16}}' but was '4294967295'")]
+                #[test]
+                fn verify_json_u16_partially_should_fail_when_too_large() {
+                    verify("u16", json!({"age": u32::MAX}), json!({"age": "{{anyU16}}"}))
+                }
+            }
+
+            mod i8 {
+                use super::*;
+
+                #[test]
+                fn should_verify_json_i8_partially() {
+                    verify("i8", json!({"age": i8::MAX}), json!({"age": "{{anyI8}}"}));
+                    verify("i8", json!({"age": i8::MIN}), json!({"age": "{{anyI8}}"}));
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i8'. Expected response body to match '{{anyI8}}' but was '42.3'")]
+                #[test]
+                fn verify_json_i8_partially_should_fail_when_float() {
+                    verify("i8", json!({"age": 42.3}), json!({"age": "{{anyI8}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i8'. Expected response body to match '{{anyI8}}' but was 'abcd'")]
+                #[test]
+                fn verify_json_i8_partially_should_fail_when_string() {
+                    verify("i8", json!({"age": "abcd"}), json!({"age": "{{anyI8}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'i8'. Expected response body to match '{{anyI8}}' but was '255'")]
+                #[test]
+                fn verify_json_i8_partially_should_fail_when_too_large() {
+                    verify("i8", json!({"age": u8::MAX}), json!({"age": "{{anyI8}}"}))
+                }
+            }
+
+            mod u8 {
+                use super::*;
+
+                #[test]
+                fn should_verify_json_u8_partially() {
+                    verify("u8", json!({"age": u8::MAX}), json!({"age": "{{anyU8}}"}));
+                    verify("u8", json!({"age": u8::MIN}), json!({"age": "{{anyU8}}"}));
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u8'. Expected response body to match '{{anyU8}}' but was '42.3'")]
+                #[test]
+                fn verify_json_u8_partially_should_fail_when_float() {
+                    verify("u8", json!({"age": 42.3}), json!({"age": "{{anyU8}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u8'. Expected response body to match '{{anyU8}}' but was 'abcd'")]
+                #[test]
+                fn verify_json_u8_partially_should_fail_when_string() {
+                    verify("u8", json!({"age": "abcd"}), json!({"age": "{{anyU8}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u8'. Expected response body to match '{{anyU8}}' but was '-128'")]
+                #[test]
+                fn verify_json_u8_partially_should_fail_when_negative() {
+                    verify("u8", json!({"age": i8::MIN}), json!({"age": "{{anyU8}}"}))
+                }
+
+                #[should_panic(expected = "Verification failed for stub 'u8'. Expected response body to match '{{anyU8}}' but was '-32768'")]
+                #[test]
+                fn verify_json_u8_partially_should_fail_when_too_large() {
+                    verify("u8", json!({"age": i16::MIN}), json!({"age": "{{anyU8}}"}))
+                }
             }
         }
 
