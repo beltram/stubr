@@ -27,8 +27,8 @@
       "name": "{{jsonPath request.body '$.name'}}",
       "pets": [
         {
-          "id": 2,
-          "name": "new"
+          "id": "{{anyU32}}",
+          "name": "{{jsonPath request.body '$.pets[0].name'}}"
         }
       ]
     },
