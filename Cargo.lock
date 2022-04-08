@@ -115,7 +115,6 @@ version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdf3f2183be1241ed4dd22611850b85d38de0b08a09f1f7bcccbd0809084b359"
 dependencies = [
- "actix-macros",
  "futures-core",
  "tokio",
 ]
@@ -3493,7 +3492,6 @@ name = "stubr"
 version = "0.4.14"
 dependencies = [
  "actix-http",
- "actix-rt",
  "actix-service",
  "actix-web",
  "anyhow",

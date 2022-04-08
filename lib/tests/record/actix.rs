@@ -6,7 +6,7 @@ use stubr::{ActixRecord, RecordConfig};
 
 use crate::utils::*;
 
-#[actix_rt::test]
+#[actix_web::test]
 async fn should_record_from_actix_integration_test() {
     let cfg = RecordConfig {
         except_request_headers: Some(relaxed_req_headers()),
@@ -30,7 +30,7 @@ async fn should_record_from_actix_integration_test() {
     }))
 }
 
-#[actix_rt::test]
+#[actix_web::test]
 async fn should_record_from_actix_failing_integration_test() {
     let cfg = RecordConfig {
         except_request_headers: Some(relaxed_req_headers()),
