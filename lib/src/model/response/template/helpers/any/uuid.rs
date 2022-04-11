@@ -9,12 +9,14 @@ use super::{AnyTemplate, super::verify::VerifyDetect};
 
 pub struct AnyUuid;
 
-lazy_static! {
-    pub(crate) static ref UUID_REGEX: Regex = Regex::new("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").unwrap();
-}
 
 impl AnyUuid {
     pub const NAME: &'static str = "anyUuid";
+    pub const UUID_RGX: &'static str = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+}
+
+lazy_static! {
+    pub(crate) static ref UUID_REGEX: Regex = Regex::new(&format!("^{}$", AnyUuid::UUID_RGX)).unwrap();
 }
 
 impl AnyTemplate for AnyUuid {
@@ -23,7 +25,7 @@ impl AnyTemplate for AnyUuid {
     }
 
     fn generate<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> anyhow::Result<String> {
-        RegexRndGenerator(UUID_REGEX.as_str()).try_generate()
+        RegexRndGenerator(Self::UUID_RGX).try_generate()
     }
 
     fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, _: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
