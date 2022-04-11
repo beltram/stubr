@@ -19,6 +19,7 @@ impl AnyInteger {
 }
 
 impl AnyTemplate for AnyInteger {
+
     fn generate<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> anyhow::Result<String> {
         Ok(match h.name() {
             Self::I64 => random::<i64>().to_string(),
@@ -47,10 +48,24 @@ impl AnyTemplate for AnyInteger {
                 _ => false
             }).unwrap_or_default();
         assert!(!response.is_empty() && is_int,
-                "Verification failed for stub '{}'. Expected response body to match '{}' but was '{}'",
+                "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
                 ctx.stub_name(), self.expected(h, rc),
                 from_utf8(response.as_slice()).unwrap_or_default()
         );
+    }
+
+    fn expected<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> String {
+        match h.name() {
+            Self::I64 => "be an i64",
+            Self::U64 => "be an u64",
+            Self::I32 => "be an i32",
+            Self::U32 => "be an u32",
+            Self::I16 => "be an i16",
+            Self::U16 => "be an u16",
+            Self::I8 => "be an i8",
+            Self::U8 => "be an u8",
+            _ => "be an integer"
+        }.to_string()
     }
 }
 

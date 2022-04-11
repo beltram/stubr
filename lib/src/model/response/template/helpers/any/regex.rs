@@ -19,10 +19,6 @@ impl AnyRegex {
 }
 
 impl AnyTemplate for AnyRegex {
-    fn expected<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> String {
-        Self::read_regex(h).unwrap_or_default().to_string()
-    }
-
     fn generate<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> anyhow::Result<String> {
         Self::read_regex(h)
             .ok_or_else(|| anyhow!("Missing regex for '{}' helper", h.name()))
@@ -37,6 +33,10 @@ impl AnyTemplate for AnyRegex {
                     "Verification failed for stub '{}'. Expected response body to match '{}' but was '{}'",
                     ctx.stub_name(), regex.as_str(), resp)
         }
+    }
+
+    fn expected<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> String {
+        format!("match '{}'", Self::read_regex(h).unwrap_or_default().to_string())
     }
 }
 

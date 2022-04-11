@@ -46,6 +46,37 @@ async fn should_template_any_uuid() {
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/any/email.json")]
+async fn should_template_any_email() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| {
+            assert!(email_address_parser::EmailAddress::parse(&b, None).is_some())
+        });
+}
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/host.json")]
+async fn should_template_any_hostname() {
+    let regex = regex::Regex::new(r"((http[s]?|ftp):/)/?([^:/\s]+)(:[0-9]{1,5})?").unwrap();
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(regex.is_match(&b)));
+}
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/ip.json")]
+async fn should_template_any_ip_address() {
+    let regex = regex::Regex::new(r"([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])").unwrap();
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(regex.is_match(&b)));
+}
+
+#[async_std::test]
 #[stubr::mock("resp/template/any/alpha-numeric.json")]
 async fn should_template_any_alpha_numeric() {
     get(stubr.uri()).await
@@ -70,6 +101,24 @@ async fn should_template_any_float() {
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(b.parse::<f64>().is_ok()));
+}
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/bool.json")]
+async fn should_template_any_boolean() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(b.parse::<bool>().is_ok()));
+}
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/of.json")]
+async fn should_template_any_of() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(&b == "A" || &b == "B" || &b == "C"));
 }
 
 mod int {
@@ -145,5 +194,50 @@ mod int {
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<u8>().is_ok()));
+    }
+}
+
+mod datetime {
+    use std::str::FromStr;
+
+    use super::*;
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/time.json")]
+    async fn should_template_any_time() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(chrono::NaiveTime::from_str(&b).is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/date.json")]
+    async fn should_template_any_date() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(chrono::NaiveDate::from_str(&b).is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/date-time.json")]
+    async fn should_template_any_datetime() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| assert!(chrono::NaiveDateTime::from_str(&b).is_ok()));
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/template/any/iso8601.json")]
+    async fn should_template_any_iso_8601_datetime() {
+        get(stubr.uri()).await
+            .expect_status_ok()
+            .expect_content_type_text()
+            .expect_body_text(|b: String| {
+                let dt: Option<chrono::DateTime<chrono::Utc>> = chrono::DateTime::from_str(&b).ok();
+                assert!(dt.is_some())
+            });
     }
 }

@@ -27,8 +27,8 @@ impl JsonObjectVerifier<'_> {
         match value {
             Value::String(s) => Some(s.as_bytes().to_vec()),
             Value::Number(n) => Some(n.to_string().as_bytes().to_vec()),
-            Value::Null => None,
-            Value::Bool(_) => None,
+            Value::Null => Some("null".to_string().as_bytes().to_vec()),
+            Value::Bool(b) => Some(b.to_string().as_bytes().to_vec()),
             Value::Array(_) => None,
             Value::Object(_) => None,
         }

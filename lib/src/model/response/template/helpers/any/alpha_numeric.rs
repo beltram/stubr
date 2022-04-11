@@ -11,6 +11,7 @@ pub struct AnyAlphaNumeric;
 impl AnyAlphaNumeric {
     pub const NAME: &'static str = "anyAlphaNumeric";
     const ALPHA_NUMERIC_REGEX: &'static str = "[A-Za-z0-9]+";
+    const REASON: &'static str = "be an alphanumeric";
 }
 
 impl AnyTemplate for AnyAlphaNumeric {
@@ -18,12 +19,15 @@ impl AnyTemplate for AnyAlphaNumeric {
         RegexRndGenerator(Self::ALPHA_NUMERIC_REGEX).try_generate()
     }
 
-    fn verify<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
+    fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, _: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
         assert!(!response.is_empty() && response.iter().all(|c| c.is_ascii_alphanumeric()),
-                "Verification failed for stub '{}'. Expected response body to match '{}' but was '{}'",
-                ctx.stub_name(), self.expected(h, rc),
-                from_utf8(response.as_slice()).unwrap_or_default()
+                "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
+                ctx.stub_name(), Self::REASON, from_utf8(response.as_slice()).unwrap_or_default()
         );
+    }
+
+    fn expected<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> String {
+        Self::REASON.to_string()
     }
 }
 

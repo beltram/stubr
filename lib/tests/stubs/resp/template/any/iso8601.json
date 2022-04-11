@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "body": "{{anyIso8601}}",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

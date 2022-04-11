@@ -9,6 +9,15 @@ use super::{
     AnyNumber,
     AnyRegex,
     AnyUuid,
+    AnyBoolean,
+    AnyDate,
+    AnyDatetime,
+    AnyIso8601Datetime,
+    AnyTime,
+    AnyEmail,
+    AnyHostname,
+    AnyIp,
+    AnyOf,
 };
 
 /// Some templates can be made of many elements e.g. '{{anyNonBlankString}}{{anyNonEmptyString}}'.
@@ -46,7 +55,7 @@ impl Verifiable for RenderContext<'_, '_> {
 }
 
 pub trait Predictable {
-    const RND_NAMES: [&'static str; 15] = [
+    const RND_NAMES: [&'static str; 24] = [
         AnyRegex::NAME,
         AnyNonBlank::NAME,
         AnyNonEmpty::NAME,
@@ -62,6 +71,15 @@ pub trait Predictable {
         AnyInteger::U8,
         AnyInteger::I8,
         AnyUuid::NAME,
+        AnyBoolean::NAME,
+        AnyDate::NAME,
+        AnyDatetime::NAME,
+        AnyIso8601Datetime::NAME,
+        AnyTime::NAME,
+        AnyEmail::NAME,
+        AnyHostname::NAME,
+        AnyIp::NAME,
+        AnyOf::NAME,
     ];
 
     fn is_predictable(&self) -> bool;

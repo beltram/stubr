@@ -9,6 +9,7 @@ pub struct AnyNonEmpty;
 impl AnyNonEmpty {
     pub const NAME: &'static str = "anyNonEmptyString";
     const NON_EMPTY_REGEX: &'static str = "[A-Za-z0-9 ]+";
+    const REASON: &'static str = "be a non empty string";
 }
 
 impl AnyTemplate for AnyNonEmpty {
@@ -16,10 +17,14 @@ impl AnyTemplate for AnyNonEmpty {
         RegexRndGenerator(Self::NON_EMPTY_REGEX).try_generate()
     }
 
-    fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
+    fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, _: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
         assert!(!response.is_empty(),
-                "Verification failed for stub '{}'. Expected response body to match '{}' but was ''",
-                ctx.stub_name(), rc.get_root_template_name().map(String::as_str).unwrap_or_default());
+                "Verification failed for stub '{}'. Expected response body to {} but was ''",
+                ctx.stub_name(), Self::REASON);
+    }
+
+    fn expected<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> String {
+        Self::REASON.to_string()
     }
 }
 

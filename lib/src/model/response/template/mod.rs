@@ -7,13 +7,22 @@ use wiremock::{Request, Respond, ResponseTemplate};
 use data::HandlebarsData;
 use helpers::{
     any::{
+        alpha_numeric::AnyAlphaNumeric,
+        boolean::AnyBoolean,
+        date::AnyDate,
+        datetime::AnyDatetime,
+        email::AnyEmail,
+        float::AnyFloat,
+        hostname::AnyHostname,
+        integer::AnyInteger,
+        ip::AnyIp,
+        iso_8601_datetime::AnyIso8601Datetime,
         non_blank::AnyNonBlank,
         non_empty::AnyNonEmpty,
-        regex::AnyRegex,
-        alpha_numeric::AnyAlphaNumeric,
         number::AnyNumber,
-        float::AnyFloat,
-        integer::AnyInteger,
+        of::AnyOf,
+        regex::AnyRegex,
+        time::AnyTime,
         uuid::AnyUuid,
     },
     base64::Base64Helper,
@@ -28,7 +37,7 @@ use helpers::{
 
 use crate::{
     cloud::opentracing::OpenTracing,
-    model::response::{ResponseStub, template::data::RequestData}
+    model::response::{ResponseStub, template::data::RequestData},
 };
 
 pub mod data;
@@ -68,6 +77,15 @@ lazy_static! {
         handlebars.register_helper(AnyInteger::I8, Box::new(AnyInteger));
         handlebars.register_helper(AnyInteger::U8, Box::new(AnyInteger));
         handlebars.register_helper(AnyUuid::NAME, Box::new(AnyUuid));
+        handlebars.register_helper(AnyBoolean::NAME, Box::new(AnyBoolean));
+        handlebars.register_helper(AnyEmail::NAME, Box::new(AnyEmail));
+        handlebars.register_helper(AnyIp::NAME, Box::new(AnyIp));
+        handlebars.register_helper(AnyHostname::NAME, Box::new(AnyHostname));
+        handlebars.register_helper(AnyDate::NAME, Box::new(AnyDate));
+        handlebars.register_helper(AnyTime::NAME, Box::new(AnyTime));
+        handlebars.register_helper(AnyDatetime::NAME, Box::new(AnyDatetime));
+        handlebars.register_helper(AnyIso8601Datetime::NAME, Box::new(AnyIso8601Datetime));
+        handlebars.register_helper(AnyOf::NAME, Box::new(AnyOf));
         RwLock::new(handlebars)
     };
 }
@@ -87,7 +105,7 @@ impl Respond for StubTemplate {
                 request: &RequestData::from(req),
                 response: None,
                 stub_name: None,
-                is_verify: false
+                is_verify: false,
             };
             resp = self.response.body.render_response_template(resp, &data);
             resp = self.response.headers.render_response_template(resp, &data);
