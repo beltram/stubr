@@ -119,6 +119,33 @@ mod text_body_templating_verify_tests {
         }
     }
 
+    mod any_uuid {
+        use super::*;
+
+        #[test]
+        fn should_verify_body() {
+            verify("uuid", "6a2f41a3-c54c-fce8-32d2-0324e1c32e22", "{{anyUuid}}")
+        }
+
+        #[should_panic(expected = "Verification failed for stub 'uuid'. Expected response body to match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' but was 'abcd'")]
+        #[test]
+        fn verify_body_should_fail_when_uuid_does_not_match() {
+            verify("uuid", "abcd", "{{anyUuid}}")
+        }
+
+        #[should_panic(expected = "Verification failed for stub 'uuid'. Expected response body to match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' but was '6a2f41a3-c54c-fce8-32d2-0324e1c32e22-43a1'")]
+        #[test]
+        fn verify_body_should_fail_when_uuid_longer() {
+            verify("uuid", "6a2f41a3-c54c-fce8-32d2-0324e1c32e22-43a1", "{{anyUuid}}")
+        }
+
+        #[should_panic(expected = "Verification failed for stub 'uuid'. Expected response body to match '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' but no response body was present")]
+        #[test]
+        fn verify_body_should_fail_when_body_absent() {
+            verify("uuid", "", "{{anyUuid}}")
+        }
+    }
+
     mod any_non_blank_string {
         use super::*;
 

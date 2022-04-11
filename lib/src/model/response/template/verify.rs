@@ -8,6 +8,7 @@ use super::{
     AnyNonEmpty,
     AnyNumber,
     AnyRegex,
+    AnyUuid,
 };
 
 /// Some templates can be made of many elements e.g. '{{anyNonBlankString}}{{anyNonEmptyString}}'.
@@ -45,7 +46,7 @@ impl Verifiable for RenderContext<'_, '_> {
 }
 
 pub trait Predictable {
-    const RND_NAMES: [&'static str; 14] = [
+    const RND_NAMES: [&'static str; 15] = [
         AnyRegex::NAME,
         AnyNonBlank::NAME,
         AnyNonEmpty::NAME,
@@ -60,6 +61,7 @@ pub trait Predictable {
         AnyInteger::I16,
         AnyInteger::U8,
         AnyInteger::I8,
+        AnyUuid::NAME,
     ];
 
     fn is_predictable(&self) -> bool;

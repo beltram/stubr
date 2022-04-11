@@ -14,6 +14,7 @@ use helpers::{
         number::AnyNumber,
         float::AnyFloat,
         integer::AnyInteger,
+        uuid::AnyUuid,
     },
     base64::Base64Helper,
     datetime::NowHelper,
@@ -25,8 +26,10 @@ use helpers::{
     url_encode::UrlEncodingHelper,
 };
 
-use crate::{cloud::opentracing::OpenTracing, model::response::ResponseStub};
-use crate::model::response::template::data::RequestData;
+use crate::{
+    cloud::opentracing::OpenTracing,
+    model::response::{ResponseStub, template::data::RequestData}
+};
 
 pub mod data;
 pub mod verify;
@@ -64,6 +67,7 @@ lazy_static! {
         handlebars.register_helper(AnyInteger::U16, Box::new(AnyInteger));
         handlebars.register_helper(AnyInteger::I8, Box::new(AnyInteger));
         handlebars.register_helper(AnyInteger::U8, Box::new(AnyInteger));
+        handlebars.register_helper(AnyUuid::NAME, Box::new(AnyUuid));
         RwLock::new(handlebars)
     };
 }

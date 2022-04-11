@@ -37,6 +37,15 @@ async fn should_template_any_non_empty_string() {
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/any/uuid.json")]
+async fn should_template_any_uuid() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text(|b: String| assert!(uuid::Uuid::parse_str(&b).is_ok()));
+}
+
+#[async_std::test]
 #[stubr::mock("resp/template/any/alpha-numeric.json")]
 async fn should_template_any_alpha_numeric() {
     get(stubr.uri()).await

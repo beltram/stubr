@@ -13,6 +13,7 @@ pub mod alpha_numeric;
 pub mod number;
 pub mod float;
 pub mod integer;
+pub mod uuid;
 
 pub trait AnyTemplate {
     fn expected<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, rc: &mut RenderContext<'reg, 'rc>) -> String {
