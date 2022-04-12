@@ -303,14 +303,14 @@ checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
 name = "asserhttp"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4f6e139cfe13b2c6837d8718f87fa4f3965a3d9d582e2ff4736d14dab12515a"
+checksum = "9f8fcba95cb678291512d603074094edad34766c72688c55389beee18d47ba8a"
 dependencies = [
  "actix-http",
  "actix-web",
  "anyhow",
- "async-std",
+ "futures-lite",
  "http-types",
  "isahc 1.7.0",
  "regex",
