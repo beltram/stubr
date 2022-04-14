@@ -173,7 +173,21 @@ with [IDE completion](https://github.com/beltram/stubr#ide-completion) provided 
       "base64-encode": "{{base64 request.body padding=false}}", // padding is optional and defaults to true
       "base64-decode": "{{base64 request.body decode=true}}",
       "url-encode": "{{urlEncode request.header.x-raw}}",
-      "url-decode": "{{urlEncode request.header.x-encoded decode=true}}"
+      "url-decode": "{{urlEncode request.header.x-encoded decode=true}}",
+      // you can also use 'any*' helpers. They will produce a random value
+      "regex": "{{anyRegex '[a-z]{4}'}}", // generate a random string matching regex
+      "string": "{{anyNonEmptyString}}", // or '{{anyNonEmptyString}}'
+      "alphanum": "{{anyAlphaNumeric}}",
+      "boolean": "{{anyBoolean}}",
+      "uuid": "{{anyUuid}}",
+      "ip": "{{anyIpAddress}}", // e.g. '127.0.0.1'
+      "host": "{{anyHostname}}", // e.g. 'https://github.com'
+      "email": "{{anyEmail}}", // e.g. 'john.doe@gmail.com'
+      "enum": "{{anyOf 'alpha' 'beta' 'gamma'}}", // returns randomly one of those 3 values
+      "number": "{{anyNumber}}", // integer or float 
+      "integer": "{{anyI32}}", // also all Rust int types (u32, u8, i64 etc..)
+      "float": "{{anyFloat}}",
+      "anyDate": "{{anyDate}}", // or 'anyTime', 'anyDatetime', 'anyIso8601'
     }
   }
 }
