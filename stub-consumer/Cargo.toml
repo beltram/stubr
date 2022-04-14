@@ -7,12 +7,12 @@ build = "build.rs"
 license = "Apache-2.0"
 
 [build-dependencies]
-stubr-build = { path = "../build", version = "0.4.14" }
+stubr-build = { path = "../build", version = "0.5.0-rc.1" }
 stub-producer = { path = "../stub-producer" }
 actix-producer = { path = "../actix-producer" }
 
 [dev-dependencies]
-stubr = { path = "../lib", version = "0.4.14", features = ["attributes"] }
+stubr = { path = "../lib", version = "0.5.0-rc.1", features = ["attributes"] }
 asserhttp = { version = "0.4.2", features = ["isahc"] }
 isahc = "1.7.0"
 async-std = { version = "1.11.0", features = ["attributes"] }

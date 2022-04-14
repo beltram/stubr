@@ -46,7 +46,7 @@ invoke it in a `build.rs` file.
 build = "build.rs"
 
 [build-dependencies]
-stubr-build = "0.4.14"
+stubr-build = "0.5.0-rc.1"
 producer-a = "<version>"
 producer-b = "<version>"
 ```
