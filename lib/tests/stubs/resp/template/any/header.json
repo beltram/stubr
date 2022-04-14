@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "x-header": "{{anyRegex '[0-9]{5}[a-z]{5}'}}"
+    },
+    "transformers": [
+      "response-template"
+    ]
+  }
+}
