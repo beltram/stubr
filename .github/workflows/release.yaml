@@ -20,6 +20,11 @@ jobs:
           toolchain: stable
       - uses: taiki-e/install-action@cargo-hack
       - uses: Swatinem/rust-cache@v1
+      - name: execute build scripts
+        run: |
+          touch actix-consumer/build.rs
+          touch stub-consumer/build.rs
+          cargo build
       - name: cargo/hack (verify features compile in isolation)
         run: cargo hack check --each-feature --no-dev-deps
       - name: cargo/test
