@@ -31,6 +31,7 @@ pub fn stubr_consumer() {
     StubrConsumer::new()
         .expect("Failed initializing stubr build plugin")
         .copy_stubs();
+    println!("cargo:rerun-if-changed=.");
 }
 
 struct StubrConsumer {
