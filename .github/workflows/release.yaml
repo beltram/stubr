@@ -20,15 +20,8 @@ jobs:
           toolchain: stable
       - uses: taiki-e/install-action@cargo-hack
       - uses: Swatinem/rust-cache@v1
-      - name: invalidate build script cache
-        continue-on-error: true
-        run: |
-          find target/debug/.fingerprint/actix-consumer-* -name "dep-build-script-build-script-build" -type f -delete
-          find target/debug/.fingerprint/stubr-consumer-* -name "dep-build-script-build-script-build" -type f -delete
       - name: cargo/hack (verify features compile in isolation)
         run: cargo hack check --each-feature --no-dev-deps
-      - name: cargo/build
-        run: cargo build
       - name: cargo/test
         run: cargo test
   release:
