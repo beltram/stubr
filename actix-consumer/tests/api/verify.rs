@@ -5,8 +5,7 @@ use stubr::*;
 
 use crate::utils::*;
 
-// TODO: figure out why fails on CI
-// #[actix_web::test]
+#[actix_web::test]
 #[stubr::apps("actix-producer")]
 async fn should_verify() {
     App::new()

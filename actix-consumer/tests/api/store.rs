@@ -69,8 +69,7 @@ mod find_by_id {
 mod create {
     use super::*;
 
-    // TODO: figure out why fails on CI
-    // #[actix_web::test]
+    #[actix_web::test]
     #[stubr::apps("actix-producer")]
     async fn create_should_create_one() {
         let pet = Pet { name: String::from("new"), ..Default::default() };
