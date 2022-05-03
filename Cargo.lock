@@ -665,7 +665,7 @@ dependencies = [
  "bytesize",
  "cargo-platform",
  "cargo-util",
- "clap 3.1.14",
+ "clap 3.1.15",
  "crates-io",
  "crossbeam-utils",
  "curl",
@@ -837,9 +837,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "3.1.14"
+version = "3.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "535434c063ced786eb04aaf529308092c5ab60889e8fe24275d15de07b01fa97"
+checksum = "85a35a599b11c089a7f49105658d089b8f2cf0882993c17daf6de15285c2c35d"
 dependencies = [
  "atty",
  "bitflags",
@@ -858,7 +858,7 @@ version = "3.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1d7ca9141e27e6ebc52e3c378b0c07f3cea52db46ed1cc5861735fb697b56356"
 dependencies = [
- "clap 3.1.14",
+ "clap 3.1.15",
 ]
 
 [[package]]
@@ -3608,7 +3608,7 @@ dependencies = [
  "asserhttp",
  "assert_cmd",
  "async-std",
- "clap 3.1.14",
+ "clap 3.1.15",
  "clap_complete",
  "colored",
  "directories",
