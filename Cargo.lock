@@ -656,9 +656,9 @@ checksum = "c1db59621ec70f09c5e9b597b220c7a2b43611f4710dc03ceb8748637775692c"
 
 [[package]]
 name = "cargo"
-version = "0.61.1"
+version = "0.62.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f76f22dfcbc8e5aaa4e150373354723efe22b6b2280805f1fb6b1363005e7bab"
+checksum = "79bc435c2de37f164b5c36420d9e1dd65cd5acbd41b2df10fdc02dbf75ed9efc"
 dependencies = [
  "anyhow",
  "atty",
@@ -690,7 +690,6 @@ dependencies = [
  "libgit2-sys",
  "log",
  "memchr",
- "num_cpus",
  "opener",
  "os_info",
  "percent-encoding",
