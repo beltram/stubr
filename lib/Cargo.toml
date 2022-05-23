@@ -40,7 +40,7 @@ async-std = "1.11.0"
 jsonwebtoken = { version = "8.1.0", default-features = false }
 rand_xorshift = "0.3.0"
 rand = "0.8.5"
-regex-syntax = { version = "0.6.25", default-features = false }
+regex-syntax = { version = "0.6.26", default-features = false }
 rand_regex = { version = "0.15.1", default-features = false }
 
 isahc = { version = "1.7.2", optional = true, default-features = false }
