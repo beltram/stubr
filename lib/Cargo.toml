@@ -34,7 +34,7 @@ humantime = "2.1.0"
 chrono-tz = { version = "0.6.1", default-features = false }
 percent-encoding = "2.1.0"
 log = { version = "0.4.17", features = ["release_max_level_info"] }
-http = "0.2.7"
+http = "0.2.8"
 serde = { version = "1.0.137", features = ["derive"], default-features = false }
 async-std = "1.11.0"
 jsonwebtoken = { version = "8.1.0", default-features = false }
