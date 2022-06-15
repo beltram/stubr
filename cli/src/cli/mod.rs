@@ -25,12 +25,12 @@ pub struct Cli {
     ///
     /// Wiremock stub files are json files.
     /// Defaults to current directory when not present
-    #[clap(parse(from_os_str), value_hint = ValueHint::DirPath)]
+    #[clap(value_parser, value_hint = ValueHint::DirPath)]
     dir: Option<PathBuf>,
     /// equivalent of 'root-dir' option in Wiremock cli
     ///
     /// Expects a 'mappings' folder under this directory which contains stub files
-    #[clap(long = "root-dir", parse(from_os_str), value_hint = ValueHint::DirPath)]
+    #[clap(long = "root-dir", value_parser, value_hint = ValueHint::DirPath)]
     root_dir: Option<PathBuf>,
     /// port number the server is listening on
     ///
