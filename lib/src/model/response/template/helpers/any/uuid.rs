@@ -25,7 +25,7 @@ impl AnyTemplate for AnyUuid {
     }
 
     fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, _: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
-        if let Some(resp) = from_utf8(response.as_slice()).ok() {
+        if let Ok(resp) = from_utf8(response.as_slice()) {
             assert!(UUID_REGEX.is_match(resp),
                     "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
                     ctx.stub_name(), Self::REASON, resp)

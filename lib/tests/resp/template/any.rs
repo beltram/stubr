@@ -247,7 +247,7 @@ mod datetime {
 async fn should_template_any_in_header() {
     let response = get(stubr.uri()).await.unwrap();
     let header = response.header("x-header").and_then(|h| h.get(0)).unwrap().as_str();
-    assert!(Regex::new("[0-9]{5}[a-z]{5}").unwrap().is_match(&header));
+    assert!(Regex::new("[0-9]{5}[a-z]{5}").unwrap().is_match(header));
     assert!(!header.starts_with('\''));
     assert!(!header.ends_with('\''));
 }

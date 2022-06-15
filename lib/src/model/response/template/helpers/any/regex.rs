@@ -36,7 +36,7 @@ impl AnyTemplate for AnyRegex {
     }
 
     fn expected<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> String {
-        format!("match '{}'", Self::read_regex(h).unwrap_or_default().to_string())
+        format!("match '{}'", Self::read_regex(h).unwrap_or_default())
     }
 }
 
