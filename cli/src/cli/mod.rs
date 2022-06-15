@@ -30,22 +30,22 @@ pub struct Cli {
     /// equivalent of 'root-dir' option in Wiremock cli
     ///
     /// Expects a 'mappings' folder under this directory which contains stub files
-    #[clap(long = "root-dir", value_parser, value_hint = ValueHint::DirPath)]
+    #[clap(long = "root-dir", value_parser, value_hint = ValueHint::AnyPath)]
     root_dir: Option<PathBuf>,
     /// port number the server is listening on
     ///
     /// Defaults to a random one
-    #[clap(short, long)]
+    #[clap(short, long, value_parser)]
     port: Option<u16>,
     /// global delay e.g. 10ms or 2s
     ///
     /// supersedes any locally defined delay
-    #[clap(short, long)]
+    #[clap(short, long, value_parser)]
     delay: Option<String>,
     /// latency e.g. 10ms or 2s
     ///
     /// adds this delay to any locally defined delay. Simulates network delays.
-    #[clap(short, long)]
+    #[clap(short, long, value_parser)]
     latency: Option<String>,
     #[clap(subcommand)]
     cmd: Option<Commands>,

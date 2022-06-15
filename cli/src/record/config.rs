@@ -9,12 +9,12 @@ pub struct CliRecordConfig {
     /// port number the recording proxy server is listening on
     ///
     /// Defaults to 3030
-    #[clap(short, long)]
+    #[clap(short, long, value_parser)]
     pub port: Option<u16>,
     /// directory where recorded stubs are stored
     ///
     /// Defaults to current directory
-    #[clap(short, long)]
+    #[clap(short, long, value_parser)]
     pub output: Option<PathBuf>,
 }
 
