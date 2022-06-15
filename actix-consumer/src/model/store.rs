@@ -13,13 +13,6 @@ pub struct Store {
     pub pets: Vec<Pet>,
 }
 
-impl Store {
-    pub fn set_pets(mut self, pets: Vec<Pet>) -> Self {
-        self.pets = pets;
-        self
-    }
-}
-
 impl PartialEq for Store {
     fn eq(&self, other: &Self) -> bool {
         self.name.eq(&other.name)

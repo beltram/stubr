@@ -25,9 +25,10 @@ pub async fn find_by_id(db: web::Data<StoreRepository>, path: web::Path<usize>, 
 }
 
 #[post("/stores")]
-pub async fn create(store: web::Json<Store>, db: web::Data<StoreRepository>, client: web::Data<PetClient>) -> Result<impl Responder, ApiError> {
+pub async fn create(mut store: web::Json<Store>, db: web::Data<StoreRepository>, client: web::Data<PetClient>) -> Result<impl Responder, ApiError> {
     let pets = create_all_pets(&store.pets, client).await;
-    db.create(store.0.set_pets(pets))
+    store.0.pets = pets;
+    db.create(store.0)
         .map(web::Json)
         .map(|store| (store, StatusCode::CREATED))
 }
