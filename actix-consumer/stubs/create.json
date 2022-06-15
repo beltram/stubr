@@ -23,11 +23,11 @@
   "response": {
     "status": 201,
     "jsonBody": {
-      "id": "{{anyU32}}",
+      "id": "{{anyU16}}",
       "name": "{{jsonPath request.body '$.name'}}",
       "pets": [
         {
-          "id": "{{anyU32}}",
+          "id": "{{anyU16}}",
           "name": "{{jsonPath request.body '$.pets[0].name'}}"
         }
       ]
