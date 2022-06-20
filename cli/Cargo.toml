@@ -27,14 +27,14 @@ humantime = "2.1.0"
 tokio = { version = "1.16.1", features = ["macros", "rt-multi-thread"] }
 log = { version = "0.4.17", features = ["release_max_level_info"] }
 simple_logger = { version = "2.1.0", default-features = false }
-async-std = "1.11.0"
+async-std = "1.12.0"
 
 [dev-dependencies]
 surf = "2.3.2"
 isahc = { version = "1.7.2", features = ["json"] }
 assert_cmd = "2.0.4"
 asserhttp = { version = "0.5.1", features = ["surf"] }
-async-std = { version = "1.11.0", features = ["attributes"] }
+async-std = { version = "1.12.0", features = ["attributes"] }
 
 [features]
 default = ["clap/color", "clap/suggestions"]
