@@ -37,7 +37,7 @@ log = { version = "0.4.17", features = ["release_max_level_info"] }
 http = "0.2.8"
 serde = { version = "1.0.137", features = ["derive"], default-features = false }
 async-std = "1.12.0"
-jsonwebtoken = { version = "8.1.0", default-features = false }
+jsonwebtoken = { version = "8.1.1", default-features = false }
 rand_xorshift = "0.3.0"
 rand = "0.8.5"
 regex-syntax = { version = "0.6.26", default-features = false }
