@@ -12,6 +12,6 @@ categories = ["development-tools::testing"]
 
 [dependencies]
 anyhow = { version = "1.0.58", default-features = false }
-cargo = "0.62.0"
+cargo = "0.63.1"
 cargo-util = "0.1.2"
 fs_extra = "1.2.0"
