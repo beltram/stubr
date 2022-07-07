@@ -64,7 +64,7 @@ tempfile = "3.3.0"
 asserhttp = { version = "0.5.1", features = ["surf", "isahc", "reqwest", "actix"] }
 isahc = { version = "1.7.2", features = ["json"] }
 tokio = { version = "1.16.1", features = ["macros", "rt-multi-thread"] }
-criterion = { version = "0.3.5", features = ["async_std", "html_reports"] }
+criterion = { version = "0.3.6", features = ["async_std", "html_reports"] }
 actix-web = { version = "4.1.0", default-features = false, features = ["macros"] }
 uuid = "1.1.2"
 email-address-parser = "1.0.3"
