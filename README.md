@@ -46,7 +46,9 @@
 Adaptation of [wiremock-rs](https://github.com/LukeMathWalker/wiremock-rs) supporting existing
 [Wiremock](https://github.com/tomakehurst/wiremock) json stubs as input.  
 Aims at reaching feature parity with [Wiremock](https://github.com/tomakehurst/wiremock) and be a drop-in replacement of
-the latter.
+the latter.  
+
+Read the full documentation [here](https://beltram.github.io/stubr/).
 
 # assets
 

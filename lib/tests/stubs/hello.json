@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/hello"
+  },
+  "response": {
+    "body": "Hello stubr"
+  }
+}

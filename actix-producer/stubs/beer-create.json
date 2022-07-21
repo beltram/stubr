@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/beers",
+    "headers": {
+      "content-type": {
+        "equalTo": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "name": "Heineken",
+          "price": 4
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "id": 2,
+      "name": "Heineken",
+      "price": 4
+    },
+    "headers": {
+      "content-type": "application/json"
+    }
+  }
+}

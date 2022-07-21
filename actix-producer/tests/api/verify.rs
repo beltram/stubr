@@ -17,6 +17,6 @@ async fn should_verify() {
                 .and_then(|_| repo.insert_all(fake_pets()))
                 .unwrap()
         }))
-        .verify()
+        .verify_except(|stub_name: &str| stub_name.starts_with("beer-"))
         .await;
 }

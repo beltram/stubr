@@ -69,6 +69,15 @@ async fn should_template_request_method() {
 }
 
 #[async_std::test]
+#[stubr::mock("resp/template/url/method-lower.json")]
+async fn should_template_request_method_lowercase() {
+    surf::get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_text()
+        .expect_body_text_eq("get");
+}
+
+#[async_std::test]
 #[stubr::mock("resp/template/url/path-segments.json")]
 async fn should_template_request_path_segments() {
     get(stubr.path("/one/two/three")).await

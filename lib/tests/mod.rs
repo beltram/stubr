@@ -4,3 +4,4 @@ pub mod utils;
 pub mod record;
 pub mod misc;
 pub mod attributes;
+pub mod book;

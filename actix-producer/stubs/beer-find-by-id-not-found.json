@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/beers/404"
+  },
+  "response": {
+    "status": 404,
+    "jsonBody": {
+      "message": "Beer not found"
+    },
+    "headers": {
+      "content-type": "application/json"
+    }
+  }
+}

@@ -1,5 +1,6 @@
 use asserhttp::*;
 use regex::Regex;
+use serde_json::Value;
 use surf::get;
 
 #[async_std::test]
@@ -13,6 +14,15 @@ async fn should_template_any_regex() {
             assert!(!b.starts_with('\''));
             assert!(!b.ends_with('\''));
         });
+}
+
+#[async_std::test]
+#[stubr::mock("resp/template/any/regex-int.json")]
+async fn should_template_any_regex_and_cast_to_int() {
+    get(stubr.uri()).await
+        .expect_status_ok()
+        .expect_content_type_json()
+        .expect_body_json(|b: Value| assert!(b.get("age").unwrap().is_i64()));
 }
 
 #[async_std::test]

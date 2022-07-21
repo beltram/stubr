@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/beers",
+    "headers": {
+      "content-type": {
+        "equalTo": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "name": "Leffe",
+          "price": 5
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 409,
+    "jsonBody": {
+      "message": "Beer already exists"
+    },
+    "headers": {
+      "content-type": "application/json"
+    }
+  }
+}
