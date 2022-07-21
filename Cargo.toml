@@ -1,6 +1,0 @@
-[workspace]
-members = ["cli", "lib"]
-
-[profile.release]
-lto = true
-codegen-units = 1

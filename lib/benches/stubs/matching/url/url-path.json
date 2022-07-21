@@ -1,9 +1,0 @@
-{
-  "request": {
-    "urlPath": "/api/exact-uri",
-    "method": "GET"
-  },
-  "response": {
-    "status": 200
-  }
-}

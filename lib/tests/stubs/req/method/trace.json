@@ -1,8 +1,0 @@
-{
-  "request": {
-    "method": "TRACE"
-  },
-  "response": {
-    "status": 200
-  }
-}

@@ -1,9 +1,0 @@
-{
-  "request": {
-    "url": "/api/url?age=42",
-    "method": "GET"
-  },
-  "response": {
-    "status": 200
-  }
-}

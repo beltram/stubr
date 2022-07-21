@@ -1,9 +1,0 @@
-{
-  "request": {
-    "urlPathPattern": "/api/url-pattern/([a-z]{4})\\?one=([a-z]{4})",
-    "method": "GET"
-  },
-  "response": {
-    "status": 200
-  }
-}

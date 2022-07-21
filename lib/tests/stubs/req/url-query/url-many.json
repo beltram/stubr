@@ -1,9 +1,0 @@
-{
-  "request": {
-    "url": "/api/url?age=young&city=paris",
-    "method": "GET"
-  },
-  "response": {
-    "status": 200
-  }
-}
