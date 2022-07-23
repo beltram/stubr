@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Relaxing - stubr</title>
+        <title>Request - stubr</title>
         <!-- Custom HTML head -->
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../stubbing.html"><strong aria-hidden="true">2.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html" class="active"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/request.html" class="active"><strong aria-hidden="true">4.2.</strong> Auth</a></li><li class="chapter-item expanded "><a href="../stubs/request.html" class="active"><strong aria-hidden="true">4.3.</strong> Response</a></li><li class="chapter-item expanded "><a href="../stubs/request.html" class="active"><strong aria-hidden="true">4.4.</strong> Response templating</a></li><li class="chapter-item expanded "><a href="../stubs/request.html" class="active"><strong aria-hidden="true">4.5.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">6.</strong> Cli</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html" class="active"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="../stubs/response-templating.html"><strong aria-hidden="true">5.3.</strong> Response templating</a></li><li class="chapter-item expanded "><a href="../stubs/relaxing.html"><strong aria-hidden="true">5.4.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -135,6 +135,27 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="request"><a class="header" href="#request">Request</a></h1>
+<p>With request matching you have to describe all the conditions the incoming http requests have to match in order for your
+stub response to be served. Most of the time, you will opt in for a conservative approach where you will have exhaustive
+and strict conditions. That's when you want to assess the http caller behaves the right way. Other times you do not care
+about request matching at all e.g. you use stubr to benchmark a reverse proxy: in that
+case <code>request { &quot;method&quot;: &quot;ANY&quot; }</code> is enough. <strong>Just write the request matching you need</strong>.</p>
+<h2 id="method"><a class="header" href="#method">Method</a></h2>
+<p>Expects the request method. Use <code>ANY</code> when you do not care which method it will be.<br />
+Available verbs are <code>GET</code>, <code>HEAD</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>, <code>PATCH</code></p>
+<p><em>Note: <code>method</code> is optional and defaults to <code>ANY</code></em></p>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;GET&quot;
+  }
+}
+</code></pre>
+<h2 id="url"><a class="header" href="#url">URL</a></h2>
+<h2 id="query-parameters"><a class="header" href="#query-parameters">Query parameters</a></h2>
+<h2 id="headers"><a class="header" href="#headers">Headers</a></h2>
+<h2 id="authorization"><a class="header" href="#authorization">Authorization</a></h2>
+<h2 id="body"><a class="header" href="#body">Body</a></h2>
+<h2 id="priority"><a class="header" href="#priority">Priority</a></h2>
 
                     </main>
 
@@ -143,7 +164,7 @@
                             <a rel="prev" href="../stubs/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="../stubs/request.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../stubs/response.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -155,7 +176,7 @@
                     <a rel="prev" href="../stubs/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="../stubs/request.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../stubs/response.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

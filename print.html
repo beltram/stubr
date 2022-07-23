@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="stubbing.html"><strong aria-hidden="true">2.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.2.</strong> Auth</a></li><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.3.</strong> Response</a></li><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.4.</strong> Response templating</a></li><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.5.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">6.</strong> Cli</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="stubs/response-templating.html"><strong aria-hidden="true">5.3.</strong> Response templating</a></li><li class="chapter-item expanded "><a href="stubs/relaxing.html"><strong aria-hidden="true">5.4.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -135,11 +135,147 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+                        <h1 id="stubr"><a class="header" href="#stubr">Stubr</a></h1>
+<p>Stubr is a stubbing and contract testing tool. It supports the same API for writing stubs
+as <a href="https://github.com/tomakehurst/wiremock">Wiremock</a>.
+You can also see it as an adaptation of <a href="https://github.com/LukeMathWalker/wiremock-rs">wiremock-rs</a> with the ability to
+write stubs as json files instead of code.</p>
+<p>You might ask <strong>why would I want to do such a thing ?</strong> After all, code is a great way to write stubs. That's true ! But
+it also comes with some limitations: <strong>it is hard to share.</strong> And it especially starts tickling your attention when you
+try to do <a href="https://martinfowler.com/bliki/ContractTest.html">contract testing</a>. You have to share a <code>contract</code> between a
+producer and a consumer. Sometimes, both are written in different languages, or with different frameworks ; and even
+when that's not the case, they might both be sharing a different version of that wicked dependency which clash together.
+Having your contract written in json has the benefits of being <strong>portable</strong>, <strong>lightweight</strong> and <strong>polyglot</strong> (if you
+stick to a
+standard API such as Wiremock's one). So you could for example test a producer service written in Java and vice versa !</p>
+<p>Stubr aims at bridging multiple languages and framework and enable developers to test their integration with remote
+application without having to mock their own code. It also enables them to shorten their feedback loop: no need for a
+complex CI to make sure 2 application share the same API definition, everything can be done offline.</p>
+<p>Then, beyond <a href="contract/index.html">contract testing</a>, it tries to cover others areas:</p>
+<ul>
+<li><a href="stubbing.html">stubbing</a> in your Rust project for simulating remote services your app depends on</li>
+<li><a href="recording/index.html">recording</a> for capturing http traffic and turning it into a stub file</li>
+<li>standalone for running stubr stub server from anywhere and benefiting from Rust performances. Available as
+a <a href="cli.html">cli</a>, a <a href="docker.html">Docker image</a> or in <a href="kubernetes.html">Kubernetes</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="getting-started"><a class="header" href="#getting-started">Getting started</a></h1>
+<p>For this short demo we are going to create a http stub, mount it in a stub server and then call it to verify it works.</p>
+<h2 id="installation"><a class="header" href="#installation">installation</a></h2>
+<h4 id="recommended"><a class="header" href="#recommended">recommended</a></h4>
+<p><em>If you don't have it, install rustup from <a href="https://rustup.rs/">here</a>.</em></p>
+<pre><code class="language-bash">cargo install stubr-cli
+</code></pre>
+<h4 id="or-from-precompiled-binaries"><a class="header" href="#or-from-precompiled-binaries">or from precompiled binaries</a></h4>
+<p>Those binaries are stripped with <a href="https://upx.github.io/">upx</a> and then compressed. They are likely to be smaller than
+the ones built by rustc which might be preferable in certain conditions</p>
+<h6 id="macos"><a class="header" href="#macos">macos</a></h6>
+<pre><code class="language-bash">curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-macos.tar.gz | tar xz - -C /usr/local/bin
+</code></pre>
+<h6 id="linux"><a class="header" href="#linux">linux</a></h6>
+<pre><code class="language-bash">curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-linux.tar.gz | tar xz - -C /usr/local/bin
+</code></pre>
+<h6 id="windows"><a class="header" href="#windows">windows</a></h6>
+<p>Install binary from <a href="https://github.com/beltram/stubr/releases/latest/download/stubr-windozs.zip">here</a>.</p>
+<h2 id="hello-world-"><a class="header" href="#hello-world-">Hello world !</a></h2>
+<p>We are going to create the simplest stub possible. It will accept any http method on any path and will respond <code>200 OK</code>.</p>
+<pre><code class="language-bash">cat &gt; stub.json &lt;&lt;- EOF
+{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;ANY&quot;
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 200,
+    &quot;body&quot;: &quot;Hello world !&quot;,
+  }
+}
+EOF
+</code></pre>
+<p>A few things about a stub:</p>
+<ul>
+<li>It is a json file. First because it is the format supported by <a href="https://github.com/tomakehurst/wiremock">Wiremock</a> and
+we want to be compatible with it. Also, most of the time, your http APIs will consume/produce json data in their
+bodies. So you can inline the request/response body in this file without externalizing it.</li>
+<li><code>request { .. }</code> is where we define <strong>request matching</strong> i.e. &quot;<em>conditions the incoming http request has to satisfy in
+order for the response part to be served</em>&quot;</li>
+<li><code>response { .. }</code> is the part where you define what the stub server will respond if all request matchings pass.</li>
+</ul>
+<h4 id="mount-it"><a class="header" href="#mount-it">mount it</a></h4>
+<p>The cli can spawn a http server with a path to the file or folder containing json stubs. By default, it will try to bind
+to a random port, here we force it to attach to port <code>8080</code>.</p>
+<pre><code class="language-bash">stubr stub.json -p 8080 &amp;
+</code></pre>
+<h4 id="call-it"><a class="header" href="#call-it">call it</a></h4>
+<p>Now let's verify our stub server is up and running and that it serves our stubs the right way.</p>
+<pre><code class="language-bash">curl -i http://localhost:8080
+</code></pre>
+<p>Which should output:</p>
+<pre><code class="language-bash">HTTP/1.1 200 OK
+server: stubr(0.4.14)
+content-length: 0
+date: Fri, 22 Jul 2022 19:31:48 GMT
+
+Hello world !%
+</code></pre>
+<p>or with httpie</p>
+<pre><code class="language-bash">http :8080
+</code></pre>
+<h2 id="hello-name-"><a class="header" href="#hello-name-">Hello {name} !</a></h2>
+<p>Now let's spice things a bit and make our stub a bit more dynamic by capturing a part of the request path and template
+it in the response (this is called <a href="stubs/response-templating.html">response templating</a>).</p>
+<p>But first let's kill the previous server</p>
+<pre><code class="language-bash">lsof -ti tcp:8080 | xargs kill
+</code></pre>
+<pre><code class="language-bash">cat &gt; hello.json &lt;&lt;- EOF
+{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;urlPathPattern&quot;: &quot;/hello/(.+)&quot;
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 200,
+    &quot;body&quot;: &quot;Hello {{request.pathSegments.[1]}} !&quot;,
+    &quot;transformers&quot;: [&quot;response-template&quot;]
+  }
+}
+EOF
+</code></pre>
+<p>Here:</p>
+<ul>
+<li><code>&quot;urlPathPattern&quot;: &quot;/hello/(.+)&quot;</code> is one way to express URL matching. It contains a regular hardcoded path <code>/hello/</code>
+and a regular expression <code>(.+)</code> which has to match in order for the stub response to be served.</li>
+<li><code>&quot;transformers&quot;: [&quot;response-template&quot;]</code> will activate response templating. This allows you to inject a part of the
+request in the response. Prefer using it over hardcoded values when your real life application actually does that. The
+more you use it the better your test accuracy will be.</li>
+<li><code>{{request.pathSegments.[1]}}</code> now that response templating is enabled, you can inject parts of your request in the
+response. With <a href="https://github.com/tomakehurst/wiremock">Wiremock</a> as with stubr, we
+use <a href="https://handlebarsjs.com/">handlebars</a> templates to do such a
+thing. <a href="stubs/response-templating.html">Many response templates are available</a> in stubr in order to pick whatever part
+of the request you want.</li>
+</ul>
+<h4 id="mount-it-1"><a class="header" href="#mount-it-1">Mount it</a></h4>
+<pre><code class="language-bash">stubr hello.json -p 8080 &amp;
+</code></pre>
+<h4 id="call-it-1"><a class="header" href="#call-it-1">call it</a></h4>
+<pre><code class="language-bash">curl -i http://localhost:8080/hello/stubr
+</code></pre>
+<p>Which should output:</p>
+<pre><code class="language-bash">HTTP/1.1 200 OK
+server: stubr(0.4.14)
+content-type: text/plain
+content-length: 13
+date: Sat, 23 Jul 2022 09:25:42 GMT
+
+Hello stubr !%
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stubbing"><a class="header" href="#stubbing">Stubbing</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><div style="break-before: page; page-break-before: always;"></div><h1 id="as-a-producer"><a class="header" href="#as-a-producer">As a producer</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="as-a-consumer"><a class="header" href="#as-a-consumer">As a consumer</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stubs"><a class="header" href="#stubs">Stubs</a></h1>
+<p>Writing stubs can be challenging and time-consuming. Stubr tries to assist by
+providing <a href="stubs/../ide-completion.html">IDE completion</a> or by <a href="stubs/../recording/index.html">recording</a> live traffic into stubs. But
+you still have to know how to write a stub and what helpers you have in order to <a href="stubs/relaxing.html">relax</a> your stubs as much
+as possible.</p>
+<p>You will find here in a single snippet <strong>ALL</strong> the fields/helpers available to you:</p>
 <pre><code class="language-json">{
   &quot;id&quot;: &quot;82d86e05-9ee0-44ca-9a8d-1fc6f719437e&quot;, // (optional) unique stub identifier. Returned in 'Matched-Stub-Id' header
   &quot;priority&quot;: 1, // (optional) helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest
@@ -190,7 +326,7 @@
   &quot;response&quot;: {
     &quot;status&quot;: 200, // (required) response status
     &quot;fixedDelayMilliseconds&quot;: 2000, // delays response by 2 seconds
-    &quot;jsonBody&quot;: { // json response (automatically adds 'Content-Type:application/json' header)
+    &quot;jsonBody&quot;: { // json response body (automatically adds 'content-type:application/json' header)
       &quot;name&quot;: &quot;john&quot;,
       &quot;surnames&quot;: [ &quot;jdoe&quot;, &quot;johnny&quot; ]
     },
@@ -251,17 +387,43 @@
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="request"><a class="header" href="#request">Request</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="request-1"><a class="header" href="#request-1">Request</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="request-2"><a class="header" href="#request-2">Request</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="request-3"><a class="header" href="#request-3">Request</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="request-4"><a class="header" href="#request-4">Request</a></h1>
+<p>With request matching you have to describe all the conditions the incoming http requests have to match in order for your
+stub response to be served. Most of the time, you will opt in for a conservative approach where you will have exhaustive
+and strict conditions. That's when you want to assess the http caller behaves the right way. Other times you do not care
+about request matching at all e.g. you use stubr to benchmark a reverse proxy: in that
+case <code>request { &quot;method&quot;: &quot;ANY&quot; }</code> is enough. <strong>Just write the request matching you need</strong>.</p>
+<h2 id="method"><a class="header" href="#method">Method</a></h2>
+<p>Expects the request method. Use <code>ANY</code> when you do not care which method it will be.<br />
+Available verbs are <code>GET</code>, <code>HEAD</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>CONNECT</code>, <code>OPTIONS</code>, <code>TRACE</code>, <code>PATCH</code></p>
+<p><em>Note: <code>method</code> is optional and defaults to <code>ANY</code></em></p>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;GET&quot;
+  }
+}
+</code></pre>
+<h2 id="url"><a class="header" href="#url">URL</a></h2>
+<h2 id="query-parameters"><a class="header" href="#query-parameters">Query parameters</a></h2>
+<h2 id="headers"><a class="header" href="#headers">Headers</a></h2>
+<h2 id="authorization"><a class="header" href="#authorization">Authorization</a></h2>
+<h2 id="body"><a class="header" href="#body">Body</a></h2>
+<h2 id="priority"><a class="header" href="#priority">Priority</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="response"><a class="header" href="#response">Response</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="response-templating"><a class="header" href="#response-templating">Response templating</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="relaxing-a-stub"><a class="header" href="#relaxing-a-stub">Relaxing a stub</a></h1>
+<h2 id="request-matching"><a class="header" href="#request-matching">Request matching</a></h2>
+<h2 id="response-1"><a class="header" href="#response-1">Response</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording"><a class="header" href="#recording">Recording</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-actix-app"><a class="header" href="#recording-your-actix-app">Recording your actix app</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-with-the-cli"><a class="header" href="#recording-with-the-cli">Recording with the cli</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-isahc-calls"><a class="header" href="#recording-your-isahc-calls">Recording your isahc calls</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-reqwest-calls"><a class="header" href="#recording-your-reqwest-calls">Recording your reqwest calls</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-standalone"><a class="header" href="#recording-standalone">Recording standalone</a></h1>
-<div style="break-before: page; page-break-before: always;"></div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cli"><a class="header" href="#cli">Cli</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="docker"><a class="header" href="#docker">Docker</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="kubernetes"><a class="header" href="#kubernetes">Kubernetes</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ide-completion"><a class="header" href="#ide-completion">IDE completion</a></h1>
+
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
