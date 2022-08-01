@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html" class="active"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="../stubs/response-templating.html"><strong aria-hidden="true">5.3.</strong> Response templating</a></li><li class="chapter-item expanded "><a href="../stubs/relaxing.html"><strong aria-hidden="true">5.4.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html" class="active"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="../stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -135,6 +135,144 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="response"><a class="header" href="#response">Response</a></h1>
+<p>In the response part, you have to define the actual http response the stub server will serve when the stub matches the
+incoming http request as we defined it with <a href="../stubs/request.html">request matching</a></p>
+<h2 id="status"><a class="header" href="#status">Status</a></h2>
+<p>The http response status. In the range <code>[100..599]</code>.</p>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;status&quot;: 200
+  }
+}
+</code></pre>
+<h2 id="header"><a class="header" href="#header">Header</a></h2>
+<p>Http response headers. Note that keys are case-insensitive. Multivalued headers are not supported yet. You can
+use <a href="#response-templating">response templating</a> here as well if you add <code>&quot;transformers&quot;: [&quot;response-template&quot;]</code>.</p>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: &quot;application/json&quot;,
+      &quot;ETag&quot;: &quot;33a64df551425fcc55e4d42a148795d9f25f89d4&quot;,
+      &quot;location&quot;: &quot;{{request.url}}/1234&quot;
+    }
+  }
+}
+</code></pre>
+<h2 id="body"><a class="header" href="#body">Body</a></h2>
+<p>There are different ways to define a http response. We'll just focus here on supplying hardcoded values in the response,
+but you can relax all those fields with templates. We'll see that immediately in the next chapter.</p>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;body&quot;: &quot;Hello World !&quot;,
+    &quot;base64Body&quot;: &quot;AQID&quot;,
+    &quot;bodyFileName&quot;: &quot;tests/stubs/response.json&quot;,
+    &quot;jsonBody&quot;: {
+      &quot;name&quot;: &quot;john&quot;,
+      &quot;surnames&quot;: [ &quot;jdoe&quot;, &quot;johnny&quot; ]
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><code>body</code> use this one if you have a text body or anything simple. If the body is large you'd better opt for <code>bodyFileName</code>.</li>
+<li><code>base64Body</code> if the body is not utf-8 encoded use it to supply a body as byte. Those have to be base 64 encoded.</li>
+<li><code>bodyFileName</code> when the response gets large or to factorize some very common bodies, it is sometimes preferable to
+extract it in a file. When using it in a Rust project, the file path is relative to the workspace root.</li>
+<li><code>jsonBody</code> when the body is json. Even though such a body can be defined with all the previous fields, it is more
+convenient to define a json response body here.</li>
+</ul>
+<h2 id="relaxed-field"><a class="header" href="#relaxed-field">Relaxed field</a></h2>
+<p>Using only hardcoded values is a good way to start mocking things. But as time goes on, your project might start to get
+bloated with a lot of stubs. You will also see the limit of hardcoded values when
+doing <a href="../contract/index.html">contract testing</a>.</p>
+<p>In order to &quot;relax&quot; your stub, you will have to use <a href="https://handlebarsjs.com/">Handlebars</a> helpers. They will allow you
+to have random values generated for you, because, most of the time, that's what the actual application does. And, as a
+consumer, you also don't care about the actual value of this field in your test i.e. <code>&quot;age&quot;: &quot;{{anyU8}}&quot;</code> will work in
+all your unit tests because none of your unit tests expects a particular value for this field.</p>
+<p>In order to use a Handlebars helper, you need to add <code>&quot;transformers&quot;: [&quot;response-template&quot;]</code>.</p>
+<p>Keep in mind that such helper will also be used to generate assertions when you will be using this stub
+for <a href="../contract/index.html">contract testing</a> while <a href="../contract/producer.html">verifying your producer</a>.</p>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;jsonBody&quot;: {
+      &quot;regex&quot;: &quot;{{anyRegex '[a-z]{4}'}}&quot;,
+      &quot;string&quot;: &quot;{{anyNonEmptyString}}&quot;,
+      &quot;alphanum&quot;: &quot;{{anyAlphaNumeric}}&quot;,
+      &quot;boolean&quot;: &quot;{{anyBoolean}}&quot;,
+      &quot;uuid&quot;: &quot;{{anyUuid}}&quot;,
+      &quot;ip&quot;: &quot;{{anyIpAddress}}&quot;,
+      &quot;host&quot;: &quot;{{anyHostname}}&quot;,
+      &quot;email&quot;: &quot;{{anyEmail}}&quot;,
+      &quot;enum&quot;: &quot;{{anyOf 'alpha' 'beta' 'gamma'}}&quot;,
+      &quot;number&quot;: &quot;{{anyNumber}}&quot;, 
+      &quot;integer&quot;: &quot;{{anyI32}}&quot;,
+      &quot;float&quot;: &quot;{{anyFloat}}&quot;,
+      &quot;anyDate&quot;: &quot;{{anyDate}}&quot;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><code>anyRegex</code> generates a value matching this regex. Tip: most of the time will be used for strings but if this regex
+defines an integer, a float or a boolean and is used in <code>&quot;jsonBody&quot;&quot;</code> the generated value will be cast</li>
+<li><code>anyNonEmptyString</code> or <code>anyNonBlankString</code></li>
+<li><code>anyAlphaNumeric</code> generates</li>
+<li><code>anyBoolean</code> generates</li>
+<li><code>anyUuid</code> generates</li>
+<li><code>anyIpAddress</code> generates</li>
+<li><code>anyHostname</code> generates</li>
+<li><code>anyEmail</code> generates</li>
+<li><code>anyOf</code> generates</li>
+<li><code>anyNumber</code> generates</li>
+<li><code>anyI32</code> or <code>anyU32</code></li>
+<li><code>anyFloat</code> </li>
+<li><code>anyDate</code> </li>
+</ul>
+<h2 id="response-templating"><a class="header" href="#response-templating">Response templating</a></h2>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;jsonBody&quot;: {
+      &quot;url-path-and-query&quot;: &quot;{{request.url}}&quot;,
+      &quot;url-path&quot;: &quot;{{request.path}}&quot;,
+      &quot;url-path-segments&quot;: &quot;{{request.pathSegments.[1]}}&quot;,
+      &quot;query&quot;: &quot;{{request.query.kind}}&quot;,
+      &quot;multi-query&quot;: &quot;{{request.query.kind.[1]}}&quot;,
+      &quot;method&quot;: &quot;{{request.method}}&quot;,
+      &quot;header&quot;: &quot;{{request.headers.Content-Type}}&quot;,
+      &quot;multi-header&quot;: &quot;{{request.headers.cache-control.[0]}}&quot;,
+      &quot;body&quot;: &quot;{{request.body}}&quot;,
+      &quot;from-request&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;,
+      &quot;now&quot;: &quot;{{now}}&quot;,
+      &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;,
+      &quot;now-fmt-epoch&quot;: &quot;{{now format='epoch'}}&quot;,
+      &quot;now-fmt-unix&quot;: &quot;{{now format='unix'}}&quot;,
+      &quot;now-positive-offset&quot;: &quot;{{now offset='3 days'}}&quot;,
+      &quot;now-negative-offset&quot;: &quot;{{now offset='-3 days'}}&quot;,
+      &quot;now-with-timezone&quot;: &quot;{{now timezone='Europe/Rome'}}&quot;,
+      &quot;number-is-odd&quot;: &quot;{{isOdd 3}}&quot;,
+      &quot;string-capitalized&quot;: &quot;{{capitalize mister}}&quot;,
+      &quot;string-uppercase&quot;: &quot;{{upper mister}}&quot;,
+      &quot;number-stripes&quot;: &quot;{{stripes request.body 'if-even' 'if-odd'}}&quot;,
+      &quot;string-trim&quot;: &quot;{{trim request.body}}&quot;,
+      &quot;size&quot;: &quot;{{size request.body}}&quot;,
+      &quot;base64-encode&quot;: &quot;{{base64 request.body padding=false}}&quot;,
+      &quot;base64-decode&quot;: &quot;{{base64 request.body decode=true}}&quot;,
+      &quot;url-encode&quot;: &quot;{{urlEncode request.header.x-raw}}&quot;,
+      &quot;url-decode&quot;: &quot;{{urlEncode request.header.x-encoded decode=true}}&quot;
+    }
+  }
+}
+</code></pre>
+<h2 id="delay"><a class="header" href="#delay">Delay</a></h2>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;fixedDelayMilliseconds&quot;: 2000
+  }
+}
+</code></pre>
 
                     </main>
 
@@ -143,7 +281,7 @@
                             <a rel="prev" href="../stubs/request.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="../stubs/response-templating.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../stubs/relaxing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -155,7 +293,7 @@
                     <a rel="prev" href="../stubs/request.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="../stubs/response-templating.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../stubs/relaxing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

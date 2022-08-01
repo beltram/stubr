@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html" class="active"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="../stubs/response-templating.html"><strong aria-hidden="true">5.3.</strong> Response templating</a></li><li class="chapter-item expanded "><a href="../stubs/relaxing.html"><strong aria-hidden="true">5.4.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html" class="active"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="../stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -145,20 +145,20 @@ as possible.</p>
   &quot;priority&quot;: 1, // (optional) helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest
   &quot;request&quot;: {
     &quot;method&quot;: &quot;GET&quot;, // (optional) http method. Can be &quot;ANY&quot; to match any method. Defaults to &quot;ANY&quot;
-    &quot;urlPath&quot;: &quot;/api/exact-url&quot;, // exact uri match
-    &quot;urlPathPattern&quot;: &quot;/api/regex-url/([a-z]{4})&quot;, // uri must match regex
-    &quot;urlPattern&quot;: &quot;/api/regex-url/([a-z]{4})\\?and=([a-z]{4})&quot;, // uri &amp; query must match regex
-    &quot;url&quot;: &quot;/api/url?age=young&quot;, // raw url + query parameters by equality matching
+    &quot;urlPath&quot;: &quot;/api/exact-uri&quot;, // exact URI match
+    &quot;urlPathPattern&quot;: &quot;/api/regex-uri/([a-z]{4})&quot;, // URI must match regex
+    &quot;urlPattern&quot;: &quot;/api/regex-uri/([a-z]{4})\\?and=([a-z]{4})&quot;, // URI &amp; query must match regex
+    &quot;url&quot;: &quot;/api/uri?age=young&quot;, // raw URI + query parameters by equality matching
     &quot;queryParameters&quot;: {
       &quot;firstname&quot;: { &quot;equalTo&quot;: &quot;beltram&quot; }, // by equality matching (can also be an int, or a boolean)
       &quot;lastname&quot;: { &quot;equalTo&quot;: &quot;maldant&quot;, &quot;caseInsensitive&quot;: true }, // case insensitve equality
-      &quot;age&quot;: { &quot;absent&quot;: true } // must be absent
-      &quot;city&quot;: { &quot;contains&quot;: &quot;a&quot; } // must contain the letter 'a'
-      &quot;title&quot;: { &quot;matches&quot;: &quot;([A-Za-z]+)&quot; } // must match regex
-      &quot;job&quot;: { &quot;doesNotMatch&quot;: &quot;([A-Za-z]+)&quot; } // or must not match regex
+      &quot;age&quot;: { &quot;absent&quot;: true }, // must be absent
+      &quot;city&quot;: { &quot;contains&quot;: &quot;a&quot; }, // must contain the letter 'a'
+      &quot;title&quot;: { &quot;matches&quot;: &quot;([A-Za-z]+)&quot; }, // must match regex
+      &quot;job&quot;: { &quot;doesNotMatch&quot;: &quot;([A-Za-z]+)&quot; }, // or must not match regex
     },
     &quot;headers&quot;: {
-      &quot;Content-Type&quot;: { &quot;equalTo&quot;: &quot;application/json&quot; } // by equality matching
+      &quot;content-type&quot;: { &quot;equalTo&quot;: &quot;application/json&quot; } // by equality matching
       // .. then all matchers described above for query parameters are also applicable here
     },
     &quot;basicAuth&quot; : { // exact Basic authentication matching
@@ -166,7 +166,7 @@ as possible.</p>
       &quot;password&quot;: &quot;pass&quot;
     },
     &quot;jwtAuth&quot;: {
-      &quot;equalTo&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.e30.MBkQ...&quot; // plain JWT token
+      &quot;equalTo&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.e30.MBkQ...&quot;, // plain JWT token
       &quot;alg&quot;: {
         &quot;equalTo&quot;: &quot;RS256&quot;, // JWT algorithm by equality matcher
         &quot;oneOf&quot;: [&quot;RS256&quot;, &quot;HS256&quot;] // JWT must contain one of these algorithms
@@ -182,7 +182,7 @@ as possible.</p>
       { &quot;matchesJsonPath&quot;: &quot;$.name&quot; }, // must just match json path
       { &quot;matchesJsonPath&quot;: &quot;$.consoles[?(@.name == 'xbox')]&quot; }, // must match json path + equality
       { &quot;matchesJsonPath&quot;: &quot;$.consoles[?(@.price &gt; 200)]&quot; }, // must match json path + bound
-      { &quot;expression&quot;: &quot;$.name&quot;, &quot;contains&quot;: &quot;o&quot; }, // must match json path + contain the letter 'o'
+      { &quot;expression&quot;: &quot;$.name&quot;, &quot;contains&quot;: &quot;at&quot; }, // must match json path + contain the string 'at'
       { &quot;expression&quot;: &quot;$.user&quot;, &quot;equalToJson&quot;: { &quot;name&quot;: &quot;bob&quot; } }, // must match json path + be equal
       { &quot;binaryEqualTo&quot;: &quot;AQID&quot; /* Base 64 */ } // byte array equality
     ]
@@ -198,7 +198,7 @@ as possible.</p>
     &quot;base64Body&quot;: &quot;AQID&quot;, // binary Base 64 body
     &quot;bodyFileName&quot;: &quot;tests/stubs/response.json&quot;, // path to a .json or .txt file containing the response
     &quot;headers&quot;: {
-      &quot;Content-Type&quot;: &quot;application/pdf&quot; // returns this response header
+      &quot;content-type&quot;: &quot;application/pdf&quot; // returns this response header
     },
     // ..now response templating
     // it uses handlebars and allows you to define dynamic response based upon the content of the request
@@ -245,7 +245,7 @@ as possible.</p>
       &quot;number&quot;: &quot;{{anyNumber}}&quot;, // integer or float 
       &quot;integer&quot;: &quot;{{anyI32}}&quot;, // also all Rust int types (u32, u8, i64 etc..)
       &quot;float&quot;: &quot;{{anyFloat}}&quot;,
-      &quot;anyDate&quot;: &quot;{{anyDate}}&quot;, // or 'anyTime', 'anyDatetime', 'anyIso8601'
+      &quot;anyDate&quot;: &quot;{{anyDate}}&quot; // or 'anyTime', 'anyDatetime', 'anyIso8601'
     }
   }
 }

@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="stubs/response-templating.html"><strong aria-hidden="true">5.3.</strong> Response templating</a></li><li class="chapter-item expanded "><a href="stubs/relaxing.html"><strong aria-hidden="true">5.4.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -281,20 +281,20 @@ as possible.</p>
   &quot;priority&quot;: 1, // (optional) helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest
   &quot;request&quot;: {
     &quot;method&quot;: &quot;GET&quot;, // (optional) http method. Can be &quot;ANY&quot; to match any method. Defaults to &quot;ANY&quot;
-    &quot;urlPath&quot;: &quot;/api/exact-url&quot;, // exact uri match
-    &quot;urlPathPattern&quot;: &quot;/api/regex-url/([a-z]{4})&quot;, // uri must match regex
-    &quot;urlPattern&quot;: &quot;/api/regex-url/([a-z]{4})\\?and=([a-z]{4})&quot;, // uri &amp; query must match regex
-    &quot;url&quot;: &quot;/api/url?age=young&quot;, // raw url + query parameters by equality matching
+    &quot;urlPath&quot;: &quot;/api/exact-uri&quot;, // exact URI match
+    &quot;urlPathPattern&quot;: &quot;/api/regex-uri/([a-z]{4})&quot;, // URI must match regex
+    &quot;urlPattern&quot;: &quot;/api/regex-uri/([a-z]{4})\\?and=([a-z]{4})&quot;, // URI &amp; query must match regex
+    &quot;url&quot;: &quot;/api/uri?age=young&quot;, // raw URI + query parameters by equality matching
     &quot;queryParameters&quot;: {
       &quot;firstname&quot;: { &quot;equalTo&quot;: &quot;beltram&quot; }, // by equality matching (can also be an int, or a boolean)
       &quot;lastname&quot;: { &quot;equalTo&quot;: &quot;maldant&quot;, &quot;caseInsensitive&quot;: true }, // case insensitve equality
-      &quot;age&quot;: { &quot;absent&quot;: true } // must be absent
-      &quot;city&quot;: { &quot;contains&quot;: &quot;a&quot; } // must contain the letter 'a'
-      &quot;title&quot;: { &quot;matches&quot;: &quot;([A-Za-z]+)&quot; } // must match regex
-      &quot;job&quot;: { &quot;doesNotMatch&quot;: &quot;([A-Za-z]+)&quot; } // or must not match regex
+      &quot;age&quot;: { &quot;absent&quot;: true }, // must be absent
+      &quot;city&quot;: { &quot;contains&quot;: &quot;a&quot; }, // must contain the letter 'a'
+      &quot;title&quot;: { &quot;matches&quot;: &quot;([A-Za-z]+)&quot; }, // must match regex
+      &quot;job&quot;: { &quot;doesNotMatch&quot;: &quot;([A-Za-z]+)&quot; }, // or must not match regex
     },
     &quot;headers&quot;: {
-      &quot;Content-Type&quot;: { &quot;equalTo&quot;: &quot;application/json&quot; } // by equality matching
+      &quot;content-type&quot;: { &quot;equalTo&quot;: &quot;application/json&quot; } // by equality matching
       // .. then all matchers described above for query parameters are also applicable here
     },
     &quot;basicAuth&quot; : { // exact Basic authentication matching
@@ -302,7 +302,7 @@ as possible.</p>
       &quot;password&quot;: &quot;pass&quot;
     },
     &quot;jwtAuth&quot;: {
-      &quot;equalTo&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.e30.MBkQ...&quot; // plain JWT token
+      &quot;equalTo&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.e30.MBkQ...&quot;, // plain JWT token
       &quot;alg&quot;: {
         &quot;equalTo&quot;: &quot;RS256&quot;, // JWT algorithm by equality matcher
         &quot;oneOf&quot;: [&quot;RS256&quot;, &quot;HS256&quot;] // JWT must contain one of these algorithms
@@ -318,7 +318,7 @@ as possible.</p>
       { &quot;matchesJsonPath&quot;: &quot;$.name&quot; }, // must just match json path
       { &quot;matchesJsonPath&quot;: &quot;$.consoles[?(@.name == 'xbox')]&quot; }, // must match json path + equality
       { &quot;matchesJsonPath&quot;: &quot;$.consoles[?(@.price &gt; 200)]&quot; }, // must match json path + bound
-      { &quot;expression&quot;: &quot;$.name&quot;, &quot;contains&quot;: &quot;o&quot; }, // must match json path + contain the letter 'o'
+      { &quot;expression&quot;: &quot;$.name&quot;, &quot;contains&quot;: &quot;at&quot; }, // must match json path + contain the string 'at'
       { &quot;expression&quot;: &quot;$.user&quot;, &quot;equalToJson&quot;: { &quot;name&quot;: &quot;bob&quot; } }, // must match json path + be equal
       { &quot;binaryEqualTo&quot;: &quot;AQID&quot; /* Base 64 */ } // byte array equality
     ]
@@ -334,7 +334,7 @@ as possible.</p>
     &quot;base64Body&quot;: &quot;AQID&quot;, // binary Base 64 body
     &quot;bodyFileName&quot;: &quot;tests/stubs/response.json&quot;, // path to a .json or .txt file containing the response
     &quot;headers&quot;: {
-      &quot;Content-Type&quot;: &quot;application/pdf&quot; // returns this response header
+      &quot;content-type&quot;: &quot;application/pdf&quot; // returns this response header
     },
     // ..now response templating
     // it uses handlebars and allows you to define dynamic response based upon the content of the request
@@ -381,7 +381,7 @@ as possible.</p>
       &quot;number&quot;: &quot;{{anyNumber}}&quot;, // integer or float 
       &quot;integer&quot;: &quot;{{anyI32}}&quot;, // also all Rust int types (u32, u8, i64 etc..)
       &quot;float&quot;: &quot;{{anyFloat}}&quot;,
-      &quot;anyDate&quot;: &quot;{{anyDate}}&quot;, // or 'anyTime', 'anyDatetime', 'anyIso8601'
+      &quot;anyDate&quot;: &quot;{{anyDate}}&quot; // or 'anyTime', 'anyDatetime', 'anyIso8601'
     }
   }
 }
@@ -402,14 +402,301 @@ Available verbs are <code>GET</code>, <code>HEAD</code>, <code>POST</code>, <cod
   }
 }
 </code></pre>
-<h2 id="url"><a class="header" href="#url">URL</a></h2>
+<h2 id="uri"><a class="header" href="#uri">URI</a></h2>
+<p>To match request's URI (and maybe its query parameters). Only one of the following matcher is allowed. If more than one
+are present, it does not fail but chooses one matcher according to the descending
+priority <code>url</code> &gt; <code>urlPath</code> &gt; <code>urlPattern</code> &gt; <code>urlPathPattern</code></p>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;url&quot;: &quot;/api/uri?age=young&quot;,
+    &quot;urlPath&quot;: &quot;/api/exact-uri&quot;,
+    &quot;urlPattern&quot;: &quot;/api/regex-uri/([a-z]{4})\\?and=([a-z]{4})&quot;,
+    &quot;urlPathPattern&quot;: &quot;/api/regex-uri/([a-z]{4})&quot;
+  }
+}
+</code></pre>
+<ul>
+<li><code>url</code>: Matches by equality the URI and query parameters.</li>
+<li><code>urlPath</code>: Matches by equality <strong>just</strong> the URI without query parameters.</li>
+<li><code>urlPattern</code>: Matches URI and query parameters. Path segments and query parameters value can contain regexes.</li>
+<li><code>urlPathPattern</code>: Matches <strong>just</strong> the URI without query parameters. Path segments can contain regexes.</li>
+</ul>
 <h2 id="query-parameters"><a class="header" href="#query-parameters">Query parameters</a></h2>
+<p>Allows matching query parameters. Prefer this instead of <a href="stubs/request.html#uri">URI</a> matching just because it is clearer. Multivalued
+query parameters are not supported yet.</p>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;queryParameters&quot;: {
+      &quot;firstname&quot;: { &quot;equalTo&quot;: &quot;beltram&quot; },
+      &quot;lastname&quot;: { &quot;equalTo&quot;: &quot;maldant&quot;, &quot;caseInsensitive&quot;: true },
+      &quot;age&quot;: { &quot;absent&quot;: true },
+      &quot;birthdate&quot;: { &quot;absent&quot;: false },
+      &quot;city&quot;: { &quot;contains&quot;: &quot;at&quot; },
+      &quot;title&quot;: { &quot;matches&quot;: &quot;([A-Za-z]+)&quot; },
+      &quot;job&quot;: { &quot;doesNotMatch&quot;: &quot;([A-Za-z]+)&quot; }
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><code>equalTo</code> by equality matcher. Can be a string, a boolean, a number, null etc... Can be turned case-insensitive
+with <code>caseInsensitive</code>.</li>
+<li><code>absent</code> specified query parameter key must be absent/present.</li>
+<li><code>contains</code> value must contain the supplied string in a case-insensitive way</li>
+<li><code>matches</code>/<code>doesNotMatch</code> value must match the supplied regex (or not)</li>
+</ul>
 <h2 id="headers"><a class="header" href="#headers">Headers</a></h2>
+<p>Header matcher are <strong>exactly</strong> the same as <a href="stubs/request.html#query-parameters">query parameter matcher</a> above.</p>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: { &quot;equalTo&quot;: &quot;application/json&quot; }
+    }
+  }
+}
+</code></pre>
 <h2 id="authorization"><a class="header" href="#authorization">Authorization</a></h2>
+<p>Those matcher are exclusive to stubr and not available in Wiremock. They allow crafting more relaxed request matchers
+when it comes to authorization. You could for example have stubs specialized for a specific user (we sometimes persona).</p>
+<p>You can have matchers for Basic authentication (<a href="https://datatracker.ietf.org/doc/html/rfc7617">RFC 7617</a>). For example,
+for matching <code>Authorization: Basic am9obi5kb2U6Y2hhbmdlbWU=</code> you would have:</p>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;basicAuth&quot;: {
+      &quot;username&quot;: &quot;john.doe&quot;,
+      &quot;password&quot;: &quot;changeme&quot;
+    }
+  }
+}
+</code></pre>
+<p>You can also match a JWT token in the <code>Authorization</code> header as
+per <a href="https://datatracker.ietf.org/doc/html/rfc7519">RFC 7519</a></p>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;jwtAuth&quot;: {
+      &quot;equalTo&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.e30.MBkQ...&quot;,
+      &quot;alg&quot;: {
+        &quot;equalTo&quot;: &quot;RS256&quot;,
+        &quot;oneOf&quot;: [ &quot;RS256&quot;, &quot;HS256&quot; ]
+      },
+      &quot;payloadPatterns&quot;: [
+        { &quot;equalToJson&quot;: { &quot;iss&quot;: &quot;john.doe&quot; } },
+        { &quot;equalToJson&quot;: { &quot;exp&quot;: 1300819380 } },
+        {
+          &quot;expression&quot;: &quot;$.address&quot;,
+          &quot;equalToJson&quot;: { &quot;street&quot;: &quot;rue de Rivoli&quot;, &quot;city&quot;: &quot;Paris&quot; }
+        }
+      ]
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><code>equalTo</code> by equality matcher. Equivalent to <code>&quot;headers&quot;:{&quot;authorization&quot;:{&quot;equalTo&quot;: &quot;...&quot;}}</code>. If you have this
+matcher, all the other ones will be ignored</li>
+<li><code>alg.equalTo</code> by equality matcher. JWT algorithm has to be exactly this</li>
+<li><code>alg.oneOf</code> JWT algorithm has to be one of the supplied values. Here are all the supported JWT
+algorithms [<code>HS256</code>, <code>HS384</code>, <code>HS512</code>, <code>ES256</code>, <code>ES384</code>, <code>RS256</code>, <code>RS384</code>, <code>RS512</code>, <code>PS256</code>, <code>PS384</code>, <code>PS512</code>, <code>EdDSA</code>]</li>
+<li><code>payloadPatterns</code> for matching the JWT body. Exactly the same matcher as <a href="stubs/request.html#body">body</a> ones.</li>
+</ul>
 <h2 id="body"><a class="header" href="#body">Body</a></h2>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;bodyPatterns&quot;: [
+      { &quot;equalToJson&quot;: { &quot;name&quot;: &quot;bob&quot; } },
+      {
+        &quot;equalToJson&quot;: {&quot;names&quot;: [&quot;alice&quot;, &quot;bob&quot;]},
+        &quot;ignoreExtraElements&quot;: true,
+        &quot;ignoreArrayOrder&quot;: true
+      },
+      { &quot;matchesJsonPath&quot;: &quot;$.name&quot; },
+      { &quot;matchesJsonPath&quot;: &quot;$.consoles[?(@.name == 'xbox')]&quot; },
+      { &quot;matchesJsonPath&quot;: &quot;$.consoles[?(@.price &gt; 200)]&quot; },
+      { &quot;expression&quot;: &quot;$.name&quot;, &quot;contains&quot;: &quot;at&quot; },
+      { &quot;expression&quot;: &quot;$.user&quot;, &quot;equalToJson&quot;: { &quot;name&quot;: &quot;bob&quot; } },
+      { &quot;expression&quot;: &quot;$.age&quot;, &quot;equalToJson&quot;: 42 },
+      { &quot;binaryEqualTo&quot;: &quot;AQID&quot; }
+    ]
+  }
+}
+</code></pre>
+<ul>
+<li><code>equalToJson</code> strict equality matcher. Request body has to be exactly equal to this. If it is not used
+with <code>expression</code>, all other matchers will be ignored. However, it can be relaxed with:
+<ul>
+<li><code>ignoreExtraElements</code> to ignore json fields in the http request not present in the matcher</li>
+<li><code>ignoreArrayOrder</code> to match json arrays regardless the order of their items</li>
+</ul>
+</li>
+<li><code>expression</code> a <a href="https://www.ietf.org/archive/id/draft-goessner-dispatch-jsonpath-00.html">JSONPath</a> matcher used to
+narrow the matching. The matched expression has then to be verified by either:
+<ul>
+<li><code>equalToJson</code> for strict equality (can be another json object, a string, number etc..)</li>
+<li><code>contains</code> ; if json matched by <code>expression</code> is a string it must contain the supplied string</li>
+</ul>
+</li>
+<li><code>matchesJsonPath</code> json request body has to contain the supplied key identified by
+a <a href="https://www.ietf.org/archive/id/draft-goessner-dispatch-jsonpath-00.html">JSONPath</a>. You can also
+use <a href="https://docs.hevodata.com/sources/streaming/rest-api/writing-jsonpath-expressions/">JSONPath expression</a> to also
+filter and match the json values</li>
+<li><code>binaryEqualTo</code> byte equality matcher. Has to be base 64 encoded</li>
+</ul>
 <h2 id="priority"><a class="header" href="#priority">Priority</a></h2>
+<p>Sometimes, you can have 2 different stubs that could both match a given http request. This happens most of the time when
+you start writing stubs for your application errors. You basically should have:</p>
+<ul>
+<li>one relaxed stub for your nominal case matching for example <code>&quot;urlPathPattern&quot;: &quot;/users/([0-9]{4})&quot;</code></li>
+<li>one stub for each error with hardcoded value e.g. <code>&quot;urlPath&quot;: &quot;/users/1234&quot;</code> for a <code>404</code> response</li>
+</ul>
+<p>The issue here is that if your stub server receives a <code>GET /users/1234</code> request, both stubs will match. You want your
+error stub to have a higher than the nominal e.g. error stub will have a priority of 1 whereas the nominal one will have
+a priority of 2.</p>
+<pre><code class="language-json">{
+  &quot;priority&quot;: 1
+}
+</code></pre>
+<ul>
+<li><code>priority</code> a u8. 1 is the highest priority, 255 the lowest, 5 the default value when absent. It is optional.</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="response"><a class="header" href="#response">Response</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="response-templating"><a class="header" href="#response-templating">Response templating</a></h1>
+<p>In the response part, you have to define the actual http response the stub server will serve when the stub matches the
+incoming http request as we defined it with <a href="stubs/../stubs/request.html">request matching</a></p>
+<h2 id="status"><a class="header" href="#status">Status</a></h2>
+<p>The http response status. In the range <code>[100..599]</code>.</p>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;status&quot;: 200
+  }
+}
+</code></pre>
+<h2 id="header"><a class="header" href="#header">Header</a></h2>
+<p>Http response headers. Note that keys are case-insensitive. Multivalued headers are not supported yet. You can
+use <a href="stubs/response.html#response-templating">response templating</a> here as well if you add <code>&quot;transformers&quot;: [&quot;response-template&quot;]</code>.</p>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: &quot;application/json&quot;,
+      &quot;ETag&quot;: &quot;33a64df551425fcc55e4d42a148795d9f25f89d4&quot;,
+      &quot;location&quot;: &quot;{{request.url}}/1234&quot;
+    }
+  }
+}
+</code></pre>
+<h2 id="body-1"><a class="header" href="#body-1">Body</a></h2>
+<p>There are different ways to define a http response. We'll just focus here on supplying hardcoded values in the response,
+but you can relax all those fields with templates. We'll see that immediately in the next chapter.</p>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;body&quot;: &quot;Hello World !&quot;,
+    &quot;base64Body&quot;: &quot;AQID&quot;,
+    &quot;bodyFileName&quot;: &quot;tests/stubs/response.json&quot;,
+    &quot;jsonBody&quot;: {
+      &quot;name&quot;: &quot;john&quot;,
+      &quot;surnames&quot;: [ &quot;jdoe&quot;, &quot;johnny&quot; ]
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><code>body</code> use this one if you have a text body or anything simple. If the body is large you'd better opt for <code>bodyFileName</code>.</li>
+<li><code>base64Body</code> if the body is not utf-8 encoded use it to supply a body as byte. Those have to be base 64 encoded.</li>
+<li><code>bodyFileName</code> when the response gets large or to factorize some very common bodies, it is sometimes preferable to
+extract it in a file. When using it in a Rust project, the file path is relative to the workspace root.</li>
+<li><code>jsonBody</code> when the body is json. Even though such a body can be defined with all the previous fields, it is more
+convenient to define a json response body here.</li>
+</ul>
+<h2 id="relaxed-field"><a class="header" href="#relaxed-field">Relaxed field</a></h2>
+<p>Using only hardcoded values is a good way to start mocking things. But as time goes on, your project might start to get
+bloated with a lot of stubs. You will also see the limit of hardcoded values when
+doing <a href="stubs/../contract/index.html">contract testing</a>.</p>
+<p>In order to &quot;relax&quot; your stub, you will have to use <a href="https://handlebarsjs.com/">Handlebars</a> helpers. They will allow you
+to have random values generated for you, because, most of the time, that's what the actual application does. And, as a
+consumer, you also don't care about the actual value of this field in your test i.e. <code>&quot;age&quot;: &quot;{{anyU8}}&quot;</code> will work in
+all your unit tests because none of your unit tests expects a particular value for this field.</p>
+<p>In order to use a Handlebars helper, you need to add <code>&quot;transformers&quot;: [&quot;response-template&quot;]</code>.</p>
+<p>Keep in mind that such helper will also be used to generate assertions when you will be using this stub
+for <a href="stubs/../contract/index.html">contract testing</a> while <a href="stubs/../contract/producer.html">verifying your producer</a>.</p>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;jsonBody&quot;: {
+      &quot;regex&quot;: &quot;{{anyRegex '[a-z]{4}'}}&quot;,
+      &quot;string&quot;: &quot;{{anyNonEmptyString}}&quot;,
+      &quot;alphanum&quot;: &quot;{{anyAlphaNumeric}}&quot;,
+      &quot;boolean&quot;: &quot;{{anyBoolean}}&quot;,
+      &quot;uuid&quot;: &quot;{{anyUuid}}&quot;,
+      &quot;ip&quot;: &quot;{{anyIpAddress}}&quot;,
+      &quot;host&quot;: &quot;{{anyHostname}}&quot;,
+      &quot;email&quot;: &quot;{{anyEmail}}&quot;,
+      &quot;enum&quot;: &quot;{{anyOf 'alpha' 'beta' 'gamma'}}&quot;,
+      &quot;number&quot;: &quot;{{anyNumber}}&quot;, 
+      &quot;integer&quot;: &quot;{{anyI32}}&quot;,
+      &quot;float&quot;: &quot;{{anyFloat}}&quot;,
+      &quot;anyDate&quot;: &quot;{{anyDate}}&quot;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><code>anyRegex</code> generates a value matching this regex. Tip: most of the time will be used for strings but if this regex
+defines an integer, a float or a boolean and is used in <code>&quot;jsonBody&quot;&quot;</code> the generated value will be cast</li>
+<li><code>anyNonEmptyString</code> or <code>anyNonBlankString</code></li>
+<li><code>anyAlphaNumeric</code> generates</li>
+<li><code>anyBoolean</code> generates</li>
+<li><code>anyUuid</code> generates</li>
+<li><code>anyIpAddress</code> generates</li>
+<li><code>anyHostname</code> generates</li>
+<li><code>anyEmail</code> generates</li>
+<li><code>anyOf</code> generates</li>
+<li><code>anyNumber</code> generates</li>
+<li><code>anyI32</code> or <code>anyU32</code></li>
+<li><code>anyFloat</code> </li>
+<li><code>anyDate</code> </li>
+</ul>
+<h2 id="response-templating"><a class="header" href="#response-templating">Response templating</a></h2>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;jsonBody&quot;: {
+      &quot;url-path-and-query&quot;: &quot;{{request.url}}&quot;,
+      &quot;url-path&quot;: &quot;{{request.path}}&quot;,
+      &quot;url-path-segments&quot;: &quot;{{request.pathSegments.[1]}}&quot;,
+      &quot;query&quot;: &quot;{{request.query.kind}}&quot;,
+      &quot;multi-query&quot;: &quot;{{request.query.kind.[1]}}&quot;,
+      &quot;method&quot;: &quot;{{request.method}}&quot;,
+      &quot;header&quot;: &quot;{{request.headers.Content-Type}}&quot;,
+      &quot;multi-header&quot;: &quot;{{request.headers.cache-control.[0]}}&quot;,
+      &quot;body&quot;: &quot;{{request.body}}&quot;,
+      &quot;from-request&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;,
+      &quot;now&quot;: &quot;{{now}}&quot;,
+      &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;,
+      &quot;now-fmt-epoch&quot;: &quot;{{now format='epoch'}}&quot;,
+      &quot;now-fmt-unix&quot;: &quot;{{now format='unix'}}&quot;,
+      &quot;now-positive-offset&quot;: &quot;{{now offset='3 days'}}&quot;,
+      &quot;now-negative-offset&quot;: &quot;{{now offset='-3 days'}}&quot;,
+      &quot;now-with-timezone&quot;: &quot;{{now timezone='Europe/Rome'}}&quot;,
+      &quot;number-is-odd&quot;: &quot;{{isOdd 3}}&quot;,
+      &quot;string-capitalized&quot;: &quot;{{capitalize mister}}&quot;,
+      &quot;string-uppercase&quot;: &quot;{{upper mister}}&quot;,
+      &quot;number-stripes&quot;: &quot;{{stripes request.body 'if-even' 'if-odd'}}&quot;,
+      &quot;string-trim&quot;: &quot;{{trim request.body}}&quot;,
+      &quot;size&quot;: &quot;{{size request.body}}&quot;,
+      &quot;base64-encode&quot;: &quot;{{base64 request.body padding=false}}&quot;,
+      &quot;base64-decode&quot;: &quot;{{base64 request.body decode=true}}&quot;,
+      &quot;url-encode&quot;: &quot;{{urlEncode request.header.x-raw}}&quot;,
+      &quot;url-decode&quot;: &quot;{{urlEncode request.header.x-encoded decode=true}}&quot;
+    }
+  }
+}
+</code></pre>
+<h2 id="delay"><a class="header" href="#delay">Delay</a></h2>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;fixedDelayMilliseconds&quot;: 2000
+  }
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="relaxing-a-stub"><a class="header" href="#relaxing-a-stub">Relaxing a stub</a></h1>
 <h2 id="request-matching"><a class="header" href="#request-matching">Request matching</a></h2>
 <h2 id="response-1"><a class="header" href="#response-1">Response</a></h2>
