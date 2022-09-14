@@ -19,7 +19,7 @@ proc-macro = true
 syn = { version = "1.0.99", features = ["full"] }
 quote = "1.0.21"
 proc-macro2 = "1.0.43"
-itertools = "0.10.3"
+itertools = "0.10.4"
 
 [dev-dependencies]
 isahc = "1.7.2"
