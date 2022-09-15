@@ -123,6 +123,7 @@ impl From<Cli> for Config {
         Self {
             port: cli.port,
             verbose: Some(true),
+            verify: Some(false),
             global_delay: cli.global_delay_milliseconds(),
             latency: cli.latency_milliseconds(),
         }

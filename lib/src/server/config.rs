@@ -5,6 +5,8 @@ pub struct Config {
     pub port: Option<u16>,
     /// Enables turning off logs
     pub verbose: Option<bool>,
+    /// Enables verification via https://docs.rs/wiremock/latest/wiremock/struct.Mock.html#method.expect
+    pub verify: Option<bool>,
     /// Global delay in milliseconds.
     /// Supersedes any locally defined delay
     pub global_delay: Option<u64>,

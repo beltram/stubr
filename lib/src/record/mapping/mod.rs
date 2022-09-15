@@ -11,6 +11,7 @@ impl From<RecordInput<'_>> for JsonStub {
             id: None,
             uuid: None,
             priority: None,
+            expect: None,
             request: RequestStub::from((&mut *ex, cfg)),
             response: ResponseStub::from((&mut *ex, cfg)),
         }

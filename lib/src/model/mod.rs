@@ -19,6 +19,8 @@ pub struct JsonStub {
     pub uuid: Option<String>,
     #[serde(skip_serializing)]
     pub priority: Option<u8>,
+    #[serde(skip_serializing)]
+    pub expect: Option<u64>,
     pub request: RequestStub,
     pub response: ResponseStub,
 }
@@ -27,7 +29,12 @@ impl JsonStub {
     pub const DEFAULT_PRIORITY: u8 = 5;
 
     pub(crate) fn try_creating_from(self, config: &Config) -> anyhow::Result<Mock> {
-        Ok(MockBuilder::try_from(&self.request)?.respond_with(self.into_respond(config)))
+        let expect = self.expect;
+        let mut mock = MockBuilder::try_from(&self.request)?.respond_with(self.into_respond(config));
+        if let (Some(true), Some(expect)) = (config.verify, expect) {
+            mock = mock.expect(expect);
+        }
+        Ok(mock)
     }
 
     pub fn into_respond<'a>(self, config: &Config) -> impl Respond + 'a {
@@ -61,6 +68,7 @@ impl Default for JsonStub {
             id: Option::default(),
             uuid: Option::default(),
             priority: Some(Self::DEFAULT_PRIORITY),
+            expect: Option::default(),
             request: RequestStub::default(),
             response: ResponseStub::default(),
         }
