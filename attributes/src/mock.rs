@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
-use syn::{AttributeArgs, ItemFn, Lit, LitInt, LitStr, NestedMeta};
+use syn::{AttributeArgs, ItemFn, Lit, LitInt, LitStr, NestedMeta, LitBool};
 
 pub(crate) fn mock_transform(args: AttributeArgs, item: TokenStream) -> syn::Result<TokenStream> {
     let func = syn::parse2::<ItemFn>(item)?;
@@ -26,12 +26,14 @@ struct Args {
     paths: Vec<LitStr>,
     full_path: Option<LitStr>,
     port: Option<LitInt>,
+    verify: Option<LitBool>,
 }
 
 impl Args {
     const DEFAULT_PATH: &'static str = "tests/stubs";
     const ATTR_FULL_PATH: &'static str = "full_path";
     const ATTR_PORT: &'static str = "port";
+    const ATTR_VERIFY: &'static str = "verify";
 
     fn path(&self) -> TokenStream {
         self.full_path().unwrap_or_else(|| self.default_path())
@@ -59,6 +61,13 @@ impl Args {
             .map(|p| quote! { Some(#p) })
             .unwrap_or_else(|| quote! { None })
     }
+
+    fn verify(&self) -> TokenStream {
+        self.verify.as_ref()
+            .map(|p| p.into_token_stream())
+            .map(|p| quote! { Some(#p) })
+            .unwrap_or_else(|| quote! { None })
+    }
 }
 
 impl TryFrom<AttributeArgs> for Args {
@@ -68,6 +77,7 @@ impl TryFrom<AttributeArgs> for Args {
         let mut paths = vec![];
         let mut full_path = None;
         let mut port = None;
+        let mut verify = None;
         for arg in input {
             match arg {
                 NestedMeta::Lit(Lit::Str(lit)) => paths.push(lit),
@@ -87,19 +97,26 @@ impl TryFrom<AttributeArgs> for Args {
                         } else {
                             return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects integer", Self::ATTR_PORT)));
                         }
+                    } else if nv.path.is_ident(Self::ATTR_VERIFY) {
+                        if let syn::Lit::Bool(lit) = nv.lit {
+                            verify = Some(lit)
+                        } else {
+                            return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects bool", Self::ATTR_VERIFY)));
+                        }
                     }
                 }
                 _ => {}
             }
         };
-        Ok(Self { paths, full_path, port })
+        Ok(Self { paths, full_path, port, verify })
     }
 }
 
 fn starter(func: &ItemFn, args: &Args) -> TokenStream {
     let path = args.path();
     let port = args.port();
-    let cfg = quote! { stubr::Config { port: #port, ..Default::default() } };
+    let verify = args.verify();
+    let cfg = quote! { stubr::Config { port: #port, verify: #verify, ..Default::default() } };
     if func.sig.asyncness.is_some() {
         quote! {
             let stubr = stubr::Stubr::start_with(#path, #cfg).await;
@@ -213,6 +230,37 @@ mod mock_tests {
             let transformed = mock_transform(args, quote! { fn a() {} });
             assert!(transformed.is_err());
             assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'port' expects integer"))
+        }
+    }
+
+    mod verify {
+        use syn::{Meta, MetaNameValue, Path, PathSegment};
+
+        use super::*;
+
+        #[test]
+        fn should_accept_bool_verify() {
+            let port = Meta::NameValue(MetaNameValue {
+                path: Path::from(PathSegment::from(syn::Ident::new("verify", Span::call_site()))),
+                eq_token: syn::token::Eq([Span::call_site()]),
+                lit: Lit::Bool(LitBool::new(true, Span::call_site())),
+            });
+            let args = vec![NestedMeta::from(port)];
+            let transformed = mock_transform(args, quote! { fn a() {} });
+            assert!(transformed.is_ok())
+        }
+
+        #[test]
+        fn should_fail_when_verify_not_bool() {
+            let port = Meta::NameValue(MetaNameValue {
+                path: Path::from(PathSegment::from(syn::Ident::new("verify", Span::call_site()))),
+                eq_token: syn::token::Eq([Span::call_site()]),
+                lit: Lit::Str(LitStr::new("abcd", Span::call_site())),
+            });
+            let args = vec![NestedMeta::from(port)];
+            let transformed = mock_transform(args, quote! { fn a() {} });
+            assert!(transformed.is_err());
+            assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'verify' expects bool"))
         }
     }
 
