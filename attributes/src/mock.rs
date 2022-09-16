@@ -65,8 +65,8 @@ impl Args {
     fn verify(&self) -> TokenStream {
         self.verify.as_ref()
             .map(|p| p.into_token_stream())
-            .map(|p| quote! { Some(#p) })
-            .unwrap_or_else(|| quote! { None })
+            .map(|p| quote! { #p })
+            .unwrap_or_else(|| quote! { false })
     }
 }
 

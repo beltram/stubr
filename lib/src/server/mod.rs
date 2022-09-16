@@ -154,7 +154,7 @@ impl Stubr {
             .filter_map(|(stub, path, folder)| stub.try_creating_from(&config).ok().map(|mock| (mock, path, folder)))
             .for_each(|(mock, file, folder)| {
                 block_on(async move { self.instance.register(mock).await; });
-                if config.verbose.unwrap_or_default() {
+                if config.verbose {
                     let maybe_file_name = file.strip_prefix(&folder).ok().and_then(|file| file.to_str());
                     if let Some(file_name) = maybe_file_name {
                         info!("mounted stub '{}'", file_name);

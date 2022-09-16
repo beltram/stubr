@@ -4,9 +4,9 @@ pub struct Config {
     /// HTTP port the mock server will be listening on
     pub port: Option<u16>,
     /// Enables turning off logs
-    pub verbose: Option<bool>,
+    pub verbose: bool,
     /// Enables verification via https://docs.rs/wiremock/latest/wiremock/struct.Mock.html#method.expect
-    pub verify: Option<bool>,
+    pub verify: bool,
     /// Global delay in milliseconds.
     /// Supersedes any locally defined delay
     pub global_delay: Option<u64>,
