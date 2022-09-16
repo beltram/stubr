@@ -11,6 +11,7 @@ out/
 
 ### Rust ###
 target/
+/Cargo.lock
 
 **/*.rs.bk
 
