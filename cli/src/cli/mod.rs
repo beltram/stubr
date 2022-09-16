@@ -122,8 +122,8 @@ impl From<Cli> for Config {
     fn from(cli: Cli) -> Self {
         Self {
             port: cli.port,
-            verbose: Some(true),
-            verify: Some(false),
+            verbose: true,
+            verify: false,
             global_delay: cli.global_delay_milliseconds(),
             latency: cli.latency_milliseconds(),
         }

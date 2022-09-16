@@ -35,7 +35,7 @@ impl JsonStub {
     pub(crate) fn try_creating_from(self, config: &Config) -> anyhow::Result<Mock> {
         let expect = self.expect;
         let mut mock = MockBuilder::try_from(&self.request)?.respond_with(self.into_respond(config));
-        if let (Some(true), Some(expect)) = (config.verify, expect) {
+        if let (true, Some(expect)) = (config.verify, expect) {
             mock = mock.expect(expect as u64);
         }
         Ok(mock)
