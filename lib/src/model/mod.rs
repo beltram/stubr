@@ -24,7 +24,7 @@ pub struct JsonStub {
     #[serde(skip_serializing)]
     pub priority: Option<u8>,
     #[serde(skip_serializing)]
-    pub expect: Option<u64>,
+    pub expect: Option<u32>,
     pub request: RequestStub,
     pub response: ResponseStub,
 }
@@ -36,7 +36,7 @@ impl JsonStub {
         let expect = self.expect;
         let mut mock = MockBuilder::try_from(&self.request)?.respond_with(self.into_respond(config));
         if let (Some(true), Some(expect)) = (config.verify, expect) {
-            mock = mock.expect(expect);
+            mock = mock.expect(expect as u64);
         }
         Ok(mock)
     }

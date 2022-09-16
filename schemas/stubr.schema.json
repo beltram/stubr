@@ -23,7 +23,7 @@
     "expect": {
       "description": "Set an expectation on the number of times this stub should match.",
       "type": "integer",
-      "maximum": 255,
+      "maximum": 2147483647,
       "minimum": 0
     },
     "request": {

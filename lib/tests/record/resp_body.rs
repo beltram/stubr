@@ -16,7 +16,7 @@ async fn proxy_should_forward_json_response_body() {
         .expect_status_ok()
         .expect_content_type_json()
         .expect_body_json_eq(json!({"a": {"b": "c"}}));
-    assert_recorded_stub_eq("body-resp-json-4281328719312332612", json!({
+    assert_recorded_stub_eq("body-resp-json-12237320556804651629", json!({
         "request": {
             "method": "GET",
             "urlPath": "/body/resp/json"

@@ -12,7 +12,7 @@ async fn proxy_should_forward_query_param() {
     Stubr::record_with(record_cfg()).isahc_client()
         .get(stubr.path_query("/query/one", "a", "1"))
         .expect_status_ok();
-    assert_recorded_stub_eq("query-one-17116820932574389433", json!({
+    assert_recorded_stub_eq("query-one-14477591495544065577", json!({
         "request": {
             "method": "GET",
             "urlPath": "/query/one",
@@ -31,7 +31,7 @@ async fn proxy_should_forward_many_query_param() {
     Stubr::record_with(record_cfg()).isahc_client()
         .get(stubr.path_queries("/query/many", ("a", "1"), ("b", "2")))
         .expect_status_ok();
-    assert_recorded_stub_eq("query-many-9947957477550491340", json!({
+    assert_recorded_stub_eq("query-many-15093486744474350709", json!({
         "request": {
             "method": "GET",
             "urlPath": "/query/many",

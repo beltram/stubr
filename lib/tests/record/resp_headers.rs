@@ -14,7 +14,7 @@ async fn proxy_should_forward_response_headers() {
     Stubr::record_with(record_cfg()).isahc_client().get(stubr.path("/headers/resp/one"))
         .expect_status_ok()
         .expect_header("x-a", "a");
-    assert_recorded_stub_eq("headers-resp-one-17869354396355261370", json!({
+    assert_recorded_stub_eq("headers-resp-one-15944799029425559929", json!({
         "request": {
             "method": "GET",
             "urlPath": "/headers/resp/one"
@@ -39,7 +39,7 @@ async fn proxy_should_forward_many_response_headers() {
         .expect_status_ok()
         .expect_header("x-a", "a")
         .expect_header("x-b", "b");
-    assert_recorded_stub_eq("headers-resp-many-13659916824342203132", json!({
+    assert_recorded_stub_eq("headers-resp-many-5360517033018629606", json!({
         "request": {
             "method": "GET",
             "urlPath": "/headers/resp/many"

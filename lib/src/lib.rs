@@ -69,6 +69,8 @@
 //!     global_delay: Some(2000),
 //!     // delay in milliseconds added to any locally defined one. Simulates network latencies.
 //!     latency: Some(2000),
+//!     // Enables verification via https://docs.rs/wiremock/latest/wiremock/struct.Mock.html#method.expect
+//!     verify: Some(true),
 //! };
 //! ```
 //!

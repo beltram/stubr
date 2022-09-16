@@ -11,7 +11,7 @@ use crate::utils::*;
 async fn proxy_should_forward_get_method() {
     isahc::get(stubr.uri()).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().get(stubr.uri()).expect_status_ok();
-    assert_recorded_stub_eq("9251100963220994131", json!({
+    assert_recorded_stub_eq("9143887468928371923", json!({
         "request": {"method": "GET"},
         "response": {"status": 200}
     }))
@@ -22,7 +22,7 @@ async fn proxy_should_forward_get_method() {
 async fn proxy_should_forward_post_method() {
     isahc::post(stubr.uri(), ()).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().post(stubr.uri(), ()).expect_status_ok();
-    assert_recorded_stub_eq("8593297596418468443", json!({
+    assert_recorded_stub_eq("11472728421990930279", json!({
         "request": {"method": "POST"},
         "response": {"status": 200}
     }))
@@ -33,7 +33,7 @@ async fn proxy_should_forward_post_method() {
 async fn proxy_should_forward_put_method() {
     isahc::put(stubr.uri(), ()).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().put(stubr.uri(), ()).expect_status_ok();
-    assert_recorded_stub_eq("17175736204763990376", json!({
+    assert_recorded_stub_eq("1225390682374767577", json!({
         "request": {"method": "PUT"},
         "response": {"status": 200}
     }))
@@ -44,7 +44,7 @@ async fn proxy_should_forward_put_method() {
 async fn proxy_should_forward_patch_method() {
     isahc::send(Request::patch(stubr.uri()).body(()).unwrap()).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().send(Request::patch(stubr.uri()).body(()).unwrap()).expect_status_ok();
-    assert_recorded_stub_eq("15650833840299480486", json!({
+    assert_recorded_stub_eq("1712620373831678724", json!({
         "request": {"method": "PATCH"},
         "response": {"status": 200}
     }))
@@ -55,7 +55,7 @@ async fn proxy_should_forward_patch_method() {
 async fn proxy_should_forward_delete_method() {
     isahc::delete(stubr.uri()).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().delete(stubr.uri()).expect_status_ok();
-    assert_recorded_stub_eq("1834022288042833851", json!({
+    assert_recorded_stub_eq("11155613335209754747", json!({
         "request": {"method": "DELETE"},
         "response": {"status": 200}
     }))
@@ -66,7 +66,7 @@ async fn proxy_should_forward_delete_method() {
 async fn proxy_should_forward_head_method() {
     isahc::head(stubr.uri()).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().head(stubr.uri()).expect_status_ok();
-    assert_recorded_stub_eq("8336803546023667269", json!({
+    assert_recorded_stub_eq("5479092281103967096", json!({
         "request": {"method": "HEAD"},
         "response": {"status": 200}
     }))
@@ -77,7 +77,7 @@ async fn proxy_should_forward_head_method() {
 async fn proxy_should_forward_options_method() {
     isahc::send(Request::options(stubr.uri()).body(()).unwrap()).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().send(Request::options(stubr.uri()).body(()).unwrap()).expect_status_ok();
-    assert_recorded_stub_eq("979234500021895869", json!({
+    assert_recorded_stub_eq("15040751383196264990", json!({
         "request": {"method": "OPTIONS"},
         "response": {"status": 200}
     }))
@@ -88,7 +88,7 @@ async fn proxy_should_forward_options_method() {
 async fn proxy_should_forward_trace_method() {
     isahc::send(Request::trace(stubr.uri()).body(()).unwrap()).expect_status_ok();
     Stubr::record_with(record_cfg()).isahc_client().send(Request::trace(stubr.uri()).body(()).unwrap()).expect_status_ok();
-    assert_recorded_stub_eq("14143725728308231304", json!({
+    assert_recorded_stub_eq("14259663127736384512", json!({
         "request": {"method": "TRACE"},
         "response": {"status": 200}
     }))

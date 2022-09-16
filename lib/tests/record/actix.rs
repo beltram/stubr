@@ -19,7 +19,7 @@ async fn should_record_from_actix_integration_test() {
         .wrap(ActixRecord(cfg));
     call_service(&init_service(app).await, TestRequest::get().uri(uri).to_request()).await
         .expect_status_ok();
-    assert_recorded_stub_eq("record-client-actix-16130797866386136017", json!({
+    assert_recorded_stub_eq("record-client-actix-11162265122061890704", json!({
         "request": {
             "method": "GET",
             "urlPath": uri
@@ -43,7 +43,7 @@ async fn should_record_from_actix_failing_integration_test() {
         .wrap(ActixRecord(cfg));
     call_service(&init_service(app).await, TestRequest::get().uri(uri).to_request()).await
         .expect_status_internal_server_error();
-    assert_recorded_stub_eq("record-client-actix-ko-1285333804481209254", json!({
+    assert_recorded_stub_eq("record-client-actix-ko-7499948008303883645", json!({
         "request": {
             "method": "GET",
             "urlPath": uri
