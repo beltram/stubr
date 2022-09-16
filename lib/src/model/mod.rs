@@ -1,4 +1,8 @@
-use std::{fs::OpenOptions, path::PathBuf};
+use std::{
+    fs::OpenOptions,
+    hash::{Hash, Hasher},
+    path::PathBuf,
+};
 
 use serde::{Deserialize, Serialize};
 use wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
@@ -11,7 +15,7 @@ use crate::Config;
 pub mod request;
 pub mod response;
 
-#[derive(Serialize, Deserialize, Debug, Hash)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct JsonStub {
     #[serde(skip_serializing)]
     pub id: Option<String>,
@@ -72,5 +76,21 @@ impl Default for JsonStub {
             request: RequestStub::default(),
             response: ResponseStub::default(),
         }
+    }
+}
+
+impl Hash for JsonStub {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        if let Some(it) = self.id.as_ref() {
+            it.hash(state);
+        }
+        if let Some(it) = self.uuid.as_ref() {
+            it.hash(state);
+        }
+        if let Some(it) = self.priority.as_ref() {
+            it.hash(state);
+        }
+        self.request.hash(state);
+        self.response.hash(state);
     }
 }
