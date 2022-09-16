@@ -1,0 +1,9 @@
+{
+  "expect": 2,
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200
+  }
+}

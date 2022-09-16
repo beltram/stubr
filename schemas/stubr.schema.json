@@ -20,6 +20,12 @@
       "maximum": 255,
       "minimum": 1
     },
+    "expect": {
+      "description": "Set an expectation on the number of times this stub should match.",
+      "type": "integer",
+      "maximum": 255,
+      "minimum": 0
+    },
     "request": {
       "description": "Request matching",
       "type": "object",
