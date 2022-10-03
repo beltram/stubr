@@ -22,7 +22,7 @@ jobs:
         with:
           version: v3.5.3
       - name: release chart
-        uses: helm/chart-releaser-action@v1.4.0
+        uses: helm/chart-releaser-action@v1.4.1
         continue-on-error: true
         with:
           charts_dir: "charts"
