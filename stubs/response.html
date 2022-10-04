@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html" class="active"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="../stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../kubernetes.html"><strong aria-hidden="true">9.</strong> Kubernetes</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="../stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html" class="active"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="../stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">9.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -150,7 +150,9 @@ incoming http request as we defined it with <a href="../stubs/request.html">requ
 use <a href="#response-templating">response templating</a> here as well if you add <code>&quot;transformers&quot;: [&quot;response-template&quot;]</code>.</p>
 <pre><code class="language-json">{
   &quot;response&quot;: {
-    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;transformers&quot;: [
+      &quot;response-template&quot;
+    ],
     &quot;headers&quot;: {
       &quot;content-type&quot;: &quot;application/json&quot;,
       &quot;ETag&quot;: &quot;33a64df551425fcc55e4d42a148795d9f25f89d4&quot;,
@@ -169,13 +171,17 @@ but you can relax all those fields with templates. We'll see that immediately in
     &quot;bodyFileName&quot;: &quot;tests/stubs/response.json&quot;,
     &quot;jsonBody&quot;: {
       &quot;name&quot;: &quot;john&quot;,
-      &quot;surnames&quot;: [ &quot;jdoe&quot;, &quot;johnny&quot; ]
+      &quot;surnames&quot;: [
+        &quot;jdoe&quot;,
+        &quot;johnny&quot;
+      ]
     }
   }
 }
 </code></pre>
 <ul>
-<li><code>body</code> use this one if you have a text body or anything simple. If the body is large you'd better opt for <code>bodyFileName</code>.</li>
+<li><code>body</code> use this one if you have a text body or anything simple. If the body is large you'd better opt
+for <code>bodyFileName</code>.</li>
 <li><code>base64Body</code> if the body is not utf-8 encoded use it to supply a body as byte. Those have to be base 64 encoded.</li>
 <li><code>bodyFileName</code> when the response gets large or to factorize some very common bodies, it is sometimes preferable to
 extract it in a file. When using it in a Rust project, the file path is relative to the workspace root.</li>
@@ -195,7 +201,9 @@ all your unit tests because none of your unit tests expects a particular value f
 for <a href="../contract/index.html">contract testing</a> while <a href="../contract/producer.html">verifying your producer</a>.</p>
 <pre><code class="language-json">{
   &quot;response&quot;: {
-    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;transformers&quot;: [
+      &quot;response-template&quot;
+    ],
     &quot;jsonBody&quot;: {
       &quot;regex&quot;: &quot;{{anyRegex '[a-z]{4}'}}&quot;,
       &quot;string&quot;: &quot;{{anyNonEmptyString}}&quot;,
@@ -206,7 +214,7 @@ for <a href="../contract/index.html">contract testing</a> while <a href="../cont
       &quot;host&quot;: &quot;{{anyHostname}}&quot;,
       &quot;email&quot;: &quot;{{anyEmail}}&quot;,
       &quot;enum&quot;: &quot;{{anyOf 'alpha' 'beta' 'gamma'}}&quot;,
-      &quot;number&quot;: &quot;{{anyNumber}}&quot;, 
+      &quot;number&quot;: &quot;{{anyNumber}}&quot;,
       &quot;integer&quot;: &quot;{{anyI32}}&quot;,
       &quot;float&quot;: &quot;{{anyFloat}}&quot;,
       &quot;anyDate&quot;: &quot;{{anyDate}}&quot;
@@ -217,23 +225,32 @@ for <a href="../contract/index.html">contract testing</a> while <a href="../cont
 <ul>
 <li><code>anyRegex</code> generates a value matching this regex. Tip: most of the time will be used for strings but if this regex
 defines an integer, a float or a boolean and is used in <code>&quot;jsonBody&quot;&quot;</code> the generated value will be cast</li>
-<li><code>anyNonEmptyString</code> or <code>anyNonBlankString</code></li>
-<li><code>anyAlphaNumeric</code> generates</li>
-<li><code>anyBoolean</code> generates</li>
-<li><code>anyUuid</code> generates</li>
-<li><code>anyIpAddress</code> generates</li>
-<li><code>anyHostname</code> generates</li>
-<li><code>anyEmail</code> generates</li>
-<li><code>anyOf</code> generates</li>
-<li><code>anyNumber</code> generates</li>
-<li><code>anyI32</code> or <code>anyU32</code></li>
-<li><code>anyFloat</code> </li>
-<li><code>anyDate</code> </li>
+<li><code>anyNonEmptyString</code> or <code>anyNonBlankString</code> generates an arbitrary utf-8 string</li>
+<li><code>anyAlphaNumeric</code> generates an arbitrary string with only alphanumeric characters</li>
+<li><code>anyBoolean</code> generates either <code>true</code> or <code>false</code></li>
+<li><code>anyUuid</code> generates a random UUIDv4</li>
+<li><code>anyIpAddress</code> generates a random IP address e.g. <code>127.0.0.1</code></li>
+<li><code>anyHostname</code> generates an arbitrary hostname e.g. <code>https://github.com</code></li>
+<li><code>anyEmail</code> generates a random valid email address e.g. <code>john.doe@gmail.com</code></li>
+<li><code>anyOf</code> given the supplied values, will pick one randomly. Only works for strings.</li>
+<li><code>anyNumber</code> when one does not care about the number size, generates either an integer or a float</li>
+<li><code>anyI32</code> or <code>anyU32</code> etc.. generates a random integer. Possible values
+are [<code>anyU64</code>, <code>anyI64</code>, <code>anyU32</code>, <code>anyI32</code>, <code>anyU16</code>, <code>anyI16</code>, <code>anyU8</code>, <code>anyI8</code>]</li>
+<li><code>anyFloat</code> generates a random float</li>
+<li><code>anyDate</code> generates a date with format <code>yyyy-mm-dd</code></li>
+<li><code>anyTime</code> generates a time with format <code>hh:mm:ss</code></li>
+<li><code>anyDatetime</code> generates a datetime with format <code>yyyy-mm-ddThh:mm:ss</code></li>
+<li><code>anyIso8601</code> generates an <a href="https://en.wikipedia.org/wiki/ISO_8601">iso-8601</a> compliant datetime</li>
 </ul>
 <h2 id="response-templating"><a class="header" href="#response-templating">Response templating</a></h2>
+<p>Another kind of relaxing you can do is by being able to represent as best as possible the actual http response of your
+app. Very often, a field in the response is the exact same as the one in the request e.g. in a POST request to create
+a REST resource. You can use in your response parts of the request to do so.</p>
 <pre><code class="language-json">{
   &quot;response&quot;: {
-    &quot;transformers&quot;: [&quot;response-template&quot;],
+    &quot;transformers&quot;: [
+      &quot;response-template&quot;
+    ],
     &quot;jsonBody&quot;: {
       &quot;url-path-and-query&quot;: &quot;{{request.url}}&quot;,
       &quot;url-path&quot;: &quot;{{request.path}}&quot;,
@@ -244,7 +261,31 @@ defines an integer, a float or a boolean and is used in <code>&quot;jsonBody&quo
       &quot;header&quot;: &quot;{{request.headers.Content-Type}}&quot;,
       &quot;multi-header&quot;: &quot;{{request.headers.cache-control.[0]}}&quot;,
       &quot;body&quot;: &quot;{{request.body}}&quot;,
-      &quot;from-request&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;,
+      &quot;from-request&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><code>request.url</code> given a request to <code>http://localhost/api/path?a=b</code> returns <code>path?a=b</code></li>
+<li><code>request.path</code> given a request to <code>http://localhost/api/path?a=b</code> returns <code>api/path</code></li>
+<li><code>request.pathSegments.[i]</code> allows picking a part of the url path (<code>i</code> is zero indexed) e.g.
+<code>http://localhost/a/b/c</code> with <code>i</code> == 1 returns <code>b</code></li>
+<li><code>query.&lt;selector&gt;.[i]</code> allows picking a named query parameter. Replace <code>&lt;selector&gt;</code> by the name of the query
+parameter. If the query parameter is multivalued, you can select only one with the zero indexed <code>i</code>. For example with
+<code>http://localhost?a=1&amp;a=2&amp;a=3&amp;b=1</code> then <code>{{query.b}}</code> returns <code>1</code> and <code>{{query.a.[1]}}</code> returns <code>2</code></li>
+<li><code>request.method</code> returns the (uppercase) http request method. If you want the lowercase method just <code>{{lower request.method}}</code></li>
+<li><code>request.headers.&lt;selector&gt;.[i]</code> about the same as picking query parameters. Note that here <code>selector</code> is case-insensitive.</li>
+<li><code>request.body</code> takes the raw request body without altering it</li>
+<li><code>jsonPath request.body '&lt;json-path&gt;'</code> for templating only a field from request's json body. <code>json-path</code> is the JSONPath 
+for selecting the right field. Use an <a href="https://jsonpath.com/">online JSONPath evaluator</a> to try out your paths.</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;response&quot;: {
+    &quot;transformers&quot;: [
+      &quot;response-template&quot;
+    ],
+    &quot;jsonBody&quot;: {
       &quot;now&quot;: &quot;{{now}}&quot;,
       &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;,
       &quot;now-fmt-epoch&quot;: &quot;{{now format='epoch'}}&quot;,
