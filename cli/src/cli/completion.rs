@@ -1,6 +1,6 @@
 use std::{fs::create_dir_all, path::PathBuf};
 
-use clap::{Command, IntoApp, Parser};
+use clap::{Command, Parser, CommandFactory};
 use clap_complete::{generate_to, Generator, Shell::{Bash, Zsh}};
 use directories::UserDirs;
 
