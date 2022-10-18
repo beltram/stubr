@@ -352,7 +352,7 @@ as possible.</p>
       &quot;body&quot;: &quot;{{request.body}}&quot;, // returns raw request body
       &quot;from-request&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;, // takes field 'name' from json request body
       &quot;now&quot;: &quot;{{now}}&quot;, // current datetime (UTC)
-      &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;, // (1) with custom Java SimpleDateFormat
+      &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;, // with custom Java SimpleDateFormat
       &quot;now-fmt-epoch&quot;: &quot;{{now format='epoch'}}&quot;, // epoch in milliseconds
       &quot;now-fmt-unix&quot;: &quot;{{now format='unix'}}&quot;, // epoch in seconds
       &quot;now-positive-offset&quot;: &quot;{{now offset='3 days'}}&quot;, // human time positive offset
@@ -623,6 +623,7 @@ all your unit tests because none of your unit tests expects a particular value f
 <p>In order to use a Handlebars helper, you need to add <code>&quot;transformers&quot;: [&quot;response-template&quot;]</code>.</p>
 <p>Keep in mind that such helper will also be used to generate assertions when you will be using this stub
 for <a href="stubs/../contract/index.html">contract testing</a> while <a href="stubs/../contract/producer.html">verifying your producer</a>.</p>
+<p>NB: those templates are not available in <a href="https://github.com/tomakehurst/wiremock">Wiremock</a>, you can only use them in stubr.</p>
 <pre><code class="language-json">{
   &quot;response&quot;: {
     &quot;transformers&quot;: [
@@ -704,6 +705,7 @@ parameter. If the query parameter is multivalued, you can select only one with t
 <li><code>jsonPath request.body '&lt;json-path&gt;'</code> for templating only a field from request's json body. <code>json-path</code> is the JSONPath 
 for selecting the right field. Use an <a href="https://jsonpath.com/">online JSONPath evaluator</a> to try out your paths.</li>
 </ul>
+<p>You also sometimes have to generate dynamic data or to transform existing one:</p>
 <pre><code class="language-json">{
   &quot;response&quot;: {
     &quot;transformers&quot;: [
@@ -717,10 +719,10 @@ for selecting the right field. Use an <a href="https://jsonpath.com/">online JSO
       &quot;now-positive-offset&quot;: &quot;{{now offset='3 days'}}&quot;,
       &quot;now-negative-offset&quot;: &quot;{{now offset='-3 days'}}&quot;,
       &quot;now-with-timezone&quot;: &quot;{{now timezone='Europe/Rome'}}&quot;,
-      &quot;number-is-odd&quot;: &quot;{{isOdd 3}}&quot;,
-      &quot;string-capitalized&quot;: &quot;{{capitalize mister}}&quot;,
-      &quot;string-uppercase&quot;: &quot;{{upper mister}}&quot;,
+      &quot;number-is-odd&quot;: &quot;{{isOdd request.body}}&quot;,
       &quot;number-stripes&quot;: &quot;{{stripes request.body 'if-even' 'if-odd'}}&quot;,
+      &quot;string-capitalized&quot;: &quot;{{capitalize request.body}}&quot;,
+      &quot;string-uppercase&quot;: &quot;{{upper request.body}}&quot;,
       &quot;string-trim&quot;: &quot;{{trim request.body}}&quot;,
       &quot;size&quot;: &quot;{{size request.body}}&quot;,
       &quot;base64-encode&quot;: &quot;{{base64 request.body padding=false}}&quot;,
@@ -731,13 +733,47 @@ for selecting the right field. Use an <a href="https://jsonpath.com/">online JSO
   }
 }
 </code></pre>
+<ul>
+<li><code>now</code> by default return the current datetime in <a href="https://www.rfc-editor.org/rfc/rfc3339">RFC 3339</a> format (this is only for backward compatibility with Wiremock)
+<ul>
+<li><code>format</code> could be either:
+<ul>
+<li>a custom <a href="https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html">Java SimpleDateFormat</a> (for Wiremock compatibility) e.g. <code>format='yyyy/MM/dd'</code></li>
+<li><code>epoch</code> Unix timestamp in milliseconds</li>
+<li><code>unix</code> Unix timestamp in seconds</li>
+</ul>
+</li>
+<li><code>offset</code> now with the given offset expressed in human-readable format. Refer to <a href="https://docs.rs/humantime/latest/humantime/fn.parse_duration.html">humantime documentation</a> for further examples.</li>
+<li><code>timezone</code> for using a string timezone (see <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List">list</a>)</li>
+</ul>
+</li>
+<li><code>isOdd</code> or <code>isEven</code> returns a boolean whether the numeric value is an even or odd integer</li>
+<li><code>capitalize</code> first letter to uppercase e.g. <code>mister</code> becomes <code>Mister</code></li>
+<li><code>upper</code> or <code>lower</code> recapitalizes the whole word</li>
+<li><code>stripes</code> returns alternate values depending if the tested value is even or odd</li>
+<li><code>trim</code> removes leading &amp; trailing whitespaces</li>
+<li><code>size</code> returns the number of bytes for a string (⚠️ not the number of characters) or the size of an array</li>
+<li><code>base64</code> for standard (no base64 url encoding yet) Base64 encoding
+<ul>
+<li><code>decode</code> for decoding when true</li>
+<li><code>padding</code> with/without padding</li>
+</ul>
+</li>
+<li><code>urlEncode</code> for url encoding the value. Use <code>decode=true</code> to decode</li>
+</ul>
 <h2 id="delay"><a class="header" href="#delay">Delay</a></h2>
+<p>You can also use stubr to simulate http server runtime behaviour. And most of the time you'll want to introduce latencies
+to check how your consuming application reacts to such delays. Currently, the options are quite sparse but should grow !</p>
 <pre><code class="language-json">{
   &quot;response&quot;: {
     &quot;fixedDelayMilliseconds&quot;: 2000
   }
 }
 </code></pre>
+<ul>
+<li><code>fixedDelayMilliseconds</code> a delay (in milliseconds) added everytime this stub is matched. If you are using stubr 
+standalone through the <a href="stubs/../cli.html">cli</a>, this value can be either superseded by <code>--delay</code> or complemented by <code>--latency</code></li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="relaxing-a-stub"><a class="header" href="#relaxing-a-stub">Relaxing a stub</a></h1>
 <h2 id="request-matching"><a class="header" href="#request-matching">Request matching</a></h2>
 <h2 id="response-1"><a class="header" href="#response-1">Response</a></h2>

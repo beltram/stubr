@@ -216,7 +216,7 @@ as possible.</p>
       &quot;body&quot;: &quot;{{request.body}}&quot;, // returns raw request body
       &quot;from-request&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;, // takes field 'name' from json request body
       &quot;now&quot;: &quot;{{now}}&quot;, // current datetime (UTC)
-      &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;, // (1) with custom Java SimpleDateFormat
+      &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;, // with custom Java SimpleDateFormat
       &quot;now-fmt-epoch&quot;: &quot;{{now format='epoch'}}&quot;, // epoch in milliseconds
       &quot;now-fmt-unix&quot;: &quot;{{now format='unix'}}&quot;, // epoch in seconds
       &quot;now-positive-offset&quot;: &quot;{{now offset='3 days'}}&quot;, // human time positive offset
