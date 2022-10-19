@@ -42,9 +42,16 @@ impl ResponseStub {
         self.transformers.iter().any(|it| it == Self::RESPONSE_TEMPLATE)
     }
 
-    pub fn defined_header_keys(&self) -> Option<impl Iterator<Item=&str>> {
+    pub fn user_defined_header_keys(&self) -> Option<impl Iterator<Item=&str>> {
         self.headers.headers.as_ref()
             .map(|headers| headers.keys().map(String::as_str))
+    }
+
+    pub fn user_defined_headers(&self) -> Option<impl Iterator<Item=(&str, &str)>> {
+        self.headers.headers.as_ref()
+            .map(|headers| headers.iter()
+                .filter_map(|(k, v)| v.as_str().map(|v| (k, v)))
+                .map(|(k, v)| (k.as_str(), v)))
     }
 
     pub fn status(&self) -> u16 {
