@@ -39,6 +39,7 @@ use crate::{
     cloud::opentracing::OpenTracing,
     model::response::{ResponseStub, template::data::RequestData},
 };
+use crate::cloud::hyper::SupersedeHyper;
 
 pub mod data;
 pub mod verify;
@@ -99,7 +100,8 @@ pub struct StubTemplate {
 impl Respond for StubTemplate {
     fn respond(&self, req: &Request) -> ResponseTemplate {
         let mut resp = self.template.clone();
-        resp = OpenTracing(req).add_opentracing_header(resp, self.response.defined_header_keys());
+        resp = OpenTracing(req).add_opentracing_header(resp, self.response.user_defined_header_keys());
+        resp = SupersedeHyper::supersede_hyper_header(resp, self.response.user_defined_headers());
         if self.requires_templating {
             let data = HandlebarsData {
                 request: &RequestData::from(req),

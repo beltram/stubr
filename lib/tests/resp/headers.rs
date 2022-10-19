@@ -33,3 +33,13 @@ async fn user_defined_server_header_should_have_precedence_over_default_one() {
         .expect_status_ok()
         .expect_header("Server", "my-app");
 }
+
+#[async_std::test]
+#[stubr::mock("resp/headers/cache-control.json")]
+async fn should_not_supersede_cache_control() {
+    get(stubr.uri())
+        .header("cache-control", "a, b")
+        .await
+        .expect_status_ok()
+        .expect_header("cache-control", "explicit");
+}
