@@ -75,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="ide-completion.html" class="active"><strong aria-hidden="true">9.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="benchmark.html"><strong aria-hidden="true">9.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="ide-completion.html" class="active"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -135,12 +135,38 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="ide-completion"><a class="header" href="#ide-completion">IDE completion</a></h1>
-
+<p>A json schema is also maintained <a href="schemas/stubr.schema.json">here</a> to provide completion in IDE. It just contains
+completion for features implemented in stubr and should alleviate you from a bit of pain when writing json from scratch.</p>
+<details>
+<summary><b>IntelliJ</b></summary>
+<ul>
+<li>Go to <code>Settings &gt; Languages &amp; Frameworks &gt; Schemas &amp; DTDs &gt; JSON Schema Mappings</code></li>
+<li>Add a mapping (click on the upper <code>+</code>)</li>
+<li>Then supply the following
+<ul>
+<li>name: <code>stubr</code></li>
+<li>Schema file or URL: <code>https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json</code></li>
+<li>Schema version: <code>JSON Schema version 7</code></li>
+<li>File path pattern: <code>stubs/*.json</code> (and <code>mappings/*.json</code> if you want to use it for original wiremock stubs)</li>
+</ul>
+</li>
+<li>Then <code>Apply</code></li>
+</ul>
+</details>
+<details>
+<summary><b>VsCode</b></summary>
+<ul>
+<li>Open workspace settings (File &gt; Preferences &gt; Settings)</li>
+<li>Add the following under the property <code>json.schemas</code></li>
+</ul>
+<pre><code class="language-json">&quot;json.schemas&quot;: [{&quot;fileMatch&quot;: [&quot;stubs/*.json&quot;, &quot;mappings/*.json&quot;], &quot;url&quot;: &quot;https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json&quot;}]
+</code></pre>
+</details>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="docker.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="benchmark.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -149,7 +175,7 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="docker.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="benchmark.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
             </nav>

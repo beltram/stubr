@@ -76,7 +76,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">9.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li class="chapter-item expanded "><a href="stubbing.html"><strong aria-hidden="true">3.</strong> Stubbing</a></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">4.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">4.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">4.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">5.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">5.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">5.2.</strong> Response</a></li><li class="chapter-item expanded "><a href="stubs/relaxing.html"><strong aria-hidden="true">5.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">6.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">6.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">6.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">6.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">6.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">6.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="benchmark.html"><strong aria-hidden="true">9.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -778,15 +778,146 @@ standalone through the <a href="stubs/../cli.html">cli</a>, this value can be ei
 <h2 id="request-matching"><a class="header" href="#request-matching">Request matching</a></h2>
 <h2 id="response-1"><a class="header" href="#response-1">Response</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording"><a class="header" href="#recording">Recording</a></h1>
+<p>Writing stubs by hand can be... well, painful. More often than not, you already have an existing app ready and you just
+want to mock it for consumers. Or you are from those who prefer writing code before tests. Or you are lazy 😅.</p>
+<p>All those are valid reasons and in order to help you with that, you can record real http traffic and turn it into json
+stub files. If you are not at all working on Rust projects, you can <a href="recording/cli.html">record using the cli</a> to capture traffic
+from for example a real application in production written in Java. If you are in a Rust project and use a http client
+library, you can record its traffic in tests for <a href="recording/actix.html">actix</a>, <a href="recording/isahc.html">isahc</a> or <a href="recording/reqwest.html">reqwest</a>. And
+if your favorite http client is not is this list you can still record using a <a href="recording/standalone.html">standalone</a> recorder. 
+Recording in a Rust consumer is mostly about getting faster, especially with &quot;fat&quot; endpoints with hundreds of fields. </p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-actix-app"><a class="header" href="#recording-your-actix-app">Recording your actix app</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-with-the-cli"><a class="header" href="#recording-with-the-cli">Recording with the cli</a></h1>
+<p>In order to record http traffic, <code>stubr</code> can act as a proxy to dump this traffic into json stubs on your local
+filesystem. Recording can be started with the <code>stubr record</code> command. Stubs will be grouped by hosts. You can then play
+them back using <code>stubr</code>.</p>
+<div class="table-wrapper"><table><thead><tr><th>arg</th><th style="text-align: center">about</th><th style="text-align: center">examples</th></tr></thead><tbody>
+<tr><td><code>--port</code></td><td style="text-align: center">Proxy port. Defaults to 3030.</td><td style="text-align: center"><code>stubr --port 3031</code> or <code>stubr -p 3031</code></td></tr>
+<tr><td><code>--output</code></td><td style="text-align: center">File path where recorded stubs are stored. Default to current directory.</td><td style="text-align: center"><code>stubr --port record-1</code> or <code>stubr -o record-1</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="example"><a class="header" href="#example">example</a></h3>
+<p>First, start stubr recorder on port <code>3030</code>. It will act as a proxy.</p>
+<pre><code class="language-bash">stubr record -p 3030
+</code></pre>
+<p>We are going to consume a publicly available endpoint returning a list of sample users. We'll use <a href="https://curl.se/">curl</a>
+to make this http call, and we will configure it to use our recorder as a proxy.</p>
+<pre><code class="language-bash">curl jsonplaceholder.typicode.com/users --proxy http://localhost:3030
+</code></pre>
+<p>You should have a stub under <code>jsonplaceholder.typicode.com/users-*.json</code> following the pattern <code>{domain}/{path}-{md5-hash}.json</code>.</p>
+<p>NB: <em>That way of recording is less intrusive than <a href="https://wiremock.org/docs/record-playback/">if you had to do it with wiremock,</a>
+and you can configure. Most of the tools e.g. <a href="https://curl.se/">curl</a>, <a href="https://jmeter.apache.org/">JMeter</a>, <a href="https://k6.io/">k6</a> or
+simply your web browser support configuring a http proxy (and more often than not, just by setting an environment variable,
+leaving your tests/scripts untouched).</em></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-isahc-calls"><a class="header" href="#recording-your-isahc-calls">Recording your isahc calls</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-reqwest-calls"><a class="header" href="#recording-your-reqwest-calls">Recording your reqwest calls</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-standalone"><a class="header" href="#recording-standalone">Recording standalone</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cli"><a class="header" href="#cli">Cli</a></h1>
+<p>You can use <code>stubr</code> as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into
+json stubs.</p>
+<p>To get a list of all available options run <code>stubr --help</code></p>
+<div class="table-wrapper"><table><thead><tr><th>arg</th><th style="text-align: center">about</th><th style="text-align: center">examples</th></tr></thead><tbody>
+<tr><td><code>[dir]</code></td><td style="text-align: center">Folder containing stubs or individual stub.</td><td style="text-align: center"><code>stubr ./my-app-stubs</code> or <code>stubr ./my-app-stubs/ping.json</code></td></tr>
+<tr><td><code>--root-dir</code></td><td style="text-align: center">Directory containing a <code>mappings</code> folder with all stubs. Equivalent to Wiremock's one. Has precedence over <code>[dir]</code></td><td style="text-align: center"><code>stubr --root-dir ./my-app-stubs</code></td></tr>
+<tr><td><code>--port</code></td><td style="text-align: center">Server port. Defaults to random port.</td><td style="text-align: center"><code>stubr --port 8080</code> or <code>stubr -p 8080</code></td></tr>
+<tr><td><code>--delay</code></td><td style="text-align: center">Global delay duration applied to all stubs (supersedes any locally defined delay).</td><td style="text-align: center"><code>stubr --delay 2s</code> or <code>stubr -d 1m</code> or <code>stubr -d 100ms</code></td></tr>
+<tr><td><code>--latency</code></td><td style="text-align: center">Delay added to any locally defined delay. Simulates network latency.</td><td style="text-align: center"><code>stubr --latency 2s</code> or <code>stubr -l 1m</code> or <code>stubr -l 100ms</code></td></tr>
+<tr><td><code>completion</code></td><td style="text-align: center">Generates &amp; installs bash or zsh completion scripts</td><td style="text-align: center"><code>stubr completion bash</code> or <code>stubr completion zsh</code></td></tr>
+<tr><td><code>--help</code></td><td style="text-align: center">Displays help.</td><td style="text-align: center"><code>stubr help</code> or <code>stubr -h</code> for short help. <code>stubr --help</code> for long help</td></tr>
+<tr><td><code>--version</code></td><td style="text-align: center">Displays <code>stubr</code> version.</td><td style="text-align: center"><code>stubr -V</code> or <code>stubr --version</code></td></tr>
+</tbody></table>
+</div>
+<h2 id="install-it"><a class="header" href="#install-it">install it</a></h2>
+<h3 id="precompiled-binaries"><a class="header" href="#precompiled-binaries">precompiled binaries</a></h3>
+<p>If you don't want to install <a href="https://rustup.rs/">Rust toolchain</a>, you can always download precompiled binaries. They
+have the advantage of being optimized with <a href="https://upx.github.io/">upx</a> hence they are just smaller than the ones you'd
+get from sources.</p>
+<h4 id="linux-1"><a class="header" href="#linux-1">linux:</a></h4>
+<pre><code class="language-bash">curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-linux.tar.gz | tar xz - -C /usr/local/bin
+</code></pre>
+<h4 id="macos-1"><a class="header" href="#macos-1">macos:</a></h4>
+<pre><code class="language-bash">curl -L https://github.com/beltram/stubr/releases/latest/download/stubr-macos.tar.gz | tar xz - -C /usr/local/bin
+</code></pre>
+<h3 id="from-source"><a class="header" href="#from-source">from source</a></h3>
+<pre><code class="language-bash">cargo install stubr-cli
+</code></pre>
+<h3 id="once-installed-generate-completion"><a class="header" href="#once-installed-generate-completion">once installed, generate completion</a></h3>
+<p>Completion files generation is currently supported for <code>bash</code> and <code>zsh</code>. Stubr cli provides a <code>completion</code> command to
+generate and install them in a standard location.</p>
+<pre><code class="language-bash">stubr completion zsh
+# or
+stubr completion bash
+</code></pre>
+<h2 id="getting-started-1"><a class="header" href="#getting-started-1">getting started</a></h2>
+<p>The simplest usage is for serving Wiremock stubs under a directory (or just a single file).<br />
+For example let's generate a simple stub file.</p>
+<pre><code class="language-bash">echo &quot;{\&quot;request\&quot;: {\&quot;method\&quot;: \&quot;GET\&quot;}, \&quot;response\&quot;: { \&quot;status\&quot;: 200 }}&quot; &gt; hello.json
+</code></pre>
+<p>Then simply run it with the following command.</p>
+<pre><code class="language-bash">stubr hello.json
+</code></pre>
+<p>Which will generate something like that.</p>
+<pre><code class="language-bash"> &gt; + mounted &quot;hello.json&quot;
+ &gt; Started stubr in 50ms on http://127.0.0.1:49604
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="docker"><a class="header" href="#docker">Docker</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="ide-completion"><a class="header" href="#ide-completion">IDE completion</a></h1>
+<p>A docker image is published <a href="https://github.com/users/beltram/packages/container/package/stubr">here</a> with each release.</p>
+<p>You can play with it with the following commands:</p>
+<pre><code class="language-bash">echo &quot;{\&quot;request\&quot;: {\&quot;method\&quot;: \&quot;GET\&quot;}, \&quot;response\&quot;: { \&quot;body\&quot;: \&quot;Hello stubr\&quot; }}&quot; &gt; hello.json &amp;&amp;
+docker run -v $(pwd):/stubs -d --rm -p 8080:8080 ghcr.io/beltram/stubr:latest /stubs -p 8080 &amp;&amp;
+http :8080
+</code></pre>
+<p>Which should output</p>
+<pre><code class="language-bash">HTTP/1.1 200 OK
+content-length: 11
+content-type: text/plain
+date: Tue, 23 Mar 2021 13:37:41 GMT
+server: stubr(0.5.0-rc.2)
 
+Hello stubr
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="benchmark"><a class="header" href="#benchmark">Benchmark</a></h1>
+<h2 id="vs-wiremock"><a class="header" href="#vs-wiremock">vs wiremock</a></h2>
+<p>A very simple benchmark comparing stubr to wiremock is
+available <a href="https://github.com/beltram/stubr/blob/main/bench/README.md">here</a></p>
+<h2 id="standalone"><a class="header" href="#standalone">standalone</a></h2>
+<p>A benchmark of <code>stubr</code> itself, powered by <a href="https://crates.io/crates/criterion">criterion</a> is available for each release.
+The latest is available <a href="https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz">here</a>. It aims at
+tracking down progresses/regressions made.</p>
+<p>I'm still looking for a way to turn this into something more ergonomic, especially I'd like to provide a way to compare
+2 benchmarks. Meanwhile, you can download the latest benchmark with these commands.</p>
+<pre><code class="language-bash">mkdir stubr-bench &amp;&amp;
+curl -L https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz | tar xz - -C stubr-bench
+</code></pre>
+<p>Then open <code>./stubr-bench/report/index.html</code> in your browser.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="ide-completion"><a class="header" href="#ide-completion">IDE completion</a></h1>
+<p>A json schema is also maintained <a href="schemas/stubr.schema.json">here</a> to provide completion in IDE. It just contains
+completion for features implemented in stubr and should alleviate you from a bit of pain when writing json from scratch.</p>
+<details>
+<summary><b>IntelliJ</b></summary>
+<ul>
+<li>Go to <code>Settings &gt; Languages &amp; Frameworks &gt; Schemas &amp; DTDs &gt; JSON Schema Mappings</code></li>
+<li>Add a mapping (click on the upper <code>+</code>)</li>
+<li>Then supply the following
+<ul>
+<li>name: <code>stubr</code></li>
+<li>Schema file or URL: <code>https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json</code></li>
+<li>Schema version: <code>JSON Schema version 7</code></li>
+<li>File path pattern: <code>stubs/*.json</code> (and <code>mappings/*.json</code> if you want to use it for original wiremock stubs)</li>
+</ul>
+</li>
+<li>Then <code>Apply</code></li>
+</ul>
+</details>
+<details>
+<summary><b>VsCode</b></summary>
+<ul>
+<li>Open workspace settings (File &gt; Preferences &gt; Settings)</li>
+<li>Add the following under the property <code>json.schemas</code></li>
+</ul>
+<pre><code class="language-json">&quot;json.schemas&quot;: [{&quot;fileMatch&quot;: [&quot;stubs/*.json&quot;, &quot;mappings/*.json&quot;], &quot;url&quot;: &quot;https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json&quot;}]
+</code></pre>
+</details>
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
