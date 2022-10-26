@@ -135,6 +135,35 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="recording-standalone"><a class="header" href="#recording-standalone">Recording standalone</a></h1>
+<p>If you don't fall into one of the previous boxes (for example if you use another http client), you can still record the http
+traffic by using the standalone recording proxy, the exact same one used in the <a href="../cli.html">cli</a>.</p>
+<p>To do so, you just have to spawn the proxy and then configure your http client to use this proxy.</p>
+<p><em>This requires the <code>record</code> feature.</em></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[test]
+fn record_standalone() {
+    // 👇 spawn the recording proxy
+    let proxy = stubr::Stubr::record(); // works for async as well
+    // or use `record_with()` for configuring it
+    let _proxy_uri = proxy.uri();
+    // ☝️ then use this uri to configure your http client
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Or, in order to keep the syntax short, you can use the provided attribute macro.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// works for async as well
+#[stubr::record] // 👈 this spawns the proxy and creates a 'recorder' binding in the function
+// #[stubr::record(port = 1234)] for setting a port
+#[test]
+fn record_standalone() {
+    let _proxy_uri = recorder.uri();
+    // ☝️ then use this uri to configure your http client
+}
+<span class="boring">}
+</span></code></pre></pre>
 
                     </main>
 

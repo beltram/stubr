@@ -135,6 +135,49 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="recording-your-reqwest-calls"><a class="header" href="#recording-your-reqwest-calls">Recording your reqwest calls</a></h1>
+<p>You have 2 ways to record reqwest http calls ; either with the <code>stubr::Record</code> trait (highly recommended) or the &quot;original&quot;
+way, still supported, with a standalone recording proxy.</p>
+<p><em>This requires the <code>record-reqwest</code> feature.</em></p>
+<h2 id="trait-recommended"><a class="header" href="#trait-recommended">trait (recommended)</a></h2>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use asserhttp::*;
+use stubr::Record as _;
+
+#[test]
+#[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
+fn record_reqwest_trait() {
+    // recording unfortunately requires using reqwest's builder hence the syntax is a bit verbose
+    let req = reqwest::blocking::ClientBuilder::new().build().unwrap()
+        .get(stubr.uri())
+        // 👇 this will intercept and dump all http traffic going through this client
+        .record() // or `record_with()` for configuring it
+        .build().unwrap();
+    reqwest::blocking::Client::default().execute(req).unwrap()
+        .expect_status_ok();
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
+<p><em>NB: async is not supported yet</em></p>
+<h2 id="standalone"><a class="header" href="#standalone">standalone</a></h2>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use asserhttp::*;
+
+#[tokio::test(flavor = &quot;multi_thread&quot;)] // 👈 required by recording proxy
+#[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
+async fn record_reqwest() {
+    // 👇 spawn the recording proxy
+    stubr::Stubr::record() // or `record_with()` for configuring it
+        // 👇 builds a reqwest client with proxy configured
+        .reqwest_client()
+        .get(stubr.uri()).send().await
+        .expect_status_ok();
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 
                     </main>
 

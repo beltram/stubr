@@ -135,6 +135,27 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="recording-your-actix-app"><a class="header" href="#recording-your-actix-app">Recording your actix app</a></h1>
+<p>You can plug recording in your existing <a href="https://actix.rs/docs/testing/#integration-tests">actix integration tests</a> by 
+just adding a single line: <code>.wrap(stubr::ActixRecord::default())</code>. This will register a middleware which will capture
+the http request and response, then dump them under <code>./target/stubs/localhost</code>.</p>
+<p><em>This requires the <code>record-actix</code> feature.</em></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use actix_web::test::{call_service, init_service, TestRequest};
+use asserhttp::*;
+
+#[actix_web::test]
+async fn record_actix() {
+    let app = actix_web::App::new()
+        .route(&quot;/&quot;, actix_web::web::get().to(|| async { actix_web::HttpResponse::Ok().await }))
+        // just add this 👇
+        .wrap(stubr::ActixRecord::default()); // or `ActixRecord(RecordConfig)` for configuring it
+    let req = TestRequest::get().uri(&quot;/&quot;).to_request();
+    let svc = init_service(app).await;
+    call_service(&amp;svc, req).await.expect_status_ok();
+}
+<span class="boring">}
+</span></code></pre></pre>
 
                     </main>
 

@@ -787,6 +787,27 @@ library, you can record its traffic in tests for <a href="recording/actix.html">
 if your favorite http client is not is this list you can still record using a <a href="recording/standalone.html">standalone</a> recorder. 
 Recording in a Rust consumer is mostly about getting faster, especially with &quot;fat&quot; endpoints with hundreds of fields. </p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-actix-app"><a class="header" href="#recording-your-actix-app">Recording your actix app</a></h1>
+<p>You can plug recording in your existing <a href="https://actix.rs/docs/testing/#integration-tests">actix integration tests</a> by 
+just adding a single line: <code>.wrap(stubr::ActixRecord::default())</code>. This will register a middleware which will capture
+the http request and response, then dump them under <code>./target/stubs/localhost</code>.</p>
+<p><em>This requires the <code>record-actix</code> feature.</em></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use actix_web::test::{call_service, init_service, TestRequest};
+use asserhttp::*;
+
+#[actix_web::test]
+async fn record_actix() {
+    let app = actix_web::App::new()
+        .route(&quot;/&quot;, actix_web::web::get().to(|| async { actix_web::HttpResponse::Ok().await }))
+        // just add this 👇
+        .wrap(stubr::ActixRecord::default()); // or `ActixRecord(RecordConfig)` for configuring it
+    let req = TestRequest::get().uri(&quot;/&quot;).to_request();
+    let svc = init_service(app).await;
+    call_service(&amp;svc, req).await.expect_status_ok();
+}
+<span class="boring">}
+</span></code></pre></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-with-the-cli"><a class="header" href="#recording-with-the-cli">Recording with the cli</a></h1>
 <p>In order to record http traffic, <code>stubr</code> can act as a proxy to dump this traffic into json stubs on your local
 filesystem. Recording can be started with the <code>stubr record</code> command. Stubs will be grouped by hosts. You can then play
@@ -810,8 +831,100 @@ and you can configure. Most of the tools e.g. <a href="https://curl.se/">curl</a
 simply your web browser support configuring a http proxy (and more often than not, just by setting an environment variable,
 leaving your tests/scripts untouched).</em></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-isahc-calls"><a class="header" href="#recording-your-isahc-calls">Recording your isahc calls</a></h1>
+<p>The only way currently to record isahc is to spawn a proxy and configure isahc to use this proxy. This is exactly what
+the following snippet does.</p>
+<p><em>This requires the <code>record-isahc</code> feature.</em></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use asserhttp::*;
+
+#[tokio::test(flavor = &quot;multi_thread&quot;)] // 👈 required by recording proxy
+#[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
+async fn record_isahc() {
+    // 👇 spawn the recording proxy
+    stubr::Stubr::record() // or `record_with()` for configuring it
+        // 👇 builds an isahc client with proxy configured
+        .isahc_client()
+        .get(stubr.uri())
+        .expect_status_ok();
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-reqwest-calls"><a class="header" href="#recording-your-reqwest-calls">Recording your reqwest calls</a></h1>
+<p>You have 2 ways to record reqwest http calls ; either with the <code>stubr::Record</code> trait (highly recommended) or the &quot;original&quot;
+way, still supported, with a standalone recording proxy.</p>
+<p><em>This requires the <code>record-reqwest</code> feature.</em></p>
+<h2 id="trait-recommended"><a class="header" href="#trait-recommended">trait (recommended)</a></h2>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use asserhttp::*;
+use stubr::Record as _;
+
+#[test]
+#[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
+fn record_reqwest_trait() {
+    // recording unfortunately requires using reqwest's builder hence the syntax is a bit verbose
+    let req = reqwest::blocking::ClientBuilder::new().build().unwrap()
+        .get(stubr.uri())
+        // 👇 this will intercept and dump all http traffic going through this client
+        .record() // or `record_with()` for configuring it
+        .build().unwrap();
+    reqwest::blocking::Client::default().execute(req).unwrap()
+        .expect_status_ok();
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
+<p><em>NB: async is not supported yet</em></p>
+<h2 id="standalone"><a class="header" href="#standalone">standalone</a></h2>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use asserhttp::*;
+
+#[tokio::test(flavor = &quot;multi_thread&quot;)] // 👈 required by recording proxy
+#[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
+async fn record_reqwest() {
+    // 👇 spawn the recording proxy
+    stubr::Stubr::record() // or `record_with()` for configuring it
+        // 👇 builds a reqwest client with proxy configured
+        .reqwest_client()
+        .get(stubr.uri()).send().await
+        .expect_status_ok();
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-standalone"><a class="header" href="#recording-standalone">Recording standalone</a></h1>
+<p>If you don't fall into one of the previous boxes (for example if you use another http client), you can still record the http
+traffic by using the standalone recording proxy, the exact same one used in the <a href="recording/../cli.html">cli</a>.</p>
+<p>To do so, you just have to spawn the proxy and then configure your http client to use this proxy.</p>
+<p><em>This requires the <code>record</code> feature.</em></p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[test]
+fn record_standalone() {
+    // 👇 spawn the recording proxy
+    let proxy = stubr::Stubr::record(); // works for async as well
+    // or use `record_with()` for configuring it
+    let _proxy_uri = proxy.uri();
+    // ☝️ then use this uri to configure your http client
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Or, in order to keep the syntax short, you can use the provided attribute macro.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// works for async as well
+#[stubr::record] // 👈 this spawns the proxy and creates a 'recorder' binding in the function
+// #[stubr::record(port = 1234)] for setting a port
+#[test]
+fn record_standalone() {
+    let _proxy_uri = recorder.uri();
+    // ☝️ then use this uri to configure your http client
+}
+<span class="boring">}
+</span></code></pre></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cli"><a class="header" href="#cli">Cli</a></h1>
 <p>You can use <code>stubr</code> as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into
 json stubs.</p>
@@ -880,7 +993,7 @@ Hello stubr
 <h2 id="vs-wiremock"><a class="header" href="#vs-wiremock">vs wiremock</a></h2>
 <p>A very simple benchmark comparing stubr to wiremock is
 available <a href="https://github.com/beltram/stubr/blob/main/bench/README.md">here</a></p>
-<h2 id="standalone"><a class="header" href="#standalone">standalone</a></h2>
+<h2 id="standalone-1"><a class="header" href="#standalone-1">standalone</a></h2>
 <p>A benchmark of <code>stubr</code> itself, powered by <a href="https://crates.io/crates/criterion">criterion</a> is available for each release.
 The latest is available <a href="https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz">here</a>. It aims at
 tracking down progresses/regressions made.</p>
