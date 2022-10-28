@@ -201,7 +201,20 @@ going to be searched from there.<br />
 As well, you can mount many stubs with the macro e.g. <code>#[stubr::mock(&quot;hello.json&quot;, &quot;goodbye.json&quot;)]</code>.
 By default, if you take care to place only stubs with different request matching under <code>tests/stubs</code>, you can simply
 place <code>#[stubr::mock]</code>. It will recursively mount all the stubs under <code>tests/stubs</code>, searching also in subdirectories.</p>
-<p>TODO: Explain port, verify, full_path</p>
+<p>Here are all the options you can use with the attribute macro</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[tokio::test]
+#[stubr::mock(full_path = &quot;tests/book/hello.json&quot;, port = 1234, verify = true)]
+async fn getting_started() {}
+<span class="boring">}
+</span></code></pre></pre>
+<ul>
+<li><code>full_path</code>: use this if your stubs are not under <code>tests/stubs</code> but elsewhere. Note that it can point to a directory.</li>
+<li><code>port</code> when you want an explicit port for your mock server</li>
+<li><code>verify</code> to turn on verification of the number of times a stub gets called (<code>expect</code> field in your stubs). 
+See <a href="../stubs/response.html#simulate-fault">simulating fault</a> for reference</li>
+</ul>
 
                     </main>
 
