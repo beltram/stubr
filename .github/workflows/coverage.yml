@@ -16,7 +16,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
       - name: Coverage
         uses: actions-rs/tarpaulin@v0.1.3
         continue-on-error: true

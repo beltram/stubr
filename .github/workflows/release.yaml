@@ -16,7 +16,7 @@ jobs:
           profile: minimal
           toolchain: stable
       - uses: taiki-e/install-action@cargo-hack
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
       - name: execute build scripts
         run: |
           touch actix-consumer/build.rs
@@ -58,7 +58,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
       - name: cargo/build
         run: cargo build --release
       - name: upx
@@ -109,7 +109,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
       - name: publish plugin
         run: |
           cd build
@@ -139,7 +139,7 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
       - name: build-musl
         uses: gmiam/rust-musl-action@master
         with:
