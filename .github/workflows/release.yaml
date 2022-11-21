@@ -62,7 +62,7 @@ jobs:
       - name: cargo/build
         run: cargo build --release
       - name: upx
-        uses: svenstaro/upx-action@v1-release
+        uses: svenstaro/upx-action@2.0.1
         with:
           file: ${{ matrix.from-file }}
           args: ${{ matrix.args }}
