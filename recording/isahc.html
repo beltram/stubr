@@ -138,9 +138,7 @@
 <p>The only way currently to record isahc is to spawn a proxy and configure isahc to use this proxy. This is exactly what
 the following snippet does.</p>
 <p><em>This requires the <code>record-isahc</code> feature.</em></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use asserhttp::*;
+<pre><code class="language-rust no_run noplayground">use asserhttp::*;
 
 #[tokio::test(flavor = &quot;multi_thread&quot;)] // 👈 required by recording proxy
 #[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
@@ -152,8 +150,7 @@ async fn record_isahc() {
         .get(stubr.uri())
         .expect_status_ok();
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 
                     </main>
@@ -193,5 +190,7 @@ async fn record_isahc() {
         <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../mermaid.min.js"></script>
+        <script type="text/javascript" src="../mermaid-init.js"></script>
     </body>
 </html>

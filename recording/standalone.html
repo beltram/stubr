@@ -139,9 +139,7 @@
 traffic by using the standalone recording proxy, the exact same one used in the <a href="../cli.html">cli</a>.</p>
 <p>To do so, you just have to spawn the proxy and then configure your http client to use this proxy.</p>
 <p><em>This requires the <code>record</code> feature.</em></p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>#[test]
+<pre><code class="language-rust no_run noplayground">#[test]
 fn record_standalone() {
     // 👇 spawn the recording proxy
     let proxy = stubr::Stubr::record(); // works for async as well
@@ -149,12 +147,9 @@ fn record_standalone() {
     let _proxy_uri = proxy.uri();
     // ☝️ then use this uri to configure your http client
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>Or, in order to keep the syntax short, you can use the provided attribute macro.</p>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// works for async as well
+<pre><code class="language-rust no_run noplayground">// works for async as well
 #[stubr::record] // 👈 this spawns the proxy and creates a 'recorder' binding in the function
 // #[stubr::record(port = 1234)] for setting a port
 #[test]
@@ -162,8 +157,7 @@ fn record_standalone() {
     let _proxy_uri = recorder.uri();
     // ☝️ then use this uri to configure your http client
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 
                     </main>
 
@@ -202,5 +196,7 @@ fn record_standalone() {
         <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../mermaid.min.js"></script>
+        <script type="text/javascript" src="../mermaid-init.js"></script>
     </body>
 </html>

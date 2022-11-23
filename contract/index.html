@@ -138,12 +138,14 @@
 <p>In order to introduce contract testing in the simplest terms, we'll go through a mixed practice interleaved with as
 much documentation as possible. The main idea behind this testing practice is to be able to <strong>quickly spot breaking API
 changes</strong> between a producer and a consumer. All of this process should be <strong>offline</strong>, <strong>deterministic</strong> and <strong>should
-not</strong> involve spawning any real http application locally !!!</p>
+not</strong> involve spawning any real http application locally !!! If you want to learn more about the concept, I warmly
+invite you to read <a href="https://martinfowler.com/bliki/ContractTest.html">what Martin Fowler has to say about it</a>.</p>
 <p>It <strong>must not</strong> be confused with end-to-end tests as it does not aim at all to replace them ; it's the opposite
 actually, they are complementary. Their goal is to have the shortest feedback loop possible are detect early on mistakes
 before running those onerous e2e CI pipelines where you'll get the confidence that your code is ready to be shipped in
 production.</p>
-<p>Hence, contract test <strong>are not</strong> about testing functional things ! To be more explicit, imagine you have a <code>User</code>
+<h2 id="what-is-it-"><a class="header" href="#what-is-it-">What is it ?</a></h2>
+<p>Contract test <strong>are not</strong> about testing functional things ! To be more explicit, imagine you have a <code>User</code>
 endpoint with the following json response:</p>
 <pre><code class="language-json">{
   &quot;name&quot;: &quot;alice&quot;,
@@ -153,11 +155,38 @@ endpoint with the following json response:</p>
 <p>Given this endpoint, your contract test will just verify that <code>&quot;name&quot;</code> is a json string and <code>&quot;age&quot;</code> a json number,
 that's it ! On the other hand, your e2e test will probably create a user Alice with age 42 and then verify that your
 endpoint returns the exact same data with the same values.</p>
-<p>TODO: </p>
+<h2 id="producer--consumer"><a class="header" href="#producer--consumer">Producer &amp; consumer</a></h2>
+<pre><code class="language-mermaid">graph LR
+  C[Consumer] --&gt; |http| P[Producer]
+</code></pre>
+<p>Most of the time you will use this kind of testing when you have many application communicating over http. In this
+situation we will call:</p>
 <ul>
-<li>explain what is producer / consumer</li>
-<li>explain difference producer/consumer driven</li>
+<li><code>producer</code>: the application exposing a http API (could be REST or SOAP for what it's worth). We will write one (or
+many) stubs for each http endpoint. We could as well write stubs once and then let them rot. The risk would be that
+while the API evolves, our stub stops representing it accurately. To prevent that, we will <code>verify</code> the stubs we write
+i.e. we will generate real http requests from the stubs and run them against a real instance of the application to
+assert that it does what it claims in the stub. And now we can confidently share our stubs with the outside world and
+our consumers.</li>
+<li><code>consumer</code>: application with a http client calling a producer http application. The consumer first has to fetch stubs
+exposed by the producer. Then it can mount them with stubr to mock the producer in its unit tests. It brings the
+consumer the benefits of being able to lean on verified stubs and to carefully pick a specific version of the
+producer. Along its lifetime, whenever the producer releases a new version, the consumer will be able, even in a
+semi-automated way (dependabot), to verify it is still compatible with the producer API.</li>
 </ul>
+<h2 id="producerconsumer-driven"><a class="header" href="#producerconsumer-driven">Producer/consumer driven</a></h2>
+<p>There are 2 schools when it comes to contract testing: producer-driven &amp; consumer-driven.</p>
+<p>In consumer-driven (for example <a href="https://docs.pact.io/">Pact</a>), multiple consumers define the contract which then has to
+be respected by the producer (summarizing). This has the advantage of taking into consideration every single consumer
+but has some drawbacks. First, every consumer has to manually write/copy the same producer mock ; imagine a microservice
+fleet with a producer consumed 100 times, hence its mocks re-defined in all 100 consumers. Then, anytime a consumer
+produces a new version, a complex CI workflow has to be triggered to verify that the contract is respected by the
+producer. In conclusion, it is not offline.</p>
+<p>Producer-driven (for example <a href="https://spring.io/projects/spring-cloud-contract">Spring Cloud Contract</a>) on the other
+hand has the advantage of being straightforward. Producer defines the contract once, publishes it and every consumer has
+to adapt. Compared to consumer-driven, this model is better suited for organizations where a team has ownership of all
+the applications (when contract definition is easy). It has the major advantage of being offline and not requiring more
+than 1 definition of the contract. <strong>Stubr is producer-driven</strong></p>
 
                     </main>
 
@@ -196,5 +225,7 @@ endpoint returns the exact same data with the same values.</p>
         <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../mermaid.min.js"></script>
+        <script type="text/javascript" src="../mermaid-init.js"></script>
     </body>
 </html>

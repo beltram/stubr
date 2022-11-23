@@ -139,9 +139,7 @@
 way, still supported, with a standalone recording proxy.</p>
 <p><em>This requires the <code>record-reqwest</code> feature.</em></p>
 <h2 id="trait-recommended"><a class="header" href="#trait-recommended">trait (recommended)</a></h2>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use asserhttp::*;
+<pre><code class="language-rust no_run noplayground">use asserhttp::*;
 use stubr::Record as _;
 
 #[test]
@@ -156,14 +154,11 @@ fn record_reqwest_trait() {
     reqwest::blocking::Client::default().execute(req).unwrap()
         .expect_status_ok();
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 <p><em>NB: async is not supported yet</em></p>
 <h2 id="standalone"><a class="header" href="#standalone">standalone</a></h2>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>use asserhttp::*;
+<pre><code class="language-rust no_run noplayground">use asserhttp::*;
 
 #[tokio::test(flavor = &quot;multi_thread&quot;)] // 👈 required by recording proxy
 #[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
@@ -175,8 +170,7 @@ async fn record_reqwest() {
         .get(stubr.uri()).send().await
         .expect_status_ok();
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 
                     </main>
@@ -216,5 +210,7 @@ async fn record_reqwest() {
         <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../mermaid.min.js"></script>
+        <script type="text/javascript" src="../mermaid-init.js"></script>
     </body>
 </html>

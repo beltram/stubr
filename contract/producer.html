@@ -135,6 +135,309 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="as-a-producer"><a class="header" href="#as-a-producer">As a producer</a></h1>
+<p>We'll use actix in those examples because it is the only web framework currently supported for verifying the producer,
+others will come ! And of course it does not impact the consumer where you can use any technology you want since stubr
+can be used <a href="../gs-standalone.html">standalone</a> (you can even use a language other than Rust !).</p>
+<h2 id="endpoint"><a class="header" href="#endpoint">endpoint</a></h2>
+<p>We'll begin in a very common situation where your producer exposes a http endpoint. We will make the endpoint as simple
+and stupid as possible with a flat <code>Beer</code> resource and an in-memory database. We'll just expose an endpoint for creating
+and fetching a resource which should cover most of the use cases.</p>
+<pre><code class="language-rust no_run noplayground">use actix_web::http::header::ContentType;
+use actix_web::web;
+
+// simple in-memory database
+pub type Database = std::sync::RwLock&lt;std::collections::HashMap&lt;u32, Beer&gt;&gt;;
+
+#[actix_web::post(&quot;/beers&quot;)]
+pub async fn create(mut beer: web::Json&lt;Beer&gt;, db: web::Data&lt;Database&gt;) -&gt; impl actix_web::Responder {
+    let exists = db.read().unwrap().iter().any(|(_, b)| &amp;beer.0 == b);
+    if !exists {
+        let next_id = db.read().unwrap().len() as u32;
+        beer.id = Some(next_id);
+        db.write().unwrap().insert(next_id, beer.clone());
+        actix_web::HttpResponse::Created()
+            .content_type(ContentType::json())
+            .body(serde_json::to_string(&amp;beer).unwrap())
+    } else {
+        actix_web::HttpResponse::Conflict()
+            .content_type(ContentType::json())
+            .body(serde_json::json!({&quot;message&quot;: &quot;Beer already exists&quot;}).to_string())
+    }
+}
+
+#[actix_web::get(&quot;/beers/{id}&quot;)]
+pub async fn find_by_id(path: web::Path&lt;u32&gt;, db: web::Data&lt;Database&gt;) -&gt; impl actix_web::Responder {
+    let id = path.into_inner();
+    if let Some(beer) = db.read().unwrap().get(&amp;id) {
+        actix_web::HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .body(serde_json::to_string(beer).unwrap())
+    } else {
+        actix_web::HttpResponse::NotFound()
+            .content_type(ContentType::json())
+            .body(serde_json::json!({&quot;message&quot;: &quot;Beer not found&quot;}).to_string())
+    }
+}
+
+#[derive(Debug, Clone, Eq, serde::Serialize, serde::Deserialize)]
+pub struct Beer {
+    pub id: Option&lt;u32&gt;,
+    pub name: String,
+    pub price: u32,
+}
+
+impl PartialEq for Beer {
+    fn eq(&amp;self, other: &amp;Self) -&gt; bool {
+        self.name == other.name
+    }
+}
+</code></pre>
+<h2 id="tests"><a class="header" href="#tests">tests</a></h2>
+<p>Then as we do things seriously, we will write some tests. For the <code>create</code> endpoint we'll have a nominal case where the 
+beer we create succeeds and another negative one where it fails because we have a uniqueness constraint on the Beer's 
+<code>name</code> and <code>price</code> fields. For the <code>find_by_id</code> one, we'll have a nominal case and a <code>404 Not Found</code> one.</p>
+<pre><code class="language-rust no_run noplayground">use actix_web::{web, App, test::{call_service, init_service, TestRequest}};
+use asserhttp::*;
+
+use actix_producer::api::beer::*;
+
+mod find_by_id {
+    use super::*;
+
+    #[actix_web::test]
+    async fn find_by_id_should_find_one() {
+        let app = App::new().app_data(sample_db())
+            .service(find_by_id)
+            .wrap(stubr::ActixRecord::default()); // 👈 record
+        let beers = sample();
+        let (id, to_find) = beers.get(0).unwrap();
+        let req = TestRequest::get().uri(&amp;format!(&quot;/beers/{}&quot;, id)).to_request();
+        call_service(&amp;init_service(app).await, req).await
+            .expect_status_ok()
+            .expect_content_type_json()
+            .expect_body_json(|b: Beer| assert_eq!(&amp;b, to_find));
+    }
+
+    #[actix_web::test]
+    async fn find_by_id_should_not_find_any() {
+        let app = App::new().app_data(sample_db())
+            .service(find_by_id)
+            .wrap(stubr::ActixRecord::default()); // 👈 record
+        let req = TestRequest::get().uri(&quot;/beers/999&quot;).to_request();
+        call_service(&amp;init_service(app).await, req).await
+            .expect_status_not_found();
+    }
+}
+
+mod create {
+    use super::*;
+
+    #[actix_web::test]
+    async fn create_should_create_one() {
+        let beer = Beer {
+            id: None,
+            name: &quot;New&quot;.to_string(),
+            price: 4,
+        };
+        let app = App::new().app_data(empty_db())
+            .service(create)
+            .wrap(stubr::ActixRecord::default()); // 👈 record
+        let req = TestRequest::post().uri(&quot;/beers&quot;).set_json(beer.clone()).to_request();
+        call_service(&amp;init_service(app).await, req).await
+            .expect_status_created()
+            .expect_content_type_json()
+            .expect_body_json(|b: Beer| {
+                assert!(b.id.is_some());
+                assert_eq!(b.name, beer.name);
+                assert_eq!(b.price, beer.price);
+            });
+    }
+
+    #[actix_web::test]
+    async fn create_should_conflict_when_already_exists_by_name() {
+        let (_id, beer) = sample().get(0).unwrap().clone();
+        let app = App::new().app_data(sample_db())
+            .service(create)
+            .wrap(stubr::ActixRecord::default()); // 👈 record
+        let req = TestRequest::post().uri(&quot;/beers&quot;).set_json(beer.clone()).to_request();
+        call_service(&amp;init_service(app).await, req).await
+            .expect_status_conflict();
+    }
+}
+
+pub fn sample_db() -&gt; web::Data&lt;Database&gt; {
+    web::Data::new(std::sync::RwLock::new(sample().into()))
+}
+
+pub fn empty_db() -&gt; web::Data&lt;Database&gt; {
+    web::Data::new(std::sync::RwLock::new([].into()))
+}
+
+pub fn sample() -&gt; [(u32, Beer); 2] {
+    [
+        (0, Beer { id: Some(0), name: &quot;Leffe&quot;.to_string(), price: 5 }),
+        (1, Beer { id: Some(1), name: &quot;1664&quot;.to_string(), price: 3 }),
+    ]
+}
+</code></pre>
+<h2 id="recording"><a class="header" href="#recording">recording</a></h2>
+<p>Although it is optional, we'll use <a href="../recording/actix.html">recording</a> here to easily create one stub for each test. 
+Recording is triggered by the <code>.wrap(stubr::ActixRecord::default())</code> line. Those recorded stubs will be in 
+<code>target/stubs/localhost</code>. </p>
+<h2 id="import-stubs"><a class="header" href="#import-stubs">import stubs</a></h2>
+<p>In order for a producer to expose stubs, they have to live in a <code>stubs</code> folder in the root of your project. So 
+copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove recording noise) to match the following.</p>
+<details>
+<summary><b>create</b></summary>
+<pre><code class="language-rust no_run noplayground">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;urlPath&quot;: &quot;/beers&quot;,
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: {
+        &quot;equalTo&quot;: &quot;application/json&quot;
+      }
+    },
+    &quot;bodyPatterns&quot;: [
+      {
+        &quot;equalToJson&quot;: {
+          &quot;name&quot;: &quot;New&quot;,
+          &quot;price&quot;: 4
+        }
+      }
+    ]
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 201,
+    &quot;jsonBody&quot;: {
+      &quot;id&quot;: 2,
+      &quot;name&quot;: &quot;New&quot;,
+      &quot;price&quot;: 4
+    },
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: &quot;application/json&quot;
+    }
+  }
+}
+</code></pre>
+</details>
+<details>
+<summary><b>create with name conflict</b></summary>
+<pre><code class="language-rust no_run noplayground">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;urlPath&quot;: &quot;/beers&quot;,
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: {
+        &quot;equalTo&quot;: &quot;application/json&quot;
+      }
+    },
+    &quot;bodyPatterns&quot;: [
+      {
+        &quot;equalToJson&quot;: {
+          &quot;id&quot;: 0,
+          &quot;name&quot;: &quot;Leffe&quot;,
+          &quot;price&quot;: 5
+        }
+      }
+    ]
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 409,
+    &quot;jsonBody&quot;: {
+      &quot;message&quot;: &quot;Beer already exists&quot;
+    },
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: &quot;application/json&quot;
+    }
+  }
+}
+</code></pre>
+</details>
+<details>
+<summary><b>find by id</b></summary>
+<pre><code class="language-rust no_run noplayground">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;urlPath&quot;: &quot;/beers/0&quot;
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 200,
+    &quot;jsonBody&quot;: {
+      &quot;id&quot;: 0,
+      &quot;name&quot;: &quot;Leffe&quot;,
+      &quot;price&quot;: 5
+    },
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: &quot;application/json&quot;
+    }
+  }
+}
+</code></pre>
+</details>
+<details>
+<summary><b>find by id not found</b></summary>
+<pre><code class="language-rust no_run noplayground">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;urlPath&quot;: &quot;/beers/999&quot;,
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: {
+        &quot;equalTo&quot;: &quot;application/octet-stream&quot;
+      }
+    }
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 404,
+    &quot;jsonBody&quot;: {
+      &quot;message&quot;: &quot;Beer not found&quot;
+    },
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: &quot;application/json&quot;
+    }
+  }
+}
+</code></pre>
+</details>
+<h2 id="verify"><a class="header" href="#verify">verify</a></h2>
+<p>And finally, we have to verify that the stubs exposed by our producer match the actual implementation. To do so, stubr
+exports the <code>StubrVerify</code> trait with the <code>.verify()</code> method you have to invoke. There is no automatic verification of
+stubs possible, it has to be explicit in a test. It is advised to declare it in a file with just the verification test.</p>
+<p>Such a test will start by declaring your actix app with all the endpoints. In order to verify it, stubr will create a
+test for every stub in <code>./stubs</code> by converting, for each, the <code>request</code> part in an actual actix integration test.</p>
+<p>But you might need some state ! For example, think of the <code>find by id</code> endpoint. It cannot be verified if your database
+is empty. Likewise, stubs are verified in no particular order (since anyway your endpoint are most likely stateless, 
+right ?). Executing some tests (for example a &quot;delete&quot; endpoint) might affect others. So before each test, we have to
+reset our application state. You can do that with the <code>stubr::ActixVerifyLifecycle</code> middleware, for example here to
+wipe our database then populate it with our sample data (it is recommended to reuse the same as in your tests).</p>
+<p>Finally, call <code>.verify()</code> (a bit different in our example) to launch the verification test. If it passes, you have the
+guarantee your stubs accurately represent your application API. </p>
+<pre><code class="language-rust no_run noplayground">use actix_producer::api::beer::*;
+use crate::api::beer::*;
+
+#[actix_web::test]
+async fn should_verify() {
+    use stubr::StubrVerify as _;
+
+    actix_web::App::new()
+        .app_data(sample_db())
+        .service(create)
+        .service(find_by_id)
+        // reset application state
+        .wrap(stubr::ActixVerifyLifecycle::&lt;Database&gt;(|db| {
+            let mut db = db.write().unwrap();
+            db.clear();
+            for (i, beer) in sample() {
+                db.insert(i, beer);
+            }
+        }))
+        // required because this sample lives in a project with other stubs.
+        // Otherwise just use '.verify()'
+        .verify_except(|stub_name: &amp;str| stub_name.starts_with(&quot;pet-&quot;))
+        .await;
+}
+</code></pre>
+<p>Now let's use those stubs in a consumer.</p>
 
                     </main>
 
@@ -173,5 +476,7 @@
         <script src="../book.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../mermaid.min.js"></script>
+        <script type="text/javascript" src="../mermaid-init.js"></script>
     </body>
 </html>
