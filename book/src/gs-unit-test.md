@@ -1,1 +1,0 @@
-# Getting started (unit test)
