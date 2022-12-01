@@ -15,7 +15,7 @@ That works actually quite well. That's actually what we did previously, for exam
 
 With such a stub, we can imagine we would end up with a test in our consumer like that:
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../actix-consumer/tests/api/beer.rs:stiff_consumer_test}}
 ```
 

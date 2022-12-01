@@ -10,7 +10,7 @@ We'll begin in a very common situation where your producer exposes a http endpoi
 and stupid as possible with a flat `Beer` resource and an in-memory database. We'll just expose an endpoint for creating
 and fetching a resource which should cover most of the use cases.
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../actix-producer/src/api/beer.rs}}
 ```
 
@@ -20,7 +20,7 @@ Then as we do things seriously, we will write some tests. For the `create` endpo
 beer we create succeeds and another negative one where it fails because we have a uniqueness constraint on the Beer's 
 `name` and `price` fields. For the `find_by_id` one, we'll have a nominal case and a `404 Not Found` one.
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../actix-producer/tests/api/beer.rs}}
 ```
 
@@ -89,7 +89,7 @@ wipe our database then populate it with our sample data (it is recommended to re
 Finally, call `.verify()` (a bit different in our example) to launch the verification test. If it passes, you have the
 guarantee your stubs accurately represent your application API. 
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../actix-producer/tests/api/verify_book.rs}}
 ```
 

@@ -6,6 +6,6 @@ the http request and response, then dump them under `./target/stubs/localhost`.
 
 *This requires the `record-actix` feature.*
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/actix.rs}}
 ```

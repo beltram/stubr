@@ -30,13 +30,13 @@ echo "{\"request\": {\"method\": \"GET\", \"urlPath\": \"/hello\"}, \"response\"
 
 And with a few lines of code we can spawn a mock server and call (here with reqwest for example).
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/gs_1.rs}}
 ```
 
 But we can further shorten this with a attribute macro: `#[stubr::mock]`
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/gs_2.rs}}
 ```
 
@@ -49,7 +49,7 @@ place `#[stubr::mock]`. It will recursively mount all the stubs under `tests/stu
 
 Here are all the options you can use with the attribute macro
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/gs_3.rs}}
 ```
 

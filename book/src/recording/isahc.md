@@ -5,7 +5,7 @@ the following snippet does.
 
 *This requires the `record-isahc` feature.*
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/isahc_standalone.rs}}
 ```
 
