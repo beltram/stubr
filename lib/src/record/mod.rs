@@ -5,12 +5,12 @@ use config::RecordConfig;
 #[cfg(feature = "record-standalone")]
 pub mod standalone;
 
-mod mapping;
-pub mod config;
 pub mod client;
-mod writer;
+pub mod config;
 pub mod core;
+mod mapping;
 pub mod record_client;
+mod writer;
 
 #[derive(Debug, Clone)]
 pub struct RecordedRequest(pub HttpRequest);
@@ -25,9 +25,15 @@ pub struct RecordedExchange(pub RecordedRequest, pub RecordedResponse);
 impl RecordedExchange {
     const DEFAULT_HOST: &'static str = "localhost";
 
-    pub fn req(&self) -> &HttpRequest { &self.0.0 }
-    pub fn resp(&self) -> &HttpResponse { &self.1.0 }
-    pub fn host(&self) -> &str { self.req().host().unwrap_or(Self::DEFAULT_HOST) }
+    pub fn req(&self) -> &HttpRequest {
+        &self.0 .0
+    }
+    pub fn resp(&self) -> &HttpResponse {
+        &self.1 .0
+    }
+    pub fn host(&self) -> &str {
+        self.req().host().unwrap_or(Self::DEFAULT_HOST)
+    }
 }
 
 type RecordInput<'a> = (&'a mut RecordedExchange, &'a RecordConfig);

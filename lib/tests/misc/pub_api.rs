@@ -13,7 +13,11 @@ async fn should_start_server_from_relative_pathbuf() {
 
 #[async_std::test]
 async fn should_start_server_from_many_relative_pathbuf() {
-    let srv = Stubr::start(vec![PathBuf::from("tests/stubs/ping.json"), PathBuf::from("tests/stubs/pong.json")]).await;
+    let srv = Stubr::start(vec![
+        PathBuf::from("tests/stubs/ping.json"),
+        PathBuf::from("tests/stubs/pong.json"),
+    ])
+    .await;
     get(&srv.uri()).await.expect_status_ok();
     post(&srv.uri()).await.expect_status_ok();
 }

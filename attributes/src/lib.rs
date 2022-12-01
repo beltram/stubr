@@ -4,9 +4,9 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 
+mod apps;
 mod mock;
 mod record;
-mod apps;
 
 /// Starts a Stubr mock server and creates a `stubr` variable which can be used to call the server e.g. `stubr.uri()`.
 /// It supports both standard and async test functions.

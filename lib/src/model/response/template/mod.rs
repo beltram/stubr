@@ -7,23 +7,9 @@ use wiremock::{Request, Respond, ResponseTemplate};
 use data::HandlebarsData;
 use helpers::{
     any::{
-        alpha_numeric::AnyAlphaNumeric,
-        boolean::AnyBoolean,
-        date::AnyDate,
-        datetime::AnyDatetime,
-        email::AnyEmail,
-        float::AnyFloat,
-        hostname::AnyHostname,
-        integer::AnyInteger,
-        ip::AnyIp,
-        iso_8601_datetime::AnyIso8601Datetime,
-        non_blank::AnyNonBlank,
-        non_empty::AnyNonEmpty,
-        number::AnyNumber,
-        of::AnyOf,
-        regex::AnyRegex,
-        time::AnyTime,
-        uuid::AnyUuid,
+        alpha_numeric::AnyAlphaNumeric, boolean::AnyBoolean, date::AnyDate, datetime::AnyDatetime, email::AnyEmail, float::AnyFloat,
+        hostname::AnyHostname, integer::AnyInteger, ip::AnyIp, iso_8601_datetime::AnyIso8601Datetime, non_blank::AnyNonBlank,
+        non_empty::AnyNonEmpty, number::AnyNumber, of::AnyOf, regex::AnyRegex, time::AnyTime, uuid::AnyUuid,
     },
     base64::Base64Helper,
     datetime::NowHelper,
@@ -35,17 +21,17 @@ use helpers::{
     url_encode::UrlEncodingHelper,
 };
 
+use crate::cloud::hyper::SupersedeHyper;
 use crate::{
     cloud::opentracing::OpenTracing,
-    model::response::{ResponseStub, template::data::RequestData},
+    model::response::{template::data::RequestData, ResponseStub},
 };
-use crate::cloud::hyper::SupersedeHyper;
 
 pub mod data;
-pub mod verify;
-pub mod utils;
-mod req_ext;
 mod helpers;
+mod req_ext;
+pub mod utils;
+pub mod verify;
 
 lazy_static! {
     pub(crate) static ref HANDLEBARS: RwLock<Handlebars<'static>> = {
@@ -129,7 +115,9 @@ pub trait HandlebarTemplatable {
     /// Template has to be registered first before being rendered here
     /// Better for performances
     fn render<T: Serialize>(&self, name: &str, data: &T) -> String {
-        HANDLEBARS.read().ok()
+        HANDLEBARS
+            .read()
+            .ok()
             .and_then(|it| it.render(name, data).ok())
             .unwrap_or_default()
     }
@@ -137,7 +125,9 @@ pub trait HandlebarTemplatable {
     /// Template does not have to be registered first
     /// Simpler
     fn render_template<T: Serialize>(&self, name: &str, data: &T) -> String {
-        HANDLEBARS.read().ok()
+        HANDLEBARS
+            .read()
+            .ok()
             .and_then(|it| it.render_template(name, data).ok())
             .unwrap_or_default()
     }

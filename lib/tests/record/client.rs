@@ -6,7 +6,8 @@ use crate::utils::*;
 #[stubr::mock("record/client/isahc.json")]
 async fn isahc_client_should_proxy_to_recorder() {
     isahc::get(stubr.path("/record/isahc")).expect_status_ok();
-    Stubr::record_with(record_cfg()).isahc_client()
+    Stubr::record_with(record_cfg())
+        .isahc_client()
         .get(stubr.path("/record/isahc"))
         .expect_status_ok();
     assert_recorded_stub_exists("record-isahc-8701664963288208773")
@@ -16,8 +17,11 @@ async fn isahc_client_should_proxy_to_recorder() {
 #[stubr::mock("record/client/reqwest.json")]
 async fn reqwest_client_should_proxy_to_recorder() {
     reqwest::get(stubr.path("/record/reqwest")).await.expect_status_ok();
-    Stubr::record_with(record_cfg()).reqwest_client()
-        .get(stubr.path("/record/reqwest")).send().await
+    Stubr::record_with(record_cfg())
+        .reqwest_client()
+        .get(stubr.path("/record/reqwest"))
+        .send()
+        .await
         .expect_status_ok();
     assert_recorded_stub_exists("record-reqwest-7870253293408550511")
 }

@@ -10,8 +10,8 @@ use jwt::JwtAuthStub;
 use super::MockRegistrable;
 
 mod basic;
-mod jwt;
 mod helpers;
+mod jwt;
 
 const BEARER_PREFIX: &str = "Bearer";
 
@@ -35,7 +35,6 @@ impl MockRegistrable for AuthStub {
         mock
     }
 }
-
 
 lazy_static! {
     pub(crate) static ref AUTHORIZATION_HEADER: HeaderName = HeaderName::from_str("authorization").unwrap();

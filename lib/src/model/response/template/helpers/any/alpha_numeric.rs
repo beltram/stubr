@@ -4,7 +4,7 @@ use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, R
 
 use crate::gen::regex::RegexRndGenerator;
 
-use super::{AnyTemplate, super::verify::VerifyDetect};
+use super::{super::verify::VerifyDetect, AnyTemplate};
 
 pub struct AnyAlphaNumeric;
 
@@ -20,9 +20,12 @@ impl AnyTemplate for AnyAlphaNumeric {
     }
 
     fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, _: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
-        assert!(!response.is_empty() && response.iter().all(|c| c.is_ascii_alphanumeric()),
-                "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
-                ctx.stub_name(), Self::REASON, from_utf8(response.as_slice()).unwrap_or_default()
+        assert!(
+            !response.is_empty() && response.iter().all(|c| c.is_ascii_alphanumeric()),
+            "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
+            ctx.stub_name(),
+            Self::REASON,
+            from_utf8(response.as_slice()).unwrap_or_default()
         );
     }
 
@@ -32,7 +35,9 @@ impl AnyTemplate for AnyAlphaNumeric {
 }
 
 impl HelperDef for AnyAlphaNumeric {
-    fn call<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output) -> HelperResult {
+    fn call<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output,
+    ) -> HelperResult {
         self.render(h, ctx, rc, out)
     }
 }

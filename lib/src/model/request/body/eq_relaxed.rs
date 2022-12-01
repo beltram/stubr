@@ -1,7 +1,10 @@
 use serde_json::{from_slice as deserialize, Value};
 use wiremock::{Match, Request};
 
-use super::{BodyPatternStub, diff::{all::RelaxedValue, array::RelaxedJsonArray, extra::RelaxedExtraJsonObj}};
+use super::{
+    diff::{all::RelaxedValue, array::RelaxedJsonArray, extra::RelaxedExtraJsonObj},
+    BodyPatternStub,
+};
 
 pub struct JsonBodyRelaxedMatcher {
     value: Value,
@@ -25,7 +28,9 @@ impl JsonBodyRelaxedMatcher {
 
 impl Match for JsonBodyRelaxedMatcher {
     fn matches(&self, req: &Request) -> bool {
-        deserialize::<Value>(&req.body).ok().as_ref()
+        deserialize::<Value>(&req.body)
+            .ok()
+            .as_ref()
             .map(|req_body| {
                 if self.is_ignore_extra_elements && self.is_ignore_array_order {
                     self.match_relaxed(req_body)
@@ -34,7 +39,8 @@ impl Match for JsonBodyRelaxedMatcher {
                 } else {
                     self.match_ignoring_array_order(req_body)
                 }
-            }).unwrap_or_default()
+            })
+            .unwrap_or_default()
     }
 }
 
@@ -45,9 +51,14 @@ impl TryFrom<&BodyPatternStub> for JsonBodyRelaxedMatcher {
         let is_ignore_extra_elements = body.is_ignore_extra_elements();
         let is_ignore_array_order = body.is_ignore_array_order();
         let is_relaxed = is_ignore_extra_elements || is_ignore_array_order;
-        body.equal_to_json.as_ref()
+        body.equal_to_json
+            .as_ref()
             .filter(|_| is_relaxed && body.is_by_json_equality())
-            .map(|v| Self { value: v.to_owned(), is_ignore_extra_elements, is_ignore_array_order })
+            .map(|v| Self {
+                value: v.to_owned(),
+                is_ignore_extra_elements,
+                is_ignore_array_order,
+            })
             .ok_or_else(|| anyhow::Error::msg(""))
     }
 }

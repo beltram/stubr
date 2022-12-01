@@ -12,7 +12,7 @@ impl JsonGeneratorIterator for LitGenerator<'_> {
             ExprLit::String(s) => self.str(s),
             ExprLit::Bool(b) => self.boolean(b),
             ExprLit::Null(_) => self.null(),
-            _ => None
+            _ => None,
         }
     }
 }
@@ -23,35 +23,35 @@ impl LitGenerator<'_> {
             BinOp::Eq(_) | BinOp::Le(_) | BinOp::Ge(_) => Some(json!(raw.as_int())),
             BinOp::Lt(_) => Some(json!(raw.as_int() - 1)),
             BinOp::Gt(_) => Some(json!(raw.as_int() + 1)),
-            _ => None
+            _ => None,
         })
     }
 
     fn str(&self, raw: &StringLit) -> Option<Value> {
         self.1.and_then(|op| match op {
             BinOp::Eq(_) => Some(json!(raw.as_str())),
-            _ => None
+            _ => None,
         })
     }
 
     fn boolean(&self, raw: &BoolLit) -> Option<Value> {
         self.1.and_then(|op| match op {
             BinOp::Eq(_) => Some(json!(raw.as_bool())),
-            _ => None
+            _ => None,
         })
     }
 
     fn null(&self) -> Option<Value> {
         self.1.and_then(|op| match op {
             BinOp::Eq(_) => Some(json!(null)),
-            _ => None
+            _ => None,
         })
     }
 }
 
 #[cfg(test)]
 mod jsonpath_generator_lit {
-    use super::{*, super::JsonPathGenerator};
+    use super::{super::JsonPathGenerator, *};
 
     mod string {
         use super::*;

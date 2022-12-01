@@ -47,7 +47,8 @@ impl RequestMatcherStub {
     }
 
     pub fn is_contains(&self) -> bool {
-        self.value.as_ref()
+        self.value
+            .as_ref()
             .and_then(|v| v.contains.as_ref())
             .map(|it| !it.is_empty())
             .unwrap_or_default()
@@ -70,26 +71,29 @@ impl RequestMatcherStub {
     }
 
     pub fn equal_to_as_str(&self) -> Option<String> {
-        self.value.as_ref()
-            ?.equal_to.as_ref()
-            .and_then(|v| {
-                v.as_str().map(ToString::to_string)
-                    .or_else(|| v.as_bool().map(|b| b.to_string()))
-                    .or_else(|| v.as_i64().map(|i| i.to_string()))
-            })
+        self.value.as_ref()?.equal_to.as_ref().and_then(|v| {
+            v.as_str()
+                .map(ToString::to_string)
+                .or_else(|| v.as_bool().map(|b| b.to_string()))
+                .or_else(|| v.as_i64().map(|i| i.to_string()))
+        })
     }
 
     pub fn matches_as_regex(&self) -> Option<Regex> {
-        self.value.as_ref()
-            ?.matches.as_ref()
-            ?.as_str()
+        self.value
+            .as_ref()?
+            .matches
+            .as_ref()?
+            .as_str()
             .and_then(|it| Regex::from_str(it).ok())
     }
 
     pub fn does_not_match_as_regex(&self) -> Option<Regex> {
-        self.value.as_ref()
-            ?.does_not_match.as_ref()
-            ?.as_str()
+        self.value
+            .as_ref()?
+            .does_not_match
+            .as_ref()?
+            .as_str()
             .and_then(|it| Regex::from_str(it).ok())
     }
 

@@ -2,8 +2,8 @@ use serde_json::Value;
 use wiremock::{Match, Request};
 
 use super::super::super::{
-    helpers::RequestAuthExtension,
     super::json::{eq::JsonExactMatcher, JsonMatcher},
+    helpers::RequestAuthExtension,
 };
 
 pub struct JsonPayloadEqMatcher(pub Value);

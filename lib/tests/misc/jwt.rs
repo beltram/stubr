@@ -10,7 +10,8 @@ mod eq {
     #[stubr::mock("req/jwt/eq.json")]
     async fn should_match_plain_token_by_equality() {
         get(stubr.uri())
-            .header("Authorization", format!("Bearer {}", TOKEN)).await
+            .header("Authorization", format!("Bearer {}", TOKEN))
+            .await
             .expect_status_ok();
     }
 
@@ -18,16 +19,15 @@ mod eq {
     #[stubr::mock("req/jwt/eq.json")]
     async fn should_fail_when_not_eq() {
         get(stubr.uri())
-            .header("Authorization", format!("Bearer A{}", TOKEN)).await
+            .header("Authorization", format!("Bearer A{}", TOKEN))
+            .await
             .expect_status_not_found();
     }
 
     #[async_std::test]
     #[stubr::mock("req/jwt/eq.json")]
     async fn should_fail_when_missing_bearer_prefix() {
-        get(stubr.uri())
-            .header("Authorization", TOKEN).await
-            .expect_status_not_found();
+        get(stubr.uri()).header("Authorization", TOKEN).await.expect_status_not_found();
     }
 
     #[async_std::test]
@@ -50,7 +50,8 @@ mod alg {
         #[stubr::mock("req/jwt/alg/rs-256.json")]
         async fn should_match_alg() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", RS_256_TOKEN))
+                .await
                 .expect_status_ok();
         }
 
@@ -58,7 +59,8 @@ mod alg {
         #[stubr::mock("req/jwt/alg/rs-256.json")]
         async fn should_fail_when_different_alg() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", HS_256_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", HS_256_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -66,7 +68,8 @@ mod alg {
         #[stubr::mock("req/jwt/alg/rs-256.json")]
         async fn should_fail_when_missing_bearer_prefix() {
             get(stubr.uri())
-                .header("Authorization", RS_256_TOKEN).await
+                .header("Authorization", RS_256_TOKEN)
+                .await
                 .expect_status_not_found();
         }
 
@@ -84,10 +87,12 @@ mod alg {
         #[stubr::mock("req/jwt/alg/one-of-rs-hs-256.json")]
         async fn should_match_one_of_alg() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", RS_256_TOKEN))
+                .await
                 .expect_status_ok();
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", HS_256_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", HS_256_TOKEN))
+                .await
                 .expect_status_ok();
         }
 
@@ -95,10 +100,12 @@ mod alg {
         #[stubr::mock("req/jwt/alg/one-of-rs-256.json")]
         async fn should_fail_when_absent() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", RS_256_TOKEN))
+                .await
                 .expect_status_ok();
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", HS_256_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", HS_256_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -106,10 +113,12 @@ mod alg {
         #[stubr::mock("req/jwt/alg/one-of-empty.json")]
         async fn should_fail_when_one_of_empty() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", RS_256_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", RS_256_TOKEN))
+                .await
                 .expect_status_not_found();
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", HS_256_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", HS_256_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -119,12 +128,12 @@ mod alg {
             get(stubr.uri()).await.expect_status_not_found();
         }
 
-
         #[async_std::test]
         #[stubr::mock("req/jwt/alg/one-of-rs-hs-256.json")]
         async fn should_fail_when_missing_bearer_prefix() {
             get(stubr.uri())
-                .header("Authorization", RS_256_TOKEN).await
+                .header("Authorization", RS_256_TOKEN)
+                .await
                 .expect_status_not_found();
         }
     }
@@ -145,7 +154,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/eq/obj.json")]
         async fn should_match_payload_by_equality() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", JDOE_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", JDOE_TOKEN))
+                .await
                 .expect_status_ok();
         }
 
@@ -153,7 +163,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/eq/obj.json")]
         async fn should_fail_when_payload_does_not_match() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", ADOE_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", ADOE_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -161,7 +172,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/eq/obj.json")]
         async fn should_fail_when_payload_empty() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", VOID_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", VOID_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -169,7 +181,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/eq/obj.json")]
         async fn should_fail_when_missing_bearer_prefix() {
             get(stubr.uri())
-                .header("Authorization", JDOE_TOKEN).await
+                .header("Authorization", JDOE_TOKEN)
+                .await
                 .expect_status_not_found();
         }
 
@@ -187,7 +200,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/eq.json")]
         async fn should_match_payload_by_json_path() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", JDOE_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", JDOE_TOKEN))
+                .await
                 .expect_status_ok();
         }
 
@@ -195,7 +209,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/eq.json")]
         async fn should_match_payload_by_json_path_regardless_json_value() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", ADOE_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", ADOE_TOKEN))
+                .await
                 .expect_status_ok();
         }
 
@@ -203,7 +218,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/eq.json")]
         async fn should_fail_when_json_path_does_not_match() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", FRENCH_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", FRENCH_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -211,7 +227,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/eq.json")]
         async fn should_fail_when_missing_bearer_prefix() {
             get(stubr.uri())
-                .header("Authorization", JDOE_TOKEN).await
+                .header("Authorization", JDOE_TOKEN)
+                .await
                 .expect_status_not_found();
         }
 
@@ -229,7 +246,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/path-eq.json")]
         async fn should_match_payload_by_equality() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", JDOE_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", JDOE_TOKEN))
+                .await
                 .expect_status_ok();
         }
 
@@ -237,7 +255,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/path-eq.json")]
         async fn should_fail_when_payload_does_not_match() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", ADOE_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", ADOE_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -245,7 +264,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/path-eq.json")]
         async fn should_fail_when_payload_empty() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", VOID_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", VOID_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -253,7 +273,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/path-eq.json")]
         async fn should_fail_when_missing_bearer_prefix() {
             get(stubr.uri())
-                .header("Authorization", JDOE_TOKEN).await
+                .header("Authorization", JDOE_TOKEN)
+                .await
                 .expect_status_not_found();
         }
 
@@ -271,7 +292,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/path-contains.json")]
         async fn should_match_payload_when_contains() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", JDOE_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", JDOE_TOKEN))
+                .await
                 .expect_status_ok();
         }
 
@@ -279,7 +301,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/path-contains.json")]
         async fn should_fail_when_payload_does_not_match() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", ADOE_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", ADOE_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -287,7 +310,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/path-contains.json")]
         async fn should_fail_when_payload_empty() {
             get(stubr.uri())
-                .header("Authorization", format!("Bearer {}", VOID_TOKEN)).await
+                .header("Authorization", format!("Bearer {}", VOID_TOKEN))
+                .await
                 .expect_status_not_found();
         }
 
@@ -295,7 +319,8 @@ mod payload {
         #[stubr::mock("req/jwt/payload/json-path/path-contains.json")]
         async fn should_fail_when_missing_bearer_prefix() {
             get(stubr.uri())
-                .header("Authorization", JDOE_TOKEN).await
+                .header("Authorization", JDOE_TOKEN)
+                .await
                 .expect_status_not_found();
         }
 

@@ -13,7 +13,9 @@ impl<'a> RelaxedExtraJsonObj<'a> {
 
 impl<'a> PartialEq for RelaxedExtraJsonObj<'a> {
     fn eq(&self, other: &Self) -> bool {
-        self.0.as_object().zip(other.0.as_object())
+        self.0
+            .as_object()
+            .zip(other.0.as_object())
             .map(Self::relaxed_obj_eq)
             .unwrap_or_else(|| self.0 == other.0)
     }

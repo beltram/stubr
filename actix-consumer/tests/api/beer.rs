@@ -1,4 +1,3 @@
-
 // ANCHOR: contract_consumer_test
 use asserhttp::*;
 use serde_json::json;
@@ -35,11 +34,13 @@ fn find_by_id_should_not_find_any() {
 #[stubr::apps("actix-producer")]
 fn create_should_create_one() {
     let uri: String = actix_producer.uri();
-    reqwest::blocking::Client::new().post(format!("{uri}/beers"))
+    reqwest::blocking::Client::new()
+        .post(format!("{uri}/beers"))
         .json(&json!({
             "name": "Heineken",
             "price": 4
-        })).send()
+        }))
+        .send()
         .expect_status_created()
         .expect_content_type_json()
         .expect_body_json(|beer: serde_json::Value| {
@@ -53,11 +54,13 @@ fn create_should_create_one() {
 #[stubr::apps("actix-producer")]
 fn create_should_should_conflict_on_name() {
     let uri: String = actix_producer.uri();
-    reqwest::blocking::Client::new().post(format!("{uri}/beers"))
+    reqwest::blocking::Client::new()
+        .post(format!("{uri}/beers"))
         .json(&json!({
             "name": "Leffe",
             "price": 5
-        })).send()
+        }))
+        .send()
         .expect_status_conflict()
         .expect_content_type_json()
         .expect_body_json_eq(json!({

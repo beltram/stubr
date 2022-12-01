@@ -27,9 +27,7 @@ struct Args {
 
 impl Args {
     fn paths(&self) -> Vec<TokenStream> {
-        self.paths.iter()
-            .map(|it| it.into_token_stream())
-            .collect()
+        self.paths.iter().map(|it| it.into_token_stream()).collect()
     }
 }
 
@@ -39,8 +37,10 @@ impl TryFrom<AttributeArgs> for Args {
     fn try_from(input: AttributeArgs) -> Result<Self, Self::Error> {
         let mut paths = vec![];
         for arg in input {
-            if let NestedMeta::Lit(Lit::Str(lit)) = arg { paths.push(lit) }
-        };
+            if let NestedMeta::Lit(Lit::Str(lit)) = arg {
+                paths.push(lit)
+            }
+        }
         Ok(Self { paths })
     }
 }
@@ -48,35 +48,38 @@ impl TryFrom<AttributeArgs> for Args {
 fn starter(func: &ItemFn, args: &Args) -> TokenStream {
     let paths = args.paths();
     if func.sig.asyncness.is_some() {
-        paths.into_iter()
+        paths
+            .into_iter()
             .map(|p| {
                 let name = binding_name(&p);
                 quote! { let #name = stubr::Stubr::app(#p).await; }
             })
-            .reduce(|a, b| quote! {
-                #a;
-                #b;
+            .reduce(|a, b| {
+                quote! {
+                    #a;
+                    #b;
+                }
             })
             .unwrap_or_default()
     } else {
-        paths.into_iter()
+        paths
+            .into_iter()
             .map(|p| {
                 let name = binding_name(&p);
                 quote! { let #name = stubr::Stubr::app_blocking(#p); }
             })
-            .reduce(|a, b| quote! {
-                #a
-                #b
+            .reduce(|a, b| {
+                quote! {
+                    #a
+                    #b
+                }
             })
             .unwrap_or_default()
     }
 }
 
 fn binding_name(p: &TokenStream) -> Ident {
-    let name = p.to_string()
-        .trim_start_matches('"')
-        .trim_end_matches('"')
-        .replace('-', "_");
+    let name = p.to_string().trim_start_matches('"').trim_end_matches('"').replace('-', "_");
     quote::format_ident!("{}", name)
 }
 

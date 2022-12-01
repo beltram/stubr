@@ -104,11 +104,16 @@ pub use verify::actix::lifecycle::ActixVerifyLifecycle;
 #[cfg(feature = "verify")]
 pub use verify::{StubrVerify, VerifyExcept};
 
-mod model;
-mod server;
 mod cloud;
-#[cfg(any(feature = "record-standalone", feature = "record-actix", feature = "record-isahc", feature = "record-reqwest"))]
+mod gen;
+mod model;
+#[cfg(any(
+    feature = "record-standalone",
+    feature = "record-actix",
+    feature = "record-isahc",
+    feature = "record-reqwest"
+))]
 mod record;
+mod server;
 #[cfg(feature = "verify")]
 mod verify;
-mod gen;

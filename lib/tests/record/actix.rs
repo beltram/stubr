@@ -1,4 +1,7 @@
-use actix_web::{App, HttpResponse, test::{call_service, init_service, TestRequest}, web};
+use actix_web::{
+    test::{call_service, init_service, TestRequest},
+    web, App, HttpResponse,
+};
 use asserhttp::*;
 use serde_json::json;
 
@@ -17,17 +20,21 @@ async fn should_record_from_actix_integration_test() {
     let app = App::new()
         .route(uri, web::get().to(|| async { HttpResponse::Ok().await }))
         .wrap(ActixRecord(cfg));
-    call_service(&init_service(app).await, TestRequest::get().uri(uri).to_request()).await
+    call_service(&init_service(app).await, TestRequest::get().uri(uri).to_request())
+        .await
         .expect_status_ok();
-    assert_recorded_stub_eq("record-client-actix-11162265122061890704", json!({
-        "request": {
-            "method": "GET",
-            "urlPath": uri
-        },
-        "response": {
-            "status": 200
-        }
-    }))
+    assert_recorded_stub_eq(
+        "record-client-actix-11162265122061890704",
+        json!({
+            "request": {
+                "method": "GET",
+                "urlPath": uri
+            },
+            "response": {
+                "status": 200
+            }
+        }),
+    )
 }
 
 #[actix_web::test]
@@ -41,15 +48,19 @@ async fn should_record_from_actix_failing_integration_test() {
     let app = App::new()
         .route(uri, web::get().to(|| async { HttpResponse::InternalServerError().await }))
         .wrap(ActixRecord(cfg));
-    call_service(&init_service(app).await, TestRequest::get().uri(uri).to_request()).await
+    call_service(&init_service(app).await, TestRequest::get().uri(uri).to_request())
+        .await
         .expect_status_internal_server_error();
-    assert_recorded_stub_eq("record-client-actix-ko-7499948008303883645", json!({
-        "request": {
-            "method": "GET",
-            "urlPath": uri
-        },
-        "response": {
-            "status": 500
-        }
-    }))
+    assert_recorded_stub_eq(
+        "record-client-actix-ko-7499948008303883645",
+        json!({
+            "request": {
+                "method": "GET",
+                "urlPath": uri
+            },
+            "response": {
+                "status": 500
+            }
+        }),
+    )
 }

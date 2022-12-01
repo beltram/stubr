@@ -10,19 +10,28 @@ async fn should_not_default_to_contains() {
 #[async_std::test]
 #[stubr::mock("req/headers/contains/single.json")]
 async fn should_support_contains() {
-    get(stubr.uri()).header("Content-Type", "application/json").await.expect_status_ok();
+    get(stubr.uri())
+        .header("Content-Type", "application/json")
+        .await
+        .expect_status_ok();
 }
 
 #[async_std::test]
 #[stubr::mock("req/headers/contains/single.json")]
 async fn should_fail_when_does_not_contain() {
-    get(stubr.uri()).header("Content-Type", "application/xml").await.expect_status_not_found();
+    get(stubr.uri())
+        .header("Content-Type", "application/xml")
+        .await
+        .expect_status_not_found();
 }
 
 #[async_std::test]
 #[stubr::mock("req/headers/contains/single.json")]
 async fn should_fail_when_invalid_key() {
-    get(stubr.uri()).header("Not-Content-Type", "application/json").await.expect_status_not_found();
+    get(stubr.uri())
+        .header("Not-Content-Type", "application/json")
+        .await
+        .expect_status_not_found();
 }
 
 #[async_std::test]
@@ -54,24 +63,39 @@ async fn should_fail_when_one_of_does_not_contains() {
         .header("Accept", "application/xml")
         .await
         .expect_status_not_found();
-    get(stubr.uri()).header("Content-Type", "application/json").await.expect_status_not_found();
-    get(stubr.uri()).header("Accept", "application/json").await.expect_status_not_found();
+    get(stubr.uri())
+        .header("Content-Type", "application/json")
+        .await
+        .expect_status_not_found();
+    get(stubr.uri())
+        .header("Accept", "application/json")
+        .await
+        .expect_status_not_found();
 }
 
 #[async_std::test]
 #[stubr::mock("req/headers/contains/begin.json")]
 async fn should_support_contains_begin() {
-    get(stubr.uri()).header("Content-Type", "application/json").await.expect_status_ok();
+    get(stubr.uri())
+        .header("Content-Type", "application/json")
+        .await
+        .expect_status_ok();
 }
 
 #[async_std::test]
 #[stubr::mock("req/headers/contains/middle.json")]
 async fn should_support_contains_middle() {
-    get(stubr.uri()).header("Content-Type", "application/json").await.expect_status_ok();
+    get(stubr.uri())
+        .header("Content-Type", "application/json")
+        .await
+        .expect_status_ok();
 }
 
 #[async_std::test]
 #[stubr::mock("req/headers/contains/end.json")]
 async fn should_support_contains_end() {
-    get(stubr.uri()).header("Content-Type", "application/json").await.expect_status_ok();
+    get(stubr.uri())
+        .header("Content-Type", "application/json")
+        .await
+        .expect_status_ok();
 }

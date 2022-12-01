@@ -7,7 +7,11 @@ pub(crate) fn record_transform(args: AttributeArgs, item: TokenStream) -> syn::R
     let ret = &func.sig.output;
     let name = &func.sig.ident;
     let body = &func.block;
-    let attrs = &func.attrs.into_iter().filter(|a| !a.path.is_ident("test")).collect::<Vec<Attribute>>();
+    let attrs = &func
+        .attrs
+        .into_iter()
+        .filter(|a| !a.path.is_ident("test"))
+        .collect::<Vec<Attribute>>();
     let vis = &func.vis;
     let args = Args::try_from(args)?;
     let starter = starter(&args);
@@ -31,7 +35,8 @@ impl Args {
     const ATTR_PORT: &'static str = "port";
 
     fn port(&self) -> TokenStream {
-        self.port.as_ref()
+        self.port
+            .as_ref()
             .map(|p| p.into_token_stream())
             .map(|p| quote! { Some(#p) })
             .unwrap_or_else(|| quote! { None })
@@ -49,11 +54,14 @@ impl TryFrom<AttributeArgs> for Args {
                     if let syn::Lit::Int(lit) = nv.lit {
                         port = Some(lit)
                     } else {
-                        return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects integer", Self::ATTR_PORT)));
+                        return Err(syn::Error::new_spanned(
+                            nv.lit,
+                            format!("Attribute '{}' expects integer", Self::ATTR_PORT),
+                        ));
                     }
                 }
             }
-        };
+        }
         Ok(Self { port })
     }
 }
@@ -181,7 +189,10 @@ mod record_tests {
             let args = vec![NestedMeta::from(port)];
             let transformed = record_transform(args, quote! { fn a() {} });
             assert!(transformed.is_err());
-            assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'port' expects integer"))
+            assert_eq!(
+                transformed.err().unwrap().to_string(),
+                String::from("Attribute 'port' expects integer")
+            )
         }
     }
 }

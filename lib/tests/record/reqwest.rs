@@ -15,23 +15,27 @@ fn should_record_from_reqwest_client() {
         ..Default::default()
     };
     let uri = "/record-client/reqwest";
-    let req = ClientBuilder::new().build().unwrap()
+    let req = ClientBuilder::new()
+        .build()
+        .unwrap()
         .get(stubr.path(uri))
         .record_with(cfg)
-        .build().unwrap();
-    Client::default().execute(req).unwrap()
-        .expect_status_ok();
-    assert_recorded_stub_eq("record-client-reqwest-13942433254694754163", json!({
-        "request": {
-            "method": "GET",
-            "urlPath": uri
-        },
-        "response": {
-            "status": 200
-        }
-    }))
+        .build()
+        .unwrap();
+    Client::default().execute(req).unwrap().expect_status_ok();
+    assert_recorded_stub_eq(
+        "record-client-reqwest-13942433254694754163",
+        json!({
+            "request": {
+                "method": "GET",
+                "urlPath": uri
+            },
+            "response": {
+                "status": 200
+            }
+        }),
+    )
 }
-
 
 #[test]
 #[stubr::mock("record/record-client")]
@@ -42,19 +46,24 @@ fn should_record_from_reqwest_client_ko() {
         ..Default::default()
     };
     let uri = "/record-client/reqwest/ko";
-    let req = ClientBuilder::new().build().unwrap()
+    let req = ClientBuilder::new()
+        .build()
+        .unwrap()
         .get(stubr.path(uri))
         .record_with(cfg)
-        .build().unwrap();
-    Client::default().execute(req).unwrap()
-        .expect_status_internal_server_error();
-    assert_recorded_stub_eq("record-client-reqwest-ko-10154978272216290574", json!({
-        "request": {
-            "method": "GET",
-            "urlPath": uri
-        },
-        "response": {
-            "status": 500
-        }
-    }))
+        .build()
+        .unwrap();
+    Client::default().execute(req).unwrap().expect_status_internal_server_error();
+    assert_recorded_stub_eq(
+        "record-client-reqwest-ko-10154978272216290574",
+        json!({
+            "request": {
+                "method": "GET",
+                "urlPath": uri
+            },
+            "response": {
+                "status": 500
+            }
+        }),
+    )
 }

@@ -9,14 +9,14 @@ use url::HttpUrlStub;
 
 use crate::model::request::auth::AuthStub;
 
+pub mod auth;
+pub mod body;
 pub mod headers;
-pub mod query;
-pub mod url;
+pub mod json;
 pub mod matcher;
 pub mod method;
-pub mod body;
-pub mod auth;
-pub mod json;
+pub mod query;
+pub mod url;
 
 #[derive(Serialize, Deserialize, Debug, Default, Hash)]
 #[serde(default, rename_all = "camelCase")]

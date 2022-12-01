@@ -10,9 +10,9 @@ use super::JsonStub;
 
 pub mod body;
 mod body_file;
-pub mod headers;
 pub mod default;
 pub mod delay;
+pub mod headers;
 pub mod template;
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -42,16 +42,17 @@ impl ResponseStub {
         self.transformers.iter().any(|it| it == Self::RESPONSE_TEMPLATE)
     }
 
-    pub fn user_defined_header_keys(&self) -> Option<impl Iterator<Item=&str>> {
-        self.headers.headers.as_ref()
-            .map(|headers| headers.keys().map(String::as_str))
+    pub fn user_defined_header_keys(&self) -> Option<impl Iterator<Item = &str>> {
+        self.headers.headers.as_ref().map(|headers| headers.keys().map(String::as_str))
     }
 
-    pub fn user_defined_headers(&self) -> Option<impl Iterator<Item=(&str, &str)>> {
-        self.headers.headers.as_ref()
-            .map(|headers| headers.iter()
+    pub fn user_defined_headers(&self) -> Option<impl Iterator<Item = (&str, &str)>> {
+        self.headers.headers.as_ref().map(|headers| {
+            headers
+                .iter()
                 .filter_map(|(k, v)| v.as_str().map(|v| (k, v)))
-                .map(|(k, v)| (k.as_str(), v)))
+                .map(|(k, v)| (k.as_str(), v))
+        })
     }
 
     pub fn status(&self) -> u16 {
@@ -77,19 +78,28 @@ mod response_dto_tests {
 
     #[test]
     fn requires_response_templating_should_be_true_when_present() {
-        let resp = ResponseStub { transformers: vec![String::from(ResponseStub::RESPONSE_TEMPLATE)], ..Default::default() };
+        let resp = ResponseStub {
+            transformers: vec![String::from(ResponseStub::RESPONSE_TEMPLATE)],
+            ..Default::default()
+        };
         assert!(resp.requires_response_templating());
     }
 
     #[test]
     fn requires_response_templating_should_be_false_when_absent() {
-        let resp = ResponseStub { transformers: vec![String::from("other")], ..Default::default() };
+        let resp = ResponseStub {
+            transformers: vec![String::from("other")],
+            ..Default::default()
+        };
         assert!(resp.requires_response_templating().not());
     }
 
     #[test]
     fn requires_response_templating_should_be_false_when_transformers_empty() {
-        let resp = ResponseStub { transformers: vec![], ..Default::default() };
+        let resp = ResponseStub {
+            transformers: vec![],
+            ..Default::default()
+        };
         assert!(resp.requires_response_templating().not());
     }
 }

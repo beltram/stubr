@@ -5,7 +5,7 @@ use regex::Regex;
 
 use crate::gen::regex::RegexRndGenerator;
 
-use super::{AnyTemplate, super::verify::VerifyDetect};
+use super::{super::verify::VerifyDetect, AnyTemplate};
 
 pub struct AnyUuid;
 
@@ -26,9 +26,13 @@ impl AnyTemplate for AnyUuid {
 
     fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, _: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
         if let Ok(resp) = from_utf8(response.as_slice()) {
-            assert!(UUID_REGEX.is_match(resp),
-                    "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
-                    ctx.stub_name(), Self::REASON, resp)
+            assert!(
+                UUID_REGEX.is_match(resp),
+                "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
+                ctx.stub_name(),
+                Self::REASON,
+                resp
+            )
         }
     }
 
@@ -38,7 +42,9 @@ impl AnyTemplate for AnyUuid {
 }
 
 impl HelperDef for AnyUuid {
-    fn call<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output) -> HelperResult {
+    fn call<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output,
+    ) -> HelperResult {
         self.render(h, ctx, rc, out)
     }
 }

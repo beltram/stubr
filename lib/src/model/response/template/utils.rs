@@ -1,4 +1,4 @@
-use handlebars::{Template, template::TemplateElement};
+use handlebars::{template::TemplateElement, Template};
 use serde_json::Value;
 
 pub trait TemplateExt {
@@ -21,6 +21,11 @@ impl TemplateExt for Value {
 }
 
 fn is_expression(te: &TemplateElement) -> bool {
-    matches!(te, TemplateElement::Expression(_) | TemplateElement::DecoratorExpression(_) |
-         TemplateElement::HtmlExpression(_) | TemplateElement::PartialExpression(_))
+    matches!(
+        te,
+        TemplateElement::Expression(_)
+            | TemplateElement::DecoratorExpression(_)
+            | TemplateElement::HtmlExpression(_)
+            | TemplateElement::PartialExpression(_)
+    )
 }

@@ -4,14 +4,17 @@ use http_types::{Request as HttpRequest, Response as HttpResponse, StatusCode};
 use itertools::Itertools;
 use warp::{http::Response as WarpResponse, hyper::Body as WarpBody, Reply};
 
+use super::super::RecordedResponse;
 #[cfg(test)]
 use super::super::{RecordedExchange, RecordedRequest};
-use super::super::RecordedResponse;
 
 impl Reply for RecordedResponse {
     fn into_response(mut self) -> WarpResponse<WarpBody> {
         let mut builder = WarpResponse::builder().status(self.0.status());
-        let headers = self.0.header_names().into_iter()
+        let headers = self
+            .0
+            .header_names()
+            .into_iter()
             .filter_map(|k| self.0.header(k).map(|v| (k, v)))
             .map(|(k, v)| (k.as_str(), v.as_str()))
             .collect_vec();
@@ -53,7 +56,10 @@ mod http_tests {
         input.set_body(body.clone());
         let input_response = RecordedResponse(input).into_response();
         let mut input_body = input_response.into_body();
-        assert_eq!(input_body.data().await.unwrap().unwrap(), WarpBody::from(body).data().await.unwrap().unwrap());
+        assert_eq!(
+            input_body.data().await.unwrap().unwrap(),
+            WarpBody::from(body).data().await.unwrap().unwrap()
+        );
     }
 
     #[async_std::test]
@@ -62,7 +68,9 @@ mod http_tests {
         input.append_header("x-a", "a");
         input.append_header("x-b", "b");
         let input_response = RecordedResponse(input).into_response();
-        let input_headers = input_response.headers().iter()
+        let input_headers = input_response
+            .headers()
+            .iter()
             .map(|(k, v)| (k.as_str(), v.to_str().unwrap()))
             .collect_vec();
         assert!(input_headers.contains(&("x-a", "a")));
@@ -74,7 +82,9 @@ mod http_tests {
         let mut input = HttpResponse::new(200);
         input.append_header("x-m", "a,b");
         let input_response = RecordedResponse(input).into_response();
-        let input_headers = input_response.headers().iter()
+        let input_headers = input_response
+            .headers()
+            .iter()
             .map(|(k, v)| (k.as_str(), v.to_str().unwrap()))
             .collect_vec();
         assert!(input_headers.contains(&("x-m", "a,b")));

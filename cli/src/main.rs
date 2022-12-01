@@ -2,7 +2,7 @@ use std::time::Instant;
 
 use clap::Parser;
 
-use cli::{Cli, logger::Logger};
+use cli::{logger::Logger, Cli};
 
 mod cli;
 mod record;

@@ -2,8 +2,8 @@ use jsonpath_lib::Compiled;
 use wiremock::{Match, Request};
 
 use super::super::super::{
-    helpers::RequestAuthExtension,
     super::json::{json_path::JsonPathMatcher, JsonMatcher},
+    helpers::RequestAuthExtension,
 };
 
 pub struct JsonPayloadPathMatcher(Compiled);
@@ -12,9 +12,7 @@ impl TryFrom<&str> for JsonPayloadPathMatcher {
     type Error = anyhow::Error;
 
     fn try_from(path: &str) -> anyhow::Result<Self> {
-        jsonpath_lib::Compiled::compile(path)
-            .map(Self)
-            .map_err(anyhow::Error::msg)
+        jsonpath_lib::Compiled::compile(path).map(Self).map_err(anyhow::Error::msg)
     }
 }
 

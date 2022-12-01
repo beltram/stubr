@@ -1,15 +1,18 @@
 use serde::{Deserialize, Serialize};
-use wiremock::{matchers::{PathExactMatcher, PathRegexMatcher}, MockBuilder};
+use wiremock::{
+    matchers::{PathExactMatcher, PathRegexMatcher},
+    MockBuilder,
+};
 
 use just_url::ExactPathAndQueryMatcher;
 use url_pattern::UrlPatternMatcher;
 
 use super::MockRegistrable;
 
+mod just_url;
 mod url_path;
 mod url_path_pattern;
 mod url_pattern;
-mod just_url;
 
 #[derive(Serialize, Deserialize, Debug, Default, Eq, PartialEq, Hash)]
 #[serde(rename_all = "camelCase")]

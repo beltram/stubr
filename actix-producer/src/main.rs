@@ -11,7 +11,7 @@ async fn main() -> std::io::Result<()> {
             .service(pet::find_by_id)
             .service(pet::create)
     })
-        .bind("127.0.0.1:8080")?
-        .run()
-        .await
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
 }

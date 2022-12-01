@@ -10,6 +10,5 @@ fn record_reqwest_trait() {
         // 👇 this will intercept and dump all http traffic going through this client
         .record() // or `record_with()` for configuring it
         .build().unwrap();
-    reqwest::blocking::Client::default().execute(req).unwrap()
-        .expect_status_ok();
+    reqwest::blocking::Client::default().execute(req).unwrap().expect_status_ok();
 }

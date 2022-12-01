@@ -61,7 +61,10 @@ impl<'a> From<&'a mut http_types::Request> for RequestData<'a> {
 mod request_data_tests {
     use std::{borrow::Cow, collections::HashMap, str::FromStr};
 
-    use http_types::{headers::{HeaderName, HeaderValue, HeaderValues}, Method, Url};
+    use http_types::{
+        headers::{HeaderName, HeaderValue, HeaderValues},
+        Method, Url,
+    };
     use itertools::Itertools;
     use serde_json::{json, Value};
 
@@ -131,7 +134,10 @@ mod request_data_tests {
         #[test]
         fn should_take_request_text_body() {
             let req = request("https://localhost", Some(Method::Post), &[], Some("Lorem ipsum"));
-            assert_eq!(RequestData::from(&req).body.as_ref().and_then(|it| it.as_str()), Some("Lorem ipsum"));
+            assert_eq!(
+                RequestData::from(&req).body.as_ref().and_then(|it| it.as_str()),
+                Some("Lorem ipsum")
+            );
         }
 
         #[test]
@@ -192,14 +198,21 @@ mod request_data_tests {
         fn request(url: &str, method: Option<Method>, headers: &[(&str, &[&str])], body: Option<&str>) -> WiremockRequest {
             let url = Url::from_str(url).unwrap();
             let method = method.unwrap_or(Method::Get);
-            let headers: HashMap<HeaderName, HeaderValues> = headers.iter()
+            let headers: HashMap<HeaderName, HeaderValues> = headers
+                .iter()
                 .filter_map(|(k, v)| {
-                    HeaderName::from_str(k).ok()
-                        .zip(Some(HeaderValues::from_iter(v.iter().filter_map(|it| HeaderValue::from_str(it).ok()).collect_vec())))
+                    HeaderName::from_str(k).ok().zip(Some(HeaderValues::from_iter(
+                        v.iter().filter_map(|it| HeaderValue::from_str(it).ok()).collect_vec(),
+                    )))
                 })
                 .collect();
             let body = body.map(|it| it.as_bytes().to_vec()).unwrap_or_default();
-            WiremockRequest { url, method, headers, body }
+            WiremockRequest {
+                url,
+                method,
+                headers,
+                body,
+            }
         }
     }
 
@@ -267,7 +280,10 @@ mod request_data_tests {
         #[test]
         fn should_take_request_text_body() {
             let mut req = request("https://localhost", Some(Method::Post), &[], Some("Lorem ipsum"));
-            assert_eq!(RequestData::from(&mut req).body.as_ref().and_then(|it| it.as_str()), Some("Lorem ipsum"));
+            assert_eq!(
+                RequestData::from(&mut req).body.as_ref().and_then(|it| it.as_str()),
+                Some("Lorem ipsum")
+            );
         }
 
         #[test]
@@ -316,7 +332,14 @@ mod request_data_tests {
         fn should_take_multi_request_header_parameters() {
             let mut req = request("https://localhost", None, &[("x-multi", &["1", "2", "3"])], None);
             let header = Value::from_iter(vec!["1", "2", "3"]);
-            assert_eq!(RequestData::from(&mut req).headers.as_ref().and_then(|h| h.get("x-multi")).unwrap(), &header);
+            assert_eq!(
+                RequestData::from(&mut req)
+                    .headers
+                    .as_ref()
+                    .and_then(|h| h.get("x-multi"))
+                    .unwrap(),
+                &header
+            );
         }
 
         #[test]
@@ -330,10 +353,12 @@ mod request_data_tests {
             let url = Url::from_str(url).unwrap();
             let method = method.unwrap_or(Method::Get);
             let mut req = http_types::Request::new(method, url);
-            headers.iter()
+            headers
+                .iter()
                 .filter_map(|(k, v)| {
-                    HeaderName::from_str(k).ok()
-                        .zip(Some(HeaderValues::from_iter(v.iter().filter_map(|it| HeaderValue::from_str(it).ok()).collect_vec())))
+                    HeaderName::from_str(k).ok().zip(Some(HeaderValues::from_iter(
+                        v.iter().filter_map(|it| HeaderValue::from_str(it).ok()).collect_vec(),
+                    )))
                 })
                 .for_each(|(k, v)| {
                     req.insert_header(k, &v);

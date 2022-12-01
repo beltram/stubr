@@ -7,6 +7,8 @@ async fn record_reqwest() {
     stubr::Stubr::record() // or `record_with()` for configuring it
         // 👇 builds a reqwest client with proxy configured
         .reqwest_client()
-        .get(stubr.uri()).send().await
+        .get(stubr.uri())
+        .send()
+        .await
         .expect_status_ok();
 }

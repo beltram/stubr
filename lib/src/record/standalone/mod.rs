@@ -6,15 +6,15 @@ use tokio::sync::mpsc::Sender;
 use logger::RecordLogger;
 use proxy::Proxy;
 
-use super::config::RecordConfig;
 use super::super::model::JsonStub;
+use super::config::RecordConfig;
 use super::writer::StubWriter;
 
 pub mod http;
-pub mod proxy;
 pub mod logger;
-pub mod warp_exchange;
 pub mod port;
+pub mod proxy;
+pub mod warp_exchange;
 
 #[cfg(feature = "record-standalone")]
 pub struct StubrRecord {
@@ -38,7 +38,8 @@ impl StubrRecord {
             let status: u16 = ex.resp().status().into();
             let stub = JsonStub::from((ex, cfg));
             let writer = StubWriter { stub };
-            writer.write(&host, cfg.output.as_ref())
+            writer
+                .write(&host, cfg.output.as_ref())
                 .map(|f| RecordLogger::success(f, status, &method, &url))
                 .unwrap_or_else(|e| RecordLogger::error(e, status, &method, &url));
         });
@@ -62,7 +63,7 @@ impl Drop for StubrRecord {
         async_std::task::block_on(async {
             match self.tx.send(String::new()).await {
                 Ok(_) => info!("Stopping stubr recorder on {}", self.addr),
-                Err(e) => error!("Failed stopping stubr recorder on {} because {:?}", self.addr, e)
+                Err(e) => error!("Failed stopping stubr recorder on {} because {:?}", self.addr, e),
             }
         });
     }

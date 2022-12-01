@@ -13,10 +13,15 @@ async fn app_should_run_producer_stubs() {
 
 #[async_std::test]
 async fn app_with_should_run_producer_stubs() {
-    let cfg = Config { port: Some(3737), ..Default::default() };
+    let cfg = Config {
+        port: Some(3737),
+        ..Default::default()
+    };
     let _stubr = Stubr::app_with("stub-producer", cfg).await;
     isahc::get_async("http://127.0.0.1:3737").await.expect_status_ok();
-    isahc::post_async("http://127.0.0.1:3737", AsyncBody::empty()).await.expect_status_created();
+    isahc::post_async("http://127.0.0.1:3737", AsyncBody::empty())
+        .await
+        .expect_status_created();
     isahc::delete_async("http://127.0.0.1:3737").await.expect_status_client_error();
 }
 
@@ -30,7 +35,10 @@ fn blocking_app_should_run_producer_stubs() {
 
 #[test]
 fn blocking_app_with_should_run_producer_stubs() {
-    let cfg = Config { port: Some(3737), ..Default::default() };
+    let cfg = Config {
+        port: Some(3737),
+        ..Default::default()
+    };
     let _stubr = Stubr::app_blocking_with("stub-producer", cfg);
     isahc::get("http://127.0.0.1:3737").expect_status_ok();
     isahc::post("http://127.0.0.1:3737", Body::empty()).expect_status_created();

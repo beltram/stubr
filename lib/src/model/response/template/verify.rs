@@ -1,23 +1,8 @@
-use handlebars::{RenderContext, Template, template::TemplateElement};
+use handlebars::{template::TemplateElement, RenderContext, Template};
 
 use super::{
-    AnyAlphaNumeric,
-    AnyFloat,
-    AnyInteger,
-    AnyNonBlank,
-    AnyNonEmpty,
-    AnyNumber,
-    AnyRegex,
-    AnyUuid,
-    AnyBoolean,
-    AnyDate,
-    AnyDatetime,
-    AnyIso8601Datetime,
-    AnyTime,
-    AnyEmail,
-    AnyHostname,
-    AnyIp,
-    AnyOf,
+    AnyAlphaNumeric, AnyBoolean, AnyDate, AnyDatetime, AnyEmail, AnyFloat, AnyHostname, AnyInteger, AnyIp, AnyIso8601Datetime, AnyNonBlank,
+    AnyNonEmpty, AnyNumber, AnyOf, AnyRegex, AnyTime, AnyUuid,
 };
 
 /// Some templates can be made of many elements e.g. '{{anyNonBlankString}}{{anyNonEmptyString}}'.
@@ -40,17 +25,13 @@ impl Verifiable for Template {
 
 impl Verifiable for str {
     fn is_verifiable(&self) -> bool {
-        Template::compile(self)
-            .map(|t| t.is_verifiable())
-            .unwrap_or_default()
+        Template::compile(self).map(|t| t.is_verifiable()).unwrap_or_default()
     }
 }
 
 impl Verifiable for RenderContext<'_, '_> {
     fn is_verifiable(&self) -> bool {
-        self.get_root_template_name()
-            .map(|t| t.is_verifiable())
-            .unwrap_or(true)
+        self.get_root_template_name().map(|t| t.is_verifiable()).unwrap_or(true)
     }
 }
 
@@ -91,12 +72,8 @@ pub trait Predictable {
 impl Predictable for TemplateElement {
     fn is_predictable(&self) -> bool {
         match self {
-            TemplateElement::Expression(e) => {
-                e.name.as_name()
-                    .map(|n| !Self::RND_NAMES.contains(&n))
-                    .unwrap_or_default()
-            }
-            _ => true
+            TemplateElement::Expression(e) => e.name.as_name().map(|n| !Self::RND_NAMES.contains(&n)).unwrap_or_default(),
+            _ => true,
         }
     }
 }

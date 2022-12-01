@@ -10,39 +10,47 @@ use crate::utils::*;
 #[stubr::mock("record/req-headers/one.json")]
 async fn proxy_should_forward_request_headers() {
     isahc::send(req_header(stubr.path("/headers/req/one"), &[("x-a", "a")])).expect_status_ok();
-    Stubr::record_with(record_cfg()).isahc_client()
+    Stubr::record_with(record_cfg())
+        .isahc_client()
         .send(req_header(stubr.path("/headers/req/one"), &[("x-a", "a")]))
         .expect_status_ok();
-    assert_recorded_stub_eq("headers-req-one-1986741243441608371", json!({
-        "request": {
-            "method": "GET",
-            "urlPath": "/headers/req/one",
-            "headers": {
-                "x-a": { "equalTo": "a" }
-            }
-        },
-        "response": {"status": 200}
-    }))
+    assert_recorded_stub_eq(
+        "headers-req-one-1986741243441608371",
+        json!({
+            "request": {
+                "method": "GET",
+                "urlPath": "/headers/req/one",
+                "headers": {
+                    "x-a": { "equalTo": "a" }
+                }
+            },
+            "response": {"status": 200}
+        }),
+    )
 }
 
 #[tokio::test(flavor = "multi_thread")]
 #[stubr::mock("record/req-headers/many.json")]
 async fn proxy_should_forward_many_request_headers() {
     isahc::send(req_header(stubr.path("/headers/req/many"), &[("x-a", "a"), ("x-b", "b")])).expect_status_ok();
-    Stubr::record_with(record_cfg()).isahc_client()
+    Stubr::record_with(record_cfg())
+        .isahc_client()
         .send(req_header(stubr.path("/headers/req/many"), &[("x-a", "a"), ("x-b", "b")]))
         .expect_status_ok();
-    assert_recorded_stub_eq("headers-req-many-8491675639794805236", json!({
-        "request": {
-            "method": "GET",
-            "urlPath": "/headers/req/many",
-            "headers": {
-                "x-a": { "equalTo": "a" },
-                "x-b": { "equalTo": "b" }
-            }
-        },
-        "response": {"status": 200}
-    }))
+    assert_recorded_stub_eq(
+        "headers-req-many-8491675639794805236",
+        json!({
+            "request": {
+                "method": "GET",
+                "urlPath": "/headers/req/many",
+                "headers": {
+                    "x-a": { "equalTo": "a" },
+                    "x-b": { "equalTo": "b" }
+                }
+            },
+            "response": {"status": 200}
+        }),
+    )
 }
 
 fn req_header(uri: String, values: &[(&str, &str)]) -> Request<()> {

@@ -22,7 +22,9 @@ impl<'a> RelaxedValue<'a> {
 
 impl<'a> PartialEq for RelaxedValue<'a> {
     fn eq(&self, other: &Self) -> bool {
-        self.0.as_object().zip(other.0.as_object())
+        self.0
+            .as_object()
+            .zip(other.0.as_object())
             .map(Self::relaxed_obj_eq)
             .or_else(|| self.0.as_array().zip(other.0.as_array()).map(Self::relaxed_array_eq))
             .unwrap_or_else(|| self.0 == other.0)

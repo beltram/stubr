@@ -1,1 +1,3 @@
-fn main() { stubr_build::stubr_consumer() }
+fn main() {
+    stubr_build::stubr_consumer()
+}

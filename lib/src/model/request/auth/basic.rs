@@ -18,7 +18,8 @@ impl BasicAuthMatcher {
 
 impl Match for BasicAuthMatcher {
     fn matches(&self, req: &Request) -> bool {
-        req.headers.get(&AUTHORIZATION_HEADER)
+        req.headers
+            .get(&AUTHORIZATION_HEADER)
             .map(|v| v.as_str() == self.0.as_str())
             .unwrap_or_default()
     }

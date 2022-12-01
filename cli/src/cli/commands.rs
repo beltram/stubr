@@ -2,20 +2,20 @@ use clap::Parser;
 
 use crate::record::config::CliRecordConfig;
 
-use super::completion::Shell;
 use super::super::record::Record;
+use super::completion::Shell;
 
 #[derive(Parser, Debug, Eq, PartialEq)]
 pub enum Commands {
     /// generates & installs completion scripts for the given shell
     Completion {
         #[clap(subcommand)]
-        shell: Shell
+        shell: Shell,
     },
     /// Records incoming exchanges and convert them to stubs
     Record {
         #[clap(flatten)]
-        config: CliRecordConfig
+        config: CliRecordConfig,
     },
 }
 

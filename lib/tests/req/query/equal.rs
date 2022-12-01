@@ -37,8 +37,12 @@ async fn should_map_request_many_exact_string_query() {
 #[async_std::test]
 #[stubr::mock("req/query/equal/string-many.json")]
 async fn should_fail_with_many_exact_string_value_when_one_of_does_not_match() {
-    get(stubr.queries(("age", "old"), ("city", "paris"))).await.expect_status_not_found();
-    get(stubr.queries(("age", "young"), ("city", "lyon"))).await.expect_status_not_found();
+    get(stubr.queries(("age", "old"), ("city", "paris")))
+        .await
+        .expect_status_not_found();
+    get(stubr.queries(("age", "young"), ("city", "lyon")))
+        .await
+        .expect_status_not_found();
     get(stubr.query("age", "young")).await.expect_status_not_found();
     get(stubr.query("city", "paris")).await.expect_status_not_found();
 }

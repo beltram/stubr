@@ -6,13 +6,13 @@ use wiremock::MockBuilder;
 
 use super::MockRegistrable;
 
-pub mod eq;
+mod binary_eq;
 mod diff;
+pub mod eq;
 mod eq_relaxed;
 mod json_path;
-mod json_path_eq;
 mod json_path_contains;
-mod binary_eq;
+mod json_path_eq;
 
 #[derive(Serialize, Deserialize, Debug, Default, Eq, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -44,26 +44,19 @@ pub struct BodyPatternStub {
 
 impl BodyPatternStub {
     fn is_by_json_equality(&self) -> bool {
-        self.equal_to_json.is_some()
-            && self.matches_json_path.is_none()
-            && self.expression.is_none()
-            && self.binary_equal_to.is_none()
+        self.equal_to_json.is_some() && self.matches_json_path.is_none() && self.expression.is_none() && self.binary_equal_to.is_none()
     }
 
     fn is_by_json_path(&self) -> bool {
-        self.matches_json_path.is_some()
-            && self.equal_to_json.is_none()
-            && self.expression.is_none()
+        self.matches_json_path.is_some() && self.equal_to_json.is_none() && self.expression.is_none()
     }
 
     fn is_by_json_path_eq(&self) -> bool {
-        self.expression.is_some()
-            && self.equal_to_json.is_some()
+        self.expression.is_some() && self.equal_to_json.is_some()
     }
 
     fn is_by_json_path_contains(&self) -> bool {
-        self.expression.is_some()
-            && self.contains.is_some()
+        self.expression.is_some() && self.contains.is_some()
     }
 
     fn is_by_binary_equality(&self) -> bool {
@@ -107,19 +100,21 @@ impl MockRegistrable for Vec<BodyPatternStub> {
 
 impl PartialEq for BodyPatternStub {
     fn eq(&self, other: &Self) -> bool {
-        self.equal_to_json.as_ref().eq(&other.equal_to_json.as_ref()) &&
-            self.matches_json_path.as_ref().eq(&other.matches_json_path.as_ref()) &&
-            self.expression.as_ref().eq(&other.expression.as_ref()) &&
-            self.contains.as_ref().eq(&other.contains.as_ref()) &&
-            self.binary_equal_to.as_ref().eq(&other.binary_equal_to.as_ref()) &&
-            self.ignore_extra_elements.as_ref().eq(&other.ignore_extra_elements.as_ref()) &&
-            self.ignore_array_order.as_ref().eq(&other.ignore_array_order.as_ref())
+        self.equal_to_json.as_ref().eq(&other.equal_to_json.as_ref())
+            && self.matches_json_path.as_ref().eq(&other.matches_json_path.as_ref())
+            && self.expression.as_ref().eq(&other.expression.as_ref())
+            && self.contains.as_ref().eq(&other.contains.as_ref())
+            && self.binary_equal_to.as_ref().eq(&other.binary_equal_to.as_ref())
+            && self.ignore_extra_elements.as_ref().eq(&other.ignore_extra_elements.as_ref())
+            && self.ignore_array_order.as_ref().eq(&other.ignore_array_order.as_ref())
     }
 }
 
 impl Hash for BodyPatternStub {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        if let Some(it) = self.equal_to_json.as_ref() { it.to_string().hash(state) };
+        if let Some(it) = self.equal_to_json.as_ref() {
+            it.to_string().hash(state)
+        };
         self.matches_json_path.as_ref().hash(state);
         self.expression.as_ref().hash(state);
         self.contains.as_ref().hash(state);

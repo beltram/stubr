@@ -1,7 +1,6 @@
 use super::{
-    StdResponse,
-    super::super::super::model::response::{ResponseStub, template::data::RequestData},
-    Verifier
+    super::super::super::model::response::{template::data::RequestData, ResponseStub},
+    StdResponse, Verifier,
 };
 
 mod json;

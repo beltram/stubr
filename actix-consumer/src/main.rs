@@ -12,7 +12,7 @@ async fn main() -> std::io::Result<()> {
             .service(store::find_by_id)
             .service(store::create)
     })
-        .bind("127.0.0.1:8080")?
-        .run()
-        .await
+    .bind("127.0.0.1:8080")?
+    .run()
+    .await
 }
