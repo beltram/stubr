@@ -2,7 +2,7 @@ use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, R
 
 use crate::gen::regex::RegexRndGenerator;
 
-use super::{AnyTemplate, super::verify::VerifyDetect};
+use super::{super::verify::VerifyDetect, AnyTemplate};
 
 pub struct AnyNonEmpty;
 
@@ -18,9 +18,12 @@ impl AnyTemplate for AnyNonEmpty {
     }
 
     fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, _: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
-        assert!(!response.is_empty(),
-                "Verification failed for stub '{}'. Expected response body to {} but was ''",
-                ctx.stub_name(), Self::REASON);
+        assert!(
+            !response.is_empty(),
+            "Verification failed for stub '{}'. Expected response body to {} but was ''",
+            ctx.stub_name(),
+            Self::REASON
+        );
     }
 
     fn expected<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> String {
@@ -29,7 +32,9 @@ impl AnyTemplate for AnyNonEmpty {
 }
 
 impl HelperDef for AnyNonEmpty {
-    fn call<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output) -> HelperResult {
+    fn call<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output,
+    ) -> HelperResult {
         self.render(h, ctx, rc, out)
     }
 }

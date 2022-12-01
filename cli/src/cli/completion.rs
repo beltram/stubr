@@ -1,7 +1,10 @@
 use std::{fs::create_dir_all, path::PathBuf};
 
-use clap::{Command, Parser, CommandFactory};
-use clap_complete::{generate_to, Generator, Shell::{Bash, Zsh}};
+use clap::{Command, CommandFactory, Parser};
+use clap_complete::{
+    generate_to, Generator,
+    Shell::{Bash, Zsh},
+};
 use directories::UserDirs;
 
 use crate::cli::Cli;
@@ -32,18 +35,18 @@ impl Shell {
     fn create_completion<G: Generator>(&self, app: &mut Command, generator: G) {
         let bin_name = app.get_name().to_string();
         let dir = self.completion_dir();
-        generate_to::<G, _, _>(generator, app, &bin_name, &dir)
-            .expect("Failed generating completion file");
+        generate_to::<G, _, _>(generator, app, &bin_name, &dir).expect("Failed generating completion file");
     }
 
     fn completion_dir(&self) -> PathBuf {
         let dir = match self {
             Shell::Zsh => PathBuf::from(Self::ZSH_DIR),
-            Shell::Bash => Self::home().map(|it| it.join(Self::BASH_DIR)).expect("Could not find user home directory"),
+            Shell::Bash => Self::home()
+                .map(|it| it.join(Self::BASH_DIR))
+                .expect("Could not find user home directory"),
         };
         if !dir.exists() {
-            create_dir_all(&dir)
-                .unwrap_or_else(|e| panic!("Failed creating non-existing directory {:?} because {:?}", &dir, e));
+            create_dir_all(&dir).unwrap_or_else(|e| panic!("Failed creating non-existing directory {:?} because {:?}", &dir, e));
         }
         dir
     }

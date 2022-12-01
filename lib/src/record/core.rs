@@ -1,6 +1,9 @@
 use super::RecordConfig;
 
-pub trait Record where Self: Sized {
+pub trait Record
+where
+    Self: Sized,
+{
     fn record(self) -> Self {
         self.record_with(RecordConfig::default())
     }

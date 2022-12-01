@@ -3,11 +3,14 @@ use async_trait::async_trait;
 #[cfg(feature = "verify-actix")]
 pub mod actix;
 
-mod stub_finder;
 mod mapping;
+mod stub_finder;
 
 #[async_trait(? Send)]
-pub trait StubrVerify<T> where Self: Sized {
+pub trait StubrVerify<T>
+where
+    Self: Sized,
+{
     /// Triggers verification of the application from published stubs
     async fn verify(self) {
         self.verify_except(|_| false).await
@@ -22,10 +25,20 @@ pub trait VerifyExcept<T> {
     fn call(&self, name: String) -> bool;
 }
 
-impl<F> VerifyExcept<String> for F where F: Fn(String) -> bool {
-    fn call(&self, name: String) -> bool { self(name) }
+impl<F> VerifyExcept<String> for F
+where
+    F: Fn(String) -> bool,
+{
+    fn call(&self, name: String) -> bool {
+        self(name)
+    }
 }
 
-impl<F> VerifyExcept<&str> for F where F: Fn(&str) -> bool {
-    fn call(&self, name: String) -> bool { self(name.as_str()) }
+impl<F> VerifyExcept<&str> for F
+where
+    F: Fn(&str) -> bool,
+{
+    fn call(&self, name: String) -> bool {
+        self(name.as_str())
+    }
 }

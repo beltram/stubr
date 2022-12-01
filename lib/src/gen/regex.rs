@@ -12,7 +12,8 @@ impl RegexRndGenerator<'_> {
         let mut parser = ParserBuilder::new().unicode(false).build();
         let hir = parser.parse(self.0)?;
         let gen = rand_regex::Regex::with_hir(hir, MAX_REPEAT)?;
-        (&mut rng).sample_iter(&gen)
+        (&mut rng)
+            .sample_iter(&gen)
             .take(1)
             .next()
             .ok_or_else(|| anyhow::Error::msg(format!("Failed generating random string from regex '{}'", self.0)))

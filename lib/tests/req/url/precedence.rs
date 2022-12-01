@@ -17,7 +17,9 @@ mod url {
     #[stubr::mock("req/url-precedence/url-and-url-pattern.json")]
     async fn should_prefer_url_over_url_pattern() {
         get(stubr.path_query("/api/url", "age", "42")).await.expect_status_ok();
-        get(stubr.path_query("/api/pattern", "one", "abcd")).await.expect_status_not_found();
+        get(stubr.path_query("/api/pattern", "one", "abcd"))
+            .await
+            .expect_status_not_found();
     }
 
     #[async_std::test]
@@ -35,7 +37,9 @@ mod url_path {
     #[stubr::mock("req/url-precedence/url-path-and-url-pattern.json")]
     async fn should_prefer_url_path_over_url_pattern() {
         get(stubr.path("/api/exact-url")).await.expect_status_ok();
-        get(stubr.path_query("/api/pattern", "one", "abcd")).await.expect_status_not_found();
+        get(stubr.path_query("/api/pattern", "one", "abcd"))
+            .await
+            .expect_status_not_found();
     }
 
     #[async_std::test]

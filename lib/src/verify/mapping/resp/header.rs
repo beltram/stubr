@@ -1,4 +1,4 @@
-use crate::model::response::{ResponseStub, template::data::RequestData};
+use crate::model::response::{template::data::RequestData, ResponseStub};
 
 use super::{StdResponse, Verifier};
 
@@ -11,11 +11,16 @@ impl Verifier<'_> for HeaderVerifier {
                 if let Some(actual_value) = resp.0.header(expected_key.as_str()).and_then(|it| it.get(0)) {
                     let expected_value = expected_value.as_str().unwrap();
                     let actual_value = actual_value.as_str();
-                    assert_eq!(actual_value, expected_value,
-                               "Verification failed for stub '{}'. Expected response header '{}' to have value '{}' but was '{}'",
-                               name, expected_key, expected_value, actual_value)
+                    assert_eq!(
+                        actual_value, expected_value,
+                        "Verification failed for stub '{}'. Expected response header '{}' to have value '{}' but was '{}'",
+                        name, expected_key, expected_value, actual_value
+                    )
                 } else {
-                    panic!("Verification failed for stub '{}'. Expected one response header with key '{}' but none found", name, expected_key)
+                    panic!(
+                        "Verification failed for stub '{}'. Expected one response header with key '{}' but none found",
+                        name, expected_key
+                    )
                 }
             }
         }
@@ -36,7 +41,7 @@ mod header_verify_tests {
         let stub = ResponseStub {
             status: Some(200),
             headers: HttpRespHeadersStub {
-                headers: Some(Map::from_iter(vec![(String::from("x-a"), Value::String(String::from("b")))]))
+                headers: Some(Map::from_iter(vec![(String::from("x-a"), Value::String(String::from("b")))])),
             },
             ..Default::default()
         };
@@ -56,7 +61,7 @@ mod header_verify_tests {
                 headers: Some(Map::from_iter(vec![
                     (String::from("x-a"), Value::String(String::from("b"))),
                     (String::from("x-c"), Value::String(String::from("d"))),
-                ]))
+                ])),
             },
             ..Default::default()
         };
@@ -75,7 +80,7 @@ mod header_verify_tests {
         let stub = ResponseStub {
             status: Some(200),
             headers: HttpRespHeadersStub {
-                headers: Some(Map::from_iter(vec![(String::from("x-a"), Value::String(String::from("b")))]))
+                headers: Some(Map::from_iter(vec![(String::from("x-a"), Value::String(String::from("b")))])),
             },
             ..Default::default()
         };
@@ -91,7 +96,7 @@ mod header_verify_tests {
         let stub = ResponseStub {
             status: Some(200),
             headers: HttpRespHeadersStub {
-                headers: Some(Map::from_iter(vec![(String::from("x-a"), Value::String(String::from("b")))]))
+                headers: Some(Map::from_iter(vec![(String::from("x-a"), Value::String(String::from("b")))])),
             },
             ..Default::default()
         };

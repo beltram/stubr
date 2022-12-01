@@ -14,7 +14,8 @@ impl TryFrom<&BodyPatternStub> for BinaryEqualMatcher {
     type Error = anyhow::Error;
 
     fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
-        body.binary_equal_to.as_ref()
+        body.binary_equal_to
+            .as_ref()
             .filter(|_| body.is_by_binary_equality())
             .and_then(|it| base64::decode(it).ok())
             .map(Self)

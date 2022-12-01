@@ -73,10 +73,7 @@ mod verify_url_tests {
             assert_eq!(url.path(), "/api/exact");
             let mut queries = url.query_pairs();
             assert_eq!(queries.count(), 1);
-            assert_eq!(
-                queries.next().unwrap(),
-                (Cow::Borrowed("a"), Cow::Borrowed("b"))
-            );
+            assert_eq!(queries.next().unwrap(), (Cow::Borrowed("a"), Cow::Borrowed("b")));
         }
 
         #[test]
@@ -90,18 +87,9 @@ mod verify_url_tests {
             assert_eq!(url.path(), "/api/exact");
             let mut queries = url.query_pairs();
             assert_eq!(queries.count(), 3);
-            assert_eq!(
-                queries.next().unwrap(),
-                (Cow::Borrowed("a"), Cow::Borrowed("b"))
-            );
-            assert_eq!(
-                queries.next().unwrap(),
-                (Cow::Borrowed("c"), Cow::Borrowed("d"))
-            );
-            assert_eq!(
-                queries.next().unwrap(),
-                (Cow::Borrowed("e"), Cow::Borrowed("f"))
-            );
+            assert_eq!(queries.next().unwrap(), (Cow::Borrowed("a"), Cow::Borrowed("b")));
+            assert_eq!(queries.next().unwrap(), (Cow::Borrowed("c"), Cow::Borrowed("d")));
+            assert_eq!(queries.next().unwrap(), (Cow::Borrowed("e"), Cow::Borrowed("f")));
         }
 
         #[test]
@@ -253,10 +241,7 @@ mod verify_url_tests {
                 ..Default::default()
             }
             .into();
-            assert_eq!(
-                UrlStubMapper::url_matcher(&stub),
-                Some(("/url-path", false))
-            )
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url-path", false)))
         }
 
         #[test]
@@ -267,10 +252,7 @@ mod verify_url_tests {
                 ..Default::default()
             }
             .into();
-            assert_eq!(
-                UrlStubMapper::url_matcher(&stub),
-                Some(("/url-path", false))
-            )
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url-path", false)))
         }
 
         #[test]
@@ -281,10 +263,7 @@ mod verify_url_tests {
                 ..Default::default()
             }
             .into();
-            assert_eq!(
-                UrlStubMapper::url_matcher(&stub),
-                Some(("/url-pattern", true))
-            )
+            assert_eq!(UrlStubMapper::url_matcher(&stub), Some(("/url-pattern", true)))
         }
     }
 
@@ -311,10 +290,7 @@ mod verify_url_tests {
                 ..Default::default()
             };
             let matcher_e = serde_json::to_value(matcher_e).unwrap();
-            let query_parameters = vec![
-                (String::from("c"), matcher_c),
-                (String::from("e"), matcher_e),
-            ];
+            let query_parameters = vec![(String::from("c"), matcher_c), (String::from("e"), matcher_e)];
             let queries = HttpQueryParamsStub {
                 query_parameters: Some(Map::from_iter(query_parameters)),
             };
@@ -327,27 +303,15 @@ mod verify_url_tests {
             assert_eq!(url.path(), "/api/exact");
             let mut queries = url.query_pairs();
             assert_eq!(queries.count(), 3);
-            assert_eq!(
-                queries.next().unwrap(),
-                (Cow::Borrowed("a"), Cow::Borrowed("b"))
-            );
-            assert_eq!(
-                queries.next().unwrap(),
-                (Cow::Borrowed("c"), Cow::Borrowed("d"))
-            );
-            assert_eq!(
-                queries.next().unwrap(),
-                (Cow::Borrowed("e"), Cow::Borrowed("f"))
-            );
+            assert_eq!(queries.next().unwrap(), (Cow::Borrowed("a"), Cow::Borrowed("b")));
+            assert_eq!(queries.next().unwrap(), (Cow::Borrowed("c"), Cow::Borrowed("d")));
+            assert_eq!(queries.next().unwrap(), (Cow::Borrowed("e"), Cow::Borrowed("f")));
         }
     }
 
     impl From<HttpUrlStub> for RequestStub {
         fn from(url: HttpUrlStub) -> Self {
-            Self {
-                url,
-                ..Default::default()
-            }
+            Self { url, ..Default::default() }
         }
     }
 }

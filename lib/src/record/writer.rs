@@ -23,7 +23,11 @@ impl StubWriter {
         let file = output.join(self.stub_name());
         File::create(&file)
             .map_err(anyhow::Error::msg)
-            .and_then(|f| serde_json::to_writer_pretty(&f, &self.stub).map_err(anyhow::Error::msg).map(|_| file))
+            .and_then(|f| {
+                serde_json::to_writer_pretty(&f, &self.stub)
+                    .map_err(anyhow::Error::msg)
+                    .map(|_| file)
+            })
             .map(|p| {
                 info!("Recorded stub in {:?}", p);
                 p
@@ -38,17 +42,23 @@ impl StubWriter {
     }
 
     fn base_path(&self) -> Option<String> {
-        self.stub.request.url.url_path.as_ref()
+        self.stub
+            .request
+            .url
+            .url_path
+            .as_ref()
             .map(|it| it.strip_prefix('/').unwrap_or(it))
             .map(|it| it.replace('/', "-"))
             .map(|it| format!("{}-", it))
     }
 
     fn output_and_create(&self, host: &str, output: Option<&PathBuf>) -> PathBuf {
-        let output = output.map(|it| it.to_path_buf()).unwrap_or_else(Self::default_output).join(self.dir_name(host));
+        let output = output
+            .map(|it| it.to_path_buf())
+            .unwrap_or_else(Self::default_output)
+            .join(self.dir_name(host));
         if !output.exists() {
-            create_dir_all(&output)
-                .unwrap_or_else(|_| panic!("Failed creating recorded stubs output directory at '{:?}'", &output));
+            create_dir_all(&output).unwrap_or_else(|_| panic!("Failed creating recorded stubs output directory at '{:?}'", &output));
         }
         output
     }
@@ -57,7 +67,8 @@ impl StubWriter {
         if host == "127.0.0.1" || host == "localhost" {
             String::from("localhost")
         } else if let Ok(url) = Url::from_str(host) {
-            let (host, port) = url.host_str()
+            let (host, port) = url
+                .host_str()
                 .filter(|&h| h != "127.0.0.1")
                 .map(|h| h.replace(|c: char| !c.is_alphanumeric(), "."))
                 .map(|h| {

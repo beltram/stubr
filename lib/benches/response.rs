@@ -1,4 +1,4 @@
-use criterion::{async_executor::AsyncStdExecutor, black_box, Criterion, criterion_group, criterion_main};
+use criterion::{async_executor::AsyncStdExecutor, black_box, criterion_group, criterion_main, Criterion};
 use surf::get;
 
 use stubr::Stubr;

@@ -1,4 +1,4 @@
-use criterion::{async_executor::AsyncStdExecutor, black_box, Criterion, criterion_group, criterion_main};
+use criterion::{async_executor::AsyncStdExecutor, black_box, criterion_group, criterion_main, Criterion};
 use serde_json::json;
 use surf::post;
 
@@ -8,11 +8,13 @@ fn body_templating_bench(c: &mut Criterion) {
     let srv = Stubr::start_blocking("benches/stubs/templating");
     let req_body_uri = format!("{}{}", srv.uri(), "/api/request-body");
     c.bench_function("template request body", |b| {
-        b.to_async(AsyncStdExecutor).iter(|| black_box(post(&req_body_uri).body(json!({"name": "jdoe"}))))
+        b.to_async(AsyncStdExecutor)
+            .iter(|| black_box(post(&req_body_uri).body(json!({"name": "jdoe"}))))
     });
     let jsonpath_uri = format!("{}{}", srv.uri(), "/api/jsonpath");
     c.bench_function("template request body by jsonpath", |b| {
-        b.to_async(AsyncStdExecutor).iter(|| black_box(post(&jsonpath_uri).body(json!({"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}))))
+        b.to_async(AsyncStdExecutor)
+            .iter(|| black_box(post(&jsonpath_uri).body(json!({"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}))))
     });
 }
 

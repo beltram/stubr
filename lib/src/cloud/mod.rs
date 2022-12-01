@@ -1,3 +1,3 @@
-pub mod probe;
-pub mod opentracing;
 pub mod hyper;
+pub mod opentracing;
+pub mod probe;

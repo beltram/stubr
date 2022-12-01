@@ -70,32 +70,39 @@ impl Cli {
     /// * `config` - global server configuration
     async fn run_server(stubs: PathBuf, config: Config, start_time: Instant) -> anyhow::Result<()> {
         let server = Stubr::start_with(stubs, config).await;
-        info!("Started {} in {}ms on {}", "stubr".green().bold(), start_time.elapsed().as_millis(), server.uri());
-        loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
+        info!(
+            "Started {} in {}ms on {}",
+            "stubr".green().bold(),
+            start_time.elapsed().as_millis(),
+            server.uri()
+        );
+        loop {
+            async_std::task::sleep(Self::SLEEP_DURATION).await;
+        }
     }
 
     fn stubs_dir(&self) -> PathBuf {
-        self.root_dir()
-            .or_else(|| self.dir())
-            .expect("Could not find stub directory")
+        self.root_dir().or_else(|| self.dir()).expect("Could not find stub directory")
     }
 
     fn dir(&self) -> Option<PathBuf> {
         let current = current_dir().ok()?;
-        self.dir.as_ref()
-            .map(|d| current.join(d))
-            .or(Some(current))
+        self.dir.as_ref().map(|d| current.join(d)).or(Some(current))
     }
 
     fn root_dir(&self) -> Option<PathBuf> {
         let current = current_dir().ok()?;
-        self.root_dir.as_ref()
+        self.root_dir
+            .as_ref()
             .filter(|root| Self::does_contains_mappings_folder(root))
             .map(|root| current.join(root.join(Self::MAPPINGS_FOLDER)))
     }
 
     fn does_contains_mappings_folder(input: &Path) -> bool {
-        input.read_dir().ok().as_mut()
+        input
+            .read_dir()
+            .ok()
+            .as_mut()
             .map(|all| all.any(|child| child.map(Self::is_mappings_folder).unwrap_or_default()))
             .unwrap_or_default()
     }
@@ -106,15 +113,19 @@ impl Cli {
     }
 
     fn global_delay_milliseconds(&self) -> Option<u64> {
-        humantime::parse_duration(self.delay.as_deref()?).ok()
-            ?.as_millis()
-            .try_into().ok()
+        humantime::parse_duration(self.delay.as_deref()?)
+            .ok()?
+            .as_millis()
+            .try_into()
+            .ok()
     }
 
     fn latency_milliseconds(&self) -> Option<u64> {
-        humantime::parse_duration(self.latency.as_deref()?).ok()
-            ?.as_millis()
-            .try_into().ok()
+        humantime::parse_duration(self.latency.as_deref()?)
+            .ok()?
+            .as_millis()
+            .try_into()
+            .ok()
     }
 }
 
@@ -139,13 +150,19 @@ mod cli_tests {
     #[test]
     fn stubs_dir_should_append_dir_to_current_dir() {
         let dir = PathBuf::from("tests/stubs");
-        let cli = Cli { dir: Some(dir.clone()), ..Default::default() };
+        let cli = Cli {
+            dir: Some(dir.clone()),
+            ..Default::default()
+        };
         assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(dir))
     }
 
     #[test]
     fn stubs_dir_should_default_to_current_dir() {
-        let cli = Cli { dir: None, ..Default::default() };
+        let cli = Cli {
+            dir: None,
+            ..Default::default()
+        };
         assert_eq!(cli.stubs_dir(), current_dir().unwrap())
     }
 
@@ -157,7 +174,10 @@ mod cli_tests {
     #[test]
     fn root_dir_should_be_appended_to_current_dir() {
         let root_dir = PathBuf::from("tests/stubs");
-        let cli = Cli { root_dir: Some(root_dir.clone()), ..Default::default() };
+        let cli = Cli {
+            root_dir: Some(root_dir.clone()),
+            ..Default::default()
+        };
         assert_eq!(cli.root_dir().unwrap(), current_dir().unwrap().join(root_dir).join("mappings"))
     }
 
@@ -165,7 +185,11 @@ mod cli_tests {
     fn root_dir_should_have_precedence_over_dir() {
         let dir = PathBuf::from("tests/stubs");
         let root_dir = PathBuf::from("tests/stubs");
-        let cli = Cli { dir: Some(dir), root_dir: Some(root_dir.clone()), ..Default::default() };
+        let cli = Cli {
+            dir: Some(dir),
+            root_dir: Some(root_dir.clone()),
+            ..Default::default()
+        };
         assert_eq!(cli.stubs_dir(), current_dir().unwrap().join(root_dir).join("mappings"))
     }
 }

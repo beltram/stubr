@@ -18,15 +18,21 @@ mod smoke {
     #[stubr::record]
     #[test]
     fn should_fail() {
-        recorder.isahc_client().get(stubr.path("/smoke/ok")).expect_status_server_error();
+        recorder
+            .isahc_client()
+            .get(stubr.path("/smoke/ok"))
+            .expect_status_server_error();
     }
 
     #[stubr::record]
     #[stubr::mock("record/attributes/ok-async.json")]
     #[test]
     async fn async_should_succeed() {
-        recorder.reqwest_client().get(stubr.path("/smoke/async/ok"))
-            .send().await
+        recorder
+            .reqwest_client()
+            .get(stubr.path("/smoke/async/ok"))
+            .send()
+            .await
             .expect_status_ok();
         assert_recorded_stub_exists("smoke-async-ok-2236025409447356169")
     }
@@ -36,8 +42,11 @@ mod smoke {
     #[stubr::record]
     #[test]
     async fn async_should_fail() {
-        recorder.reqwest_client().get(stubr.path("/smoke/async/ok"))
-            .send().await
+        recorder
+            .reqwest_client()
+            .get(stubr.path("/smoke/async/ok"))
+            .send()
+            .await
             .expect_status_server_error();
     }
 }
@@ -51,7 +60,10 @@ mod port {
     #[stubr::mock("record/attributes/port.json")]
     #[test]
     fn should_succeed() {
-        let client = HttpClient::builder().proxy("http://127.0.0.1:3241".parse().ok()).build().unwrap();
+        let client = HttpClient::builder()
+            .proxy("http://127.0.0.1:3241".parse().ok())
+            .build()
+            .unwrap();
         client.get(stubr.path("/smoke/port")).expect_status_ok();
         assert_recorded_stub_exists("smoke-port-18324420760454680720")
     }
@@ -61,7 +73,10 @@ mod port {
     #[stubr::record(port = 4040)]
     #[test]
     fn should_fail() {
-        let client = HttpClient::builder().proxy("http://127.0.0.1:8080".parse().ok()).build().unwrap();
+        let client = HttpClient::builder()
+            .proxy("http://127.0.0.1:8080".parse().ok())
+            .build()
+            .unwrap();
         client.get(stubr.path("/smoke/port")).expect_status_ok();
     }
 }

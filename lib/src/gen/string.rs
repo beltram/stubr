@@ -7,15 +7,24 @@ impl StringRndGenerator {
     const CHARSET: &'static [u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     pub fn generate_string_containing(value: String) -> String {
-        format!("{}{}{}{}{}", value, Self::rand_str(Self::OFFSET), value, Self::rand_str(Self::OFFSET), value)
+        format!(
+            "{}{}{}{}{}",
+            value,
+            Self::rand_str(Self::OFFSET),
+            value,
+            Self::rand_str(Self::OFFSET),
+            value
+        )
     }
 
     fn rand_str(len: usize) -> String {
         let mut rng = rand::thread_rng();
-        (0..len).map(|_| {
-            let idx = rng.gen_range(0..Self::CHARSET.len());
-            Self::CHARSET[idx] as char
-        }).collect::<String>()
+        (0..len)
+            .map(|_| {
+                let idx = rng.gen_range(0..Self::CHARSET.len());
+                Self::CHARSET[idx] as char
+            })
+            .collect::<String>()
     }
 
     pub fn generate_number_containing(value: i64) -> String {

@@ -9,7 +9,7 @@ impl PortAllocator {
         } else {
             TcpListener::bind("127.0.0.1:0")
         }
-            .and_then(|it| it.local_addr())
-            .expect("Failed binding stubr recorder to a local port")
+        .and_then(|it| it.local_addr())
+        .expect("Failed binding stubr recorder to a local port")
     }
 }

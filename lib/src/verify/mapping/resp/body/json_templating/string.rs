@@ -1,17 +1,17 @@
 use anyhow::anyhow;
 
 use crate::model::response::{
-    ResponseStub,
     template::{
         data::{HandlebarsData, RequestData},
-        HandlebarTemplatable,
         utils::TemplateExt,
+        HandlebarTemplatable,
     },
+    ResponseStub,
 };
 
 use super::{
-    JsonBodyTemplatingVerifier,
     super::super::{StdResponse, Verifier},
+    JsonBodyTemplatingVerifier,
 };
 
 pub struct JsonStrVerifier<'a> {
@@ -23,7 +23,10 @@ impl<'a> TryFrom<&'a JsonBodyTemplatingVerifier> for JsonStrVerifier<'a> {
     type Error = anyhow::Error;
 
     fn try_from(parent: &'a JsonBodyTemplatingVerifier) -> anyhow::Result<Self> {
-        parent.actual.as_str().zip(parent.expected.as_str())
+        parent
+            .actual
+            .as_str()
+            .zip(parent.expected.as_str())
             .map(|(actual, expected)| Self { actual, expected })
             .ok_or_else(|| anyhow!(""))
     }
@@ -41,9 +44,11 @@ impl Verifier<'_> for JsonStrVerifier<'_> {
             stub.body.register(self.expected, self.expected);
             let _ = stub.body.render(self.expected, &data);
         } else {
-            assert_eq!(self.actual, self.expected,
-                       "Verification failed for stub '{}'. Expected json field to be '{}' but was '{}'",
-                       name, self.expected, self.actual);
+            assert_eq!(
+                self.actual, self.expected,
+                "Verification failed for stub '{}'. Expected json field to be '{}' but was '{}'",
+                name, self.expected, self.actual
+            );
         }
     }
 }

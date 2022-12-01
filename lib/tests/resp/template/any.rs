@@ -6,7 +6,8 @@ use surf::get;
 #[async_std::test]
 #[stubr::mock("resp/template/any/regex.json")]
 async fn should_template_any_regex() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| {
@@ -19,7 +20,8 @@ async fn should_template_any_regex() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/regex-int.json")]
 async fn should_template_any_regex_and_cast_to_int() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_json()
         .expect_body_json(|b: Value| assert!(b.get("age").unwrap().is_i64()));
@@ -28,7 +30,8 @@ async fn should_template_any_regex_and_cast_to_int() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/non-blank-string.json")]
 async fn should_template_any_non_blank_string() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| {
@@ -40,7 +43,8 @@ async fn should_template_any_non_blank_string() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/non-empty-string.json")]
 async fn should_template_any_non_empty_string() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(b.len().gt(&0)));
@@ -49,7 +53,8 @@ async fn should_template_any_non_empty_string() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/uuid.json")]
 async fn should_template_any_uuid() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(uuid::Uuid::parse_str(&b).is_ok()));
@@ -58,19 +63,19 @@ async fn should_template_any_uuid() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/email.json")]
 async fn should_template_any_email() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
-        .expect_body_text(|b: String| {
-            assert!(email_address_parser::EmailAddress::parse(&b, None).is_some())
-        });
+        .expect_body_text(|b: String| assert!(email_address_parser::EmailAddress::parse(&b, None).is_some()));
 }
 
 #[async_std::test]
 #[stubr::mock("resp/template/any/host.json")]
 async fn should_template_any_hostname() {
     let regex = regex::Regex::new(r"((http[s]?|ftp):/)/?([^:/\s]+)(:[0-9]{1,5})?").unwrap();
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(regex.is_match(&b)));
@@ -79,8 +84,12 @@ async fn should_template_any_hostname() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/ip.json")]
 async fn should_template_any_ip_address() {
-    let regex = regex::Regex::new(r"([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])").unwrap();
-    get(stubr.uri()).await
+    let regex = regex::Regex::new(
+        r"([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])",
+    )
+    .unwrap();
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(regex.is_match(&b)));
@@ -89,7 +98,8 @@ async fn should_template_any_ip_address() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/alpha-numeric.json")]
 async fn should_template_any_alpha_numeric() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(b.chars().all(|c| c.is_alphanumeric())));
@@ -98,7 +108,8 @@ async fn should_template_any_alpha_numeric() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/number.json")]
 async fn should_template_any_number() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(b.parse::<i64>().is_ok() || b.parse::<f64>().is_ok()));
@@ -107,7 +118,8 @@ async fn should_template_any_number() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/float.json")]
 async fn should_template_any_float() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(b.parse::<f64>().is_ok()));
@@ -116,7 +128,8 @@ async fn should_template_any_float() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/bool.json")]
 async fn should_template_any_boolean() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(b.parse::<bool>().is_ok()));
@@ -125,7 +138,8 @@ async fn should_template_any_boolean() {
 #[async_std::test]
 #[stubr::mock("resp/template/any/of.json")]
 async fn should_template_any_of() {
-    get(stubr.uri()).await
+    get(stubr.uri())
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text(|b: String| assert!(&b == "A" || &b == "B" || &b == "C"));
@@ -137,7 +151,8 @@ mod int {
     #[async_std::test]
     #[stubr::mock("resp/template/any/int/i64.json")]
     async fn should_template_any_i64() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<i64>().is_ok()));
@@ -146,7 +161,8 @@ mod int {
     #[async_std::test]
     #[stubr::mock("resp/template/any/int/u64.json")]
     async fn should_template_any_u64() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<u64>().is_ok()));
@@ -155,7 +171,8 @@ mod int {
     #[async_std::test]
     #[stubr::mock("resp/template/any/int/i32.json")]
     async fn should_template_any_i32() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<i32>().is_ok()));
@@ -164,7 +181,8 @@ mod int {
     #[async_std::test]
     #[stubr::mock("resp/template/any/int/u32.json")]
     async fn should_template_any_u32() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<u32>().is_ok()));
@@ -173,7 +191,8 @@ mod int {
     #[async_std::test]
     #[stubr::mock("resp/template/any/int/i16.json")]
     async fn should_template_any_i16() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<i16>().is_ok()));
@@ -182,7 +201,8 @@ mod int {
     #[async_std::test]
     #[stubr::mock("resp/template/any/int/u16.json")]
     async fn should_template_any_u16() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<u16>().is_ok()));
@@ -191,7 +211,8 @@ mod int {
     #[async_std::test]
     #[stubr::mock("resp/template/any/int/i8.json")]
     async fn should_template_any_i8() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<i8>().is_ok()));
@@ -200,7 +221,8 @@ mod int {
     #[async_std::test]
     #[stubr::mock("resp/template/any/int/u8.json")]
     async fn should_template_any_u8() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(b.parse::<u8>().is_ok()));
@@ -215,7 +237,8 @@ mod datetime {
     #[async_std::test]
     #[stubr::mock("resp/template/any/time.json")]
     async fn should_template_any_time() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(chrono::NaiveTime::from_str(&b).is_ok()));
@@ -224,7 +247,8 @@ mod datetime {
     #[async_std::test]
     #[stubr::mock("resp/template/any/date.json")]
     async fn should_template_any_date() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(chrono::NaiveDate::from_str(&b).is_ok()));
@@ -233,7 +257,8 @@ mod datetime {
     #[async_std::test]
     #[stubr::mock("resp/template/any/date-time.json")]
     async fn should_template_any_datetime() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| assert!(chrono::NaiveDateTime::from_str(&b).is_ok()));
@@ -242,7 +267,8 @@ mod datetime {
     #[async_std::test]
     #[stubr::mock("resp/template/any/iso8601.json")]
     async fn should_template_any_iso_8601_datetime() {
-        get(stubr.uri()).await
+        get(stubr.uri())
+            .await
             .expect_status_ok()
             .expect_content_type_text()
             .expect_body_text(|b: String| {

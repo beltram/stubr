@@ -3,11 +3,15 @@ use std::path::PathBuf;
 pub struct AnyStubs(pub Vec<PathBuf>);
 
 impl From<PathBuf> for AnyStubs {
-    fn from(path: PathBuf) -> Self { Self(vec![path]) }
+    fn from(path: PathBuf) -> Self {
+        Self(vec![path])
+    }
 }
 
 impl From<Vec<PathBuf>> for AnyStubs {
-    fn from(paths: Vec<PathBuf>) -> Self { Self(paths) }
+    fn from(paths: Vec<PathBuf>) -> Self {
+        Self(paths)
+    }
 }
 
 impl From<String> for AnyStubs {

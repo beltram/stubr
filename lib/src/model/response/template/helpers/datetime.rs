@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use chrono::{Duration, prelude::*};
+use chrono::{prelude::*, Duration};
 use chrono_tz::Tz;
 use handlebars::{Context, Handlebars, Helper, HelperDef, RenderContext, RenderError, ScopedJson};
 use humantime::parse_duration;
@@ -25,8 +25,14 @@ impl NowHelper {
     fn fmt_with_custom_format(now: DateTime<Utc>, h: &Helper) -> Option<String> {
         if let Some(format) = Self::get_hash(h, Self::FORMAT) {
             match format {
-                Self::EPOCH => SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_millis().to_string()).ok(),
-                Self::UNIX => SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs().to_string()).ok(),
+                Self::EPOCH => SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .map(|d| d.as_millis().to_string())
+                    .ok(),
+                Self::UNIX => SystemTime::now()
+                    .duration_since(UNIX_EPOCH)
+                    .map(|d| d.as_secs().to_string())
+                    .ok(),
                 _ => simpledateformat::fmt(format).map(|d| d.format(&now)).ok(),
             }
         } else {
@@ -35,9 +41,7 @@ impl NowHelper {
     }
 
     fn get_hash<'a>(h: &'a Helper, key: &str) -> Option<&'a str> {
-        h.hash_get(key)
-            ?.relative_path()
-            .map(String::escape_single_quotes)
+        h.hash_get(key)?.relative_path().map(String::escape_single_quotes)
     }
 
     fn apply_offset<'a>(now: DateTime<Utc>, h: &'a Helper) -> DateTime<Utc> {
@@ -49,8 +53,13 @@ impl NowHelper {
 
     fn compute_offset(now: DateTime<Utc>, offset: String) -> Option<DateTime<Utc>> {
         let is_negative = offset.starts_with('-');
-        let offset = if is_negative { offset.trim_start_matches('-') } else { offset.as_str() };
-        parse_duration(offset).ok()
+        let offset = if is_negative {
+            offset.trim_start_matches('-')
+        } else {
+            offset.as_str()
+        };
+        parse_duration(offset)
+            .ok()
             .and_then(|it| Duration::from_std(it).ok())
             .map(|rhs| if is_negative { now - rhs } else { now + rhs })
     }
@@ -67,7 +76,9 @@ impl NowHelper {
 }
 
 impl HelperDef for NowHelper {
-    fn call_inner<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
+    fn call_inner<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>,
+    ) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
         let now = Self::now();
         let now = Self::apply_timezone(now, h);
         let now = Self::apply_offset(now, h);

@@ -5,7 +5,9 @@ use isahc::{AsyncBody, Body};
 #[stubr::apps("stub-producer")]
 async fn app_should_run_single_producer() {
     isahc::get_async(stub_producer.uri()).await.expect_status_ok();
-    isahc::post_async(stub_producer.uri(), AsyncBody::empty()).await.expect_status_created();
+    isahc::post_async(stub_producer.uri(), AsyncBody::empty())
+        .await
+        .expect_status_created();
     isahc::delete_async(stub_producer.uri()).await.expect_status_client_error();
 }
 
@@ -13,9 +15,13 @@ async fn app_should_run_single_producer() {
 #[stubr::apps("stub-producer", "actix-producer")]
 async fn app_should_run_many_producer() {
     isahc::get_async(stub_producer.uri()).await.expect_status_ok();
-    isahc::post_async(stub_producer.uri(), AsyncBody::empty()).await.expect_status_created();
+    isahc::post_async(stub_producer.uri(), AsyncBody::empty())
+        .await
+        .expect_status_created();
     isahc::delete_async(stub_producer.uri()).await.expect_status_client_error();
-    isahc::get_async(actix_producer.path("/pets")).await.expect_status_partial_content();
+    isahc::get_async(actix_producer.path("/pets"))
+        .await
+        .expect_status_partial_content();
     isahc::delete_async(actix_producer.uri()).await.expect_status_client_error();
 }
 

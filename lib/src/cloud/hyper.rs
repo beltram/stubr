@@ -10,7 +10,9 @@ impl SupersedeHyper {
     /// But it might be inconvenient for a stub server e.g. when a `cache-control` header is present
     /// in the request it is replayed in the response ; which we do not want when we explicitly define
     /// our own `cache-control` response
-    pub fn supersede_hyper_header<'a>(mut resp: ResponseTemplate, stub_headers: Option<impl Iterator<Item=(&'a str, &'a str)>>) -> ResponseTemplate {
+    pub fn supersede_hyper_header<'a>(
+        mut resp: ResponseTemplate, stub_headers: Option<impl Iterator<Item = (&'a str, &'a str)>>,
+    ) -> ResponseTemplate {
         if let Some(headers) = stub_headers {
             let explicit_headers = headers.filter(|(k, _)| Self::STD_HEADERS.iter().any(|s| s.eq_ignore_ascii_case(k)));
             for (k, v) in explicit_headers {

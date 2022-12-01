@@ -1,4 +1,4 @@
-use actix_web::{App, web};
+use actix_web::{web, App};
 
 use actix_consumer::{api::store, client::pet::PetClient, repository::store::StoreRepository};
 use stubr::*;
@@ -15,9 +15,7 @@ async fn should_verify() {
         .service(store::find_by_id)
         .service(store::create)
         .wrap(ActixVerifyLifecycle::<StoreRepository>(|repo| {
-            repo.delete_all()
-                .and_then(|_| repo.insert_all(fake_stores()))
-                .unwrap()
+            repo.delete_all().and_then(|_| repo.insert_all(fake_stores())).unwrap()
         }))
         .verify_except(|stub| stub == "cannot-succeed")
         .await;

@@ -1,4 +1,7 @@
-use std::{fmt::{Display, Formatter, Result}, path::PathBuf};
+use std::{
+    fmt::{Display, Formatter, Result},
+    path::PathBuf,
+};
 
 use http_types::Url;
 use log::{error, info};

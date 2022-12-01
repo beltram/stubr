@@ -37,14 +37,10 @@ impl StubFinder {
         if let Ok(mut from) = read_dir(from) {
             while let Some(Ok(entry)) = from.next() {
                 let path = entry.path();
-                if path.is_file()
-                    && path.extension().and_then(OsStr::to_str) == Some(Self::JSON_EXTENSION)
-                {
+                if path.is_file() && path.extension().and_then(OsStr::to_str) == Some(Self::JSON_EXTENSION) {
                     stubs.push(path)
                 } else if path.is_dir() {
-                    Self::find_all_stubs_under_dir(&path)
-                        .into_iter()
-                        .for_each(|s| stubs.push(s))
+                    Self::find_all_stubs_under_dir(&path).into_iter().for_each(|s| stubs.push(s))
                 }
             }
         }
@@ -54,12 +50,7 @@ impl StubFinder {
     pub fn find_app(name: &str) -> PathBuf {
         env::var("CARGO_PKG_NAME")
             .ok()
-            .map(|pkg| {
-                Self::output_dir()
-                    .join(Self::LOCAL_DIR)
-                    .join(pkg)
-                    .join(name)
-            })
+            .map(|pkg| Self::output_dir().join(Self::LOCAL_DIR).join(pkg).join(name))
             .filter(|path| path.exists())
             .unwrap_or_else(|| panic!("Could not find app '{}'", name))
     }
@@ -67,11 +58,7 @@ impl StubFinder {
     pub fn output_dir() -> PathBuf {
         env::var(Self::LIB_PATH_ENV_VAR)
             .ok()
-            .and_then(|v| {
-                v.split(':')
-                    .map(PathBuf::from)
-                    .find(|p| Self::is_target_debug(p))
-            })
+            .and_then(|v| v.split(':').map(PathBuf::from).find(|p| Self::is_target_debug(p)))
             .and_then(|p| p.parent().map(|it| it.to_path_buf()))
             .expect("Failed locating '/target' directory")
     }
@@ -85,10 +72,7 @@ impl StubFinder {
                 == Some(name.to_string())
         };
         let debug = is_named(path, "debug");
-        let target = path
-            .parent()
-            .map(|p| is_named(p, "target"))
-            .unwrap_or_default();
+        let target = path.parent().map(|p| is_named(p, "target")).unwrap_or_default();
         debug && target
     }
 }
@@ -104,10 +88,7 @@ mod stub_finder_test {
         let from = PathBuf::from("tests/stubs/server");
         let files = StubFinder::find_all_stubs(&from).collect::<Vec<PathBuf>>();
         assert!(files.len().gt(&2));
-        let file_names = files
-            .iter()
-            .map(|it| it.file_name().unwrap().to_str().unwrap())
-            .collect_vec();
+        let file_names = files.iter().map(|it| it.file_name().unwrap().to_str().unwrap()).collect_vec();
         assert!(file_names.contains(&"valid.json"));
         assert!(file_names.contains(&"also_valid.json"));
     }
@@ -117,10 +98,7 @@ mod stub_finder_test {
         let from = PathBuf::from("tests/stubs/server/valid.json");
         let files = StubFinder::find_all_stubs(&from).collect::<Vec<PathBuf>>();
         assert_eq!(files.len(), 1);
-        let file_names = files
-            .iter()
-            .map(|it| it.file_name().unwrap().to_str().unwrap())
-            .collect_vec();
+        let file_names = files.iter().map(|it| it.file_name().unwrap().to_str().unwrap()).collect_vec();
         assert!(file_names.contains(&"valid.json"));
     }
 
@@ -144,10 +122,7 @@ mod stub_finder_test {
         let from = PathBuf::from("tests/stubs/recur");
         let files = StubFinder::find_all_stubs(&from).collect::<Vec<PathBuf>>();
         assert_eq!(files.len(), 3);
-        let file_names = files
-            .iter()
-            .map(|it| it.file_name().unwrap().to_str().unwrap())
-            .collect_vec();
+        let file_names = files.iter().map(|it| it.file_name().unwrap().to_str().unwrap()).collect_vec();
         assert!(file_names.contains(&"get.json"));
         assert!(file_names.contains(&"post.json"));
         assert!(file_names.contains(&"delete.json"));

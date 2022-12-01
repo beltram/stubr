@@ -6,7 +6,10 @@ use regex::Regex;
 
 use crate::gen::regex::RegexRndGenerator;
 
-use super::{AnyTemplate, super::{utils_str::ValueExt, verify::VerifyDetect}};
+use super::{
+    super::{utils_str::ValueExt, verify::VerifyDetect},
+    AnyTemplate,
+};
 
 pub struct AnyRegex;
 
@@ -29,9 +32,13 @@ impl AnyTemplate for AnyRegex {
         let regex = Self::read_regex(h).map(Regex::new);
         let resp = from_utf8(response.as_slice()).ok();
         if let Some((Ok(regex), resp)) = regex.zip(resp) {
-            assert!(regex.is_match(resp),
-                    "Verification failed for stub '{}'. Expected response body to match '{}' but was '{}'",
-                    ctx.stub_name(), regex.as_str(), resp)
+            assert!(
+                regex.is_match(resp),
+                "Verification failed for stub '{}'. Expected response body to match '{}' but was '{}'",
+                ctx.stub_name(),
+                regex.as_str(),
+                resp
+            )
         }
     }
 
@@ -41,7 +48,9 @@ impl AnyTemplate for AnyRegex {
 }
 
 impl HelperDef for AnyRegex {
-    fn call<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output) -> HelperResult {
+    fn call<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output,
+    ) -> HelperResult {
         self.render(h, ctx, rc, out)
     }
 }

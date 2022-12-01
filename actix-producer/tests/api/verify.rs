@@ -13,9 +13,7 @@ async fn should_verify() {
         .service(pet::find_by_id)
         .service(pet::create)
         .wrap(ActixVerifyLifecycle::<PetRepository>(|repo| {
-            repo.delete_all()
-                .and_then(|_| repo.insert_all(fake_pets()))
-                .unwrap()
+            repo.delete_all().and_then(|_| repo.insert_all(fake_pets())).unwrap()
         }))
         .verify_except(|stub_name: &str| stub_name.starts_with("beer-"))
         .await;

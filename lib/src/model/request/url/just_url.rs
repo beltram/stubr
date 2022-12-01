@@ -1,6 +1,6 @@
 use http_types::Url;
 use itertools::Itertools;
-use wiremock::matchers::{path, PathExactMatcher, query_param, QueryParamExactMatcher};
+use wiremock::matchers::{path, query_param, PathExactMatcher, QueryParamExactMatcher};
 
 use super::HttpUrlStub;
 
@@ -10,9 +10,7 @@ impl TryFrom<&HttpUrlStub> for ExactPathAndQueryMatcher {
     type Error = anyhow::Error;
 
     fn try_from(http_url: &HttpUrlStub) -> anyhow::Result<Self> {
-        Url::try_from(http_url)
-            .map(Self::from)
-            .map_err(anyhow::Error::msg)
+        Url::try_from(http_url).map(Self::from).map_err(anyhow::Error::msg)
     }
 }
 
@@ -20,7 +18,9 @@ impl TryFrom<&HttpUrlStub> for Url {
     type Error = anyhow::Error;
 
     fn try_from(http_url: &HttpUrlStub) -> anyhow::Result<Self> {
-        http_url.url.as_ref()
+        http_url
+            .url
+            .as_ref()
             .map(|it| format!("http://localhost{}", it))
             .and_then(|it| Url::parse(&it).ok())
             .ok_or_else(|| anyhow::Error::msg("No 'url'"))
@@ -29,9 +29,7 @@ impl TryFrom<&HttpUrlStub> for Url {
 
 impl From<Url> for ExactPathAndQueryMatcher {
     fn from(url: Url) -> Self {
-        let query_matchers = url.query_pairs()
-            .map(|(k, v)| query_param(k, v))
-            .collect_vec();
+        let query_matchers = url.query_pairs().map(|(k, v)| query_param(k, v)).collect_vec();
         Self(path(url.path()), query_matchers)
     }
 }

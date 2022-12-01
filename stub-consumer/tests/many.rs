@@ -8,7 +8,9 @@ async fn app_should_run_producer_stubs() {
     let apps = Stubr::apps(&["stub-producer", "actix-producer"]).await;
     let (simple, actix) = (apps.get(0).unwrap(), apps.get(1).unwrap());
     isahc::get_async(simple.uri()).await.expect_status_ok();
-    isahc::post_async(simple.uri(), AsyncBody::empty()).await.expect_status_created();
+    isahc::post_async(simple.uri(), AsyncBody::empty())
+        .await
+        .expect_status_created();
     isahc::delete_async(simple.uri()).await.expect_status_client_error();
     isahc::get_async(actix.path("/pets")).await.expect_status_partial_content();
     isahc::delete_async(actix.uri()).await.expect_status_client_error();

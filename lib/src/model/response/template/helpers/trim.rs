@@ -12,7 +12,9 @@ impl TrimHelper {
 }
 
 impl HelperDef for TrimHelper {
-    fn call_inner<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
+    fn call_inner<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>,
+    ) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
         Self::value(h)
             .ok_or_else(|| RenderError::new("Invalid trim response template"))
             .map(str::trim)

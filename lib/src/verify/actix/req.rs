@@ -9,8 +9,7 @@ impl From<&StdRequest> for TestRequest {
     fn from(req: &StdRequest) -> Self {
         let method = HttpMethod::from_str(req.0.method().as_ref()).expect("Unknown http method");
         let mut test_req = Self::default();
-        let original_headers = req.0.header_names().into_iter()
-            .filter_map(|k| req.0.header(k).map(|v| (k, v)));
+        let original_headers = req.0.header_names().into_iter().filter_map(|k| req.0.header(k).map(|v| (k, v)));
         for (k, v) in original_headers {
             test_req = test_req.insert_header((k.as_str(), v.as_str()));
         }
@@ -166,7 +165,6 @@ mod actix_req_mapping_tests {
             let mut values = test_req.headers().get_all("x-a");
             assert_eq!(values.next(), Some(&HeaderValue::from_str("b, c").unwrap()));
         }
-
 
         #[test]
         fn should_not_fail_when_none() {

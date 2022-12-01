@@ -18,23 +18,21 @@ impl NumberHelper {
 
     fn stripes_value<'a>(h: &'a Helper, is_odd: bool) -> Option<&'a str> {
         let index = if is_odd { 2 } else { 1 };
-        h.params().get(index)
-            ?.relative_path()
-            .map(String::escape_single_quotes)
+        h.params().get(index)?.relative_path().map(String::escape_single_quotes)
     }
 }
 
 impl HelperDef for NumberHelper {
-    fn call_inner<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
+    fn call_inner<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>,
+    ) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
         Self::value(h)
             .map(|n| n % 2 == 1)
-            .and_then(|is_odd| {
-                match h.name() {
-                    Self::STRIPES => Self::stripes_value(h, is_odd).map(str::to_string),
-                    Self::IS_ODD => Some(is_odd.to_string()),
-                    Self::IS_EVEN => Some(is_odd.not().to_string()),
-                    _ => panic!("Unexpected error"),
-                }
+            .and_then(|is_odd| match h.name() {
+                Self::STRIPES => Self::stripes_value(h, is_odd).map(str::to_string),
+                Self::IS_ODD => Some(is_odd.to_string()),
+                Self::IS_EVEN => Some(is_odd.not().to_string()),
+                _ => panic!("Unexpected error"),
             })
             .map(Value::from)
             .map(ScopedJson::from)

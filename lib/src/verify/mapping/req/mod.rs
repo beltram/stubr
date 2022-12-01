@@ -1,13 +1,13 @@
 use http_types::{Method, Request, Url};
 
-use crate::model::{JsonStub, request::RequestStub};
+use crate::model::{request::RequestStub, JsonStub};
 
-mod method;
-mod url;
-mod query;
-mod matcher;
-mod header;
 mod body;
+mod header;
+mod matcher;
+mod method;
+mod query;
+mod url;
 
 pub struct StdRequest(pub Request);
 
@@ -41,11 +41,7 @@ mod verify_req_tests {
     use serde_json::{Map, Value};
 
     use crate::model::request::{
-        headers::HttpReqHeadersStub,
-        matcher::MatcherValueStub,
-        method::HttpMethodStub,
-        query::HttpQueryParamsStub,
-        url::HttpUrlStub,
+        headers::HttpReqHeadersStub, matcher::MatcherValueStub, method::HttpMethodStub, query::HttpQueryParamsStub, url::HttpUrlStub,
     };
 
     use super::*;
@@ -61,14 +57,22 @@ mod verify_req_tests {
             queries: HttpQueryParamsStub {
                 query_parameters: Some(Map::from_iter(vec![(
                     String::from("e"),
-                    serde_json::to_value(MatcherValueStub { equal_to: Some(Value::String(String::from("f"))), ..Default::default() }).unwrap()
-                )]))
+                    serde_json::to_value(MatcherValueStub {
+                        equal_to: Some(Value::String(String::from("f"))),
+                        ..Default::default()
+                    })
+                    .unwrap(),
+                )])),
             },
             headers: HttpReqHeadersStub {
                 headers: Some(Map::from_iter(vec![(
                     String::from("x-a"),
-                    serde_json::to_value(MatcherValueStub { equal_to: Some(Value::String(String::from("b"))), ..Default::default() }).unwrap()
-                )]))
+                    serde_json::to_value(MatcherValueStub {
+                        equal_to: Some(Value::String(String::from("b"))),
+                        ..Default::default()
+                    })
+                    .unwrap(),
+                )])),
             },
             ..Default::default()
         };

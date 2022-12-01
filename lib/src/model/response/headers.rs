@@ -2,7 +2,10 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use wiremock::ResponseTemplate;
 
-use super::{ResponseAppender, template::{data::HandlebarsData, HandlebarTemplatable}};
+use super::{
+    template::{data::HandlebarsData, HandlebarTemplatable},
+    ResponseAppender,
+};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
 pub struct HttpRespHeadersStub {

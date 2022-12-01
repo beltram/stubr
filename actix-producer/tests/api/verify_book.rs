@@ -1,5 +1,5 @@
-use actix_producer::api::beer::*;
 use crate::api::beer::*;
+use actix_producer::api::beer::*;
 
 #[actix_web::test]
 async fn should_verify() {

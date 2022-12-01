@@ -54,22 +54,14 @@ impl BodyStub {
             Value::String(s) => self.register(s, s),
             Value::Object(o) => self.register_json_body_template(o.values()),
             Value::Array(a) => self.register_json_body_template(a.iter()),
-            _ => {}
+            _ => {},
         }
     }
 
-    pub fn render_json_body(
-        &self,
-        json_body: Option<&Value>,
-        data: &HandlebarsData,
-    ) -> Option<Value> {
+    pub fn render_json_body(&self, json_body: Option<&Value>, data: &HandlebarsData) -> Option<Value> {
         json_body
             .and_then(|it| it.as_object().map(|o| self.render_json_obj(o, data)))
-            .or_else(|| {
-                json_body
-                    .and_then(Value::as_array)
-                    .map(|a| self.render_json_array(a, data))
-            })
+            .or_else(|| json_body.and_then(Value::as_array).map(|a| self.render_json_array(a, data)))
     }
 
     fn render_json_obj(&self, json_body: &Map<String, Value>, data: &HandlebarsData) -> Value {
@@ -109,21 +101,15 @@ impl BodyStub {
         } else {
             let len = raw.len();
             match raw {
-                o if o.ends_with(Self::OBJECT_IDENTIFIER) => {
-                    Value::from_str(&o[..len - Self::OBJECT_IDENTIFIER.len()]).unwrap_or_default()
-                }
-                a if a.ends_with(Self::ARRAY_IDENTIFIER) => {
-                    Value::from_str(&a[..len - Self::ARRAY_IDENTIFIER.len()]).unwrap_or_default()
-                }
+                o if o.ends_with(Self::OBJECT_IDENTIFIER) => Value::from_str(&o[..len - Self::OBJECT_IDENTIFIER.len()]).unwrap_or_default(),
+                a if a.ends_with(Self::ARRAY_IDENTIFIER) => Value::from_str(&a[..len - Self::ARRAY_IDENTIFIER.len()]).unwrap_or_default(),
                 _ => Value::from(raw),
             }
         }
     }
 
     fn binary_body(&self) -> Option<Vec<u8>> {
-        self.base_64_body
-            .as_ref()
-            .and_then(|b| base64::decode(b).ok())
+        self.base_64_body.as_ref().and_then(|b| base64::decode(b).ok())
     }
 }
 
@@ -131,30 +117,27 @@ fn deserialize_body_file<'de, D>(path: D) -> Result<Option<BodyFile>, D::Error>
 where
     D: Deserializer<'de>,
 {
-    let body_file = String::deserialize(path)
-        .ok()
-        .map(PathBuf::from)
-        .map(|path| {
-            let path_exists = path.exists();
-            let extension = path.extension().and_then(OsStr::to_str).map(str::to_string);
-            let content = OpenOptions::new()
-                .read(true)
-                .open(&path)
-                .ok()
-                .and_then(|mut file| {
-                    let mut buf = vec![];
-                    file.read_to_end(&mut buf).map(|_| buf).ok()
-                })
-                .and_then(|bytes| from_utf8(bytes.as_slice()).map(str::to_string).ok())
-                .unwrap_or_default();
-            let path = path.to_str().map(str::to_string).unwrap_or_default();
-            BodyFile {
-                path_exists,
-                path,
-                extension,
-                content,
-            }
-        });
+    let body_file = String::deserialize(path).ok().map(PathBuf::from).map(|path| {
+        let path_exists = path.exists();
+        let extension = path.extension().and_then(OsStr::to_str).map(str::to_string);
+        let content = OpenOptions::new()
+            .read(true)
+            .open(&path)
+            .ok()
+            .and_then(|mut file| {
+                let mut buf = vec![];
+                file.read_to_end(&mut buf).map(|_| buf).ok()
+            })
+            .and_then(|bytes| from_utf8(bytes.as_slice()).map(str::to_string).ok())
+            .unwrap_or_default();
+        let path = path.to_str().map(str::to_string).unwrap_or_default();
+        BodyFile {
+            path_exists,
+            path,
+            extension,
+            content,
+        }
+    });
     Ok(body_file)
 }
 
@@ -173,11 +156,7 @@ impl HandlebarTemplatable for BodyStub {
         }
     }
 
-    fn render_response_template(
-        &self,
-        mut template: ResponseTemplate,
-        data: &HandlebarsData,
-    ) -> ResponseTemplate {
+    fn render_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
         if let Some(body) = self.body.as_ref() {
             template = template.set_body_string(self.render(body, data));
         } else if let Some(binary) = self.binary_body() {

@@ -17,7 +17,9 @@ impl TryFrom<&HttpUrlStub> for UrlPatternMatcher {
     type Error = anyhow::Error;
 
     fn try_from(http_url: &HttpUrlStub) -> anyhow::Result<Self> {
-        http_url.url_pattern.as_ref()
+        http_url
+            .url_pattern
+            .as_ref()
             .and_then(|it| Regex::from_str(it).ok())
             .map(Self)
             .ok_or_else(|| anyhow::Error::msg("No 'urlPattern'"))

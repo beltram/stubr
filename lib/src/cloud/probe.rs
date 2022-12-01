@@ -1,5 +1,8 @@
 use http_types::Method;
-use wiremock::{matchers::{method, path}, Mock, ResponseTemplate};
+use wiremock::{
+    matchers::{method, path},
+    Mock, ResponseTemplate,
+};
 
 pub struct HttpProbe;
 

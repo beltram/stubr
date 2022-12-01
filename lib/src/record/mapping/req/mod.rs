@@ -1,18 +1,13 @@
 use crate::model::request::{
-    body::BodyPatternStub,
-    headers::HttpReqHeadersStub,
-    method::HttpMethodStub,
-    query::HttpQueryParamsStub,
-    RequestStub,
-    url::HttpUrlStub,
+    body::BodyPatternStub, headers::HttpReqHeadersStub, method::HttpMethodStub, query::HttpQueryParamsStub, url::HttpUrlStub, RequestStub,
 };
 use crate::record::RecordInput;
 
-pub mod method;
-pub mod url;
-pub mod headers;
-pub mod queries;
 pub mod body;
+pub mod headers;
+pub mod method;
+pub mod queries;
+pub mod url;
 
 impl From<RecordInput<'_>> for RequestStub {
     fn from((ex, cfg): RecordInput) -> Self {

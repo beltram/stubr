@@ -1,6 +1,6 @@
 use serde_json::Value;
 
-use crate::model::response::{ResponseStub, template::data::RequestData};
+use crate::model::response::{template::data::RequestData, ResponseStub};
 
 use super::super::{StdResponse, Verifier};
 
@@ -17,17 +17,28 @@ impl Verifier<'_> for JsonBodyTemplatingVerifier {
         if let Ok(object_verifier) = object::JsonObjectVerifier::try_from(&self) {
             object_verifier.verify(stub, name, req, resp)
         } else if let Some((actual, expected)) = self.actual.as_array().zip(self.expected.as_array()) {
-            assert!(actual.len().ge(&expected.len()),
-                    "Verification failed for stub '{}'. Expected {} elements in json response body but {} found",
-                    name, expected.len(), actual.len());
-            actual.iter().zip(expected.iter())
-                .for_each(|(a, e)| Self { actual: a.clone(), expected: e.clone() }.verify(stub, name, req, resp))
+            assert!(
+                actual.len().ge(&expected.len()),
+                "Verification failed for stub '{}'. Expected {} elements in json response body but {} found",
+                name,
+                expected.len(),
+                actual.len()
+            );
+            actual.iter().zip(expected.iter()).for_each(|(a, e)| {
+                Self {
+                    actual: a.clone(),
+                    expected: e.clone(),
+                }
+                .verify(stub, name, req, resp)
+            })
         } else if let Ok(str_verifier) = string::JsonStrVerifier::try_from(&self) {
             str_verifier.verify(stub, name, req, resp)
         } else {
-            assert_eq!(self.actual, self.expected,
-                       "Verification failed for stub '{}'. Expected json response body to be '{}' but was '{}'",
-                       name, self.expected, self.actual)
+            assert_eq!(
+                self.actual, self.expected,
+                "Verification failed for stub '{}'. Expected json response body to be '{}' but was '{}'",
+                name, self.expected, self.actual
+            )
         }
     }
 }
@@ -73,14 +84,12 @@ mod json_body_verify_tests {
 
         #[test]
         fn should_verify_json_array_body() {
-            verify(
-                "json",
-                json!(["alice"]),
-                json!(["{{jsonPath request.body '$.name'}}"]),
-            )
+            verify("json", json!(["alice"]), json!(["{{jsonPath request.body '$.name'}}"]))
         }
 
-        #[should_panic(expected = "Verification failed for stub 'json'. Expected json response body for field 'name' to be 'alice' but was '\"bob\"'")]
+        #[should_panic(
+            expected = "Verification failed for stub 'json'. Expected json response body for field 'name' to be 'alice' but was '\"bob\"'"
+        )]
         #[test]
         fn should_fail_verifying_json_when_not_eq() {
             let actual = json!({"name": "bob"});
@@ -90,8 +99,7 @@ mod json_body_verify_tests {
             req.set_body(json!({"name": "alice"}));
             let mut resp = Response::new(200);
             resp.set_body(actual.clone());
-            JsonBodyTemplatingVerifier { actual, expected }
-                .verify(&stub, "json", &RequestData::from(&mut req), &mut StdResponse(resp));
+            JsonBodyTemplatingVerifier { actual, expected }.verify(&stub, "json", &RequestData::from(&mut req), &mut StdResponse(resp));
         }
 
         #[test]
@@ -99,7 +107,7 @@ mod json_body_verify_tests {
             let id = 1;
             verify_with_uri(
                 "json",
-                json!({"id": id}),
+                json!({ "id": id }),
                 json!({"id": "{{request.pathSegments.[0]}}"}),
                 &format!("http://localhost/{}", id),
             )
@@ -169,7 +177,9 @@ mod json_body_verify_tests {
                 )
             }
 
-            #[should_panic(expected = "Verification failed for stub 'any'. Expected json fields '[(\"country\", \"{{anyRegex '[A-Z]{2}'}}\")]' were absent from response body")]
+            #[should_panic(
+                expected = "Verification failed for stub 'any'. Expected json fields '[(\"country\", \"{{anyRegex '[A-Z]{2}'}}\")]' were absent from response body"
+            )]
             #[test]
             fn verify_json_fail_when_keys_mismatch() {
                 verify(
@@ -188,7 +198,9 @@ mod json_body_verify_tests {
                 )
             }
 
-            #[should_panic(expected = "Verification failed for stub 'any'. Expected json fields '[(\"country\", \"{{anyRegex '[A-Z]{2}'}}\")]' were absent from response body")]
+            #[should_panic(
+                expected = "Verification failed for stub 'any'. Expected json fields '[(\"country\", \"{{anyRegex '[A-Z]{2}'}}\")]' were absent from response body"
+            )]
             #[test]
             fn verify_json_should_fail_when_more_keys_expected_than_present() {
                 verify(
@@ -226,7 +238,11 @@ mod json_body_verify_tests {
             #[should_panic(expected = "Verification failed for stub 'any'. Expected 2 elements in json response body but 1 found")]
             #[test]
             fn verify_json_arrays_should_fail_expected_absent() {
-                verify("any", json!(["alice"]), json!(["{{anyNonBlankString}}", "{{anyNonBlankString}}"]))
+                verify(
+                    "any",
+                    json!(["alice"]),
+                    json!(["{{anyNonBlankString}}", "{{anyNonBlankString}}"]),
+                )
             }
 
             #[test]
@@ -235,14 +251,12 @@ mod json_body_verify_tests {
             }
         }
 
-        #[should_panic(expected = "Verification failed for stub 'any'. Expected json response body to be '{\"name\":\"{{anyNonBlankString}}\"}' but was '[\"alice\"]'")]
+        #[should_panic(
+            expected = "Verification failed for stub 'any'. Expected json response body to be '{\"name\":\"{{anyNonBlankString}}\"}' but was '[\"alice\"]'"
+        )]
         #[test]
         fn verify_should_fail_when_different_types() {
-            verify(
-                "any",
-                json!(["alice"]),
-                json!({"name": "{{anyNonBlankString}}"}),
-            )
+            verify("any", json!(["alice"]), json!({"name": "{{anyNonBlankString}}"}))
         }
     }
 
@@ -254,13 +268,23 @@ mod json_body_verify_tests {
 
             #[test]
             fn should_verify_json_partially() {
-                verify("regex", json!({"country": "FR"}), json!({"country": "{{anyRegex '^[A-Z]{2}$'}}"}))
+                verify(
+                    "regex",
+                    json!({"country": "FR"}),
+                    json!({"country": "{{anyRegex '^[A-Z]{2}$'}}"}),
+                )
             }
 
-            #[should_panic(expected = "Verification failed for stub 'regex'. Expected response body to match '^[A-Z]{2}$' but was 'FRANCE'")]
+            #[should_panic(
+                expected = "Verification failed for stub 'regex'. Expected response body to match '^[A-Z]{2}$' but was 'FRANCE'"
+            )]
             #[test]
             fn verify_json_partially_should_fail() {
-                verify("regex", json!({"country": "FRANCE"}), json!({"country": "{{anyRegex '^[A-Z]{2}$'}}"}))
+                verify(
+                    "regex",
+                    json!({"country": "FRANCE"}),
+                    json!({"country": "{{anyRegex '^[A-Z]{2}$'}}"}),
+                )
             }
 
             #[should_panic(expected = "Verification failed for stub 'regex'. Expected response body to match '^[A-Z]{2}$' but was '42'")]
@@ -310,8 +334,8 @@ mod json_body_verify_tests {
 
                 #[test]
                 fn should_verify_json_i64_partially() {
-                    verify("i64", json!({"age": i64::MAX}), json!({"age": "{{anyI64}}"}));
-                    verify("i64", json!({"age": i64::MIN}), json!({"age": "{{anyI64}}"}));
+                    verify("i64", json!({ "age": i64::MAX }), json!({"age": "{{anyI64}}"}));
+                    verify("i64", json!({ "age": i64::MIN }), json!({"age": "{{anyI64}}"}));
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'i64'. Expected response body to be an i64 but was '42.3'")]
@@ -326,10 +350,12 @@ mod json_body_verify_tests {
                     verify("i64", json!({"age": "abcd"}), json!({"age": "{{anyI64}}"}))
                 }
 
-                #[should_panic(expected = "Verification failed for stub 'i64'. Expected response body to be an i64 but was '18446744073709551615'")]
+                #[should_panic(
+                    expected = "Verification failed for stub 'i64'. Expected response body to be an i64 but was '18446744073709551615'"
+                )]
                 #[test]
                 fn verify_json_i64_partially_should_fail_when_too_large() {
-                    verify("i64", json!({"age": u64::MAX}), json!({"age": "{{anyI64}}"}))
+                    verify("i64", json!({ "age": u64::MAX }), json!({"age": "{{anyI64}}"}))
                 }
             }
 
@@ -338,8 +364,8 @@ mod json_body_verify_tests {
 
                 #[test]
                 fn should_verify_json_u64_partially() {
-                    verify("u64", json!({"age": u64::MAX}), json!({"age": "{{anyU64}}"}));
-                    verify("u64", json!({"age": u64::MIN}), json!({"age": "{{anyU64}}"}));
+                    verify("u64", json!({ "age": u64::MAX }), json!({"age": "{{anyU64}}"}));
+                    verify("u64", json!({ "age": u64::MIN }), json!({"age": "{{anyU64}}"}));
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'u64'. Expected response body to be an u64 but was '42.3'")]
@@ -354,10 +380,12 @@ mod json_body_verify_tests {
                     verify("u64", json!({"age": "abcd"}), json!({"age": "{{anyU64}}"}))
                 }
 
-                #[should_panic(expected = "Verification failed for stub 'u64'. Expected response body to be an u64 but was '-9223372036854775808'")]
+                #[should_panic(
+                    expected = "Verification failed for stub 'u64'. Expected response body to be an u64 but was '-9223372036854775808'"
+                )]
                 #[test]
                 fn verify_json_u64_partially_should_fail_when_negative() {
-                    verify("u64", json!({"age": i64::MIN}), json!({"age": "{{anyU64}}"}))
+                    verify("u64", json!({ "age": i64::MIN }), json!({"age": "{{anyU64}}"}))
                 }
             }
 
@@ -366,8 +394,8 @@ mod json_body_verify_tests {
 
                 #[test]
                 fn should_verify_json_i32_partially() {
-                    verify("i32", json!({"age": i32::MAX}), json!({"age": "{{anyI32}}"}));
-                    verify("i32", json!({"age": i32::MIN}), json!({"age": "{{anyI32}}"}));
+                    verify("i32", json!({ "age": i32::MAX }), json!({"age": "{{anyI32}}"}));
+                    verify("i32", json!({ "age": i32::MIN }), json!({"age": "{{anyI32}}"}));
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'i32'. Expected response body to be an i32 but was '42.3'")]
@@ -385,7 +413,7 @@ mod json_body_verify_tests {
                 #[should_panic(expected = "Verification failed for stub 'i32'. Expected response body to be an i32 but was '4294967295'")]
                 #[test]
                 fn verify_json_i32_partially_should_fail_when_too_large() {
-                    verify("i32", json!({"age": u32::MAX}), json!({"age": "{{anyI32}}"}))
+                    verify("i32", json!({ "age": u32::MAX }), json!({"age": "{{anyI32}}"}))
                 }
             }
 
@@ -394,8 +422,8 @@ mod json_body_verify_tests {
 
                 #[test]
                 fn should_verify_json_u32_partially() {
-                    verify("u32", json!({"age": u32::MAX}), json!({"age": "{{anyU32}}"}));
-                    verify("u32", json!({"age": u32::MIN}), json!({"age": "{{anyU32}}"}));
+                    verify("u32", json!({ "age": u32::MAX }), json!({"age": "{{anyU32}}"}));
+                    verify("u32", json!({ "age": u32::MIN }), json!({"age": "{{anyU32}}"}));
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'u32'. Expected response body to be an u32 but was '42.3'")]
@@ -413,13 +441,15 @@ mod json_body_verify_tests {
                 #[should_panic(expected = "Verification failed for stub 'u32'. Expected response body to be an u32 but was '-2147483648'")]
                 #[test]
                 fn verify_json_u32_partially_should_fail_when_negative() {
-                    verify("u32", json!({"age": i32::MIN}), json!({"age": "{{anyU32}}"}))
+                    verify("u32", json!({ "age": i32::MIN }), json!({"age": "{{anyU32}}"}))
                 }
 
-                #[should_panic(expected = "Verification failed for stub 'u32'. Expected response body to be an u32 but was '18446744073709551615'")]
+                #[should_panic(
+                    expected = "Verification failed for stub 'u32'. Expected response body to be an u32 but was '18446744073709551615'"
+                )]
                 #[test]
                 fn verify_json_u32_partially_should_fail_when_too_large() {
-                    verify("u32", json!({"age": u64::MAX}), json!({"age": "{{anyU32}}"}))
+                    verify("u32", json!({ "age": u64::MAX }), json!({"age": "{{anyU32}}"}))
                 }
             }
 
@@ -428,8 +458,8 @@ mod json_body_verify_tests {
 
                 #[test]
                 fn should_verify_json_i16_partially() {
-                    verify("i16", json!({"age": i16::MAX}), json!({"age": "{{anyI16}}"}));
-                    verify("i16", json!({"age": i16::MIN}), json!({"age": "{{anyI16}}"}));
+                    verify("i16", json!({ "age": i16::MAX }), json!({"age": "{{anyI16}}"}));
+                    verify("i16", json!({ "age": i16::MIN }), json!({"age": "{{anyI16}}"}));
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'i16'. Expected response body to be an i16 but was '42.3'")]
@@ -447,7 +477,7 @@ mod json_body_verify_tests {
                 #[should_panic(expected = "Verification failed for stub 'i16'. Expected response body to be an i16 but was '65535'")]
                 #[test]
                 fn verify_json_i16_partially_should_fail_when_too_large() {
-                    verify("i16", json!({"age": u16::MAX}), json!({"age": "{{anyI16}}"}))
+                    verify("i16", json!({ "age": u16::MAX }), json!({"age": "{{anyI16}}"}))
                 }
             }
 
@@ -456,8 +486,8 @@ mod json_body_verify_tests {
 
                 #[test]
                 fn should_verify_json_u16_partially() {
-                    verify("u16", json!({"age": u16::MAX}), json!({"age": "{{anyU16}}"}));
-                    verify("u16", json!({"age": u16::MIN}), json!({"age": "{{anyU16}}"}));
+                    verify("u16", json!({ "age": u16::MAX }), json!({"age": "{{anyU16}}"}));
+                    verify("u16", json!({ "age": u16::MIN }), json!({"age": "{{anyU16}}"}));
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'u16'. Expected response body to be an u16 but was '42.3'")]
@@ -475,13 +505,13 @@ mod json_body_verify_tests {
                 #[should_panic(expected = "Verification failed for stub 'u16'. Expected response body to be an u16 but was '-32768'")]
                 #[test]
                 fn verify_json_u16_partially_should_fail_when_negative() {
-                    verify("u16", json!({"age": i16::MIN}), json!({"age": "{{anyU16}}"}))
+                    verify("u16", json!({ "age": i16::MIN }), json!({"age": "{{anyU16}}"}))
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'u16'. Expected response body to be an u16 but was '4294967295'")]
                 #[test]
                 fn verify_json_u16_partially_should_fail_when_too_large() {
-                    verify("u16", json!({"age": u32::MAX}), json!({"age": "{{anyU16}}"}))
+                    verify("u16", json!({ "age": u32::MAX }), json!({"age": "{{anyU16}}"}))
                 }
             }
 
@@ -490,8 +520,8 @@ mod json_body_verify_tests {
 
                 #[test]
                 fn should_verify_json_i8_partially() {
-                    verify("i8", json!({"age": i8::MAX}), json!({"age": "{{anyI8}}"}));
-                    verify("i8", json!({"age": i8::MIN}), json!({"age": "{{anyI8}}"}));
+                    verify("i8", json!({ "age": i8::MAX }), json!({"age": "{{anyI8}}"}));
+                    verify("i8", json!({ "age": i8::MIN }), json!({"age": "{{anyI8}}"}));
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'i8'. Expected response body to be an i8 but was '42.3'")]
@@ -509,7 +539,7 @@ mod json_body_verify_tests {
                 #[should_panic(expected = "Verification failed for stub 'i8'. Expected response body to be an i8 but was '255'")]
                 #[test]
                 fn verify_json_i8_partially_should_fail_when_too_large() {
-                    verify("i8", json!({"age": u8::MAX}), json!({"age": "{{anyI8}}"}))
+                    verify("i8", json!({ "age": u8::MAX }), json!({"age": "{{anyI8}}"}))
                 }
             }
 
@@ -518,8 +548,8 @@ mod json_body_verify_tests {
 
                 #[test]
                 fn should_verify_json_u8_partially() {
-                    verify("u8", json!({"age": u8::MAX}), json!({"age": "{{anyU8}}"}));
-                    verify("u8", json!({"age": u8::MIN}), json!({"age": "{{anyU8}}"}));
+                    verify("u8", json!({ "age": u8::MAX }), json!({"age": "{{anyU8}}"}));
+                    verify("u8", json!({ "age": u8::MIN }), json!({"age": "{{anyU8}}"}));
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'u8'. Expected response body to be an u8 but was '42.3'")]
@@ -537,13 +567,13 @@ mod json_body_verify_tests {
                 #[should_panic(expected = "Verification failed for stub 'u8'. Expected response body to be an u8 but was '-128'")]
                 #[test]
                 fn verify_json_u8_partially_should_fail_when_negative() {
-                    verify("u8", json!({"age": i8::MIN}), json!({"age": "{{anyU8}}"}))
+                    verify("u8", json!({ "age": i8::MIN }), json!({"age": "{{anyU8}}"}))
                 }
 
                 #[should_panic(expected = "Verification failed for stub 'u8'. Expected response body to be an u8 but was '-32768'")]
                 #[test]
                 fn verify_json_u8_partially_should_fail_when_too_large() {
-                    verify("u8", json!({"age": i16::MIN}), json!({"age": "{{anyU8}}"}))
+                    verify("u8", json!({ "age": i16::MIN }), json!({"age": "{{anyU8}}"}))
                 }
             }
         }
@@ -574,10 +604,16 @@ mod json_body_verify_tests {
 
             #[test]
             fn should_verify_json_alpha_numeric_partially() {
-                verify("alpha-num", json!({"age": "abcd1234ABCD"}), json!({"age": "{{anyAlphaNumeric}}"}));
+                verify(
+                    "alpha-num",
+                    json!({"age": "abcd1234ABCD"}),
+                    json!({"age": "{{anyAlphaNumeric}}"}),
+                );
             }
 
-            #[should_panic(expected = "Verification failed for stub 'alpha-num'. Expected response body to be an alphanumeric but was '!?'")]
+            #[should_panic(
+                expected = "Verification failed for stub 'alpha-num'. Expected response body to be an alphanumeric but was '!?'"
+            )]
             #[test]
             fn verify_json_alpha_numeric_partially_should_fail() {
                 verify("alpha-num", json!({"age": "!?"}), json!({"age": "{{anyAlphaNumeric}}"}))
@@ -595,13 +631,15 @@ mod json_body_verify_tests {
         req.set_body(actual.clone());
         let mut resp = Response::new(200);
         resp.set_body(actual.clone());
-        JsonBodyTemplatingVerifier { actual, expected }
-            .verify(&stub, name, &RequestData::from(&mut req), &mut StdResponse(resp));
+        JsonBodyTemplatingVerifier { actual, expected }.verify(&stub, name, &RequestData::from(&mut req), &mut StdResponse(resp));
     }
 
     fn stub(expected: &Value) -> ResponseStub {
         ResponseStub {
-            body: BodyStub { json_body: Some(expected.clone()), ..Default::default() },
+            body: BodyStub {
+                json_body: Some(expected.clone()),
+                ..Default::default()
+            },
             transformers: vec![String::from("response-template")],
             ..Default::default()
         }

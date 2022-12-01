@@ -3,10 +3,7 @@ use std::str::FromStr;
 use actix_http::body::MessageBody;
 use actix_web::dev::ServiceResponse as ActixServiceResponse;
 use http_types::{
-    headers::HeaderName as HttpHeaderName,
-    headers::HeaderValue as HttpHeaderValue,
-    headers::HeaderValues as HttpHeaderValues,
-    Response,
+    headers::HeaderName as HttpHeaderName, headers::HeaderValue as HttpHeaderValue, headers::HeaderValues as HttpHeaderValues, Response,
 };
 
 use super::super::mapping::resp::StdResponse;
@@ -15,11 +12,18 @@ impl From<ActixServiceResponse> for StdResponse {
     fn from(resp: ActixServiceResponse) -> Self {
         let status = resp.status();
         let mut std_resp = Response::new(status.as_u16());
-        resp.headers().into_iter()
+        resp.headers()
+            .into_iter()
             .filter_map(|(k, v)| {
                 let k = HttpHeaderName::from_str(k.as_str()).ok();
-                let v = v.to_str().ok()
-                    .map(|it| it.split(',').map(|s| s.trim()).filter_map(|i| HttpHeaderValue::from_str(i).ok()))
+                let v = v
+                    .to_str()
+                    .ok()
+                    .map(|it| {
+                        it.split(',')
+                            .map(|s| s.trim())
+                            .filter_map(|i| HttpHeaderValue::from_str(i).ok())
+                    })
                     .map(HttpHeaderValues::from_iter);
                 k.zip(v)
             })
@@ -35,8 +39,8 @@ impl From<ActixServiceResponse> for StdResponse {
 mod actix_resp_mapping_tests {
     use std::str::FromStr;
 
-    use actix_web::{HttpRequest, test::TestRequest};
     use actix_web::HttpResponse as ActixResponse;
+    use actix_web::{test::TestRequest, HttpRequest};
 
     use super::*;
 

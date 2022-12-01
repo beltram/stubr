@@ -7,13 +7,13 @@ use body::BodyVerifier;
 use header::HeaderVerifier;
 use status::StatusVerifier;
 
-use crate::model::response::{ResponseStub, template::data::RequestData};
+use crate::model::response::{template::data::RequestData, ResponseStub};
 
 use super::req::StdRequest;
 
-mod status;
-mod header;
 mod body;
+mod header;
+mod status;
 
 #[derive(Debug)]
 pub struct StdResponse(pub Response);
@@ -58,7 +58,10 @@ mod resp_verify_tests {
 
     #[test]
     fn should_verify() {
-        let stub = ResponseStub { status: Some(200), ..Default::default() };
+        let stub = ResponseStub {
+            status: Some(200),
+            ..Default::default()
+        };
         let mut req = Request::get("http://localhost/");
         let mut resp = StdResponse(Response::new(200));
         StatusVerifier.verify(&stub, "ok", &RequestData::from(&mut req), &mut resp);

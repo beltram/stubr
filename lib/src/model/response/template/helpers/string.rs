@@ -22,21 +22,24 @@ impl StringHelper {
     }
 
     fn map_first(value: &str, transform: fn(&char) -> char) -> String {
-        value.char_indices().map(|(i, c)| if i == 0 { transform(&c) } else { c }).collect()
+        value
+            .char_indices()
+            .map(|(i, c)| if i == 0 { transform(&c) } else { c })
+            .collect()
     }
 }
 
 impl HelperDef for StringHelper {
-    fn call_inner<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
+    fn call_inner<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>,
+    ) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
         Self::value(h)
-            .map(|value| {
-                match h.name() {
-                    Self::UPPER => value.to_uppercase(),
-                    Self::LOWER => value.to_lowercase(),
-                    Self::CAPITALIZE => Self::capitalize(value),
-                    Self::DECAPITALIZE => Self::decapitalize(value),
-                    _ => panic!("Unexpected error")
-                }
+            .map(|value| match h.name() {
+                Self::UPPER => value.to_uppercase(),
+                Self::LOWER => value.to_lowercase(),
+                Self::CAPITALIZE => Self::capitalize(value),
+                Self::DECAPITALIZE => Self::decapitalize(value),
+                _ => panic!("Unexpected error"),
             })
             .ok_or_else(|| RenderError::new("Invalid string case transform response template"))
             .map(Value::from)

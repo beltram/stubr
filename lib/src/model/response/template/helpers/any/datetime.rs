@@ -5,13 +5,14 @@ use regex::Regex;
 
 use crate::gen::regex::RegexRndGenerator;
 
-use super::{AnyTemplate, super::verify::VerifyDetect};
+use super::{super::verify::VerifyDetect, AnyTemplate};
 
 pub struct AnyDatetime;
 
 impl AnyDatetime {
     pub const NAME: &'static str = "anyDatetime";
-    pub const DATETIME_RGX: &'static str = r"([0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])";
+    pub const DATETIME_RGX: &'static str =
+        r"([0-9]{4})-(1[0-2]|0[1-9])-(3[01]|0[1-9]|[12][0-9])T(2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])";
     const REASON: &'static str = "be a valid datetime (yyyy-mm-ddThh:mm:ss)";
 }
 
@@ -26,9 +27,13 @@ impl AnyTemplate for AnyDatetime {
 
     fn verify<'reg: 'rc, 'rc>(&self, _: &Helper<'reg, 'rc>, ctx: &'rc Context, _: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
         if let Ok(resp) = from_utf8(response.as_slice()) {
-            assert!(DATETIME_REGEX.is_match(resp),
-                    "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
-                    ctx.stub_name(), Self::REASON, resp)
+            assert!(
+                DATETIME_REGEX.is_match(resp),
+                "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
+                ctx.stub_name(),
+                Self::REASON,
+                resp
+            )
         }
     }
 
@@ -38,7 +43,9 @@ impl AnyTemplate for AnyDatetime {
 }
 
 impl HelperDef for AnyDatetime {
-    fn call<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output) -> HelperResult {
+    fn call<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output,
+    ) -> HelperResult {
         self.render(h, ctx, rc, out)
     }
 }

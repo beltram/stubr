@@ -10,38 +10,36 @@ impl StoreRepository {
     }
 
     pub fn find_all(&self) -> Result<Vec<Store>, ApiError> {
-        self.0.lock()
+        self.0
+            .lock()
             .map_err(|_| ApiError::InternalError)
             .map(|db| db.iter().map(|e| e.to_owned()).collect::<Vec<Store>>())
     }
 
     pub fn find_by_id(&self, id: usize) -> Result<Store, ApiError> {
-        self.0.lock()
-            .map_err(|_| ApiError::InternalError)
-            .and_then(|db| {
-                db.iter()
-                    .find(|p| p.id == Some(id))
-                    .map(|p| p.to_owned())
-                    .ok_or(ApiError::NotFound)
-            })
+        self.0.lock().map_err(|_| ApiError::InternalError).and_then(|db| {
+            db.iter()
+                .find(|p| p.id == Some(id))
+                .map(|p| p.to_owned())
+                .ok_or(ApiError::NotFound)
+        })
     }
 
     pub fn create(&self, mut entity: Store) -> Result<Store, ApiError> {
         let id = self.len() + 1;
-        self.0.lock()
-            .map_err(|_| ApiError::InternalError)
-            .and_then(|mut db| {
-                entity.id = Some(id);
-                if db.insert(entity.clone()) {
-                    Ok(entity)
-                } else {
-                    Err(ApiError::Conflict)
-                }
-            })
+        self.0.lock().map_err(|_| ApiError::InternalError).and_then(|mut db| {
+            entity.id = Some(id);
+            if db.insert(entity.clone()) {
+                Ok(entity)
+            } else {
+                Err(ApiError::Conflict)
+            }
+        })
     }
 
     pub fn insert(&self, entity: Store) -> Result<(), ApiError> {
-        self.0.lock()
+        self.0
+            .lock()
             .map_err(|_| ApiError::InternalError)
             .and_then(|mut db| if db.insert(entity) { Ok(()) } else { Err(ApiError::Conflict) })
     }
@@ -54,13 +52,13 @@ impl StoreRepository {
     }
 
     pub fn delete_all(&self) -> Result<(), ApiError> {
-        self.0.lock().as_mut()
-            .map_err(|_| ApiError::InternalError)
-            .map(|db| db.clear())
+        self.0.lock().as_mut().map_err(|_| ApiError::InternalError).map(|db| db.clear())
     }
 
     pub fn len(&self) -> usize {
-        self.0.lock().as_mut()
+        self.0
+            .lock()
+            .as_mut()
             .map_err(|_| ApiError::InternalError)
             .map(|db| db.len())
             .unwrap_or_default()

@@ -24,10 +24,12 @@ impl StubrCli {
     pub fn new(args: &[&str]) -> Self {
         let port = port();
         let addr = format!("http://{}:{}", Self::HOST, &port);
-        let child = Command::cargo_bin("stubr").unwrap()
+        let child = Command::cargo_bin("stubr")
+            .unwrap()
             .args(args)
             .args(&["--port", &port])
-            .spawn().unwrap();
+            .spawn()
+            .unwrap();
         sleep(Duration::from_millis(Self::SLEEP));
         Self { child, addr }
     }

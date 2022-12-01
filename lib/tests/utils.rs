@@ -1,4 +1,9 @@
-use std::{env::current_dir, fs::File, io::Read, path::{Path, PathBuf}};
+use std::{
+    env::current_dir,
+    fs::File,
+    io::Read,
+    path::{Path, PathBuf},
+};
 
 use serde_json::Value;
 
@@ -26,11 +31,14 @@ pub trait UriAndQuery {
 }
 
 impl UriAndQuery for Stubr {
-    fn get_uri(&self) -> String { self.uri() }
+    fn get_uri(&self) -> String {
+        self.uri()
+    }
 }
 
 pub fn assert_recorded_stub_eq(id: &str, expected: Value) {
-    let content = File::open(stub_file(id)).ok()
+    let content = File::open(stub_file(id))
+        .ok()
         .and_then(|mut f| {
             let mut content = String::new();
             f.read_to_string(&mut content).ok().map(|_| content)
@@ -45,14 +53,12 @@ pub fn assert_recorded_stub_exists(id: &str) {
 }
 
 fn stub_file(id: &str) -> PathBuf {
-    target_dir()
-        .join("stubs")
-        .join("localhost")
-        .join(format!("{}.json", id))
+    target_dir().join("stubs").join("localhost").join(format!("{}.json", id))
 }
 
 pub fn target_dir() -> PathBuf {
-    current_dir().ok()
+    current_dir()
+        .ok()
         .and_then(|c| c.parent().map(Path::to_path_buf))
         .map(|p| p.join("target"))
         .unwrap()
@@ -68,8 +74,15 @@ pub fn record_cfg() -> RecordConfig {
 
 pub fn relaxed_req_headers() -> Vec<&'static str> {
     vec![
-        "accept", "accept-encoding", "content-type", "host", "proxy-connection", "user-agent",
-        "expect", "transfer-encoding", "content-length",
+        "accept",
+        "accept-encoding",
+        "content-type",
+        "host",
+        "proxy-connection",
+        "user-agent",
+        "expect",
+        "transfer-encoding",
+        "content-length",
     ]
 }
 

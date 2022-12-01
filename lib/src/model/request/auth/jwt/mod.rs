@@ -3,8 +3,8 @@ use wiremock::MockBuilder;
 
 use super::super::{BodyPatternStub, MockRegistrable};
 
-mod eq;
 mod alg;
+mod eq;
 mod payload;
 
 #[derive(Serialize, Deserialize, Debug, Default, Hash)]

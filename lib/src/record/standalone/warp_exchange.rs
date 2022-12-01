@@ -1,14 +1,8 @@
 use std::str::FromStr;
 
 use http_types::{
-    Body as HttpBody,
-    headers::HeaderName as HttpHeaderName,
-    headers::HeaderValue as HttpHeaderValue,
-    headers::HeaderValues as HttpHeaderValues,
-    Method as HttpMethod,
-    Request as HttpRequest,
-    Response as HttpResponse,
-    Url,
+    headers::HeaderName as HttpHeaderName, headers::HeaderValue as HttpHeaderValue, headers::HeaderValues as HttpHeaderValues,
+    Body as HttpBody, Method as HttpMethod, Request as HttpRequest, Response as HttpResponse, Url,
 };
 use warp::{
     http::{HeaderMap, Method as WarpMethod, Response},
@@ -46,11 +40,18 @@ impl From<WarpRequest> for RecordedRequest {
         let queries = req.queries.map(|q| format!("?{}", q)).unwrap_or_default();
         let url = Url::from_str(&format!("{}/{}{}", addr, path, queries)).unwrap();
         let mut http_req = HttpRequest::new(method, url.as_str());
-        req.headers.iter()
+        req.headers
+            .iter()
             .filter_map(|(k, v)| {
                 let k = HttpHeaderName::from_str(k.as_str()).ok();
-                let v = v.to_str().ok()
-                    .map(|it| it.split(',').map(|s| s.trim()).filter_map(|i| HttpHeaderValue::from_str(i).ok()))
+                let v = v
+                    .to_str()
+                    .ok()
+                    .map(|it| {
+                        it.split(',')
+                            .map(|s| s.trim())
+                            .filter_map(|i| HttpHeaderValue::from_str(i).ok())
+                    })
                     .map(HttpHeaderValues::from_iter);
                 k.zip(v)
             })
@@ -67,15 +68,25 @@ impl From<WarpResponse> for RecordedResponse {
         let status = resp.0.status().as_u16();
         let mut http_resp = HttpResponse::new(status);
         http_resp.set_body(resp.0.body().as_ref());
-        resp.0.headers().iter()
+        resp.0
+            .headers()
+            .iter()
             .filter_map(|(k, v)| {
                 let k = HttpHeaderName::from_str(k.as_str()).ok();
-                let v = v.to_str().ok()
-                    .map(|it| it.split(',').map(|s| s.trim()).filter_map(|i| HttpHeaderValue::from_str(i).ok()))
+                let v = v
+                    .to_str()
+                    .ok()
+                    .map(|it| {
+                        it.split(',')
+                            .map(|s| s.trim())
+                            .filter_map(|i| HttpHeaderValue::from_str(i).ok())
+                    })
                     .map(HttpHeaderValues::from_iter);
                 k.zip(v)
             })
-            .for_each(|(k, v)| { http_resp.insert_header(k, &v); });
+            .for_each(|(k, v)| {
+                http_resp.insert_header(k, &v);
+            });
         Self(http_resp)
     }
 }
@@ -104,31 +115,46 @@ mod http_tests {
 
         #[test]
         fn should_map_method_get() {
-            let input = WarpRequest { method: WarpMethod::GET, ..Default::default() };
+            let input = WarpRequest {
+                method: WarpMethod::GET,
+                ..Default::default()
+            };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Get)
         }
 
         #[test]
         fn should_map_method_post() {
-            let input = WarpRequest { method: WarpMethod::POST, ..Default::default() };
+            let input = WarpRequest {
+                method: WarpMethod::POST,
+                ..Default::default()
+            };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Post)
         }
 
         #[test]
         fn should_map_method_put() {
-            let input = WarpRequest { method: WarpMethod::PUT, ..Default::default() };
+            let input = WarpRequest {
+                method: WarpMethod::PUT,
+                ..Default::default()
+            };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Put)
         }
 
         #[test]
         fn should_map_method_patch() {
-            let input = WarpRequest { method: WarpMethod::PATCH, ..Default::default() };
+            let input = WarpRequest {
+                method: WarpMethod::PATCH,
+                ..Default::default()
+            };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Patch)
         }
 
         #[test]
         fn should_map_method_delete() {
-            let input = WarpRequest { method: WarpMethod::DELETE, ..Default::default() };
+            let input = WarpRequest {
+                method: WarpMethod::DELETE,
+                ..Default::default()
+            };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Delete)
         }
     }
@@ -138,35 +164,50 @@ mod http_tests {
 
         #[test]
         fn should_map_scheme() {
-            let input = WarpRequest { addr: String::from("https://github.com:8080"), ..Default::default() };
+            let input = WarpRequest {
+                addr: String::from("https://github.com:8080"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert_eq!(output.url().scheme(), "https")
         }
 
         #[test]
         fn should_map_host() {
-            let input = WarpRequest { addr: String::from("http://github.com:8080"), ..Default::default() };
+            let input = WarpRequest {
+                addr: String::from("http://github.com:8080"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert_eq!(output.url().host_str(), Some("github.com"))
         }
 
         #[test]
         fn should_map_port() {
-            let input = WarpRequest { addr: String::from("http://github.com:8080"), ..Default::default() };
+            let input = WarpRequest {
+                addr: String::from("http://github.com:8080"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert_eq!(output.url().port(), Some(8080))
         }
 
         #[test]
         fn should_not_fail_when_port_missing() {
-            let input = WarpRequest { addr: String::from("http://github.com"), ..Default::default() };
+            let input = WarpRequest {
+                addr: String::from("http://github.com"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert!(output.url().port().is_none())
         }
 
         #[test]
         fn should_map_path() {
-            let input = WarpRequest { path: String::from("/api/colors"), ..Default::default() };
+            let input = WarpRequest {
+                path: String::from("/api/colors"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert_eq!(output.url().path(), "/api/colors")
         }
@@ -180,22 +221,38 @@ mod http_tests {
 
         #[test]
         fn should_strip_trailing_host_slash() {
-            let input = WarpRequest { addr: String::from("http://github.com/"), path: String::from("/api/colors"), ..Default::default() };
+            let input = WarpRequest {
+                addr: String::from("http://github.com/"),
+                path: String::from("/api/colors"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert_eq!(output.url().as_str(), "http://github.com/api/colors");
 
-            let input = WarpRequest { addr: String::from("http://github.com/"), path: String::from("api/colors"), ..Default::default() };
+            let input = WarpRequest {
+                addr: String::from("http://github.com/"),
+                path: String::from("api/colors"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert_eq!(output.url().as_str(), "http://github.com/api/colors");
         }
 
         #[test]
         fn should_strip_leading_path_slash() {
-            let input = WarpRequest { addr: String::from("http://github.com/"), path: String::from("/api/colors"), ..Default::default() };
+            let input = WarpRequest {
+                addr: String::from("http://github.com/"),
+                path: String::from("/api/colors"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert_eq!(output.url().as_str(), "http://github.com/api/colors");
 
-            let input = WarpRequest { addr: String::from("http://github.com"), path: String::from("/api/colors"), ..Default::default() };
+            let input = WarpRequest {
+                addr: String::from("http://github.com"),
+                path: String::from("/api/colors"),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert_eq!(output.url().as_str(), "http://github.com/api/colors");
         }
@@ -208,7 +265,10 @@ mod http_tests {
 
         #[test]
         fn should_map_one_query_param() {
-            let input = WarpRequest { queries: Some("a=1".to_string()), ..Default::default() };
+            let input = WarpRequest {
+                queries: Some("a=1".to_string()),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             let mut queries = output.url().query_pairs();
             assert_eq!(queries.next(), Some((Cow::Borrowed("a"), Cow::Borrowed("1"))))
@@ -216,14 +276,20 @@ mod http_tests {
 
         #[test]
         fn should_not_fail_when_no_query_param() {
-            let input = WarpRequest { queries: None, ..Default::default() };
+            let input = WarpRequest {
+                queries: None,
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert!(output.url().query_pairs().next().is_none())
         }
 
         #[test]
         fn should_map_many_query_param() {
-            let input = WarpRequest { queries: Some("a=1&b=2".to_string()), ..Default::default() };
+            let input = WarpRequest {
+                queries: Some("a=1&b=2".to_string()),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             let mut queries = output.url().query_pairs();
             assert_eq!(queries.next(), Some((Cow::Borrowed("a"), Cow::Borrowed("1"))));
@@ -243,7 +309,10 @@ mod http_tests {
                 WarpHeaderName::from_str("x-a").unwrap(),
                 WarpHeaderValue::from_str("a").unwrap(),
             );
-            let input = WarpRequest { headers: HeaderMap::from_iter(vec![(ka, va)]), ..Default::default() };
+            let input = WarpRequest {
+                headers: HeaderMap::from_iter(vec![(ka, va)]),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
@@ -251,7 +320,10 @@ mod http_tests {
 
         #[test]
         fn should_not_fail_when_no_req_header() {
-            let input = WarpRequest { headers: HeaderMap::new(), ..Default::default() };
+            let input = WarpRequest {
+                headers: HeaderMap::new(),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             assert!(output.header_names().collect_vec().is_empty());
             assert!(output.header_values().collect_vec().is_empty());
@@ -267,7 +339,10 @@ mod http_tests {
                 WarpHeaderName::from_str("x-b").unwrap(),
                 WarpHeaderValue::from_str("b").unwrap(),
             );
-            let input = WarpRequest { headers: HeaderMap::from_iter(vec![(ka, va), (kb, vb)]), ..Default::default() };
+            let input = WarpRequest {
+                headers: HeaderMap::from_iter(vec![(ka, va), (kb, vb)]),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
@@ -281,7 +356,10 @@ mod http_tests {
                 WarpHeaderName::from_str("x-m").unwrap(),
                 WarpHeaderValue::from_str("a, b").unwrap(),
             );
-            let input = WarpRequest { headers: HeaderMap::from_iter(vec![(ka, va)]), ..Default::default() };
+            let input = WarpRequest {
+                headers: HeaderMap::from_iter(vec![(ka, va)]),
+                ..Default::default()
+            };
             let output = RecordedRequest::from(input).0;
             let multi = output.header("x-m").unwrap();
             assert_eq!(multi.get(0).unwrap().as_str(), "a");
@@ -298,7 +376,10 @@ mod http_tests {
         #[test]
         fn should_map_json_req_body() {
             let input_body = json!({"a": "b"});
-            let input = WarpRequest { body: Bytes::from(input_body.to_string()), ..Default::default() };
+            let input = WarpRequest {
+                body: Bytes::from(input_body.to_string()),
+                ..Default::default()
+            };
             let mut output = RecordedRequest::from(input).0;
             let body = block_on(async move { output.body_json::<Value>().await.unwrap() });
             assert_eq!(body, input_body);
@@ -306,7 +387,10 @@ mod http_tests {
 
         #[test]
         fn should_map_text_req_body() {
-            let input = WarpRequest { body: Bytes::from(String::from("Hello World!")), ..Default::default() };
+            let input = WarpRequest {
+                body: Bytes::from(String::from("Hello World!")),
+                ..Default::default()
+            };
             let mut output = RecordedRequest::from(input).0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert_eq!(&body, b"Hello World!");
@@ -314,7 +398,10 @@ mod http_tests {
 
         #[test]
         fn should_not_fail_when_req_body_empty() {
-            let input = WarpRequest { body: Bytes::new(), ..Default::default() };
+            let input = WarpRequest {
+                body: Bytes::new(),
+                ..Default::default()
+            };
             let mut output = RecordedRequest::from(input).0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert!(body.is_empty());
@@ -411,7 +498,12 @@ mod http_tests {
         #[test]
         fn should_map_json_resp_body() {
             let input_body = json!({"a": "b"});
-            let input = WarpResponse(Response::builder().status(200).body(Bytes::from(input_body.to_string())).unwrap());
+            let input = WarpResponse(
+                Response::builder()
+                    .status(200)
+                    .body(Bytes::from(input_body.to_string()))
+                    .unwrap(),
+            );
             let mut output = RecordedResponse::from(input).0;
             let body = block_on(async move { output.body_json::<Value>().await.unwrap() });
             assert_eq!(body, input_body);
@@ -420,7 +512,12 @@ mod http_tests {
         #[test]
         fn should_map_binary_resp_body() {
             let input_body = "Hello World!";
-            let input = WarpResponse(Response::builder().status(200).body(Bytes::from(input_body.as_bytes())).unwrap());
+            let input = WarpResponse(
+                Response::builder()
+                    .status(200)
+                    .body(Bytes::from(input_body.as_bytes()))
+                    .unwrap(),
+            );
             let mut output = RecordedResponse::from(input).0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert_eq!(body.as_slice(), input_body.as_bytes());

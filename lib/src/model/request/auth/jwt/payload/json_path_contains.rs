@@ -1,8 +1,8 @@
 use wiremock::{Match, Request};
 
 use super::super::super::{
-    helpers::RequestAuthExtension,
     super::json::{json_path_contains::JsonPathContainsMatcher, JsonMatcher},
+    helpers::RequestAuthExtension,
 };
 
 pub struct JsonPayloadPathContainsMatcher(pub String, pub String);

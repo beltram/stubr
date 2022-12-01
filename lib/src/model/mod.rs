@@ -8,7 +8,12 @@ use serde::{Deserialize, Serialize};
 use wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
 
 use request::RequestStub;
-use response::{default::WiremockIsoResponse, delay::Delay, ResponseAppender, ResponseStub, template::{HandlebarTemplatable, StubTemplate}};
+use response::{
+    default::WiremockIsoResponse,
+    delay::Delay,
+    template::{HandlebarTemplatable, StubTemplate},
+    ResponseAppender, ResponseStub,
+};
 
 use crate::Config;
 
@@ -48,11 +53,19 @@ impl JsonStub {
         if self.response.requires_response_templating() {
             self.response.headers.register_template();
             self.response.body.register_template();
-            StubTemplate { template, response: self.response, requires_templating: true }
+            StubTemplate {
+                template,
+                response: self.response,
+                requires_templating: true,
+            }
         } else {
             template = self.response.headers.add(template);
             template = self.response.body.add(template);
-            StubTemplate { template, response: self.response, requires_templating: false }
+            StubTemplate {
+                template,
+                response: self.response,
+                requires_templating: false,
+            }
         }
     }
 }

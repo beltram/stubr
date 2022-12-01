@@ -11,7 +11,8 @@ pub fn empty_pet_repository() -> web::Data<PetRepository> {
 }
 
 pub fn fake_pets() -> Vec<Pet> {
-    vec![
-        Pet { id: Some(1), name: String::from("rex") },
-    ]
+    vec![Pet {
+        id: Some(1),
+        name: String::from("rex"),
+    }]
 }

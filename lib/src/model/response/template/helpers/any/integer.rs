@@ -3,7 +3,7 @@ use std::str::from_utf8;
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
 use rand::random;
 
-use super::{AnyTemplate, super::verify::VerifyDetect};
+use super::{super::verify::VerifyDetect, AnyTemplate};
 
 pub struct AnyInteger;
 
@@ -19,7 +19,6 @@ impl AnyInteger {
 }
 
 impl AnyTemplate for AnyInteger {
-
     fn generate<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> anyhow::Result<String> {
         Ok(match h.name() {
             Self::I64 => random::<i64>().to_string(),
@@ -30,12 +29,13 @@ impl AnyTemplate for AnyInteger {
             Self::U16 => random::<u16>().to_string(),
             Self::I8 => random::<i8>().to_string(),
             Self::U8 => random::<u8>().to_string(),
-            _ => panic!("Unexpected error")
+            _ => panic!("Unexpected error"),
         })
     }
 
     fn verify<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
-        let is_int = from_utf8(response.as_slice()).ok()
+        let is_int = from_utf8(response.as_slice())
+            .ok()
             .map(|s| match h.name() {
                 Self::I64 => s.parse::<i64>().is_ok(),
                 Self::U64 => s.parse::<u64>().is_ok(),
@@ -45,12 +45,15 @@ impl AnyTemplate for AnyInteger {
                 Self::U16 => s.parse::<u16>().is_ok(),
                 Self::I8 => s.parse::<i8>().is_ok(),
                 Self::U8 => s.parse::<u8>().is_ok(),
-                _ => false
-            }).unwrap_or_default();
-        assert!(!response.is_empty() && is_int,
-                "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
-                ctx.stub_name(), self.expected(h, rc),
-                from_utf8(response.as_slice()).unwrap_or_default()
+                _ => false,
+            })
+            .unwrap_or_default();
+        assert!(
+            !response.is_empty() && is_int,
+            "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
+            ctx.stub_name(),
+            self.expected(h, rc),
+            from_utf8(response.as_slice()).unwrap_or_default()
         );
     }
 
@@ -64,13 +67,16 @@ impl AnyTemplate for AnyInteger {
             Self::U16 => "be an u16",
             Self::I8 => "be an i8",
             Self::U8 => "be an u8",
-            _ => "be an integer"
-        }.to_string()
+            _ => "be an integer",
+        }
+        .to_string()
     }
 }
 
 impl HelperDef for AnyInteger {
-    fn call<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output) -> HelperResult {
+    fn call<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output,
+    ) -> HelperResult {
         self.render(h, ctx, rc, out)
     }
 }

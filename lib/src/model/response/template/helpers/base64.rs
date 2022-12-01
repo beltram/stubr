@@ -13,7 +13,8 @@ impl Base64Helper {
     pub const PADDING: &'static str = "padding";
 
     fn value<'a>(h: &'a Helper) -> Option<&'a str> {
-        h.params().get(0)
+        h.params()
+            .get(0)
             .and_then(|it| it.value().as_str().or_else(|| it.relative_path().map(String::as_str)))
             .map(str::escape_single_quotes)
     }
@@ -27,7 +28,8 @@ impl Base64Helper {
     }
 
     fn base64_decode(value: &str) -> String {
-        base64::decode(value).ok()
+        base64::decode(value)
+            .ok()
             .and_then(|it| from_utf8(it.as_slice()).map(str::to_string).ok())
             .unwrap_or_else(|| value.to_string())
     }
@@ -48,9 +50,17 @@ impl Base64Helper {
 }
 
 impl HelperDef for Base64Helper {
-    fn call<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output) -> HelperResult {
+    fn call<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output,
+    ) -> HelperResult {
         Self::value(h)
-            .map(|value| if Self::is_decode(h) { Self::base64_decode(value) } else { Self::base64_encode(value, Self::with_padding(h)) })
+            .map(|value| {
+                if Self::is_decode(h) {
+                    Self::base64_decode(value)
+                } else {
+                    Self::base64_encode(value, Self::with_padding(h))
+                }
+            })
             .ok_or_else(|| RenderError::new("Failed templating base 64 (de)encoding"))
             .and_then(|s| out.write(&s).map_err(RenderError::from))
     }

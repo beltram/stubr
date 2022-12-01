@@ -1,5 +1,8 @@
 use serde::{Deserialize, Serialize};
-use wiremock::{Match, matchers::{method, MethodExactMatcher}, Mock, MockBuilder, Request};
+use wiremock::{
+    matchers::{method, MethodExactMatcher},
+    Match, Mock, MockBuilder, Request,
+};
 
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
 pub struct HttpMethodStub(pub Verb);
@@ -37,7 +40,9 @@ impl From<&str> for HttpMethodStub {
 }
 
 impl Default for HttpMethodStub {
-    fn default() -> Self { Self(Verb::Any) }
+    fn default() -> Self {
+        Self(Verb::Any)
+    }
 }
 
 impl TryFrom<&HttpMethodStub> for MethodExactMatcher {

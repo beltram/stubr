@@ -25,7 +25,9 @@ impl<'a> RelaxedJsonArray<'a> {
 
 impl PartialEq for RelaxedJsonArray<'_> {
     fn eq(&self, other: &Self) -> bool {
-        self.0.as_array().zip(other.0.as_array())
+        self.0
+            .as_array()
+            .zip(other.0.as_array())
             .map(Self::relaxed_eq)
             .or_else(|| self.0.as_object().zip(other.0.as_object()).map(Self::obj_eq))
             .unwrap_or_else(|| self.0 == other.0)
@@ -69,8 +71,14 @@ mod relaxed_array_eq_tests {
         assert!(req(&json!({"n": [["a", "b"]]}), &json!({"n": [["a", "b"]]})));
         assert!(req(&json!({"n": [["a", "b"]]}), &json!({"n": [["b", "a"]]})));
         assert!(req(&json!({"n": [["a", "b"]]}), &json!({"n": [["b", "a"]]})));
-        assert!(req(&json!({"n": [["a", "b"], ["c", "d"]]}), &json!({"n": [["b", "a"], ["d", "c"]]})));
-        assert!(req(&json!({"n": [["c", "d"], ["a", "b"]]}), &json!({"n": [["b", "a"], ["d", "c"]]})));
+        assert!(req(
+            &json!({"n": [["a", "b"], ["c", "d"]]}),
+            &json!({"n": [["b", "a"], ["d", "c"]]})
+        ));
+        assert!(req(
+            &json!({"n": [["c", "d"], ["a", "b"]]}),
+            &json!({"n": [["b", "a"], ["d", "c"]]})
+        ));
     }
 
     #[test]

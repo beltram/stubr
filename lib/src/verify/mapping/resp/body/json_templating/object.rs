@@ -3,18 +3,18 @@ use itertools::Itertools;
 use serde_json::{Map, Value};
 
 use crate::model::response::{
-    ResponseStub,
     template::{
         data::{HandlebarsData, RequestData},
-        HandlebarTemplatable,
         utils::TemplateExt,
         verify::Predictable,
+        HandlebarTemplatable,
     },
+    ResponseStub,
 };
 
 use super::{
-    JsonBodyTemplatingVerifier,
     super::super::{StdResponse, Verifier},
+    JsonBodyTemplatingVerifier,
 };
 
 pub struct JsonObjectVerifier<'a> {
@@ -53,7 +53,10 @@ impl<'a> TryFrom<&'a JsonBodyTemplatingVerifier> for JsonObjectVerifier<'a> {
     type Error = anyhow::Error;
 
     fn try_from(parent: &'a JsonBodyTemplatingVerifier) -> anyhow::Result<Self> {
-        parent.actual.as_object().zip(parent.expected.as_object())
+        parent
+            .actual
+            .as_object()
+            .zip(parent.expected.as_object())
             .map(|(actual, expected)| Self { actual, expected })
             .ok_or_else(|| anyhow!(""))
     }
@@ -62,18 +65,23 @@ impl<'a> TryFrom<&'a JsonBodyTemplatingVerifier> for JsonObjectVerifier<'a> {
 impl Verifier<'_> for JsonObjectVerifier<'_> {
     fn verify(self, stub: &'_ ResponseStub, name: &'_ str, req: &'_ RequestData, resp: &'_ mut StdResponse) {
         let key_diff = self.expected.keys().filter(|k| !self.actual.keys().contains(k)).collect_vec();
-        assert!(key_diff.is_empty(),
-                "Verification failed for stub '{}'. Expected json fields '{:?}' were absent from response body",
-                name,
-                self.expected.iter()
-                    .filter(|(k, _)| key_diff.contains(k))
-                    .map(|(k, v)| (k, v.as_str().unwrap_or_default()))
-                    .collect_vec()
+        assert!(
+            key_diff.is_empty(),
+            "Verification failed for stub '{}'. Expected json fields '{:?}' were absent from response body",
+            name,
+            self.expected
+                .iter()
+                .filter(|(k, _)| key_diff.contains(k))
+                .map(|(k, v)| (k, v.as_str().unwrap_or_default()))
+                .collect_vec()
         );
-        let actual = self.actual.iter()
+        let actual = self
+            .actual
+            .iter()
             .filter(|(k, _)| self.expected.keys().contains(k))
             .sorted_by_key(|(k, _)| k.as_str());
-        actual.zip(self.expected.iter().sorted_by_key(|(k, _)| k.as_str()))
+        actual
+            .zip(self.expected.iter().sorted_by_key(|(k, _)| k.as_str()))
             .for_each(|((_, va), (ke, ve))| {
                 if let Some(expected) = ve.as_str().filter(|v| v.has_template_expressions()) {
                     let response = self.to_bytes(va);
@@ -86,12 +94,22 @@ impl Verifier<'_> for JsonObjectVerifier<'_> {
                     stub.body.register(expected, &expected);
                     let render = stub.body.render(expected, &data);
                     if expected.is_predictable() {
-                        assert_eq!(va, &self.cast_to_value(&render),
-                                   "Verification failed for stub '{}'. Expected json response body for field '{}' to be '{}' but was '{}'",
-                                   name, ke, render, va)
+                        assert_eq!(
+                            va,
+                            &self.cast_to_value(&render),
+                            "Verification failed for stub '{}'. Expected json response body for field '{}' to be '{}' but was '{}'",
+                            name,
+                            ke,
+                            render,
+                            va
+                        )
                     }
                 } else {
-                    JsonBodyTemplatingVerifier { actual: va.clone(), expected: ve.clone() }.verify(stub, name, req, resp)
+                    JsonBodyTemplatingVerifier {
+                        actual: va.clone(),
+                        expected: ve.clone(),
+                    }
+                    .verify(stub, name, req, resp)
                 }
             })
     }

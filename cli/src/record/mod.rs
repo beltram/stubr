@@ -12,6 +12,8 @@ impl Record {
 
     pub async fn record(config: CliRecordConfig) {
         let _recorder = Stubr::record_with(config.into());
-        loop { async_std::task::sleep(Self::SLEEP_DURATION).await; }
+        loop {
+            async_std::task::sleep(Self::SLEEP_DURATION).await;
+        }
     }
 }

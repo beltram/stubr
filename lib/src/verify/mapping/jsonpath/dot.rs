@@ -8,8 +8,8 @@ pub struct DotGenerator<'a>(pub &'a RawSelector);
 impl JsonGeneratorIterator for DotGenerator<'_> {
     fn next(self, acc_json: Value) -> Option<Value> {
         match self.0 {
-            RawSelector::Name(name) => Some(json!({name.as_str(): acc_json})),
-            _ => None
+            RawSelector::Name(name) => Some(json!({ name.as_str(): acc_json })),
+            _ => None,
         }
     }
 }
@@ -18,7 +18,7 @@ impl JsonGeneratorIterator for DotGenerator<'_> {
 mod jsonpath_generator_dot_tests {
     use serde_json::json;
 
-    use super::{*, super::JsonPathGenerator};
+    use super::{super::JsonPathGenerator, *};
 
     mod name {
         use super::*;
@@ -27,7 +27,7 @@ mod jsonpath_generator_dot_tests {
         fn single_dot_should_generate() {
             let doe = json!({"name": "doe"});
             let value = JsonPathGenerator("$.a").next(doe.clone()).unwrap();
-            assert_eq!(value, json!({"a": doe}));
+            assert_eq!(value, json!({ "a": doe }));
         }
 
         #[test]

@@ -44,11 +44,7 @@ impl RequestExt for Request {
         if !self.body.is_empty() {
             serde_json::from_slice::<Value>(self.body.as_slice())
                 .ok()
-                .or_else(|| {
-                    from_utf8(self.body.as_slice())
-                        .ok()
-                        .map(|s| Value::String(s.to_string()))
-                })
+                .or_else(|| from_utf8(self.body.as_slice()).ok().map(|s| Value::String(s.to_string())))
         } else {
             None
         }
@@ -145,11 +141,7 @@ impl RequestExt for http_types::Request {
                 .and_then(|b| {
                     serde_json::from_slice::<Value>(b.as_slice())
                         .ok()
-                        .or_else(|| {
-                            from_utf8(b.as_slice())
-                                .ok()
-                                .map(|s| Value::String(s.to_string()))
-                        })
+                        .or_else(|| from_utf8(b.as_slice()).ok().map(|s| Value::String(s.to_string())))
                 })
         })
     }

@@ -1,6 +1,6 @@
 use crate::record::RecordInput;
 
-use super::super::model::{JsonStub, request::RequestStub, response::ResponseStub};
+use super::super::model::{request::RequestStub, response::ResponseStub, JsonStub};
 
 pub mod req;
 pub mod resp;

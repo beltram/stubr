@@ -1,7 +1,7 @@
 use itertools::Itertools;
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, ToTokens};
-use syn::{AttributeArgs, ItemFn, Lit, LitInt, LitStr, NestedMeta, LitBool};
+use syn::{AttributeArgs, ItemFn, Lit, LitBool, LitInt, LitStr, NestedMeta};
 
 pub(crate) fn mock_transform(args: AttributeArgs, item: TokenStream) -> syn::Result<TokenStream> {
     let func = syn::parse2::<ItemFn>(item)?;
@@ -40,12 +40,13 @@ impl Args {
     }
 
     fn full_path(&self) -> Option<TokenStream> {
-        self.full_path.as_ref()
-            .map(|fp| fp.into_token_stream())
+        self.full_path.as_ref().map(|fp| fp.into_token_stream())
     }
 
     fn default_path(&self) -> TokenStream {
-        let paths = self.paths.iter()
+        let paths = self
+            .paths
+            .iter()
             .map(|p| format!("{}/{}", Self::DEFAULT_PATH, p.value()))
             .collect_vec();
         if !paths.is_empty() {
@@ -56,14 +57,16 @@ impl Args {
     }
 
     fn port(&self) -> TokenStream {
-        self.port.as_ref()
+        self.port
+            .as_ref()
             .map(|p| p.into_token_stream())
             .map(|p| quote! { Some(#p) })
             .unwrap_or_else(|| quote! { None })
     }
 
     fn verify(&self) -> TokenStream {
-        self.verify.as_ref()
+        self.verify
+            .as_ref()
             .map(|p| p.into_token_stream())
             .map(|p| quote! { #p })
             .unwrap_or_else(|| quote! { false })
@@ -83,32 +86,46 @@ impl TryFrom<AttributeArgs> for Args {
                 NestedMeta::Lit(Lit::Str(lit)) => paths.push(lit),
                 NestedMeta::Lit(token) => {
                     return Err(syn::Error::new_spanned(token, "Default attribute expects string"));
-                }
+                },
                 NestedMeta::Meta(syn::Meta::NameValue(nv)) => {
                     if nv.path.is_ident(Self::ATTR_FULL_PATH) {
                         if let syn::Lit::Str(lit) = nv.lit {
                             full_path = Some(lit)
                         } else {
-                            return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects string", Self::ATTR_FULL_PATH)));
+                            return Err(syn::Error::new_spanned(
+                                nv.lit,
+                                format!("Attribute '{}' expects string", Self::ATTR_FULL_PATH),
+                            ));
                         }
                     } else if nv.path.is_ident(Self::ATTR_PORT) {
                         if let syn::Lit::Int(lit) = nv.lit {
                             port = Some(lit)
                         } else {
-                            return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects integer", Self::ATTR_PORT)));
+                            return Err(syn::Error::new_spanned(
+                                nv.lit,
+                                format!("Attribute '{}' expects integer", Self::ATTR_PORT),
+                            ));
                         }
                     } else if nv.path.is_ident(Self::ATTR_VERIFY) {
                         if let syn::Lit::Bool(lit) = nv.lit {
                             verify = Some(lit)
                         } else {
-                            return Err(syn::Error::new_spanned(nv.lit, format!("Attribute '{}' expects bool", Self::ATTR_VERIFY)));
+                            return Err(syn::Error::new_spanned(
+                                nv.lit,
+                                format!("Attribute '{}' expects bool", Self::ATTR_VERIFY),
+                            ));
                         }
                     }
-                }
-                _ => {}
+                },
+                _ => {},
             }
-        };
-        Ok(Self { paths, full_path, port, verify })
+        }
+        Ok(Self {
+            paths,
+            full_path,
+            port,
+            verify,
+        })
     }
 }
 
@@ -229,7 +246,10 @@ mod mock_tests {
             let args = vec![NestedMeta::from(port)];
             let transformed = mock_transform(args, quote! { fn a() {} });
             assert!(transformed.is_err());
-            assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'port' expects integer"))
+            assert_eq!(
+                transformed.err().unwrap().to_string(),
+                String::from("Attribute 'port' expects integer")
+            )
         }
     }
 
@@ -260,7 +280,10 @@ mod mock_tests {
             let args = vec![NestedMeta::from(port)];
             let transformed = mock_transform(args, quote! { fn a() {} });
             assert!(transformed.is_err());
-            assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'verify' expects bool"))
+            assert_eq!(
+                transformed.err().unwrap().to_string(),
+                String::from("Attribute 'verify' expects bool")
+            )
         }
     }
 
@@ -281,7 +304,10 @@ mod mock_tests {
             let args = vec![NestedMeta::from(path)];
             let transformed = mock_transform(args, quote! { fn a() {} });
             assert!(transformed.is_err());
-            assert_eq!(transformed.err().unwrap().to_string(), String::from("Default attribute expects string"))
+            assert_eq!(
+                transformed.err().unwrap().to_string(),
+                String::from("Default attribute expects string")
+            )
         }
     }
 
@@ -312,7 +338,10 @@ mod mock_tests {
             let args = vec![NestedMeta::from(full_path)];
             let transformed = mock_transform(args, quote! { fn a() {} });
             assert!(transformed.is_err());
-            assert_eq!(transformed.err().unwrap().to_string(), String::from("Attribute 'full_path' expects string"))
+            assert_eq!(
+                transformed.err().unwrap().to_string(),
+                String::from("Attribute 'full_path' expects string")
+            )
         }
     }
 }
