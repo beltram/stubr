@@ -6,7 +6,6 @@
         <title>stubr</title>
         <meta name="robots" content="noindex" />
         <!-- Custom HTML head -->
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff" />
@@ -29,13 +28,13 @@
     </head>
     <body>
         <!-- Provide site root to javascript -->
-        <script type="text/javascript">
+        <script>
             var path_to_root = "";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
                 var theme = localStorage.getItem('mdbook-theme');
                 var sidebar = localStorage.getItem('mdbook-sidebar');
@@ -51,7 +50,7 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
+        <script>
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
@@ -63,7 +62,7 @@
         </script>
 
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
+        <script>
             var html = document.querySelector('html');
             var sidebar = 'hidden';
             if (document.body.clientWidth >= 1080) {
@@ -76,7 +75,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started/unit-test.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting-started/unit-test.html"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">6.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">7.</strong> Docker</a></li><li class="chapter-item expanded "><a href="benchmark.html"><strong aria-hidden="true">8.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">9.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started/unit-test.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting-started/unit-test.html"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li><li class="chapter-item expanded "><a href="contract/relaxing.html"><strong aria-hidden="true">3.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">6.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">7.</strong> Docker</a></li><li class="chapter-item expanded "><a href="benchmark.html"><strong aria-hidden="true">8.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">9.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -94,7 +93,7 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
@@ -125,7 +124,7 @@
                     </div>
                 </div>
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -197,8 +196,7 @@ async fn getting_started() {
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text_eq(&quot;Hello stubr&quot;);
-}
-</code></pre>
+}</code></pre>
 <p>But we can further shorten this with a attribute macro: <code>#[stubr::mock]</code></p>
 <pre><code class="language-rust no_run noplayground">use asserhttp::*;
 
@@ -211,8 +209,7 @@ async fn getting_started() {
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text_eq(&quot;Hello stubr&quot;);
-}
-</code></pre>
+}</code></pre>
 <p>You can also use the macro in non-async test methods of course, the macro will adapt by itself.<br />
 Note that here you can omit the <code>tests/stubs/</code> path prefix. If you placed your files in the default location, they are
 going to be searched from there.<br />
@@ -222,8 +219,7 @@ place <code>#[stubr::mock]</code>. It will recursively mount all the stubs under
 <p>Here are all the options you can use with the attribute macro</p>
 <pre><code class="language-rust no_run noplayground">#[tokio::test]
 #[stubr::mock(full_path = &quot;tests/book/hello.json&quot;, port = 1234, verify = true)]
-async fn getting_started() {}
-</code></pre>
+async fn getting_started() {}</code></pre>
 <ul>
 <li><code>full_path</code>: use this if your stubs are not under <code>tests/stubs</code> but elsewhere. Note that it can point to a directory.</li>
 <li><code>port</code> when you want an explicit port for your mock server</li>
@@ -269,8 +265,7 @@ async fn getting_started() {
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text_eq(&quot;Hello stubr&quot;);
-}
-</code></pre>
+}</code></pre>
 <p>But we can further shorten this with a attribute macro: <code>#[stubr::mock]</code></p>
 <pre><code class="language-rust no_run noplayground">use asserhttp::*;
 
@@ -283,8 +278,7 @@ async fn getting_started() {
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text_eq(&quot;Hello stubr&quot;);
-}
-</code></pre>
+}</code></pre>
 <p>You can also use the macro in non-async test methods of course, the macro will adapt by itself.<br />
 Note that here you can omit the <code>tests/stubs/</code> path prefix. If you placed your files in the default location, they are
 going to be searched from there.<br />
@@ -294,8 +288,7 @@ place <code>#[stubr::mock]</code>. It will recursively mount all the stubs under
 <p>Here are all the options you can use with the attribute macro</p>
 <pre><code class="language-rust no_run noplayground">#[tokio::test]
 #[stubr::mock(full_path = &quot;tests/book/hello.json&quot;, port = 1234, verify = true)]
-async fn getting_started() {}
-</code></pre>
+async fn getting_started() {}</code></pre>
 <ul>
 <li><code>full_path</code>: use this if your stubs are not under <code>tests/stubs</code> but elsewhere. Note that it can point to a directory.</li>
 <li><code>port</code> when you want an explicit port for your mock server</li>
@@ -523,8 +516,7 @@ impl PartialEq for Beer {
     fn eq(&amp;self, other: &amp;Self) -&gt; bool {
         self.name == other.name
     }
-}
-</code></pre>
+}</code></pre>
 <h2 id="tests"><a class="header" href="#tests">tests</a></h2>
 <p>Then as we do things seriously, we will write some tests. For the <code>create</code> endpoint we'll have a nominal case where the 
 beer we create succeeds and another negative one where it fails because we have a uniqueness constraint on the Beer's 
@@ -569,7 +561,7 @@ mod create {
     async fn create_should_create_one() {
         let beer = Beer {
             id: None,
-            name: &quot;New&quot;.to_string(),
+            name: &quot;Heineken&quot;.to_string(),
             price: 4,
         };
         let app = App::new().app_data(empty_db())
@@ -611,8 +603,7 @@ pub fn sample() -&gt; [(u32, Beer); 2] {
         (0, Beer { id: Some(0), name: &quot;Leffe&quot;.to_string(), price: 5 }),
         (1, Beer { id: Some(1), name: &quot;1664&quot;.to_string(), price: 3 }),
     ]
-}
-</code></pre>
+}</code></pre>
 <h2 id="recording"><a class="header" href="#recording">recording</a></h2>
 <p>Although it is optional, we'll use <a href="contract/../recording/actix.html">recording</a> here to easily create one stub for each test. 
 Recording is triggered by the <code>.wrap(stubr::ActixRecord::default())</code> line. Those recorded stubs will be in 
@@ -622,7 +613,7 @@ Recording is triggered by the <code>.wrap(stubr::ActixRecord::default())</code> 
 copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove recording noise) to match the following.</p>
 <details>
 <summary><b>create</b></summary>
-<pre><code class="language-rust no_run noplayground">{
+<pre><code class="language-json">{
   &quot;request&quot;: {
     &quot;method&quot;: &quot;POST&quot;,
     &quot;urlPath&quot;: &quot;/beers&quot;,
@@ -634,7 +625,7 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
     &quot;bodyPatterns&quot;: [
       {
         &quot;equalToJson&quot;: {
-          &quot;name&quot;: &quot;New&quot;,
+          &quot;name&quot;: &quot;Heineken&quot;,
           &quot;price&quot;: 4
         }
       }
@@ -644,7 +635,7 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
     &quot;status&quot;: 201,
     &quot;jsonBody&quot;: {
       &quot;id&quot;: 2,
-      &quot;name&quot;: &quot;New&quot;,
+      &quot;name&quot;: &quot;Heineken&quot;,
       &quot;price&quot;: 4
     },
     &quot;headers&quot;: {
@@ -656,7 +647,7 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
 </details>
 <details>
 <summary><b>create with name conflict</b></summary>
-<pre><code class="language-rust no_run noplayground">{
+<pre><code class="language-json">{
   &quot;request&quot;: {
     &quot;method&quot;: &quot;POST&quot;,
     &quot;urlPath&quot;: &quot;/beers&quot;,
@@ -668,7 +659,6 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
     &quot;bodyPatterns&quot;: [
       {
         &quot;equalToJson&quot;: {
-          &quot;id&quot;: 0,
           &quot;name&quot;: &quot;Leffe&quot;,
           &quot;price&quot;: 5
         }
@@ -689,7 +679,7 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
 </details>
 <details>
 <summary><b>find by id</b></summary>
-<pre><code class="language-rust no_run noplayground">{
+<pre><code class="language-json">{
   &quot;request&quot;: {
     &quot;method&quot;: &quot;GET&quot;,
     &quot;urlPath&quot;: &quot;/beers/0&quot;
@@ -710,15 +700,10 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
 </details>
 <details>
 <summary><b>find by id not found</b></summary>
-<pre><code class="language-rust no_run noplayground">{
+<pre><code class="language-json">{
   &quot;request&quot;: {
     &quot;method&quot;: &quot;GET&quot;,
-    &quot;urlPath&quot;: &quot;/beers/999&quot;,
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: {
-        &quot;equalTo&quot;: &quot;application/octet-stream&quot;
-      }
-    }
+    &quot;urlPath&quot;: &quot;/beers/404&quot;
   },
   &quot;response&quot;: {
     &quot;status&quot;: 404,
@@ -768,10 +753,225 @@ async fn should_verify() {
         // Otherwise just use '.verify()'
         .verify_except(|stub_name: &amp;str| stub_name.starts_with(&quot;pet-&quot;))
         .await;
-}
-</code></pre>
+}</code></pre>
 <p>Now let's use those stubs in a consumer.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="as-a-consumer"><a class="header" href="#as-a-consumer">As a consumer</a></h1>
+<p>We will now consume the stubs we have verified on the <a href="contract/producer.html">producer</a> side. It actually does not change from 
+when you mount regular stubs, you will just use different helpers here.</p>
+<h2 id="importing"><a class="header" href="#importing">importing</a></h2>
+<p>So we have some stubs defined in a Rust project, let's call it <code>actix-producer</code>. On naive way to deal with this would 
+be to simply copy/paste stubs from producer to consumer. That'd work, obviously ; but we would be too cumbersome to
+maintain and way too error-prone. We need a more automated way to import those stubs.</p>
+<p>Here comes <a href="https://crates.io/crates/stubr-build">stubr-build</a>. It's a simple build dependency which will scan your
+build dependencies and look for producers (projects with a root <code>stubs</code> folder with json stubs underneath). For each, it
+will copy/paste those stubs under <code>target/stubr/{consumer-name}/{producer-name}</code>. This default location will be used 
+later on to mount the stubs.</p>
+<p>To begin with, add <a href="https://crates.io/crates/stubr-build">stubr-build</a> to your build dependencies. Then also add the
+producers (here we will use <code>actix-producer</code>).</p>
+<pre><code class="language-toml">[build-dependencies]
+stubr-build = &quot;0.5.0-rc.2&quot;
+actix-producer = &quot;0.1.0&quot;
+</code></pre>
+<p>Then, in a build script, invoke <a href="https://crates.io/crates/stubr-build">stubr-build</a> and do <code>cargo build</code></p>
+<pre><code class="language-rust no_run noplayground">fn main() { stubr_build::stubr_consumer() }</code></pre>
+<p>Verify your stubs have been imported (given your consumer project is called <code>actix-consumer</code>), you should have 
+something like this under <code>target/stubr</code>:</p>
+<pre><code class="language-text">├── actix-consumer
+│ └── actix-producer
+│   ├── beer-create-conflict-name.json
+│   ├── beer-create.json
+│   ├── beer-find-by-id-not-found.json
+│   └── beer-find-by-id.json
+</code></pre>
+<h2 id="consuming"><a class="header" href="#consuming">consuming</a></h2>
+<p>At this point, your consumer app could be anything: either another actix application, or a web application using a
+different framework, or a simple cli or batch relying on a http client to call your producer. It does not matter. Here,
+we'll assume the simplest use case (a simple blocking http client using reqwest) but it does not make any difference.</p>
+<p>We will use the <code>apps</code> attribute macro to mount the stubs we just imported in our stub server. And for our tests. we
+will just import the stubs of the <code>actix-producer</code> app we created previously. To do so, add 
+<code>#[stubr::apps(&quot;actix-producer&quot;)]</code> on your test method (note that you can use it to mount many apps e.g. 
+<code>#[stubr::apps(&quot;svc-a&quot;, &quot;svc-b&quot;)]</code>). This will create a local binding with the name of your app.</p>
+<pre><code class="language-rust no_run noplayground">#[test]
+#[stubr::apps(&quot;actix-producer&quot;)]
+fn sample_binding() {
+    let actix_producer: stubr::Stubr = actix_producer;
+    let _uri: String = actix_producer.uri();
+}</code></pre>
+<p>You can then use this binding to get the uri(s) of the mock server(s) and execute your tests against it.</p>
+<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+use serde_json::json;
+
+#[test]
+#[stubr::apps(&quot;actix-producer&quot;)]
+fn find_by_id_should_find_one() {
+    let uri: String = actix_producer.uri();
+    let beer_id = 0;
+    reqwest::blocking::get(format!(&quot;{uri}/beers/{beer_id}&quot;))
+        .expect_status_ok()
+        .expect_content_type_json()
+        .expect_body_json_eq(json!({
+            &quot;id&quot;: 0,
+            &quot;name&quot;: &quot;Leffe&quot;,
+            &quot;price&quot;: 5
+        }));
+}
+
+#[test]
+#[stubr::apps(&quot;actix-producer&quot;)]
+fn find_by_id_should_not_find_any() {
+    let uri: String = actix_producer.uri();
+    reqwest::blocking::get(format!(&quot;{uri}/beers/404&quot;))
+        .expect_status_not_found()
+        .expect_content_type_json()
+        .expect_body_json_eq(json!({
+            &quot;message&quot;: &quot;Beer not found&quot;
+        }));
+}
+
+#[test]
+#[stubr::apps(&quot;actix-producer&quot;)]
+fn create_should_create_one() {
+    let uri: String = actix_producer.uri();
+    reqwest::blocking::Client::new().post(format!(&quot;{uri}/beers&quot;))
+        .json(&amp;json!({
+            &quot;name&quot;: &quot;Heineken&quot;,
+            &quot;price&quot;: 4
+        })).send()
+        .expect_status_created()
+        .expect_content_type_json()
+        .expect_body_json(|beer: serde_json::Value| {
+            assert!(beer.get(&quot;name&quot;).unwrap().is_string());
+            assert!(beer.get(&quot;price&quot;).unwrap().is_u64());
+        });
+}
+
+#[test]
+#[stubr::apps(&quot;actix-producer&quot;)]
+fn create_should_should_conflict_on_name() {
+    let uri: String = actix_producer.uri();
+    reqwest::blocking::Client::new().post(format!(&quot;{uri}/beers&quot;))
+        .json(&amp;json!({
+            &quot;name&quot;: &quot;Leffe&quot;,
+            &quot;price&quot;: 5
+        })).send()
+        .expect_status_conflict()
+        .expect_content_type_json()
+        .expect_body_json_eq(json!({
+            &quot;message&quot;: &quot;Beer already exists&quot;
+        }));
+}</code></pre>
+<p>And that's all folks ! We have consumed our producer stubs. But those stubs only have hardcoded values and will be hard 
+to change and maintain. We'll now see how to relax them.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="relaxing-your-stubs"><a class="header" href="#relaxing-your-stubs">Relaxing your stubs</a></h1>
+<p>Whenever you are maintaining a large cohort of interconnected services, you more often than not will opt for Test Data
+e.g. a user with firstname <code>john</code> and lastname <code>doe</code>. And then use this same sample user in all your services tests.
+That works actually quite well. That's actually what we did previously, for example</p>
+<details open="true">
+<summary><b>in this stub</b></summary>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;urlPath&quot;: &quot;/beers&quot;,
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: {
+        &quot;equalTo&quot;: &quot;application/json&quot;
+      }
+    },
+    &quot;bodyPatterns&quot;: [
+      {
+        &quot;equalToJson&quot;: {
+          &quot;name&quot;: &quot;Heineken&quot;,
+          &quot;price&quot;: 4
+        }
+      }
+    ]
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 201,
+    &quot;jsonBody&quot;: {
+      &quot;id&quot;: 2,
+      &quot;name&quot;: &quot;Heineken&quot;,
+      &quot;price&quot;: 4
+    },
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: &quot;application/json&quot;
+    }
+  }
+}
+</code></pre>
+</details>
+<p>With such a stub, we can imagine we would end up with a test in our consumer like that:</p>
+<pre><code class="language-rust no_run noplayground">#[test]
+#[stubr::apps(&quot;actix-producer&quot;)]
+fn create_should_create_one() {
+    let uri: String = actix_producer.uri();
+    reqwest::blocking::Client::new().post(format!(&quot;{uri}/beers&quot;))
+        .json(&amp;json!({
+            &quot;name&quot;: &quot;Heineken&quot;,
+            &quot;price&quot;: 4
+        })).send()
+        .expect_status_created()
+        .expect_content_type_json()
+        .expect_body_json(|beer: serde_json::Value| {
+            assert!(beer.get(&quot;name&quot;).unwrap().is_string());
+            assert!(beer.get(&quot;price&quot;).unwrap().is_u64());
+        });
+}</code></pre>
+<p>Notice the request data in this test. Here, this sample is really dummy but in a real application, <code>name</code> is likely to
+come from the consumer's own Test Data. But it cannot be any value ; remember, the producer API requires <code>name</code> to be
+unique. So both producer and consumer Test Data, are now tightly coupled. We are also having specific expectations
+regarding the response, for example we are expecting the beer name to be <code>Heineken</code> and its price <code>4</code> (in this situation
+you could also relax your test, but sometimes you can't). And in a big system, your consumer is probably also a
+producer, so all its stubs are also going to contain <code>Heineken</code> and <code>4</code>.</p>
+<h2 id="when-things-change"><a class="header" href="#when-things-change">When things change</a></h2>
+<p>Things always change. Sometimes, their format does, for example our beer price can change from <del><code>4</code></del> to <code>&quot;4.00&quot;</code> ;
+that's fine, contract testing is made to catch those changes. But imagine if, for whatever functional reason, now prices
+in your system can no longer contain 0 cent by needs to be 99 cent: all your Test Data have to change. Now imagine your
+system is made of hundreds of microservices, all requiring this beer service. That's a shame, and all because some Test
+Data in a single service has changed.</p>
+<p>This could have been avoided if we had taken some time to make our stubs relax its request expectation and also return
+randomized response data.</p>
+<h2 id="relaxing-fields"><a class="header" href="#relaxing-fields">Relaxing fields</a></h2>
+<p>Here we will get rid of all the hardcoded data in the response (currently there are not enough helpers to also relax
+the request data with stubr, but it will be possible one day).</p>
+<p>We will first randomize the id with <a href="contract/../stubs/response.html#relaxed-field">anyU32</a>. On the consumer side, this will
+generate a random <code>u32</code>. On the producer side in the <a href="contract/producer.html#verify">verifier tests</a>, it simply asserts that the
+field is a <code>u32</code>.</p>
+<p>Now, for the other fields, those are directly taken from the request, so we'll
+use <a href="contract/../stubs/response.html#response-templating">response templating helpers</a> to forward them from the request.</p>
+<p>We end up with a stub like this:</p>
+<pre><code class="language-json">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;urlPath&quot;: &quot;/beers&quot;,
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: {
+        &quot;equalTo&quot;: &quot;application/json&quot;
+      }
+    },
+    &quot;bodyPatterns&quot;: [
+      {
+        &quot;equalToJson&quot;: {
+          &quot;name&quot;: &quot;Heineken&quot;,
+          &quot;price&quot;: 4
+        }
+      }
+    ]
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 201,
+    &quot;jsonBody&quot;: {
+      &quot;id&quot;: &quot;{{anyI32}}&quot;,
+      &quot;name&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;,
+      &quot;price&quot;: &quot;{{jsonPath request.body '$.price'}}&quot;
+    },
+    &quot;headers&quot;: {
+      &quot;content-type&quot;: &quot;application/json&quot;
+    },
+    &quot;transformers&quot;: [&quot;response-template&quot;]
+  }
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stubs"><a class="header" href="#stubs">Stubs</a></h1>
 <p>Writing stubs can be challenging and time-consuming. Stubr tries to assist by
 providing <a href="stubs/../ide-completion.html">IDE completion</a> or by <a href="stubs/../recording/index.html">recording</a> live traffic into stubs. But
@@ -1317,8 +1517,7 @@ async fn record_actix() {
     let req = TestRequest::get().uri(&quot;/&quot;).to_request();
     let svc = init_service(app).await;
     call_service(&amp;svc, req).await.expect_status_ok();
-}
-</code></pre>
+}</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-with-the-cli"><a class="header" href="#recording-with-the-cli">Recording with the cli</a></h1>
 <p>In order to record http traffic, <code>stubr</code> can act as a proxy to dump this traffic into json stubs on your local
 filesystem. Recording can be started with the <code>stubr record</code> command. Stubs will be grouped by hosts. You can then play
@@ -1356,8 +1555,7 @@ async fn record_isahc() {
         .isahc_client()
         .get(stubr.uri())
         .expect_status_ok();
-}
-</code></pre>
+}</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-your-reqwest-calls"><a class="header" href="#recording-your-reqwest-calls">Recording your reqwest calls</a></h1>
 <p>You have 2 ways to record reqwest http calls ; either with the <code>stubr::Record</code> trait (highly recommended) or the &quot;original&quot;
@@ -1378,8 +1576,7 @@ fn record_reqwest_trait() {
         .build().unwrap();
     reqwest::blocking::Client::default().execute(req).unwrap()
         .expect_status_ok();
-}
-</code></pre>
+}</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 <p><em>NB: async is not supported yet</em></p>
 <h2 id="standalone"><a class="header" href="#standalone">standalone</a></h2>
@@ -1394,23 +1591,21 @@ async fn record_reqwest() {
         .reqwest_client()
         .get(stubr.uri()).send().await
         .expect_status_ok();
-}
-</code></pre>
+}</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-standalone"><a class="header" href="#recording-standalone">Recording standalone</a></h1>
 <p>If you don't fall into one of the previous boxes (for example if you use another http client), you can still record the http
 traffic by using the standalone recording proxy, the exact same one used in the <a href="recording/../cli.html">cli</a>.</p>
 <p>To do so, you just have to spawn the proxy and then configure your http client to use this proxy.</p>
 <p><em>This requires the <code>record</code> feature.</em></p>
-<pre><code class="language-rust no_run noplayground">#[test]
-fn record_standalone() {
+<pre><code class="language-rust no_run noplayground">#[tokio::test(flavor = &quot;multi_thread&quot;)]
+async fn record_standalone() {
     // 👇 spawn the recording proxy
-    let proxy = stubr::Stubr::record(); // works for async as well
+    let proxy = stubr::Stubr::record();
     // or use `record_with()` for configuring it
     let _proxy_uri = proxy.uri();
     // ☝️ then use this uri to configure your http client
-}
-</code></pre>
+}</code></pre>
 <p>Or, in order to keep the syntax short, you can use the provided attribute macro.</p>
 <pre><code class="language-rust no_run noplayground">// works for async as well
 #[stubr::record] // 👈 this spawns the proxy and creates a 'recorder' binding in the function
@@ -1419,8 +1614,7 @@ fn record_standalone() {
 fn record_standalone() {
     let _proxy_uri = recorder.uri();
     // ☝️ then use this uri to configure your http client
-}
-</code></pre>
+}</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cli"><a class="header" href="#cli">Cli</a></h1>
 <p>You can use <code>stubr</code> as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into
 json stubs.</p>
@@ -1541,20 +1735,20 @@ completion for features implemented in stubr and should alleviate you from a bit
 
         </div>
 
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
         </script>
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        <script type="text/javascript" src="mermaid.min.js"></script>
-        <script type="text/javascript" src="mermaid-init.js"></script>
-        <script type="text/javascript">
+        <script src="mermaid.min.js"></script>
+        <script src="mermaid-init.js"></script>
+        <script>
         window.addEventListener('load', function() {
             window.setTimeout(window.print, 100);
         });
