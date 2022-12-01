@@ -121,7 +121,7 @@ stubr.
 * `anyOf` given the supplied values, will pick one randomly. Only works for strings.
 * `anyNumber` when one does not care about the number size, generates either an integer or a float
 * `anyI32` or `anyU32` etc.. generates a random integer. Possible values
-  are [`anyU64`, `anyI64`, `anyU32`, `anyI32`, `anyU16`, `anyI16`, `anyU8`, `anyI8`]
+  are: `anyU64`, `anyI64`, `anyU32`, `anyI32`, `anyU16`, `anyI16`, `anyU8`, `anyI8`
 * `anyFloat` generates a random float
 * `anyDate` generates a date with format `yyyy-mm-dd`
 * `anyTime` generates a time with format `hh:mm:ss`

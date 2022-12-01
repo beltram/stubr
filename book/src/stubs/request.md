@@ -132,7 +132,7 @@ per [RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)
   matcher, all the other ones will be ignored
 * `alg.equalTo` by equality matcher. JWT algorithm has to be exactly this
 * `alg.oneOf` JWT algorithm has to be one of the supplied values. Here are all the supported JWT
-  algorithms [`HS256`, `HS384`, `HS512`, `ES256`, `ES384`, `RS256`, `RS384`, `RS512`, `PS256`, `PS384`, `PS512`, `EdDSA`]
+  algorithms: `HS256`, `HS384`, `HS512`, `ES256`, `ES384`, `RS256`, `RS384`, `RS512`, `PS256`, `PS384`, `PS512`, `EdDSA`
 * `payloadPatterns` for matching the JWT body. Exactly the same matcher as [body](#body) ones.
 
 ## Body

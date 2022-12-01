@@ -2,7 +2,7 @@
 
 Writing stubs can be challenging and time-consuming. Stubr tries to assist by
 providing [IDE completion](../ide-completion.md) or by [recording](../recording/index.md) live traffic into stubs. But
-you still have to know how to write a stub and what helpers you have in order to [relax](relaxing.md) your stubs as much
+you still have to know how to write a stub and what helpers you have in order to [relax](../contract/relaxing.md) your stubs as much
 as possible.  
 
 You will find here in a single snippet **ALL** the fields/helpers available to you:

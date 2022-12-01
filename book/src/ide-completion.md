@@ -1,8 +1,8 @@
 # IDE completion
 
-
-A json schema is also maintained [here](schemas/stubr.schema.json) to provide completion in IDE. It just contains
-completion for features implemented in stubr and should alleviate you from a bit of pain when writing json from scratch.
+A json schema is also maintained [here](https://github.com/beltram/stubr/blob/main/schemas/stubr.schema.json) to provide
+completion in IDE. It just contains completion for features implemented in stubr and should alleviate you from a bit of
+pain when writing json from scratch.
 
 <details>
 <summary><b>IntelliJ</b></summary>

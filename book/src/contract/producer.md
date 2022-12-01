@@ -2,7 +2,7 @@
 
 We'll use actix in those examples because it is the only web framework currently supported for verifying the producer,
 others will come ! And of course it does not impact the consumer where you can use any technology you want since stubr
-can be used [standalone](../gs-standalone.md) (you can even use a language other than Rust !).
+can be used [standalone](../getting-started/standalone.md) (you can even use a language other than Rust !).
 
 ## endpoint
 
