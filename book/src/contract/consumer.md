@@ -25,7 +25,7 @@ actix-producer = "0.1.0"
 
 Then, in a build script, invoke [stubr-build](https://crates.io/crates/stubr-build) and do `cargo build`
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../actix-consumer/build.rs}}
 ```
 
@@ -52,13 +52,13 @@ will just import the stubs of the `actix-producer` app we created previously. To
 `#[stubr::apps("actix-producer")]` on your test method (note that you can use it to mount many apps e.g. 
 `#[stubr::apps("svc-a", "svc-b")]`). This will create a local binding with the name of your app.
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../actix-consumer/tests/api/beer.rs:sample_apps_binding}}
 ```
 
 You can then use this binding to get the uri(s) of the mock server(s) and execute your tests against it.
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../actix-consumer/tests/api/beer.rs:contract_consumer_test}}
 ```
 

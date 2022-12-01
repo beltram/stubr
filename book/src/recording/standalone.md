@@ -7,12 +7,12 @@ To do so, you just have to spawn the proxy and then configure your http client t
 
 *This requires the `record` feature.*
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/standalone.rs}}
 ```
 
 Or, in order to keep the syntax short, you can use the provided attribute macro.
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/standalone_macro.rs}}
 ```

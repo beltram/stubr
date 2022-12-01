@@ -7,7 +7,7 @@ way, still supported, with a standalone recording proxy.
 
 ## trait (recommended)
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/reqwest.rs}}
 ```
 
@@ -17,7 +17,7 @@ You can find your recorded stubs under `./target/stubs/localhost`
 
 ## standalone
 
-```rust,no_run,noplayground
+```rust,ignore,noplayground,edition2021
 {{#include ../../../lib/tests/book/reqwest_standalone.rs}}
 ```
 
