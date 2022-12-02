@@ -15,7 +15,7 @@ impl MatcherValueStubMapper {
     fn map_equal_to(value: &Value, case_insensitive: bool) -> Option<String> {
         value
             .as_str()
-            .map(&str::to_string)
+            .map(str::to_string)
             .or_else(|| value.as_i64().map(|it| it.to_string()))
             .or_else(|| value.as_f64().map(|it| it.to_string()))
             .or_else(|| value.as_bool().map(|it| it.to_string()))
