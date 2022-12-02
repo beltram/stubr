@@ -1,6 +1,9 @@
 name: book
 
-on: [ push ]
+on:
+  push:
+    paths:
+      - 'book/'
 
 defaults:
   run:
