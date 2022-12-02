@@ -19,7 +19,7 @@ producers (here we will use `actix-producer`).
 
 ```toml
 [build-dependencies]
-stubr-build = "0.5.0-rc.2"
+stubr-build = "0.5.0"
 actix-producer = "0.1.0"
 ```
 
