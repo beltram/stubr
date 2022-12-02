@@ -74,7 +74,7 @@ impl TryFrom<&PathBuf> for JsonStub {
     type Error = anyhow::Error;
 
     fn try_from(maybe_stub: &PathBuf) -> anyhow::Result<Self> {
-        let file = OpenOptions::new().read(true).open(&maybe_stub)?;
+        let file = OpenOptions::new().read(true).open(maybe_stub)?;
         serde_json::from_reader(file).map_err(anyhow::Error::msg)
     }
 }

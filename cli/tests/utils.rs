@@ -27,7 +27,7 @@ impl StubrCli {
         let child = Command::cargo_bin("stubr")
             .unwrap()
             .args(args)
-            .args(&["--port", &port])
+            .args(["--port", &port])
             .spawn()
             .unwrap();
         sleep(Duration::from_millis(Self::SLEEP));

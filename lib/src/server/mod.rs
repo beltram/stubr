@@ -180,7 +180,7 @@ impl Stubr {
                     self.instance.register(mock).await;
                 });
                 if config.verbose {
-                    let maybe_file_name = file.strip_prefix(&folder).ok().and_then(|file| file.to_str());
+                    let maybe_file_name = file.strip_prefix(folder).ok().and_then(|file| file.to_str());
                     if let Some(file_name) = maybe_file_name {
                         info!("mounted stub '{}'", file_name);
                     }
