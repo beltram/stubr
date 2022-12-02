@@ -16,12 +16,12 @@ include = ["/src/*", "/Cargo.toml", "/README.md"]
 proc-macro = true
 
 [dependencies]
-syn = { version = "1.0.99", features = ["full"] }
-quote = "1.0.21"
-proc-macro2 = "1.0.43"
-itertools = "0.10.4"
+syn = { version = "1.0", features = ["full"] }
+quote = "1.0"
+proc-macro2 = "1.0"
+itertools = "0.10"
 
 [dev-dependencies]
-isahc = "1.7.2"
-async-std = "1.12.0"
-asserhttp = "0.5.1"
+isahc = "1.7"
+async-std = "1.12"
+asserhttp = "0.5"
