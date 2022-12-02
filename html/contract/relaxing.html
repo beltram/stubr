@@ -206,7 +206,7 @@ Data in a single service has changed.</p>
 randomized response data.</p>
 <h2 id="relaxing-fields"><a class="header" href="#relaxing-fields">Relaxing fields</a></h2>
 <p>Here we will get rid of all the hardcoded data in the response (currently there are not enough helpers to also relax
-the request data with stubr, but it will be possible one day).</p>
+the request data with <a href="https://github.com/beltram/stubr">stubr</a>, but it will be possible one day).</p>
 <p>We will first randomize the id with <a href="../stubs/response.html#relaxed-field">anyU32</a>. On the consumer side, this will
 generate a random <code>u32</code>. On the producer side in the <a href="producer.html#verify">verifier tests</a>, it simply asserts that the
 field is a <code>u32</code>.</p>

@@ -135,7 +135,7 @@
                     <main>
                         <h1 id="as-a-producer"><a class="header" href="#as-a-producer">As a producer</a></h1>
 <p>We'll use actix in those examples because it is the only web framework currently supported for verifying the producer,
-others will come ! And of course it does not impact the consumer where you can use any technology you want since stubr
+others will come ! And of course it does not impact the consumer where you can use any technology you want since <a href="https://github.com/beltram/stubr">stubr</a>
 can be used <a href="../getting-started/standalone.html">standalone</a> (you can even use a language other than Rust !).</p>
 <h2 id="endpoint"><a class="header" href="#endpoint">endpoint</a></h2>
 <p>We'll begin in a very common situation where your producer exposes a http endpoint. We will make the endpoint as simple
@@ -412,10 +412,10 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
 </code></pre>
 </details>
 <h2 id="verify"><a class="header" href="#verify">verify</a></h2>
-<p>And finally, we have to verify that the stubs exposed by our producer match the actual implementation. To do so, stubr
+<p>And finally, we have to verify that the stubs exposed by our producer match the actual implementation. To do so, <a href="https://github.com/beltram/stubr">stubr</a>
 exports the <code>StubrVerify</code> trait with the <code>.verify()</code> method you have to invoke. There is no automatic verification of
 stubs possible, it has to be explicit in a test. It is advised to declare it in a file with just the verification test.</p>
-<p>Such a test will start by declaring your actix app with all the endpoints. In order to verify it, stubr will create a
+<p>Such a test will start by declaring your actix app with all the endpoints. In order to verify it, <a href="https://github.com/beltram/stubr">stubr</a> will create a
 test for every stub in <code>./stubs</code> by converting, for each, the <code>request</code> part in an actual actix integration test.</p>
 <p>But you might need some state ! For example, think of the <code>find by id</code> endpoint. It cannot be verified if your database
 is empty. Likewise, stubs are verified in no particular order (since anyway your endpoint are most likely stateless, 

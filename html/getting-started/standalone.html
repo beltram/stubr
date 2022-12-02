@@ -134,7 +134,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="getting-started"><a class="header" href="#getting-started">Getting started</a></h1>
-<p>You can use stubr as a standalone mock server i.e. an executable. To learn more read the pages about how to use the
+<p>You can use <a href="https://github.com/beltram/stubr">stubr</a> as a standalone mock server i.e. an executable. To learn more read the pages about how to use the
 <a href="../cli.html">cli</a> or <a href="../docker.html">as a Docker image</a>.</p>
 <p>For this short demo we are going to use the cli. We will create a http stub, mount it on a stub server and then call it
 to verify it works.</p>
@@ -225,9 +225,9 @@ and a regular expression <code>(.+)</code> which has to match in order for the s
 request in the response. Prefer using it over hardcoded values when your real life application actually does that. The
 more you use it the better your test accuracy will be.</li>
 <li><code>{{request.pathSegments.[1]}}</code> now that response templating is enabled, you can inject parts of your request in the
-response. With <a href="https://github.com/tomakehurst/wiremock">Wiremock</a> as with stubr, we
+response. With <a href="https://github.com/tomakehurst/wiremock">Wiremock</a> as with <a href="https://github.com/beltram/stubr">stubr</a>, we
 use <a href="https://handlebarsjs.com/">handlebars</a> templates to do such a
-thing. <a href="../stubs/response.html">Many response templates are available</a> in stubr in order to pick whatever part
+thing. <a href="../stubs/response.html">Many response templates are available</a> in <a href="https://github.com/beltram/stubr">stubr</a> in order to pick whatever part
 of the request you want.</li>
 </ul>
 <h4 id="mount-it-1"><a class="header" href="#mount-it-1">Mount it</a></h4>

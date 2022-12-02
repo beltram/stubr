@@ -168,7 +168,7 @@ i.e. we will generate real http requests from the stubs and run them against a r
 assert that it does what it claims in the stub. And now we can confidently share our stubs with the outside world and
 our consumers.</li>
 <li><code>consumer</code>: application with a http client calling a producer http application. The consumer first has to fetch stubs
-exposed by the producer. Then it can mount them with stubr to mock the producer in its unit tests. It brings the
+exposed by the producer. Then it can mount them with <a href="https://github.com/beltram/stubr">stubr</a> to mock the producer in its unit tests. It brings the
 consumer the benefits of being able to lean on verified stubs and to carefully pick a specific version of the
 producer. Along its lifetime, whenever the producer releases a new version, the consumer will be able, even in a
 semi-automated way (dependabot), to verify it is still compatible with the producer API.</li>
@@ -185,7 +185,7 @@ producer. In conclusion, it is not offline.</p>
 hand has the advantage of being straightforward. Producer defines the contract once, publishes it and every consumer has
 to adapt. Compared to consumer-driven, this model is better suited for organizations where a team has ownership of all
 the applications (when contract definition is easy). It has the major advantage of being offline and not requiring more
-than 1 definition of the contract. <strong>Stubr is producer-driven</strong></p>
+than 1 definition of the contract. <strong><a href="https://github.com/beltram/stubr">Stubr</a> is producer-driven</strong></p>
 
                     </main>
 

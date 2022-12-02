@@ -199,7 +199,7 @@ all your unit tests because none of your unit tests expects a particular value f
 <p>Keep in mind that such helper will also be used to generate assertions when you will be using this stub
 for <a href="../contract/index.html">contract testing</a> while <a href="../contract/producer.html">verifying your producer</a>.</p>
 <p>NB: those templates are not available in <a href="https://github.com/tomakehurst/wiremock">Wiremock</a>, you can only use them in
-stubr.</p>
+<a href="https://github.com/beltram/stubr">stubr</a>.</p>
 <pre><code class="language-json">{
   &quot;response&quot;: {
     &quot;transformers&quot;: [
@@ -346,7 +346,7 @@ see <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List">
 <li><code>urlEncode</code> for url encoding the value. Use <code>decode=true</code> to decode</li>
 </ul>
 <h2 id="simulate-fault"><a class="header" href="#simulate-fault">Simulate fault</a></h2>
-<p>You can also use stubr to simulate http server runtime behaviour. And most of the time you'll want to introduce
+<p>You can also use <a href="https://github.com/beltram/stubr">stubr</a> to simulate http server runtime behaviour. And most of the time you'll want to introduce
 latencies
 to check how your consuming application reacts to such delays. Currently, the options are quite sparse but should grow !</p>
 <pre><code class="language-json">{
@@ -360,7 +360,7 @@ to check how your consuming application reacts to such delays. Currently, the op
 <li><code>expect</code> will allow to verify that your unit test has not called the given stub more than N times. Turn it on like
 this <code>stubr::Stubr::start_with(stubr::Config { verify: true, ..Default::default() })</code>
 or <code>#[stubr::mock(verify = true)]</code> with the attribute macro</li>
-<li><code>fixedDelayMilliseconds</code> a delay (in milliseconds) added everytime this stub is matched. If you are using stubr
+<li><code>fixedDelayMilliseconds</code> a delay (in milliseconds) added everytime this stub is matched. If you are using <a href="https://github.com/beltram/stubr">stubr</a>
 standalone through the <a href="../cli.html">cli</a>, this value can be either superseded by <code>--delay</code> or complemented
 by <code>--latency</code></li>
 </ul>

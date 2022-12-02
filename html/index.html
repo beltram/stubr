@@ -134,27 +134,28 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="stubr"><a class="header" href="#stubr">Stubr</a></h1>
-<p>Stubr is a stubbing and contract testing tool. It supports the same API for writing stubs
-as <a href="https://github.com/tomakehurst/wiremock">Wiremock</a>.
-You can also see it as an adaptation of <a href="https://github.com/LukeMathWalker/wiremock-rs">wiremock-rs</a> with the ability to
-write stubs as json files instead of code.</p>
+<p><a href="https://github.com/beltram/stubr">Stubr</a> is a stubbing and contract testing tool. It supports the same API for writing
+stubs as <a href="https://github.com/tomakehurst/wiremock">Wiremock</a>. You can also see it as an adaptation
+of <a href="https://github.com/LukeMathWalker/wiremock-rs">wiremock-rs</a> with the ability to write stubs as json files instead of
+code.</p>
 <p>You might ask <strong>why would I want to do such a thing ?</strong> After all, code is a great way to write stubs. That's true ! But
 it also comes with some limitations: <strong>it is hard to share.</strong> And it especially starts tickling your attention when you
 try to do <a href="https://martinfowler.com/bliki/ContractTest.html">contract testing</a>. You have to share a <code>contract</code> between a
 producer and a consumer. Sometimes, both are written in different languages, or with different frameworks ; and even
 when that's not the case, they might both be sharing a different version of that wicked dependency which clash together.
 Having your contract written in json has the benefits of being <strong>portable</strong>, <strong>lightweight</strong> and <strong>polyglot</strong> (if you
-stick to a
-standard API such as Wiremock's one). So you could for example test a producer service written in Java and vice versa !</p>
-<p>Stubr aims at bridging multiple languages and framework and enable developers to test their integration with remote
-application without having to mock their own code. It also enables them to shorten their feedback loop: no need for a
-complex CI to make sure 2 application share the same API definition, everything can be done offline.</p>
+stick to a standard API such as Wiremock's one). So you could for example test a producer service written in Java and
+vice versa !</p>
+<p><a href="https://github.com/beltram/stubr">Stubr</a> aims at bridging multiple languages and framework and enable developers to
+test their integration with remote application without having to mock their own code. It also enables them to shorten
+their feedback loop: no need for a complex CI to make sure 2 application share the same API definition, everything can
+be done offline.</p>
 <p>Then, beyond <a href="contract/index.html">contract testing</a>, it tries to cover others areas:</p>
 <ul>
 <li><a href="getting-started/unit-test.html">stubbing</a> in your Rust project for simulating remote services your app depends on</li>
 <li><a href="recording/index.html">recording</a> for capturing http traffic and turning it into a stub file</li>
-<li><a href="getting-started/standalone.html">standalone</a> for running stubr stub server from anywhere and benefiting from Rust performances. Available as
-a <a href="cli.html">cli</a> or a <a href="docker.html">Docker image</a></li>
+<li><a href="getting-started/standalone.html">standalone</a> for running <a href="https://github.com/beltram/stubr">stubr</a> stub server from
+anywhere and benefiting from Rust performances. Available as a <a href="cli.html">cli</a> or a <a href="docker.html">Docker image</a></li>
 </ul>
 
                     </main>
