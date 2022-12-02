@@ -1,7 +1,7 @@
 use asserhttp::*;
 use isahc::{AsyncBody, Body};
 
-use stubr::{Config, Stubr};
+use stubr::Stubr;
 
 #[async_std::test]
 async fn app_should_run_producer_stubs() {
