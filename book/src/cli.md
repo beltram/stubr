@@ -40,8 +40,8 @@ cargo install stubr-cli
 
 ### once installed, generate completion
 
-Completion files generation is currently supported for `bash` and `zsh`. [Stubr](https://github.com/beltram/stubr) cli provides a `completion` command to
-generate and install them in a standard location.
+Completion files generation is currently supported for `bash` and `zsh`. [Stubr](https://github.com/beltram/stubr) cli
+provides a `completion` command to generate and install them in a standard location.
 
 ```bash
 stubr completion zsh
