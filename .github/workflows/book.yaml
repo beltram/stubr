@@ -3,7 +3,7 @@ name: book
 on:
   push:
     paths:
-      - 'book/'
+      - 'book/**'
 
 defaults:
   run:
