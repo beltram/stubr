@@ -136,12 +136,12 @@
                         <h1 id="as-a-producer"><a class="header" href="#as-a-producer">As a producer</a></h1>
 <p>We'll use actix in those examples because it is the only web framework currently supported for verifying the producer,
 others will come ! And of course it does not impact the consumer where you can use any technology you want since stubr
-can be used <a href="../gs-standalone.html">standalone</a> (you can even use a language other than Rust !).</p>
+can be used <a href="../getting-started/standalone.html">standalone</a> (you can even use a language other than Rust !).</p>
 <h2 id="endpoint"><a class="header" href="#endpoint">endpoint</a></h2>
 <p>We'll begin in a very common situation where your producer exposes a http endpoint. We will make the endpoint as simple
 and stupid as possible with a flat <code>Beer</code> resource and an in-memory database. We'll just expose an endpoint for creating
 and fetching a resource which should cover most of the use cases.</p>
-<pre><code class="language-rust no_run noplayground">use actix_web::http::header::ContentType;
+<pre><code class="language-rust ignore noplayground edition2021">use actix_web::http::header::ContentType;
 use actix_web::web;
 
 // simple in-memory database
@@ -194,7 +194,10 @@ impl PartialEq for Beer {
 <p>Then as we do things seriously, we will write some tests. For the <code>create</code> endpoint we'll have a nominal case where the 
 beer we create succeeds and another negative one where it fails because we have a uniqueness constraint on the Beer's 
 <code>name</code> and <code>price</code> fields. For the <code>find_by_id</code> one, we'll have a nominal case and a <code>404 Not Found</code> one.</p>
-<pre><code class="language-rust no_run noplayground">use actix_web::{web, App, test::{call_service, init_service, TestRequest}};
+<pre><code class="language-rust ignore noplayground edition2021">use actix_web::{
+    test::{call_service, init_service, TestRequest},
+    web, App,
+};
 use asserhttp::*;
 
 use actix_producer::api::beer::*;
@@ -204,13 +207,15 @@ mod find_by_id {
 
     #[actix_web::test]
     async fn find_by_id_should_find_one() {
-        let app = App::new().app_data(sample_db())
+        let app = App::new()
+            .app_data(sample_db())
             .service(find_by_id)
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let beers = sample();
         let (id, to_find) = beers.get(0).unwrap();
         let req = TestRequest::get().uri(&amp;format!(&quot;/beers/{}&quot;, id)).to_request();
-        call_service(&amp;init_service(app).await, req).await
+        call_service(&amp;init_service(app).await, req)
+            .await
             .expect_status_ok()
             .expect_content_type_json()
             .expect_body_json(|b: Beer| assert_eq!(&amp;b, to_find));
@@ -218,12 +223,12 @@ mod find_by_id {
 
     #[actix_web::test]
     async fn find_by_id_should_not_find_any() {
-        let app = App::new().app_data(sample_db())
+        let app = App::new()
+            .app_data(sample_db())
             .service(find_by_id)
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let req = TestRequest::get().uri(&quot;/beers/999&quot;).to_request();
-        call_service(&amp;init_service(app).await, req).await
-            .expect_status_not_found();
+        call_service(&amp;init_service(app).await, req).await.expect_status_not_found();
     }
 }
 
@@ -237,11 +242,13 @@ mod create {
             name: &quot;Heineken&quot;.to_string(),
             price: 4,
         };
-        let app = App::new().app_data(empty_db())
+        let app = App::new()
+            .app_data(empty_db())
             .service(create)
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let req = TestRequest::post().uri(&quot;/beers&quot;).set_json(beer.clone()).to_request();
-        call_service(&amp;init_service(app).await, req).await
+        call_service(&amp;init_service(app).await, req)
+            .await
             .expect_status_created()
             .expect_content_type_json()
             .expect_body_json(|b: Beer| {
@@ -254,12 +261,12 @@ mod create {
     #[actix_web::test]
     async fn create_should_conflict_when_already_exists_by_name() {
         let (_id, beer) = sample().get(0).unwrap().clone();
-        let app = App::new().app_data(sample_db())
+        let app = App::new()
+            .app_data(sample_db())
             .service(create)
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let req = TestRequest::post().uri(&quot;/beers&quot;).set_json(beer.clone()).to_request();
-        call_service(&amp;init_service(app).await, req).await
-            .expect_status_conflict();
+        call_service(&amp;init_service(app).await, req).await.expect_status_conflict();
     }
 }
 
@@ -273,8 +280,22 @@ pub fn empty_db() -&gt; web::Data&lt;Database&gt; {
 
 pub fn sample() -&gt; [(u32, Beer); 2] {
     [
-        (0, Beer { id: Some(0), name: &quot;Leffe&quot;.to_string(), price: 5 }),
-        (1, Beer { id: Some(1), name: &quot;1664&quot;.to_string(), price: 3 }),
+        (
+            0,
+            Beer {
+                id: Some(0),
+                name: &quot;Leffe&quot;.to_string(),
+                price: 5,
+            },
+        ),
+        (
+            1,
+            Beer {
+                id: Some(1),
+                name: &quot;1664&quot;.to_string(),
+                price: 3,
+            },
+        ),
     ]
 }</code></pre>
 <h2 id="recording"><a class="header" href="#recording">recording</a></h2>
@@ -403,8 +424,8 @@ reset our application state. You can do that with the <code>stubr::ActixVerifyLi
 wipe our database then populate it with our sample data (it is recommended to reuse the same as in your tests).</p>
 <p>Finally, call <code>.verify()</code> (a bit different in our example) to launch the verification test. If it passes, you have the
 guarantee your stubs accurately represent your application API. </p>
-<pre><code class="language-rust no_run noplayground">use actix_producer::api::beer::*;
-use crate::api::beer::*;
+<pre><code class="language-rust ignore noplayground edition2021">use crate::api::beer::*;
+use actix_producer::api::beer::*;
 
 #[actix_web::test]
 async fn should_verify() {

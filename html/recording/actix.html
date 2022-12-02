@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>unit test - stubr</title>
+        <title>Actix - stubr</title>
         <!-- Custom HTML head -->
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -74,7 +74,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started/unit-test.html" class="active"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting-started/unit-test.html" class="active"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="../getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li><li class="chapter-item expanded "><a href="../contract/relaxing.html"><strong aria-hidden="true">3.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">6.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">7.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../benchmark.html"><strong aria-hidden="true">8.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">9.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started/unit-test.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting-started/unit-test.html"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="../getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li><li class="chapter-item expanded "><a href="../contract/relaxing.html"><strong aria-hidden="true">3.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html" class="active"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">6.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">7.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../benchmark.html"><strong aria-hidden="true">8.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">9.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -133,84 +133,33 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="getting-started"><a class="header" href="#getting-started">Getting started</a></h1>
-<p>You will of course want to use stubr in your Rust project. We will cover here the case where you want to mock an external
-http application you do not own (if you own it, you might be interested in <a href="../contract/index.html">contract testing</a>).</p>
-<p><strong>First you need a stub.</strong> A stub is a json file which represents the endpoint you want to mock. You have 2 options from
-now on:</p>
-<ul>
-<li><a href="../recording/index.html">Record</a> the existing application (if you are lazy)</li>
-<li><a href="../stubs/index.html">Write the json stub yourself</a> 🥵</li>
-</ul>
-<p>We are going to be even lazier and simply create the json stub with a command.</p>
-<p>You should have a project layout like this:</p>
-<pre><code class="language-text">├── src
-│   ├── lib.rs
-└── tests
-    ├── stubs
-├── Cargo.toml
-├── README.md
-</code></pre>
-<p>We are going to create the stub under <code>tests/stubs/</code>, the default location. You can place them wherever you want of course,
-but you'll see it's more convenient to place them here.</p>
-<pre><code class="language-bash">echo &quot;{\&quot;request\&quot;: {\&quot;method\&quot;: \&quot;GET\&quot;, \&quot;urlPath\&quot;: \&quot;/hello\&quot;}, \&quot;response\&quot;: { \&quot;body\&quot;: \&quot;Hello stubr\&quot; }}&quot; &gt; tests/stubs/hello.json
-</code></pre>
-<p>And with a few lines of code we can spawn a mock server and call (here with reqwest for example).</p>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+                        <h1 id="recording-your-actix-app"><a class="header" href="#recording-your-actix-app">Recording your actix app</a></h1>
+<p>You can plug recording in your existing <a href="https://actix.rs/docs/testing/#integration-tests">actix integration tests</a> by 
+just adding a single line: <code>.wrap(stubr::ActixRecord::default())</code>. This will register a middleware which will capture
+the http request and response, then dump them under <code>./target/stubs/localhost</code>.</p>
+<p><em>This requires the <code>record-actix</code> feature.</em></p>
+<pre><code class="language-rust ignore noplayground edition2021">use actix_web::test::{call_service, init_service, TestRequest};
+use asserhttp::*;
 
-#[tokio::test]
-async fn getting_started() {
-    // run a mock server with the stub 👇
-    let stubr = stubr::Stubr::start(&quot;tests/stubs/hello.json&quot;).await;
-    // or use 'start_blocking' for a non-async version
-
-    // the mock server started on a random port e.g. '127.0.0.1:43125'
-    // so we use the stub instance 'path' (or 'uri') method to get the address back
-    let uri = stubr.path(&quot;/hello&quot;);
-    reqwest::get(uri).await
-        // (optional) use asserhttp for assertions
-        .expect_status_ok()
-        .expect_content_type_text()
-        .expect_body_text_eq(&quot;Hello stubr&quot;);
+#[actix_web::test]
+async fn record_actix() {
+    let app = actix_web::App::new()
+        .route(&quot;/&quot;, actix_web::web::get().to(|| async { actix_web::HttpResponse::Ok().await }))
+        // just add this 👇
+        .wrap(stubr::ActixRecord::default()); // or `ActixRecord(RecordConfig)` for configuring it
+    let req = TestRequest::get().uri(&quot;/&quot;).to_request();
+    let svc = init_service(app).await;
+    call_service(&amp;svc, req).await.expect_status_ok();
 }</code></pre>
-<p>But we can further shorten this with a attribute macro: <code>#[stubr::mock]</code></p>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
-
-#[tokio::test]
-#[stubr::mock(&quot;hello.json&quot;)] // 👈 this starts the mock server
-async fn getting_started() {
-    // a local binding 'stubr' has been created, equivalent to the one before
-    let uri = stubr.path(&quot;/hello&quot;);
-    reqwest::get(uri).await
-        .expect_status_ok()
-        .expect_content_type_text()
-        .expect_body_text_eq(&quot;Hello stubr&quot;);
-}</code></pre>
-<p>You can also use the macro in non-async test methods of course, the macro will adapt by itself.<br />
-Note that here you can omit the <code>tests/stubs/</code> path prefix. If you placed your files in the default location, they are
-going to be searched from there.<br />
-As well, you can mount many stubs with the macro e.g. <code>#[stubr::mock(&quot;hello.json&quot;, &quot;goodbye.json&quot;)]</code>.
-By default, if you take care to place only stubs with different request matching under <code>tests/stubs</code>, you can simply
-place <code>#[stubr::mock]</code>. It will recursively mount all the stubs under <code>tests/stubs</code>, searching also in subdirectories.</p>
-<p>Here are all the options you can use with the attribute macro</p>
-<pre><code class="language-rust no_run noplayground">#[tokio::test]
-#[stubr::mock(full_path = &quot;tests/book/hello.json&quot;, port = 1234, verify = true)]
-async fn getting_started() {}</code></pre>
-<ul>
-<li><code>full_path</code>: use this if your stubs are not under <code>tests/stubs</code> but elsewhere. Note that it can point to a directory.</li>
-<li><code>port</code> when you want an explicit port for your mock server</li>
-<li><code>verify</code> to turn on verification of the number of times a stub gets called (<code>expect</code> field in your stubs). 
-See <a href="../stubs/response.html#simulate-fault">simulating fault</a> for reference</li>
-</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../recording/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
-                            <a rel="next" href="../getting-started/unit-test.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="../recording/cli.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         <div style="clear: both"></div>
@@ -219,10 +168,10 @@ See <a href="../stubs/response.html#simulate-fault">simulating fault</a> for ref
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../recording/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
-                    <a rel="next" href="../getting-started/unit-test.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="../recording/cli.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -172,15 +172,17 @@ That works actually quite well. That's actually what we did previously, for exam
 </code></pre>
 </details>
 <p>With such a stub, we can imagine we would end up with a test in our consumer like that:</p>
-<pre><code class="language-rust no_run noplayground">#[test]
+<pre><code class="language-rust ignore noplayground edition2021">#[test]
 #[stubr::apps(&quot;actix-producer&quot;)]
 fn create_should_create_one() {
     let uri: String = actix_producer.uri();
-    reqwest::blocking::Client::new().post(format!(&quot;{uri}/beers&quot;))
+    reqwest::blocking::Client::new()
+        .post(format!(&quot;{uri}/beers&quot;))
         .json(&amp;json!({
             &quot;name&quot;: &quot;Heineken&quot;,
             &quot;price&quot;: 4
-        })).send()
+        }))
+        .send()
         .expect_status_created()
         .expect_content_type_json()
         .expect_body_json(|beer: serde_json::Value| {

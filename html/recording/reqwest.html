@@ -138,7 +138,7 @@
 way, still supported, with a standalone recording proxy.</p>
 <p><em>This requires the <code>record-reqwest</code> feature.</em></p>
 <h2 id="trait-recommended"><a class="header" href="#trait-recommended">trait (recommended)</a></h2>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 use stubr::Record as _;
 
 #[test]
@@ -150,13 +150,12 @@ fn record_reqwest_trait() {
         // 👇 this will intercept and dump all http traffic going through this client
         .record() // or `record_with()` for configuring it
         .build().unwrap();
-    reqwest::blocking::Client::default().execute(req).unwrap()
-        .expect_status_ok();
+    reqwest::blocking::Client::default().execute(req).unwrap().expect_status_ok();
 }</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 <p><em>NB: async is not supported yet</em></p>
 <h2 id="standalone"><a class="header" href="#standalone">standalone</a></h2>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 
 #[tokio::test(flavor = &quot;multi_thread&quot;)] // 👈 required by recording proxy
 #[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
@@ -165,7 +164,9 @@ async fn record_reqwest() {
     stubr::Stubr::record() // or `record_with()` for configuring it
         // 👇 builds a reqwest client with proxy configured
         .reqwest_client()
-        .get(stubr.uri()).send().await
+        .get(stubr.uri())
+        .send()
+        .await
         .expect_status_ok();
 }</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>

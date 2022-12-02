@@ -180,7 +180,7 @@ but you'll see it's more convenient to place them here.</p>
 <pre><code class="language-bash">echo &quot;{\&quot;request\&quot;: {\&quot;method\&quot;: \&quot;GET\&quot;, \&quot;urlPath\&quot;: \&quot;/hello\&quot;}, \&quot;response\&quot;: { \&quot;body\&quot;: \&quot;Hello stubr\&quot; }}&quot; &gt; tests/stubs/hello.json
 </code></pre>
 <p>And with a few lines of code we can spawn a mock server and call (here with reqwest for example).</p>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 
 #[tokio::test]
 async fn getting_started() {
@@ -198,14 +198,15 @@ async fn getting_started() {
         .expect_body_text_eq(&quot;Hello stubr&quot;);
 }</code></pre>
 <p>But we can further shorten this with a attribute macro: <code>#[stubr::mock]</code></p>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 
 #[tokio::test]
 #[stubr::mock(&quot;hello.json&quot;)] // 👈 this starts the mock server
 async fn getting_started() {
     // a local binding 'stubr' has been created, equivalent to the one before
     let uri = stubr.path(&quot;/hello&quot;);
-    reqwest::get(uri).await
+    reqwest::get(uri)
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text_eq(&quot;Hello stubr&quot;);
@@ -217,7 +218,7 @@ As well, you can mount many stubs with the macro e.g. <code>#[stubr::mock(&quot;
 By default, if you take care to place only stubs with different request matching under <code>tests/stubs</code>, you can simply
 place <code>#[stubr::mock]</code>. It will recursively mount all the stubs under <code>tests/stubs</code>, searching also in subdirectories.</p>
 <p>Here are all the options you can use with the attribute macro</p>
-<pre><code class="language-rust no_run noplayground">#[tokio::test]
+<pre><code class="language-rust ignore noplayground edition2021">#[tokio::test]
 #[stubr::mock(full_path = &quot;tests/book/hello.json&quot;, port = 1234, verify = true)]
 async fn getting_started() {}</code></pre>
 <ul>
@@ -249,7 +250,7 @@ but you'll see it's more convenient to place them here.</p>
 <pre><code class="language-bash">echo &quot;{\&quot;request\&quot;: {\&quot;method\&quot;: \&quot;GET\&quot;, \&quot;urlPath\&quot;: \&quot;/hello\&quot;}, \&quot;response\&quot;: { \&quot;body\&quot;: \&quot;Hello stubr\&quot; }}&quot; &gt; tests/stubs/hello.json
 </code></pre>
 <p>And with a few lines of code we can spawn a mock server and call (here with reqwest for example).</p>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 
 #[tokio::test]
 async fn getting_started() {
@@ -267,14 +268,15 @@ async fn getting_started() {
         .expect_body_text_eq(&quot;Hello stubr&quot;);
 }</code></pre>
 <p>But we can further shorten this with a attribute macro: <code>#[stubr::mock]</code></p>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 
 #[tokio::test]
 #[stubr::mock(&quot;hello.json&quot;)] // 👈 this starts the mock server
 async fn getting_started() {
     // a local binding 'stubr' has been created, equivalent to the one before
     let uri = stubr.path(&quot;/hello&quot;);
-    reqwest::get(uri).await
+    reqwest::get(uri)
+        .await
         .expect_status_ok()
         .expect_content_type_text()
         .expect_body_text_eq(&quot;Hello stubr&quot;);
@@ -286,7 +288,7 @@ As well, you can mount many stubs with the macro e.g. <code>#[stubr::mock(&quot;
 By default, if you take care to place only stubs with different request matching under <code>tests/stubs</code>, you can simply
 place <code>#[stubr::mock]</code>. It will recursively mount all the stubs under <code>tests/stubs</code>, searching also in subdirectories.</p>
 <p>Here are all the options you can use with the attribute macro</p>
-<pre><code class="language-rust no_run noplayground">#[tokio::test]
+<pre><code class="language-rust ignore noplayground edition2021">#[tokio::test]
 #[stubr::mock(full_path = &quot;tests/book/hello.json&quot;, port = 1234, verify = true)]
 async fn getting_started() {}</code></pre>
 <ul>
@@ -463,12 +465,12 @@ than 1 definition of the contract. <strong>Stubr is producer-driven</strong></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="as-a-producer"><a class="header" href="#as-a-producer">As a producer</a></h1>
 <p>We'll use actix in those examples because it is the only web framework currently supported for verifying the producer,
 others will come ! And of course it does not impact the consumer where you can use any technology you want since stubr
-can be used <a href="contract/../gs-standalone.html">standalone</a> (you can even use a language other than Rust !).</p>
+can be used <a href="contract/../getting-started/standalone.html">standalone</a> (you can even use a language other than Rust !).</p>
 <h2 id="endpoint"><a class="header" href="#endpoint">endpoint</a></h2>
 <p>We'll begin in a very common situation where your producer exposes a http endpoint. We will make the endpoint as simple
 and stupid as possible with a flat <code>Beer</code> resource and an in-memory database. We'll just expose an endpoint for creating
 and fetching a resource which should cover most of the use cases.</p>
-<pre><code class="language-rust no_run noplayground">use actix_web::http::header::ContentType;
+<pre><code class="language-rust ignore noplayground edition2021">use actix_web::http::header::ContentType;
 use actix_web::web;
 
 // simple in-memory database
@@ -521,7 +523,10 @@ impl PartialEq for Beer {
 <p>Then as we do things seriously, we will write some tests. For the <code>create</code> endpoint we'll have a nominal case where the 
 beer we create succeeds and another negative one where it fails because we have a uniqueness constraint on the Beer's 
 <code>name</code> and <code>price</code> fields. For the <code>find_by_id</code> one, we'll have a nominal case and a <code>404 Not Found</code> one.</p>
-<pre><code class="language-rust no_run noplayground">use actix_web::{web, App, test::{call_service, init_service, TestRequest}};
+<pre><code class="language-rust ignore noplayground edition2021">use actix_web::{
+    test::{call_service, init_service, TestRequest},
+    web, App,
+};
 use asserhttp::*;
 
 use actix_producer::api::beer::*;
@@ -531,13 +536,15 @@ mod find_by_id {
 
     #[actix_web::test]
     async fn find_by_id_should_find_one() {
-        let app = App::new().app_data(sample_db())
+        let app = App::new()
+            .app_data(sample_db())
             .service(find_by_id)
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let beers = sample();
         let (id, to_find) = beers.get(0).unwrap();
         let req = TestRequest::get().uri(&amp;format!(&quot;/beers/{}&quot;, id)).to_request();
-        call_service(&amp;init_service(app).await, req).await
+        call_service(&amp;init_service(app).await, req)
+            .await
             .expect_status_ok()
             .expect_content_type_json()
             .expect_body_json(|b: Beer| assert_eq!(&amp;b, to_find));
@@ -545,12 +552,12 @@ mod find_by_id {
 
     #[actix_web::test]
     async fn find_by_id_should_not_find_any() {
-        let app = App::new().app_data(sample_db())
+        let app = App::new()
+            .app_data(sample_db())
             .service(find_by_id)
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let req = TestRequest::get().uri(&quot;/beers/999&quot;).to_request();
-        call_service(&amp;init_service(app).await, req).await
-            .expect_status_not_found();
+        call_service(&amp;init_service(app).await, req).await.expect_status_not_found();
     }
 }
 
@@ -564,11 +571,13 @@ mod create {
             name: &quot;Heineken&quot;.to_string(),
             price: 4,
         };
-        let app = App::new().app_data(empty_db())
+        let app = App::new()
+            .app_data(empty_db())
             .service(create)
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let req = TestRequest::post().uri(&quot;/beers&quot;).set_json(beer.clone()).to_request();
-        call_service(&amp;init_service(app).await, req).await
+        call_service(&amp;init_service(app).await, req)
+            .await
             .expect_status_created()
             .expect_content_type_json()
             .expect_body_json(|b: Beer| {
@@ -581,12 +590,12 @@ mod create {
     #[actix_web::test]
     async fn create_should_conflict_when_already_exists_by_name() {
         let (_id, beer) = sample().get(0).unwrap().clone();
-        let app = App::new().app_data(sample_db())
+        let app = App::new()
+            .app_data(sample_db())
             .service(create)
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let req = TestRequest::post().uri(&quot;/beers&quot;).set_json(beer.clone()).to_request();
-        call_service(&amp;init_service(app).await, req).await
-            .expect_status_conflict();
+        call_service(&amp;init_service(app).await, req).await.expect_status_conflict();
     }
 }
 
@@ -600,8 +609,22 @@ pub fn empty_db() -&gt; web::Data&lt;Database&gt; {
 
 pub fn sample() -&gt; [(u32, Beer); 2] {
     [
-        (0, Beer { id: Some(0), name: &quot;Leffe&quot;.to_string(), price: 5 }),
-        (1, Beer { id: Some(1), name: &quot;1664&quot;.to_string(), price: 3 }),
+        (
+            0,
+            Beer {
+                id: Some(0),
+                name: &quot;Leffe&quot;.to_string(),
+                price: 5,
+            },
+        ),
+        (
+            1,
+            Beer {
+                id: Some(1),
+                name: &quot;1664&quot;.to_string(),
+                price: 3,
+            },
+        ),
     ]
 }</code></pre>
 <h2 id="recording"><a class="header" href="#recording">recording</a></h2>
@@ -730,8 +753,8 @@ reset our application state. You can do that with the <code>stubr::ActixVerifyLi
 wipe our database then populate it with our sample data (it is recommended to reuse the same as in your tests).</p>
 <p>Finally, call <code>.verify()</code> (a bit different in our example) to launch the verification test. If it passes, you have the
 guarantee your stubs accurately represent your application API. </p>
-<pre><code class="language-rust no_run noplayground">use actix_producer::api::beer::*;
-use crate::api::beer::*;
+<pre><code class="language-rust ignore noplayground edition2021">use crate::api::beer::*;
+use actix_producer::api::beer::*;
 
 #[actix_web::test]
 async fn should_verify() {
@@ -773,7 +796,9 @@ stubr-build = &quot;0.5.0-rc.2&quot;
 actix-producer = &quot;0.1.0&quot;
 </code></pre>
 <p>Then, in a build script, invoke <a href="https://crates.io/crates/stubr-build">stubr-build</a> and do <code>cargo build</code></p>
-<pre><code class="language-rust no_run noplayground">fn main() { stubr_build::stubr_consumer() }</code></pre>
+<pre><code class="language-rust ignore noplayground edition2021">fn main() {
+    stubr_build::stubr_consumer()
+}</code></pre>
 <p>Verify your stubs have been imported (given your consumer project is called <code>actix-consumer</code>), you should have 
 something like this under <code>target/stubr</code>:</p>
 <pre><code class="language-text">├── actix-consumer
@@ -791,14 +816,14 @@ we'll assume the simplest use case (a simple blocking http client using reqwest)
 will just import the stubs of the <code>actix-producer</code> app we created previously. To do so, add 
 <code>#[stubr::apps(&quot;actix-producer&quot;)]</code> on your test method (note that you can use it to mount many apps e.g. 
 <code>#[stubr::apps(&quot;svc-a&quot;, &quot;svc-b&quot;)]</code>). This will create a local binding with the name of your app.</p>
-<pre><code class="language-rust no_run noplayground">#[test]
+<pre><code class="language-rust ignore noplayground edition2021">#[test]
 #[stubr::apps(&quot;actix-producer&quot;)]
 fn sample_binding() {
     let actix_producer: stubr::Stubr = actix_producer;
     let _uri: String = actix_producer.uri();
 }</code></pre>
 <p>You can then use this binding to get the uri(s) of the mock server(s) and execute your tests against it.</p>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 use serde_json::json;
 
 #[test]
@@ -832,11 +857,13 @@ fn find_by_id_should_not_find_any() {
 #[stubr::apps(&quot;actix-producer&quot;)]
 fn create_should_create_one() {
     let uri: String = actix_producer.uri();
-    reqwest::blocking::Client::new().post(format!(&quot;{uri}/beers&quot;))
+    reqwest::blocking::Client::new()
+        .post(format!(&quot;{uri}/beers&quot;))
         .json(&amp;json!({
             &quot;name&quot;: &quot;Heineken&quot;,
             &quot;price&quot;: 4
-        })).send()
+        }))
+        .send()
         .expect_status_created()
         .expect_content_type_json()
         .expect_body_json(|beer: serde_json::Value| {
@@ -849,11 +876,13 @@ fn create_should_create_one() {
 #[stubr::apps(&quot;actix-producer&quot;)]
 fn create_should_should_conflict_on_name() {
     let uri: String = actix_producer.uri();
-    reqwest::blocking::Client::new().post(format!(&quot;{uri}/beers&quot;))
+    reqwest::blocking::Client::new()
+        .post(format!(&quot;{uri}/beers&quot;))
         .json(&amp;json!({
             &quot;name&quot;: &quot;Leffe&quot;,
             &quot;price&quot;: 5
-        })).send()
+        }))
+        .send()
         .expect_status_conflict()
         .expect_content_type_json()
         .expect_body_json_eq(json!({
@@ -901,15 +930,17 @@ That works actually quite well. That's actually what we did previously, for exam
 </code></pre>
 </details>
 <p>With such a stub, we can imagine we would end up with a test in our consumer like that:</p>
-<pre><code class="language-rust no_run noplayground">#[test]
+<pre><code class="language-rust ignore noplayground edition2021">#[test]
 #[stubr::apps(&quot;actix-producer&quot;)]
 fn create_should_create_one() {
     let uri: String = actix_producer.uri();
-    reqwest::blocking::Client::new().post(format!(&quot;{uri}/beers&quot;))
+    reqwest::blocking::Client::new()
+        .post(format!(&quot;{uri}/beers&quot;))
         .json(&amp;json!({
             &quot;name&quot;: &quot;Heineken&quot;,
             &quot;price&quot;: 4
-        })).send()
+        }))
+        .send()
         .expect_status_created()
         .expect_content_type_json()
         .expect_body_json(|beer: serde_json::Value| {
@@ -975,7 +1006,7 @@ use <a href="contract/../stubs/response.html#response-templating">response templ
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stubs"><a class="header" href="#stubs">Stubs</a></h1>
 <p>Writing stubs can be challenging and time-consuming. Stubr tries to assist by
 providing <a href="stubs/../ide-completion.html">IDE completion</a> or by <a href="stubs/../recording/index.html">recording</a> live traffic into stubs. But
-you still have to know how to write a stub and what helpers you have in order to <a href="stubs/relaxing.html">relax</a> your stubs as much
+you still have to know how to write a stub and what helpers you have in order to <a href="stubs/../contract/relaxing.html">relax</a> your stubs as much
 as possible.</p>
 <p>You will find here in a single snippet <strong>ALL</strong> the fields/helpers available to you:</p>
 <pre><code class="language-json">{
@@ -1198,7 +1229,7 @@ per <a href="https://datatracker.ietf.org/doc/html/rfc7519">RFC 7519</a></p>
 matcher, all the other ones will be ignored</li>
 <li><code>alg.equalTo</code> by equality matcher. JWT algorithm has to be exactly this</li>
 <li><code>alg.oneOf</code> JWT algorithm has to be one of the supplied values. Here are all the supported JWT
-algorithms [<code>HS256</code>, <code>HS384</code>, <code>HS512</code>, <code>ES256</code>, <code>ES384</code>, <code>RS256</code>, <code>RS384</code>, <code>RS512</code>, <code>PS256</code>, <code>PS384</code>, <code>PS512</code>, <code>EdDSA</code>]</li>
+algorithms: <code>HS256</code>, <code>HS384</code>, <code>HS512</code>, <code>ES256</code>, <code>ES384</code>, <code>RS256</code>, <code>RS384</code>, <code>RS512</code>, <code>PS256</code>, <code>PS384</code>, <code>PS512</code>, <code>EdDSA</code></li>
 <li><code>payloadPatterns</code> for matching the JWT body. Exactly the same matcher as <a href="stubs/request.html#body">body</a> ones.</li>
 </ul>
 <h2 id="body"><a class="header" href="#body">Body</a></h2>
@@ -1363,7 +1394,7 @@ defines an integer, a float or a boolean and is used in <code>&quot;jsonBody&quo
 <li><code>anyOf</code> given the supplied values, will pick one randomly. Only works for strings.</li>
 <li><code>anyNumber</code> when one does not care about the number size, generates either an integer or a float</li>
 <li><code>anyI32</code> or <code>anyU32</code> etc.. generates a random integer. Possible values
-are [<code>anyU64</code>, <code>anyI64</code>, <code>anyU32</code>, <code>anyI32</code>, <code>anyU16</code>, <code>anyI16</code>, <code>anyU8</code>, <code>anyI8</code>]</li>
+are: <code>anyU64</code>, <code>anyI64</code>, <code>anyU32</code>, <code>anyI32</code>, <code>anyU16</code>, <code>anyI16</code>, <code>anyU8</code>, <code>anyI8</code></li>
 <li><code>anyFloat</code> generates a random float</li>
 <li><code>anyDate</code> generates a date with format <code>yyyy-mm-dd</code></li>
 <li><code>anyTime</code> generates a time with format <code>hh:mm:ss</code></li>
@@ -1505,7 +1536,7 @@ Recording in a Rust consumer is mostly about getting faster, especially with &qu
 just adding a single line: <code>.wrap(stubr::ActixRecord::default())</code>. This will register a middleware which will capture
 the http request and response, then dump them under <code>./target/stubs/localhost</code>.</p>
 <p><em>This requires the <code>record-actix</code> feature.</em></p>
-<pre><code class="language-rust no_run noplayground">use actix_web::test::{call_service, init_service, TestRequest};
+<pre><code class="language-rust ignore noplayground edition2021">use actix_web::test::{call_service, init_service, TestRequest};
 use asserhttp::*;
 
 #[actix_web::test]
@@ -1544,7 +1575,7 @@ leaving your tests/scripts untouched).</em></p>
 <p>The only way currently to record isahc is to spawn a proxy and configure isahc to use this proxy. This is exactly what
 the following snippet does.</p>
 <p><em>This requires the <code>record-isahc</code> feature.</em></p>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 
 #[tokio::test(flavor = &quot;multi_thread&quot;)] // 👈 required by recording proxy
 #[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
@@ -1562,7 +1593,7 @@ async fn record_isahc() {
 way, still supported, with a standalone recording proxy.</p>
 <p><em>This requires the <code>record-reqwest</code> feature.</em></p>
 <h2 id="trait-recommended"><a class="header" href="#trait-recommended">trait (recommended)</a></h2>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 use stubr::Record as _;
 
 #[test]
@@ -1574,13 +1605,12 @@ fn record_reqwest_trait() {
         // 👇 this will intercept and dump all http traffic going through this client
         .record() // or `record_with()` for configuring it
         .build().unwrap();
-    reqwest::blocking::Client::default().execute(req).unwrap()
-        .expect_status_ok();
+    reqwest::blocking::Client::default().execute(req).unwrap().expect_status_ok();
 }</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
 <p><em>NB: async is not supported yet</em></p>
 <h2 id="standalone"><a class="header" href="#standalone">standalone</a></h2>
-<pre><code class="language-rust no_run noplayground">use asserhttp::*;
+<pre><code class="language-rust ignore noplayground edition2021">use asserhttp::*;
 
 #[tokio::test(flavor = &quot;multi_thread&quot;)] // 👈 required by recording proxy
 #[stubr::mock(&quot;ping.json&quot;)] // 👈 spawn a mock server
@@ -1589,7 +1619,9 @@ async fn record_reqwest() {
     stubr::Stubr::record() // or `record_with()` for configuring it
         // 👇 builds a reqwest client with proxy configured
         .reqwest_client()
-        .get(stubr.uri()).send().await
+        .get(stubr.uri())
+        .send()
+        .await
         .expect_status_ok();
 }</code></pre>
 <p>You can find your recorded stubs under <code>./target/stubs/localhost</code></p>
@@ -1598,7 +1630,7 @@ async fn record_reqwest() {
 traffic by using the standalone recording proxy, the exact same one used in the <a href="recording/../cli.html">cli</a>.</p>
 <p>To do so, you just have to spawn the proxy and then configure your http client to use this proxy.</p>
 <p><em>This requires the <code>record</code> feature.</em></p>
-<pre><code class="language-rust no_run noplayground">#[tokio::test(flavor = &quot;multi_thread&quot;)]
+<pre><code class="language-rust ignore noplayground edition2021">#[tokio::test(flavor = &quot;multi_thread&quot;)]
 async fn record_standalone() {
     // 👇 spawn the recording proxy
     let proxy = stubr::Stubr::record();
@@ -1607,7 +1639,7 @@ async fn record_standalone() {
     // ☝️ then use this uri to configure your http client
 }</code></pre>
 <p>Or, in order to keep the syntax short, you can use the provided attribute macro.</p>
-<pre><code class="language-rust no_run noplayground">// works for async as well
+<pre><code class="language-rust ignore noplayground edition2021">// works for async as well
 #[stubr::record] // 👈 this spawns the proxy and creates a 'recorder' binding in the function
 // #[stubr::record(port = 1234)] for setting a port
 #[test]
@@ -1694,8 +1726,9 @@ curl -L https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz |
 </code></pre>
 <p>Then open <code>./stubr-bench/report/index.html</code> in your browser.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ide-completion"><a class="header" href="#ide-completion">IDE completion</a></h1>
-<p>A json schema is also maintained <a href="schemas/stubr.schema.json">here</a> to provide completion in IDE. It just contains
-completion for features implemented in stubr and should alleviate you from a bit of pain when writing json from scratch.</p>
+<p>A json schema is also maintained <a href="https://github.com/beltram/stubr/blob/main/schemas/stubr.schema.json">here</a> to provide
+completion in IDE. It just contains completion for features implemented in stubr and should alleviate you from a bit of
+pain when writing json from scratch.</p>
 <details>
 <summary><b>IntelliJ</b></summary>
 <ul>
