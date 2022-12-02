@@ -1,12 +1,12 @@
 # Benchmark
 
 ## vs wiremock
-A very simple benchmark comparing stubr to wiremock is
+A very simple benchmark comparing [stubr](https://github.com/beltram/stubr) to wiremock is
 available [here](https://github.com/beltram/stubr/blob/main/bench/README.md)
 
 ## standalone
 
-A benchmark of `stubr` itself, powered by [criterion](https://crates.io/crates/criterion) is available for each release.
+A benchmark of [stubr](https://github.com/beltram/stubr) itself, powered by [criterion](https://crates.io/crates/criterion) is available for each release.
 The latest is available [here](https://github.com/beltram/stubr/releases/latest/download/bench.tar.gz). It aims at
 tracking down progresses/regressions made.
 

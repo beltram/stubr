@@ -1,8 +1,8 @@
 # Recording with the cli
 
-In order to record http traffic, `stubr` can act as a proxy to dump this traffic into json stubs on your local
+In order to record http traffic, [stubr](https://github.com/beltram/stubr) can act as a proxy to dump this traffic into json stubs on your local
 filesystem. Recording can be started with the `stubr record` command. Stubs will be grouped by hosts. You can then play
-them back using `stubr`.
+them back using [stubr](https://github.com/beltram/stubr).
 
 | arg        |                                  about                                   |                    examples                    |
 |------------|:------------------------------------------------------------------------:|:----------------------------------------------:|
@@ -11,7 +11,7 @@ them back using `stubr`.
 
 ### example
 
-First, start stubr recorder on port `3030`. It will act as a proxy.
+First, start [stubr](https://github.com/beltram/stubr) recorder on port `3030`. It will act as a proxy.
 
 ```bash
 stubr record -p 3030

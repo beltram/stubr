@@ -1,6 +1,6 @@
 # Getting started
 
-You can use stubr as a standalone mock server i.e. an executable. To learn more read the pages about how to use the
+You can use [stubr](https://github.com/beltram/stubr) as a standalone mock server i.e. an executable. To learn more read the pages about how to use the
 [cli](../cli.md) or [as a Docker image](../docker.md).
 
 For this short demo we are going to use the cli. We will create a http stub, mount it on a stub server and then call it
@@ -133,9 +133,9 @@ Here:
   request in the response. Prefer using it over hardcoded values when your real life application actually does that. The
   more you use it the better your test accuracy will be.
 * `{{request.pathSegments.[1]}}` now that response templating is enabled, you can inject parts of your request in the
-  response. With [Wiremock](https://github.com/tomakehurst/wiremock) as with stubr, we
+  response. With [Wiremock](https://github.com/tomakehurst/wiremock) as with [stubr](https://github.com/beltram/stubr), we
   use [handlebars](https://handlebarsjs.com/) templates to do such a
-  thing. [Many response templates are available](../stubs/response.md) in stubr in order to pick whatever part
+  thing. [Many response templates are available](../stubs/response.md) in [stubr](https://github.com/beltram/stubr) in order to pick whatever part
   of the request you want.
 
 #### Mount it

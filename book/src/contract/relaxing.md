@@ -40,7 +40,7 @@ randomized response data.
 ## Relaxing fields
 
 Here we will get rid of all the hardcoded data in the response (currently there are not enough helpers to also relax
-the request data with stubr, but it will be possible one day).
+the request data with [stubr](https://github.com/beltram/stubr), but it will be possible one day).
 
 We will first randomize the id with [anyU32](../stubs/response.md#relaxed-field). On the consumer side, this will
 generate a random `u32`. On the producer side in the [verifier tests](producer.md#verify), it simply asserts that the

@@ -1,6 +1,6 @@
 # Getting started
 
-You will of course want to use stubr in your Rust project. We will cover here the case where you want to mock an external
+You will of course want to use [stubr](https://github.com/beltram/stubr) in your Rust project. We will cover here the case where you want to mock an external
 http application you do not own (if you own it, you might be interested in [contract testing](../contract/index.md)).  
 
 **First you need a stub.** A stub is a json file which represents the endpoint you want to mock. You have 2 options from

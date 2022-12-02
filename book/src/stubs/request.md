@@ -3,7 +3,7 @@
 With request matching you have to describe all the conditions the incoming http requests have to match in order for your
 stub response to be served. Most of the time, you will opt in for a conservative approach where you will have exhaustive
 and strict conditions. That's when you want to assess the http caller behaves the right way. Other times you do not care
-about request matching at all e.g. you use stubr to benchmark a reverse proxy: in that
+about request matching at all e.g. you use [stubr](https://github.com/beltram/stubr) to benchmark a reverse proxy: in that
 case `request { "method": "ANY" }` is enough. **Just write the request matching you need**.
 
 ## Method

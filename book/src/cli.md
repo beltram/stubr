@@ -1,6 +1,6 @@
 # Cli
 
-You can use `stubr` as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into
+You can use [stubr](https://github.com/beltram/stubr) as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into
 json stubs.  
 
 To get a list of all available options run `stubr --help`
@@ -40,7 +40,7 @@ cargo install stubr-cli
 
 ### once installed, generate completion
 
-Completion files generation is currently supported for `bash` and `zsh`. Stubr cli provides a `completion` command to
+Completion files generation is currently supported for `bash` and `zsh`. [Stubr](https://github.com/beltram/stubr) cli provides a `completion` command to
 generate and install them in a standard location.
 
 ```bash

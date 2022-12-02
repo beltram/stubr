@@ -82,7 +82,7 @@ Keep in mind that such helper will also be used to generate assertions when you 
 for [contract testing](../contract/index.md) while [verifying your producer](../contract/producer.md).
 
 NB: those templates are not available in [Wiremock](https://github.com/tomakehurst/wiremock), you can only use them in
-stubr.
+[stubr](https://github.com/beltram/stubr).
 
 ```json
 {
@@ -228,7 +228,7 @@ You also sometimes have to generate dynamic data or to transform existing one:
 
 ## Simulate fault
 
-You can also use stubr to simulate http server runtime behaviour. And most of the time you'll want to introduce
+You can also use [stubr](https://github.com/beltram/stubr) to simulate http server runtime behaviour. And most of the time you'll want to introduce
 latencies
 to check how your consuming application reacts to such delays. Currently, the options are quite sparse but should grow !
 
@@ -244,6 +244,6 @@ to check how your consuming application reacts to such delays. Currently, the op
 * `expect` will allow to verify that your unit test has not called the given stub more than N times. Turn it on like
   this `stubr::Stubr::start_with(stubr::Config { verify: true, ..Default::default() })`
   or `#[stubr::mock(verify = true)]` with the attribute macro
-* `fixedDelayMilliseconds` a delay (in milliseconds) added everytime this stub is matched. If you are using stubr
+* `fixedDelayMilliseconds` a delay (in milliseconds) added everytime this stub is matched. If you are using [stubr](https://github.com/beltram/stubr)
   standalone through the [cli](../cli.md), this value can be either superseded by `--delay` or complemented
   by `--latency`

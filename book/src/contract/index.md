@@ -44,7 +44,7 @@ situation we will call:
   assert that it does what it claims in the stub. And now we can confidently share our stubs with the outside world and
   our consumers.
 * `consumer`: application with a http client calling a producer http application. The consumer first has to fetch stubs
-  exposed by the producer. Then it can mount them with stubr to mock the producer in its unit tests. It brings the
+  exposed by the producer. Then it can mount them with [stubr](https://github.com/beltram/stubr) to mock the producer in its unit tests. It brings the
   consumer the benefits of being able to lean on verified stubs and to carefully pick a specific version of the
   producer. Along its lifetime, whenever the producer releases a new version, the consumer will be able, even in a
   semi-automated way (dependabot), to verify it is still compatible with the producer API.
@@ -64,4 +64,4 @@ Producer-driven (for example [Spring Cloud Contract](https://spring.io/projects/
 hand has the advantage of being straightforward. Producer defines the contract once, publishes it and every consumer has
 to adapt. Compared to consumer-driven, this model is better suited for organizations where a team has ownership of all
 the applications (when contract definition is easy). It has the major advantage of being offline and not requiring more
-than 1 definition of the contract. **Stubr is producer-driven**
+than 1 definition of the contract. **[Stubr](https://github.com/beltram/stubr) is producer-driven**

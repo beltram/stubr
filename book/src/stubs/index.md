@@ -1,6 +1,6 @@
 # Stubs
 
-Writing stubs can be challenging and time-consuming. Stubr tries to assist by
+Writing stubs can be challenging and time-consuming. [Stubr](https://github.com/beltram/stubr) tries to assist by
 providing [IDE completion](../ide-completion.md) or by [recording](../recording/index.md) live traffic into stubs. But
 you still have to know how to write a stub and what helpers you have in order to [relax](../contract/relaxing.md) your stubs as much
 as possible.  

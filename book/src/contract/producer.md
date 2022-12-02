@@ -1,7 +1,7 @@
 # As a producer
 
 We'll use actix in those examples because it is the only web framework currently supported for verifying the producer,
-others will come ! And of course it does not impact the consumer where you can use any technology you want since stubr
+others will come ! And of course it does not impact the consumer where you can use any technology you want since [stubr](https://github.com/beltram/stubr)
 can be used [standalone](../getting-started/standalone.md) (you can even use a language other than Rust !).
 
 ## endpoint
@@ -73,11 +73,11 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
 
 ## verify
 
-And finally, we have to verify that the stubs exposed by our producer match the actual implementation. To do so, stubr
+And finally, we have to verify that the stubs exposed by our producer match the actual implementation. To do so, [stubr](https://github.com/beltram/stubr)
 exports the `StubrVerify` trait with the `.verify()` method you have to invoke. There is no automatic verification of
 stubs possible, it has to be explicit in a test. It is advised to declare it in a file with just the verification test.    
 
-Such a test will start by declaring your actix app with all the endpoints. In order to verify it, stubr will create a
+Such a test will start by declaring your actix app with all the endpoints. In order to verify it, [stubr](https://github.com/beltram/stubr) will create a
 test for every stub in `./stubs` by converting, for each, the `request` part in an actual actix integration test.  
 
 But you might need some state ! For example, think of the `find by id` endpoint. It cannot be verified if your database
