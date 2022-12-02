@@ -11,10 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+      - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@cargo-hack
       - uses: Swatinem/rust-cache@v2
       - name: execute build scripts
@@ -26,6 +23,7 @@ jobs:
         run: cargo hack check --each-feature --no-dev-deps
       - name: cargo/test
         run: cargo test
+
   release:
     # runs on tags only
     if: startsWith(github.ref, 'refs/tags/')
@@ -54,10 +52,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: cargo/build
         run: cargo build --release
@@ -98,6 +93,7 @@ jobs:
           files: |
             ${{ matrix.to-file }}
             target/bench.tar.gz
+
   publish:
     # runs on tags only
     if: startsWith(github.ref, 'refs/tags/')
@@ -105,10 +101,7 @@ jobs:
     needs: [ release ]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: publish plugin
         run: |
@@ -128,6 +121,7 @@ jobs:
           cd cli
           sleep 180
           cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
+
   docker_publish:
     # runs on tags only
     if: startsWith(github.ref, 'refs/tags/')
@@ -135,10 +129,7 @@ jobs:
     needs: [ release ]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
+      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: build-musl
         uses: gmiam/rust-musl-action@master
