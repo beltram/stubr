@@ -11,7 +11,8 @@ mod utils;
 #[async_std::test]
 async fn should_timeout_with_global_delay_of_2_seconds() {
     let stubr = StubrCli::new(&["tests/stubs", "--delay", "2s"]);
-    let timeout = task::block_on(io::timeout(Duration::from_secs(1), async {
+    let timeout = Duration::from_secs(1);
+    let timeout = task::block_on(io::timeout(timeout, async {
         get(&stubr.addr).await.expect_status_ok();
         Ok(())
     }));
@@ -21,7 +22,8 @@ async fn should_timeout_with_global_delay_of_2_seconds() {
 #[async_std::test]
 async fn should_not_timeout_with_global_delay_of_2_seconds() {
     let stubr = StubrCli::new(&["tests/stubs", "--delay", "2s"]);
-    let timeout = task::block_on(io::timeout(Duration::from_secs(3), async {
+    let timeout = Duration::from_secs(30);
+    let timeout = task::block_on(io::timeout(timeout, async {
         get(&stubr.addr).await.expect_status_ok();
         Ok(())
     }));
@@ -31,7 +33,8 @@ async fn should_not_timeout_with_global_delay_of_2_seconds() {
 #[async_std::test]
 async fn should_timeout_with_latency_of_2_seconds() {
     let stubr = StubrCli::new(&["tests/stubs", "--latency", "2s"]);
-    let timeout = task::block_on(io::timeout(Duration::from_secs(1), async {
+    let timeout = Duration::from_secs(1);
+    let timeout = task::block_on(io::timeout(timeout, async {
         get(&stubr.addr).await.expect_status_ok();
         Ok(())
     }));
@@ -41,7 +44,8 @@ async fn should_timeout_with_latency_of_2_seconds() {
 #[async_std::test]
 async fn should_not_timeout_with_latency_of_2_seconds() {
     let stubr = StubrCli::new(&["tests/stubs", "--latency", "2s"]);
-    let timeout = task::block_on(io::timeout(Duration::from_secs(3), async {
+    let timeout = Duration::from_secs(30);
+    let timeout = task::block_on(io::timeout(timeout, async {
         get(&stubr.addr).await.expect_status_ok();
         Ok(())
     }));
