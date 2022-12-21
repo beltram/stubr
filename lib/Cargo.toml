@@ -24,7 +24,7 @@ const_format = "0.2"
 regex = "1.6"
 jsonpath_lib = "0.3"
 jsonpath-plus = "0.1"
-handlebars = "=4.3.5"
+handlebars = "=4.3.6"
 lazy_static = "1.4"
 base64 = { version = "0.13", default-features = false }
 futures = { version = "0.3", default-features = false }
