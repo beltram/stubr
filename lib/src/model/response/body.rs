@@ -109,7 +109,10 @@ impl BodyStub {
     }
 
     fn binary_body(&self) -> Option<Vec<u8>> {
-        self.base_64_body.as_ref().and_then(|b| base64::decode(b).ok())
+        use base64::Engine as _;
+        self.base_64_body
+            .as_ref()
+            .and_then(|b| base64::prelude::BASE64_STANDARD.decode(b).ok())
     }
 }
 

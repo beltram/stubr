@@ -82,7 +82,9 @@ impl PartialBody {
 impl From<&BodyPatternStub> for PartialBody {
     fn from(stub: &BodyPatternStub) -> Self {
         if let Some(binary_equal_to) = stub.binary_equal_to.as_ref() {
-            base64::decode(binary_equal_to)
+            use base64::Engine as _;
+            base64::prelude::BASE64_STANDARD
+                .decode(binary_equal_to)
                 .unwrap_or_else(|_| panic!("'{binary_equal_to}' must be Base64 encoded"))
                 .into()
         } else if let Some(expression) = stub.expression.as_ref() {
