@@ -32,12 +32,12 @@ where
         let srv = self.into_factory();
         if let Ok(app) = srv.new_service(AppConfig::default()).await {
             for (stub, name) in ProducerStubFinder::find_stubs(except) {
-                let req = StdRequest::try_from(&stub).unwrap_or_else(|_| panic!("Could not verify '{:?}'. Invalid json stub.", name));
+                let req = StdRequest::try_from(&stub).unwrap_or_else(|_| panic!("Could not verify '{name:?}'. Invalid json stub."));
                 let test_req = TestRequest::from(&req).set_payload(Vec::<u8>::from(&stub.request)).to_request();
                 let resp: StdResponse = app
                     .call(test_req)
                     .await
-                    .unwrap_or_else(|_| panic!("Failed verifying stub {:?}", name))
+                    .unwrap_or_else(|_| panic!("Failed verifying stub {name:?}"))
                     .into();
                 RequestAndStub {
                     req,

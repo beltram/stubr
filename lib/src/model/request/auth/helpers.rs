@@ -18,11 +18,12 @@ pub trait RequestAuthExtension {
     }
 
     fn jwt_payload(&self) -> Option<Value> {
+        use base64::Engine as _;
         self.jwt().and_then(|jwt| {
             jwt.split('.')
                 .take(2)
                 .last()
-                .and_then(|payload| base64::decode(payload).ok())
+                .and_then(|payload| base64::prelude::BASE64_STANDARD.decode(payload).ok())
                 .and_then(|payload| serde_json::from_slice(payload.as_slice()).ok())
         })
     }

@@ -31,7 +31,7 @@ impl From<Request> for RecordedRequest {
         let scheme = req.url().scheme();
         let host = req.url().host_str().unwrap_or("localhost");
         let queries = req.url().query().unwrap_or_default();
-        let mut url = Url::from_str(&format!("{}://{}{}?{}", scheme, host, path, queries)).unwrap();
+        let mut url = Url::from_str(&format!("{scheme}://{host}{path}?{queries}")).unwrap();
         url.set_port(req.url().port()).unwrap();
         let mut http_req = HttpRequest::new(method, url.as_str());
         req.headers()

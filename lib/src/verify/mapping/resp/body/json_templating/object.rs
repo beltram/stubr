@@ -97,11 +97,7 @@ impl Verifier<'_> for JsonObjectVerifier<'_> {
                         assert_eq!(
                             va,
                             &self.cast_to_value(&render),
-                            "Verification failed for stub '{}'. Expected json response body for field '{}' to be '{}' but was '{}'",
-                            name,
-                            ke,
-                            render,
-                            va
+                            "Verification failed for stub '{name}'. Expected json response body for field '{ke}' to be '{render}' but was '{va}'"
                         )
                     }
                 } else {

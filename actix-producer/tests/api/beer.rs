@@ -17,7 +17,7 @@ mod find_by_id {
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let beers = sample();
         let (id, to_find) = beers.get(0).unwrap();
-        let req = TestRequest::get().uri(&format!("/beers/{}", id)).to_request();
+        let req = TestRequest::get().uri(&format!("/beers/{id}")).to_request();
         call_service(&init_service(app).await, req)
             .await
             .expect_status_ok()

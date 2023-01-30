@@ -109,7 +109,7 @@ mod json_body_verify_tests {
                 "json",
                 json!({ "id": id }),
                 json!({"id": "{{request.pathSegments.[0]}}"}),
-                &format!("http://localhost/{}", id),
+                &format!("http://localhost/{id}"),
             )
         }
     }

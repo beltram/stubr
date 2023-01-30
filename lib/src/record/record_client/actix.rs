@@ -84,7 +84,7 @@ impl From<(&actix_web::HttpRequest, Payload)> for RecordedRequestPair {
         let scheme = req.uri().scheme().unwrap_or(&Scheme::HTTP);
         let host = req.uri().host().unwrap_or("localhost");
         let queries = req.uri().query().unwrap_or_default();
-        let mut url = Url::from_str(&format!("{}://{}{}?{}", scheme, host, path, queries)).unwrap();
+        let mut url = Url::from_str(&format!("{scheme}://{host}{path}?{queries}")).unwrap();
         url.set_port(req.uri().port_u16()).unwrap();
         let mut http_req = HttpRequest::new(method, url.as_str());
         req.headers()

@@ -21,7 +21,7 @@ impl TryFrom<&HttpUrlStub> for Url {
         http_url
             .url
             .as_ref()
-            .map(|it| format!("http://localhost{}", it))
+            .map(|it| format!("http://localhost{it}"))
             .and_then(|it| Url::parse(&it).ok())
             .ok_or_else(|| anyhow::Error::msg("No 'url'"))
     }

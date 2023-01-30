@@ -44,7 +44,7 @@ pub fn assert_recorded_stub_eq(id: &str, expected: Value) {
             f.read_to_string(&mut content).ok().map(|_| content)
         })
         .and_then(|c| serde_json::from_str::<Value>(c.as_str()).ok())
-        .unwrap_or_else(|| panic!("File {} not found", id));
+        .unwrap_or_else(|| panic!("File {id} not found"));
     assert_eq!(content, expected);
 }
 
@@ -53,7 +53,7 @@ pub fn assert_recorded_stub_exists(id: &str) {
 }
 
 fn stub_file(id: &str) -> PathBuf {
-    target_dir().join("stubs").join("localhost").join(format!("{}.json", id))
+    target_dir().join("stubs").join("localhost").join(format!("{id}.json"))
 }
 
 pub fn target_dir() -> PathBuf {

@@ -16,10 +16,10 @@ pub enum ApiError {
 impl ResponseError for ApiError {
     fn status_code(&self) -> StatusCode {
         match self {
-            ApiError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
-            ApiError::BadRequest => StatusCode::BAD_REQUEST,
-            ApiError::NotFound => StatusCode::NOT_FOUND,
-            ApiError::Conflict => StatusCode::CONFLICT,
+            Self::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::BadRequest => StatusCode::BAD_REQUEST,
+            Self::NotFound => StatusCode::NOT_FOUND,
+            Self::Conflict => StatusCode::CONFLICT,
         }
     }
 }
