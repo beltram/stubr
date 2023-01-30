@@ -27,7 +27,8 @@ impl Match for BasicAuthMatcher {
 
 impl From<&BasicAuthStub> for BasicAuthMatcher {
     fn from(stub: &BasicAuthStub) -> Self {
-        let value = base64::encode(format!("{}:{}", stub.username, stub.password));
-        Self(format!("{} {}", Self::BASIC_PREFIX, value))
+        use base64::Engine as _;
+        let value = base64::prelude::BASE64_STANDARD.encode(format!("{}:{}", stub.username, stub.password));
+        Self(format!("{} {value}", Self::BASIC_PREFIX))
     }
 }

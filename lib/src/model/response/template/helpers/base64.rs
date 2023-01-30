@@ -20,15 +20,18 @@ impl Base64Helper {
     }
 
     fn base64_encode(value: &str, with_padding: bool) -> String {
+        use base64::Engine as _;
         if with_padding {
-            base64::encode(value)
+            base64::prelude::BASE64_STANDARD.encode(value)
         } else {
-            base64::encode_config(value, base64::STANDARD_NO_PAD)
+            base64::prelude::BASE64_STANDARD_NO_PAD.encode(value)
         }
     }
 
     fn base64_decode(value: &str) -> String {
-        base64::decode(value)
+        use base64::Engine as _;
+        base64::prelude::BASE64_STANDARD
+            .decode(value)
             .ok()
             .and_then(|it| from_utf8(it.as_slice()).map(str::to_string).ok())
             .unwrap_or_else(|| value.to_string())
