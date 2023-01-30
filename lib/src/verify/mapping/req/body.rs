@@ -87,30 +87,30 @@ impl From<&BodyPatternStub> for PartialBody {
                 .into()
         } else if let Some(expression) = stub.expression.as_ref() {
             if let Some(equal_to_json) = stub.equal_to_json.as_ref() {
-                PartialBody {
+                Self {
                     path: Some(expression.to_string()),
                     value: Some(equal_to_json.to_owned()),
                     ..Default::default()
                 }
             } else if let Some(contains) = stub.contains.as_ref() {
                 let value = StringRndGenerator::generate_string_containing(contains.to_string());
-                PartialBody {
+                Self {
                     path: Some(expression.to_string()),
                     value: Some(Value::String(value)),
                     ..Default::default()
                 }
             } else {
-                PartialBody::default()
+                Self::default()
             }
         } else if let Some(eq) = stub.equal_to_json.as_ref() {
             eq.to_owned().into()
         } else if let Some(json_path) = stub.matches_json_path.as_ref() {
-            PartialBody {
+            Self {
                 path: Some(json_path.to_owned()),
                 ..Default::default()
             }
         } else {
-            PartialBody::default()
+            Self::default()
         }
     }
 }

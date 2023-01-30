@@ -16,9 +16,7 @@ impl Verifier<'_> for HeaderVerifier {
                         "Verification failed for stub '{name}'. Expected response header '{expected_key}' to have value '{expected_value}' but was '{actual_value}'"
                     )
                 } else {
-                    panic!(
-                        "Verification failed for stub '{name}'. Expected one response header with key '{expected_key}' but none found"
-                    )
+                    panic!("Verification failed for stub '{name}'. Expected one response header with key '{expected_key}' but none found")
                 }
             }
         }
