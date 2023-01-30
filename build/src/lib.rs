@@ -76,7 +76,7 @@ impl StubrConsumer {
                 Err(CopyError { kind, .. }) => {
                     if let ErrorKind::AlreadyExists = kind {
                     } else {
-                        panic!("Failed copying stubs from {} to target dir", name)
+                        panic!("Failed copying stubs from {name} to target dir")
                     }
                 },
             };
@@ -102,7 +102,7 @@ impl StubrConsumer {
                 let source = dep.source_id();
                 source.url().host_str().map(|host| {
                     let hash = hex::short_hash(&source);
-                    let part = format!("{}-{}", host, hash);
+                    let part = format!("{host}-{hash}");
                     self.config
                         .home()
                         .join("registry")

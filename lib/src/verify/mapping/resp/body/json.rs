@@ -19,22 +19,19 @@ impl Verifier<'_> for JsonBodyVerifier {
             let actual = block_on(async move { resp.0.body_json::<Value>().await.ok() });
             assert!(
                 actual.is_some(),
-                "\nVerification failed for stub '{}'. Expected json response body to be '{}' but none present",
-                name,
-                expected
+                "\nVerification failed for stub '{name}'. Expected json response body to be '{expected}' but none present"
             );
             let actual = actual.unwrap();
             if expected.has_template_expressions() {
                 if stub.requires_response_templating() {
                     JsonBodyTemplatingVerifier { actual, expected }.verify(stub, name, req, &mut StdResponse::default());
                 } else {
-                    panic!("\nVerification failed for stub '{}'. No response template transformer present but template elements present in expected response json body '{}'", name, expected)
+                    panic!("\nVerification failed for stub '{name}'. No response template transformer present but template elements present in expected response json body '{expected}'")
                 }
             } else {
                 assert_eq!(
                     actual, expected,
-                    "\nVerification failed for stub '{}'. Expected json response body to be '{}' but was '{}'",
-                    name, expected, actual
+                    "\nVerification failed for stub '{name}'. Expected json response body to be '{expected}' but was '{actual}'"
                 );
             }
         }

@@ -49,7 +49,7 @@ impl StubWriter {
             .as_ref()
             .map(|it| it.strip_prefix('/').unwrap_or(it))
             .map(|it| it.replace('/', "-"))
-            .map(|it| format!("{}-", it))
+            .map(|it| format!("{it}-"))
     }
 
     fn output_and_create(&self, host: &str, output: Option<&PathBuf>) -> PathBuf {
@@ -73,13 +73,13 @@ impl StubWriter {
                 .map(|h| h.replace(|c: char| !c.is_alphanumeric(), "."))
                 .map(|h| {
                     if let Some(p) = url.port() {
-                        (h, format!("-{}", p))
+                        (h, format!("-{p}"))
                     } else {
                         (h, String::new())
                     }
                 })
                 .unwrap_or(("localhost".to_string(), String::new()));
-            format!("{}{}", host, port)
+            format!("{host}{port}")
         } else {
             String::from("default")
         }

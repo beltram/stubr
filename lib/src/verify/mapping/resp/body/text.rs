@@ -18,22 +18,19 @@ impl Verifier<'_> for TextBodyVerifier {
             let actual = block_on(async move { resp.0.body_string().await.ok() }).filter(|it| !it.is_empty());
             assert!(
                 actual.is_some(),
-                "\nVerification failed for stub '{}'. Expected response body to be '{}' but none present",
-                name,
-                expected
+                "\nVerification failed for stub '{name}'. Expected response body to be '{expected}' but none present"
             );
             let actual = actual.unwrap();
             if expected.has_template_expressions() {
                 if stub.requires_response_templating() {
                     TextBodyTemplatingVerifier { actual, expected }.verify(stub, name, req, &mut StdResponse::default());
                 } else {
-                    panic!("\nVerification failed for stub '{}'. No response template transformer present but template elements present in expected response text body '{}'", name, expected)
+                    panic!("\nVerification failed for stub '{name}'. No response template transformer present but template elements present in expected response text body '{expected}'")
                 }
             } else {
                 assert_eq!(
                     actual, expected,
-                    "\nVerification failed for stub '{}'. Expected response body to be '{}' but was '{}'",
-                    name, expected, actual
+                    "\nVerification failed for stub '{name}'. Expected response body to be '{expected}' but was '{actual}'"
                 );
             }
         }

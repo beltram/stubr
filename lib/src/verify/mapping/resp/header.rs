@@ -13,13 +13,11 @@ impl Verifier<'_> for HeaderVerifier {
                     let actual_value = actual_value.as_str();
                     assert_eq!(
                         actual_value, expected_value,
-                        "Verification failed for stub '{}'. Expected response header '{}' to have value '{}' but was '{}'",
-                        name, expected_key, expected_value, actual_value
+                        "Verification failed for stub '{name}'. Expected response header '{expected_key}' to have value '{expected_value}' but was '{actual_value}'"
                     )
                 } else {
                     panic!(
-                        "Verification failed for stub '{}'. Expected one response header with key '{}' but none found",
-                        name, expected_key
+                        "Verification failed for stub '{name}'. Expected one response header with key '{expected_key}' but none found"
                     )
                 }
             }

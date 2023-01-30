@@ -22,7 +22,7 @@ impl TryFrom<&JwtAuthStub> for JwtExactMatcher {
     fn try_from(stub: &JwtAuthStub) -> anyhow::Result<Self> {
         stub.equal_to
             .as_ref()
-            .map(|eq| Self(format!("{} {}", BEARER_PREFIX, eq)))
+            .map(|eq| Self(format!("{BEARER_PREFIX} {eq}")))
             .ok_or_else(|| anyhow::Error::msg(""))
     }
 }

@@ -10,8 +10,7 @@ impl Verifier<'_> for StatusVerifier {
         let actual = u16::from(resp.0.status());
         assert_eq!(
             actual, expected,
-            "Verification failed for stub '{}'. Expected response status to be '{}' but was '{}'",
-            name, expected, actual
+            "Verification failed for stub '{name}'. Expected response status to be '{expected}' but was '{actual}'"
         );
     }
 }

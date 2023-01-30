@@ -6,7 +6,7 @@ pub struct SizeHelper;
 impl SizeHelper {
     pub const NAME: &'static str = "size";
 
-    fn value<'a>(h: &'a Helper) -> Option<String> {
+    fn value(h: &Helper) -> Option<String> {
         h.params().get(0).map(Self::infer_len).map(|s| s.to_string())
     }
 

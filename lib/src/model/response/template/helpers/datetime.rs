@@ -44,7 +44,7 @@ impl NowHelper {
         h.hash_get(key)?.relative_path().map(String::escape_single_quotes)
     }
 
-    fn apply_offset<'a>(now: DateTime<Utc>, h: &'a Helper) -> DateTime<Utc> {
+    fn apply_offset(now: DateTime<Utc>, h: &Helper) -> DateTime<Utc> {
         Self::get_hash(h, Self::OFFSET)
             .map(|it| it.replace(' ', ""))
             .and_then(|offset| Self::compute_offset(now, offset))
@@ -64,7 +64,7 @@ impl NowHelper {
             .map(|rhs| if is_negative { now - rhs } else { now + rhs })
     }
 
-    fn apply_timezone<'a>(now: DateTime<Utc>, h: &'a Helper) -> DateTime<Utc> {
+    fn apply_timezone(now: DateTime<Utc>, h: &Helper) -> DateTime<Utc> {
         Self::get_hash(h, Self::TIMEZONE)
             .and_then(|timezone| timezone.parse().ok())
             .map(|tz: Tz| tz.offset_from_utc_datetime(&now.naive_utc()).fix().local_minus_utc())

@@ -51,7 +51,7 @@ impl TryFrom<&HttpMethodStub> for MethodExactMatcher {
     fn try_from(http_method: &HttpMethodStub) -> anyhow::Result<Self> {
         let m = &http_method.0;
         if m != &Verb::Any {
-            Ok(method(format!("{:?}", m).as_str()))
+            Ok(method(format!("{m:?}").as_str()))
         } else {
             anyhow::Result::Err(anyhow::Error::msg(""))
         }

@@ -169,7 +169,7 @@ mod verify_url_tests {
         #[test]
         fn should_map_url_pattern() {
             let (path_regex, query_regex) = ("([a-z]{4})", "([a-z]{4})");
-            let regex = format!("/api/regex/{}\\?a={}", path_regex, query_regex);
+            let regex = format!("/api/regex/{path_regex}\\?a={query_regex}");
             let stub: RequestStub = HttpUrlStub {
                 url_pattern: Some(regex),
                 ..Default::default()
