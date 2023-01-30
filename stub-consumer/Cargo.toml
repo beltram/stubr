@@ -6,12 +6,12 @@ publish = false
 license = "Apache-2.0"
 
 [build-dependencies]
-stubr-build = { path = "../build", version = "0.5.0" }
+stubr-build = { path = "../build", version = "0.5.1" }
 stub-producer = { path = "../stub-producer" }
 actix-producer = { path = "../actix-producer" }
 
 [dev-dependencies]
-stubr = { path = "../lib", version = "0.5.0", features = ["attributes"] }
+stubr = { path = "../lib", version = "0.5.1", features = ["attributes"] }
 asserhttp = { version = "0.5", features = ["isahc"] }
 isahc = "1.7"
 async-std = { version = "1.12", features = ["attributes"] }
