@@ -1,26 +1,24 @@
-use std::str::FromStr;
-
 use http_types::{
     headers::HeaderName as HttpHeaderName, headers::HeaderValue as HttpHeaderValue, headers::HeaderValues as HttpHeaderValues,
     Body as HttpBody, Method as HttpMethod, Request as HttpRequest, Response as HttpResponse, Url,
-};
-use warp::{
-    http::{HeaderMap, Method as WarpMethod, Response},
-    hyper::body::Bytes,
 };
 
 use super::super::{RecordedExchange, RecordedRequest, RecordedResponse};
 
 pub struct WarpRequest {
-    pub method: WarpMethod,
+    pub method: warp::http::Method,
     pub addr: String,
     pub path: String,
     pub queries: Option<String>,
-    pub headers: HeaderMap,
-    pub body: Bytes,
+    pub headers: warp::http::HeaderMap,
+    pub body: warp::hyper::body::Bytes,
 }
 
-pub struct WarpResponse(pub Response<Bytes>);
+pub struct WarpResponse(
+    pub warp::http::StatusCode,
+    pub warp::http::HeaderMap,
+    pub warp::hyper::body::Bytes,
+);
 
 pub struct WarpExchange(pub WarpRequest, pub WarpResponse);
 
@@ -32,6 +30,7 @@ impl From<WarpExchange> for RecordedExchange {
 
 impl From<WarpRequest> for RecordedRequest {
     fn from(req: WarpRequest) -> Self {
+        use std::str::FromStr as _;
         let method = HttpMethod::from_str(req.method.as_str()).unwrap_or(HttpMethod::Get);
         let path = req.path;
         let path = path.strip_prefix('/').unwrap_or(path.as_str());
@@ -65,13 +64,13 @@ impl From<WarpRequest> for RecordedRequest {
 
 impl From<WarpResponse> for RecordedResponse {
     fn from(resp: WarpResponse) -> Self {
-        let status = resp.0.status().as_u16();
+        let status = resp.0.as_u16();
         let mut http_resp = HttpResponse::new(status);
-        http_resp.set_body(resp.0.body().as_ref());
-        resp.0
-            .headers()
+        http_resp.set_body(resp.2.as_ref());
+        resp.1
             .iter()
             .filter_map(|(k, v)| {
+                use std::str::FromStr as _;
                 let k = HttpHeaderName::from_str(k.as_str()).ok();
                 let v = v
                     .to_str()
@@ -94,15 +93,17 @@ impl From<WarpResponse> for RecordedResponse {
 #[cfg(test)]
 mod http_tests {
     use super::*;
+    use std::str::FromStr as _;
+    use warp::hyper::body::Bytes;
 
     impl Default for WarpRequest {
         fn default() -> Self {
             Self {
-                method: WarpMethod::GET,
+                method: warp::http::Method::GET,
                 addr: String::from("http://localhost/"),
                 path: String::default(),
                 queries: None,
-                headers: HeaderMap::default(),
+                headers: warp::http::HeaderMap::default(),
                 body: Bytes::default(),
             }
         }
@@ -116,7 +117,7 @@ mod http_tests {
         #[test]
         fn should_map_method_get() {
             let input = WarpRequest {
-                method: WarpMethod::GET,
+                method: warp::http::Method::GET,
                 ..Default::default()
             };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Get)
@@ -125,7 +126,7 @@ mod http_tests {
         #[test]
         fn should_map_method_post() {
             let input = WarpRequest {
-                method: WarpMethod::POST,
+                method: warp::http::Method::POST,
                 ..Default::default()
             };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Post)
@@ -134,7 +135,7 @@ mod http_tests {
         #[test]
         fn should_map_method_put() {
             let input = WarpRequest {
-                method: WarpMethod::PUT,
+                method: warp::http::Method::PUT,
                 ..Default::default()
             };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Put)
@@ -143,7 +144,7 @@ mod http_tests {
         #[test]
         fn should_map_method_patch() {
             let input = WarpRequest {
-                method: WarpMethod::PATCH,
+                method: warp::http::Method::PATCH,
                 ..Default::default()
             };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Patch)
@@ -152,7 +153,7 @@ mod http_tests {
         #[test]
         fn should_map_method_delete() {
             let input = WarpRequest {
-                method: WarpMethod::DELETE,
+                method: warp::http::Method::DELETE,
                 ..Default::default()
             };
             assert_eq!(RecordedRequest::from(input).0.method(), Method::Delete)
@@ -310,7 +311,7 @@ mod http_tests {
                 WarpHeaderValue::from_str("a").unwrap(),
             );
             let input = WarpRequest {
-                headers: HeaderMap::from_iter(vec![(ka, va)]),
+                headers: warp::http::HeaderMap::from_iter(vec![(ka, va)]),
                 ..Default::default()
             };
             let output = RecordedRequest::from(input).0;
@@ -321,7 +322,7 @@ mod http_tests {
         #[test]
         fn should_not_fail_when_no_req_header() {
             let input = WarpRequest {
-                headers: HeaderMap::new(),
+                headers: warp::http::HeaderMap::new(),
                 ..Default::default()
             };
             let output = RecordedRequest::from(input).0;
@@ -340,7 +341,7 @@ mod http_tests {
                 WarpHeaderValue::from_str("b").unwrap(),
             );
             let input = WarpRequest {
-                headers: HeaderMap::from_iter(vec![(ka, va), (kb, vb)]),
+                headers: warp::http::HeaderMap::from_iter(vec![(ka, va), (kb, vb)]),
                 ..Default::default()
             };
             let output = RecordedRequest::from(input).0;
@@ -357,7 +358,7 @@ mod http_tests {
                 WarpHeaderValue::from_str("a, b").unwrap(),
             );
             let input = WarpRequest {
-                headers: HeaderMap::from_iter(vec![(ka, va)]),
+                headers: warp::http::HeaderMap::from_iter(vec![(ka, va)]),
                 ..Default::default()
             };
             let output = RecordedRequest::from(input).0;
@@ -413,34 +414,74 @@ mod http_tests {
 
         use super::*;
 
-        #[test]
-        fn should_map_continue_100() {
-            let input = WarpResponse(Response::builder().status(100).body(Bytes::new()).unwrap());
-            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::Continue)
+        #[async_std::test]
+        async fn should_map_continue_100() {
+            let resp = warp::http::Response::builder()
+                .status(100)
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                resp.status(),
+                resp.headers().clone(),
+                warp::hyper::body::to_bytes(resp.into_body()).await.unwrap(),
+            );
+            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::Continue);
         }
 
-        #[test]
-        fn should_map_ok_200() {
-            let input = WarpResponse(Response::builder().status(200).body(Bytes::new()).unwrap());
-            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::Ok)
+        #[async_std::test]
+        async fn should_map_ok_200() {
+            let resp = warp::http::Response::builder()
+                .status(200)
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                resp.status(),
+                resp.headers().clone(),
+                warp::hyper::body::to_bytes(resp.into_body()).await.unwrap(),
+            );
+            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::Ok);
         }
 
-        #[test]
-        fn should_map_moved_permanently_301() {
-            let input = WarpResponse(Response::builder().status(301).body(Bytes::new()).unwrap());
-            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::MovedPermanently)
+        #[async_std::test]
+        async fn should_map_moved_permanently_301() {
+            let resp = warp::http::Response::builder()
+                .status(301)
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                resp.status(),
+                resp.headers().clone(),
+                warp::hyper::body::to_bytes(resp.into_body()).await.unwrap(),
+            );
+            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::MovedPermanently);
         }
 
-        #[test]
-        fn should_map_bad_request_400() {
-            let input = WarpResponse(Response::builder().status(400).body(Bytes::new()).unwrap());
-            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::BadRequest)
+        #[async_std::test]
+        async fn should_map_bad_request_400() {
+            let resp = warp::http::Response::builder()
+                .status(400)
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                resp.status(),
+                resp.headers().clone(),
+                warp::hyper::body::to_bytes(resp.into_body()).await.unwrap(),
+            );
+            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::BadRequest);
         }
 
-        #[test]
-        fn should_map_server_error_500() {
-            let input = WarpResponse(Response::builder().status(500).body(Bytes::new()).unwrap());
-            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::InternalServerError)
+        #[async_std::test]
+        async fn should_map_server_error_500() {
+            let resp = warp::http::Response::builder()
+                .status(500)
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                resp.status(),
+                resp.headers().clone(),
+                warp::hyper::body::to_bytes(resp.into_body()).await.unwrap(),
+            );
+            assert_eq!(RecordedResponse::from(input).0.status(), StatusCode::InternalServerError);
         }
     }
 
@@ -449,28 +490,53 @@ mod http_tests {
 
         use super::*;
 
-        #[test]
-        fn should_map_one_resp_header() {
-            let input = Response::builder().status(200);
-            let input = WarpResponse(input.header("x-a", "a").body(Bytes::new()).unwrap());
+        #[async_std::test]
+        async fn should_map_one_resp_header() {
+            let input = warp::http::Response::builder()
+                .status(200)
+                .header("x-a", "a")
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                input.status(),
+                input.headers().clone(),
+                warp::hyper::body::to_bytes(input.into_body()).await.unwrap(),
+            );
             let output = RecordedResponse::from(input).0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
         }
 
-        #[test]
-        fn should_not_fail_when_no_resp_header() {
-            let input = WarpResponse(Response::builder().status(200).body(Bytes::new()).unwrap());
+        #[async_std::test]
+        async fn should_not_fail_when_no_resp_header() {
+            let input = warp::http::Response::builder()
+                .status(200)
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                input.status(),
+                input.headers().clone(),
+                warp::hyper::body::to_bytes(input.into_body()).await.unwrap(),
+            );
             let output = RecordedResponse::from(input).0;
             // has 'content-type' by default
             assert_eq!(output.header_names().collect_vec().len(), 1);
             assert_eq!(output.header_values().collect_vec().len(), 1);
         }
 
-        #[test]
-        fn should_map_many_resp_header() {
-            let input = Response::builder().status(200);
-            let input = WarpResponse(input.header("x-a", "a").header("x-b", "b").body(Bytes::new()).unwrap());
+        #[async_std::test]
+        async fn should_map_many_resp_header() {
+            let input = warp::http::Response::builder()
+                .status(200)
+                .header("x-a", "a")
+                .header("x-b", "b")
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                input.status(),
+                input.headers().clone(),
+                warp::hyper::body::to_bytes(input.into_body()).await.unwrap(),
+            );
             let output = RecordedResponse::from(input).0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
@@ -478,10 +544,18 @@ mod http_tests {
             assert_eq!(ha.unwrap().as_str(), "b");
         }
 
-        #[test]
-        fn should_map_multi_resp_header() {
-            let input = Response::builder().status(200);
-            let input = WarpResponse(input.header("x-m", "a, b").body(Bytes::new()).unwrap());
+        #[async_std::test]
+        async fn should_map_multi_resp_header() {
+            let input = warp::http::Response::builder()
+                .status(200)
+                .header("x-m", "a, b")
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                input.status(),
+                input.headers().clone(),
+                warp::hyper::body::to_bytes(input.into_body()).await.unwrap(),
+            );
             let output = RecordedResponse::from(input).0;
             let multi = output.header("x-m").unwrap();
             assert_eq!(multi.get(0).unwrap().as_str(), "a");
@@ -495,46 +569,68 @@ mod http_tests {
 
         use super::*;
 
-        #[test]
-        fn should_map_json_resp_body() {
+        #[async_std::test]
+        async fn should_map_json_resp_body() {
             let input_body = json!({"a": "b"});
+            let input = warp::http::Response::builder()
+                .status(200)
+                .body(warp::hyper::body::Body::from(input_body.to_string()))
+                .unwrap();
             let input = WarpResponse(
-                Response::builder()
-                    .status(200)
-                    .body(Bytes::from(input_body.to_string()))
-                    .unwrap(),
+                input.status(),
+                input.headers().clone(),
+                warp::hyper::body::to_bytes(input.into_body()).await.unwrap(),
             );
             let mut output = RecordedResponse::from(input).0;
             let body = block_on(async move { output.body_json::<Value>().await.unwrap() });
             assert_eq!(body, input_body);
         }
 
-        #[test]
-        fn should_map_binary_resp_body() {
+        #[async_std::test]
+        async fn should_map_binary_resp_body() {
             let input_body = "Hello World!";
+            let input = warp::http::Response::builder()
+                .status(200)
+                .body(warp::hyper::body::Body::from(input_body.to_string()))
+                .unwrap();
             let input = WarpResponse(
-                Response::builder()
-                    .status(200)
-                    .body(Bytes::from(input_body.as_bytes()))
-                    .unwrap(),
+                input.status(),
+                input.headers().clone(),
+                warp::hyper::body::to_bytes(input.into_body()).await.unwrap(),
             );
             let mut output = RecordedResponse::from(input).0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert_eq!(body.as_slice(), input_body.as_bytes());
         }
 
-        #[test]
-        fn should_not_fail_when_body_empty() {
-            let input = WarpResponse(Response::builder().status(200).body(Bytes::new()).unwrap());
+        #[async_std::test]
+        async fn should_not_fail_when_body_empty() {
+            let input = warp::http::Response::builder()
+                .status(200)
+                .body(warp::hyper::body::Body::empty())
+                .unwrap();
+            let input = WarpResponse(
+                input.status(),
+                input.headers().clone(),
+                warp::hyper::body::to_bytes(input.into_body()).await.unwrap(),
+            );
             let mut output = RecordedResponse::from(input).0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert!(body.is_empty());
         }
 
-        #[test]
-        fn should_not_alter_remote_content_type() {
-            let input = Response::builder().status(200).header("content-type", "application/xml");
-            let input = WarpResponse(input.body(Bytes::from("a")).unwrap());
+        #[async_std::test]
+        async fn should_not_alter_remote_content_type() {
+            let input = warp::http::Response::builder()
+                .status(200)
+                .header("content-type", "application/xml")
+                .body(warp::hyper::body::Body::from("a".to_string()))
+                .unwrap();
+            let input = WarpResponse(
+                input.status(),
+                input.headers().clone(),
+                warp::hyper::body::to_bytes(input.into_body()).await.unwrap(),
+            );
             let output = RecordedResponse::from(input).0;
             let content_type = output.header("content-type").unwrap().get(0);
             assert_eq!(content_type.unwrap().as_str(), "application/xml");

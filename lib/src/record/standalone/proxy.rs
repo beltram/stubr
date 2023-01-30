@@ -53,7 +53,7 @@ impl Proxy {
         addr: String, base_path: String, uri: FullPath, queries: QueryParameters, method: Method, headers: HeaderMap, body: Bytes,
     ) -> Result<RecordedExchange, Rejection> {
         let path = uri.as_str().to_string();
-        proxy_to_and_forward_response(
+        let resp = proxy_to_and_forward_response(
             addr.clone(),
             base_path,
             uri,
@@ -62,19 +62,21 @@ impl Proxy {
             headers.clone(),
             body.clone(),
         )
-        .await
-        .map(move |resp| {
-            let req = WarpRequest {
-                method,
-                addr,
-                path,
-                queries,
-                headers,
-                body,
-            };
-            let resp = WarpResponse(resp);
-            WarpExchange(req, resp).into()
-        })
+        .await?;
+        let req = WarpRequest {
+            method,
+            addr,
+            path,
+            queries,
+            headers,
+            body,
+        };
+        let resp = WarpResponse(
+            resp.status(),
+            resp.headers().clone(),
+            warp::hyper::body::to_bytes(resp.into_body()).await.unwrap(),
+        );
+        Ok(WarpExchange(req, resp).into())
     }
 
     async fn reply(mut exchange: RecordedExchange, cfg: RecordConfig, then: fn(RecordInput)) -> Result<impl Reply, Rejection> {
