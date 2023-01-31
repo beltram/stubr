@@ -1,8 +1,7 @@
 use std::hash::{Hash, Hasher};
 
-use serde::{Deserialize, Serialize};
+use crate::wiremock::{matchers::HeaderExactMatcher, MockBuilder};
 use serde_json::{Map, Value};
-use wiremock::{matchers::HeaderExactMatcher, MockBuilder};
 
 use absent::HeaderAbsentMatcher;
 use case::HeaderCaseInsensitiveMatcher;
@@ -17,7 +16,7 @@ mod contains;
 mod exact;
 mod matches;
 
-#[derive(Serialize, Deserialize, Debug, Default, Eq)]
+#[derive(Debug, Clone, Default, Eq, serde::Serialize, serde::Deserialize)]
 pub struct HttpReqHeadersStub {
     // matches all request http headers
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -117,3 +117,4 @@ mod record;
 mod server;
 #[cfg(feature = "verify")]
 mod verify;
+mod wiremock;

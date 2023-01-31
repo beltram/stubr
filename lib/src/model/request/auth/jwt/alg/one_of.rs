@@ -1,5 +1,5 @@
+use crate::wiremock::{Match, Request};
 use jsonwebtoken::Algorithm;
-use wiremock::{Match, Request};
 
 use super::{super::super::helpers::RequestAuthExtension, JwtAlgStub};
 

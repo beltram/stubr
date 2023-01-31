@@ -1,0 +1,14 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "Optional",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "opt": "opt"
+        }
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

@@ -6,7 +6,7 @@ use serde_json::{json, Value};
 
 use crate::{
     gen::string::StringRndGenerator,
-    model::request::{body::BodyPatternStub, RequestStub},
+    model::request::{body::BodyMatcherStub, RequestStub},
     verify::mapping::jsonpath::JsonGeneratorIterator,
 };
 
@@ -79,8 +79,8 @@ impl PartialBody {
     }
 }
 
-impl From<&BodyPatternStub> for PartialBody {
-    fn from(stub: &BodyPatternStub) -> Self {
+impl From<&BodyMatcherStub> for PartialBody {
+    fn from(stub: &BodyMatcherStub) -> Self {
         if let Some(binary_equal_to) = stub.binary_equal_to.as_ref() {
             use base64::Engine as _;
             base64::prelude::BASE64_STANDARD
@@ -159,7 +159,7 @@ mod verify_body_tests {
         #[test]
         fn equal_to_json_should_generate_strictly_equal() {
             let json = json!({"name": "john", "age": 42});
-            let stub = BodyPatternStub {
+            let stub = BodyMatcherStub {
                 equal_to_json: Some(json.clone()),
                 ..Default::default()
             };
@@ -172,7 +172,7 @@ mod verify_body_tests {
 
         #[test]
         fn binary_equal_to_should_generate_strictly_equal() {
-            let stub = BodyPatternStub {
+            let stub = BodyMatcherStub {
                 binary_equal_to: Some(String::from("AQID")),
                 ..Default::default()
             };
@@ -182,7 +182,7 @@ mod verify_body_tests {
         #[should_panic(expected = "'!!!' must be Base64 encoded")]
         #[test]
         fn binary_equal_to_should_fail_when_not_base64() {
-            let _ = PartialBody::from(&BodyPatternStub {
+            let _ = PartialBody::from(&BodyMatcherStub {
                 binary_equal_to: Some(String::from("!!!")),
                 ..Default::default()
             });
@@ -194,7 +194,7 @@ mod verify_body_tests {
 
         #[test]
         fn expression_contains_should_generate_containing() {
-            let by_contains = BodyPatternStub {
+            let by_contains = BodyMatcherStub {
                 expression: Some(String::from("$.name")),
                 contains: Some(String::from("a")),
                 ..Default::default()
@@ -211,7 +211,7 @@ mod verify_body_tests {
         #[test]
         fn expression_equal_to_json_should_generate_strictly_equal() {
             let owner = json!({"name": "john", "age": 42});
-            let by_eq = BodyPatternStub {
+            let by_eq = BodyMatcherStub {
                 expression: Some(String::from("$.owner")),
                 equal_to_json: Some(owner.clone()),
                 ..Default::default()
@@ -231,13 +231,13 @@ mod verify_body_tests {
         #[test]
         fn many_expression_equal_to_json_should_generate_combined() {
             let alice = json!({"name": "alice"});
-            let sender = BodyPatternStub {
+            let sender = BodyMatcherStub {
                 expression: Some(String::from("$.sender")),
                 equal_to_json: Some(alice.clone()),
                 ..Default::default()
             };
             let bob = json!({"name": "bob"});
-            let receiver = BodyPatternStub {
+            let receiver = BodyMatcherStub {
                 expression: Some(String::from("$.receiver")),
                 equal_to_json: Some(bob.clone()),
                 ..Default::default()
@@ -253,13 +253,13 @@ mod verify_body_tests {
         #[test]
         fn many_expression_equal_to_json_should_merge_paths() {
             let alice = json!({"name": "alice"});
-            let alice_stub = BodyPatternStub {
+            let alice_stub = BodyMatcherStub {
                 expression: Some(String::from("$.person.alice")),
                 equal_to_json: Some(alice.clone()),
                 ..Default::default()
             };
             let bob = json!({"name": "bob"});
-            let bob_stub = BodyPatternStub {
+            let bob_stub = BodyMatcherStub {
                 expression: Some(String::from("$.person.bob")),
                 equal_to_json: Some(bob.clone()),
                 ..Default::default()
@@ -275,12 +275,12 @@ mod verify_body_tests {
         #[test]
         fn many_expression_equal_to_json_and_contains_should_generate_combined() {
             let alice = json!({"name": "alice"});
-            let sender = BodyPatternStub {
+            let sender = BodyMatcherStub {
                 expression: Some(String::from("$.sender")),
                 equal_to_json: Some(alice.clone()),
                 ..Default::default()
             };
-            let receiver = BodyPatternStub {
+            let receiver = BodyMatcherStub {
                 expression: Some(String::from("$.receiver")),
                 contains: Some(String::from("b")),
                 ..Default::default()
@@ -297,12 +297,12 @@ mod verify_body_tests {
 
         #[test]
         fn many_contains_should_generate_combined() {
-            let sender = BodyPatternStub {
+            let sender = BodyMatcherStub {
                 expression: Some(String::from("$.sender")),
                 contains: Some(String::from("s")),
                 ..Default::default()
             };
-            let receiver = BodyPatternStub {
+            let receiver = BodyMatcherStub {
                 expression: Some(String::from("$.receiver")),
                 contains: Some(String::from("r")),
                 ..Default::default()
@@ -323,7 +323,7 @@ mod verify_body_tests {
 
         #[test]
         fn matches_json_path_should_generate_containing_empty_json() {
-            let jsonpath = BodyPatternStub {
+            let jsonpath = BodyMatcherStub {
                 matches_json_path: Some(String::from("$.name")),
                 ..Default::default()
             };
@@ -338,11 +338,11 @@ mod verify_body_tests {
         #[test]
         fn matches_json_path_and_expression_should_generate_valid_json() {
             let owner = json!({"name": "john", "age": 42});
-            let by_jsonpath = BodyPatternStub {
+            let by_jsonpath = BodyMatcherStub {
                 matches_json_path: Some(String::from("$.other")),
                 ..Default::default()
             };
-            let by_eq = BodyPatternStub {
+            let by_eq = BodyMatcherStub {
                 expression: Some(String::from("$.owner")),
                 equal_to_json: Some(owner.clone()),
                 ..Default::default()
@@ -364,7 +364,7 @@ mod verify_body_tests {
 
             #[test]
             fn matches_json_path_eq_should_generate_containing_filters() {
-                let jsonpath_alice = BodyPatternStub {
+                let jsonpath_alice = BodyMatcherStub {
                     matches_json_path: Some(String::from("$.users[?(@.name == 'alice')]")),
                     ..Default::default()
                 };
@@ -378,11 +378,11 @@ mod verify_body_tests {
 
             #[test]
             fn matches_many_json_path_eq_should_generate_containing_filters() {
-                let jsonpath_alice = BodyPatternStub {
+                let jsonpath_alice = BodyMatcherStub {
                     matches_json_path: Some(String::from("$.users[?(@.name == 'alice')]")),
                     ..Default::default()
                 };
-                let jsonpath_bob = BodyPatternStub {
+                let jsonpath_bob = BodyMatcherStub {
                     matches_json_path: Some(String::from("$.users[?(@.name == 'bob')]")),
                     ..Default::default()
                 };
@@ -401,11 +401,11 @@ mod verify_body_tests {
 
         #[test]
         fn binary_equal_to_should_have_precedence_over_equal_to_json() {
-            let priority = BodyPatternStub {
+            let priority = BodyMatcherStub {
                 binary_equal_to: Some(String::from("AQID")),
                 ..Default::default()
             };
-            let other = BodyPatternStub {
+            let other = BodyMatcherStub {
                 equal_to_json: Some(json!({"name": "jdoe"})),
                 ..Default::default()
             };
@@ -418,11 +418,11 @@ mod verify_body_tests {
 
         #[test]
         fn binary_equal_to_should_have_precedence_over_expression() {
-            let priority = BodyPatternStub {
+            let priority = BodyMatcherStub {
                 binary_equal_to: Some(String::from("AQID")),
                 ..Default::default()
             };
-            let other = BodyPatternStub {
+            let other = BodyMatcherStub {
                 expression: Some(String::from("$.owner")),
                 equal_to_json: Some(json!({"name": "jdoe"})),
                 ..Default::default()
@@ -437,11 +437,11 @@ mod verify_body_tests {
         #[test]
         fn equal_to_json_should_have_precedence_over_expression() {
             let jdoe = json!({"name": "jdoe"});
-            let priority = BodyPatternStub {
+            let priority = BodyMatcherStub {
                 equal_to_json: Some(jdoe.clone()),
                 ..Default::default()
             };
-            let other = BodyPatternStub {
+            let other = BodyMatcherStub {
                 expression: Some(String::from("$.owner")),
                 equal_to_json: Some(jdoe.clone()),
                 ..Default::default()
@@ -457,12 +457,12 @@ mod verify_body_tests {
         #[test]
         fn expression_equal_to_json_should_have_precedence_over_expression_contains() {
             let jdoe = json!({"name": "jdoe"});
-            let priority = BodyPatternStub {
+            let priority = BodyMatcherStub {
                 expression: Some(String::from("$.owner")),
                 equal_to_json: Some(jdoe.clone()),
                 ..Default::default()
             };
-            let other = BodyPatternStub {
+            let other = BodyMatcherStub {
                 expression: Some(String::from("$.owner")),
                 contains: Some(String::from("a")),
                 ..Default::default()
@@ -478,12 +478,12 @@ mod verify_body_tests {
         #[test]
         fn expression_should_have_precedence_over_matches_json_path() {
             let jdoe = json!({"name": "jdoe"});
-            let priority = BodyPatternStub {
+            let priority = BodyMatcherStub {
                 expression: Some(String::from("$.owner")),
                 equal_to_json: Some(jdoe.clone()),
                 ..Default::default()
             };
-            let other = BodyPatternStub {
+            let other = BodyMatcherStub {
                 matches_json_path: Some(String::from("$.owner")),
                 ..Default::default()
             };

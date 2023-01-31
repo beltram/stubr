@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
+use crate::wiremock::{Request, ResponseTemplate};
 use http_types::headers::HeaderName;
-use wiremock::{Request, ResponseTemplate};
 
 pub struct OpenTracing<'a>(pub &'a Request);
 

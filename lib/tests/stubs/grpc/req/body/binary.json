@@ -1,0 +1,12 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "Child",
+    "bodyPatterns": [
+      {
+        "binaryEqualTo": "CgNqb2U="
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

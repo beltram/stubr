@@ -1,16 +1,16 @@
-use serde_json::{from_slice as deserialize, Value};
-use wiremock::{Match, Request};
+use crate::wiremock::{Match, Request};
+use serde_json::Value;
 
 use super::{
     super::json::{json_path_contains::JsonPathContainsMatcher, JsonMatcher},
-    BodyPatternStub,
+    BodyMatcherStub,
 };
 
 pub struct JsonBodyPathContainsMatcher(String, String);
 
-impl Match for JsonBodyPathContainsMatcher {
-    fn matches(&self, req: &Request) -> bool {
-        deserialize::<Value>(&req.body)
+impl JsonBodyPathContainsMatcher {
+    pub fn matching_json_path_contains(&self, bytes: &[u8]) -> bool {
+        serde_json::from_slice::<Value>(bytes)
             .ok()
             .as_ref()
             .map(|json| JsonPathContainsMatcher(&self.0, &self.1).matches(json))
@@ -18,10 +18,16 @@ impl Match for JsonBodyPathContainsMatcher {
     }
 }
 
-impl TryFrom<&BodyPatternStub> for JsonBodyPathContainsMatcher {
+impl Match for JsonBodyPathContainsMatcher {
+    fn matches(&self, req: &Request) -> bool {
+        self.matching_json_path_contains(&req.body)
+    }
+}
+
+impl TryFrom<&BodyMatcherStub> for JsonBodyPathContainsMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyMatcherStub) -> anyhow::Result<Self> {
         body.expression
             .as_ref()
             .filter(|_| body.is_by_json_path_contains())

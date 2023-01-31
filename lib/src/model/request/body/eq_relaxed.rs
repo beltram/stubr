@@ -1,9 +1,9 @@
-use serde_json::{from_slice as deserialize, Value};
-use wiremock::{Match, Request};
+use crate::wiremock::{Match, Request};
+use serde_json::Value;
 
 use super::{
     diff::{all::RelaxedValue, array::RelaxedJsonArray, extra::RelaxedExtraJsonObj},
-    BodyPatternStub,
+    BodyMatcherStub,
 };
 
 pub struct JsonBodyRelaxedMatcher {
@@ -12,23 +12,15 @@ pub struct JsonBodyRelaxedMatcher {
     is_ignore_array_order: bool,
 }
 
-impl JsonBodyRelaxedMatcher {
-    fn match_relaxed(&self, req_body: &Value) -> bool {
-        RelaxedValue(&self.value) == RelaxedValue(req_body)
-    }
-
-    fn match_ignoring_extra(&self, req_body: &Value) -> bool {
-        RelaxedExtraJsonObj(&self.value) == RelaxedExtraJsonObj(req_body)
-    }
-
-    fn match_ignoring_array_order(&self, req_body: &Value) -> bool {
-        RelaxedJsonArray(&self.value) == RelaxedJsonArray(req_body)
+impl Match for JsonBodyRelaxedMatcher {
+    fn matches(&self, req: &Request) -> bool {
+        self.matching_relaxed_json(&req.body)
     }
 }
 
-impl Match for JsonBodyRelaxedMatcher {
-    fn matches(&self, req: &Request) -> bool {
-        deserialize::<Value>(&req.body)
+impl JsonBodyRelaxedMatcher {
+    pub fn matching_relaxed_json(&self, bytes: &[u8]) -> bool {
+        serde_json::from_slice::<Value>(bytes)
             .ok()
             .as_ref()
             .map(|req_body| {
@@ -42,22 +34,31 @@ impl Match for JsonBodyRelaxedMatcher {
             })
             .unwrap_or_default()
     }
+
+    fn match_relaxed(&self, req_body: &Value) -> bool {
+        RelaxedValue(&self.value) == RelaxedValue(req_body)
+    }
+
+    fn match_ignoring_extra(&self, req_body: &Value) -> bool {
+        RelaxedExtraJsonObj(&self.value) == RelaxedExtraJsonObj(req_body)
+    }
+
+    fn match_ignoring_array_order(&self, req_body: &Value) -> bool {
+        RelaxedJsonArray(&self.value) == RelaxedJsonArray(req_body)
+    }
 }
 
-impl TryFrom<&BodyPatternStub> for JsonBodyRelaxedMatcher {
+impl TryFrom<&BodyMatcherStub> for JsonBodyRelaxedMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
-        let is_ignore_extra_elements = body.is_ignore_extra_elements();
-        let is_ignore_array_order = body.is_ignore_array_order();
-        let is_relaxed = is_ignore_extra_elements || is_ignore_array_order;
+    fn try_from(body: &BodyMatcherStub) -> anyhow::Result<Self> {
         body.equal_to_json
             .as_ref()
-            .filter(|_| is_relaxed && body.is_by_json_equality())
+            .filter(|_| body.is_relaxed_matching())
             .map(|v| Self {
                 value: v.to_owned(),
-                is_ignore_extra_elements,
-                is_ignore_array_order,
+                is_ignore_extra_elements: body.is_ignore_extra_elements(),
+                is_ignore_array_order: body.is_ignore_array_order(),
             })
             .ok_or_else(|| anyhow::Error::msg(""))
     }

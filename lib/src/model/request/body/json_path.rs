@@ -1,17 +1,17 @@
+use crate::wiremock::{Match, Request};
 use jsonpath_lib::Compiled;
 use serde_json::Value;
-use wiremock::{Match, Request};
 
 use super::{
     super::json::{json_path::JsonPathMatcher, JsonMatcher},
-    BodyPatternStub,
+    BodyMatcherStub,
 };
 
-pub struct JsonBodyPathMatcher(Compiled);
+pub struct JsonPathBodyMatcher(Compiled);
 
-impl Match for JsonBodyPathMatcher {
-    fn matches(&self, req: &Request) -> bool {
-        serde_json::from_slice::<Value>(&req.body)
+impl JsonPathBodyMatcher {
+    pub fn matching_json_path(&self, bytes: &[u8]) -> bool {
+        serde_json::from_slice::<Value>(bytes)
             .ok()
             .as_ref()
             .map(|json| JsonPathMatcher(&self.0).matches(json))
@@ -19,10 +19,16 @@ impl Match for JsonBodyPathMatcher {
     }
 }
 
-impl TryFrom<&BodyPatternStub> for JsonBodyPathMatcher {
+impl Match for JsonPathBodyMatcher {
+    fn matches(&self, req: &Request) -> bool {
+        self.matching_json_path(&req.body)
+    }
+}
+
+impl TryFrom<&BodyMatcherStub> for JsonPathBodyMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyMatcherStub) -> anyhow::Result<Self> {
         body.matches_json_path
             .as_deref()
             .filter(|_| body.is_by_json_path())

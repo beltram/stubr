@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package grpc;
+
+import "other.proto";
+
+service Grpc {
+
+  rpc status (Empty) returns (Empty) {}
+
+  rpc reqNaming (Naming) returns (Empty) {}
+  rpc reqScalar (Scalar) returns (Empty) {}
+  rpc reqOptional (Optional) returns (Empty) {}
+  rpc reqArray (Array) returns (Empty) {}
+  rpc reqObj (Parent) returns (Empty) {}
+  rpc reqRelaxed (Relaxed) returns (Empty) {}
+  rpc reqOther (OtherParent) returns (Empty) {}
+  rpc reqJsonPath (JsonPath) returns (Empty) {}
+  rpc reqBinary (Child) returns (Empty) {}
+
+  rpc reqPathEq (Empty) returns (Empty) {}
+  rpc reqPathNotEq (Empty) returns (Empty) {}
+  rpc reqPathEqRegex (Empty) returns (Empty) {}
+
+  rpc respNaming (Empty) returns (Naming) {}
+  rpc respScalar (Empty) returns (Scalar) {}
+  rpc respOptional (Empty) returns (Optional) {}
+  rpc respArray (Empty) returns (Array) {}
+  rpc respObj (Empty) returns (Parent) {}
+  rpc respOther (Empty) returns (OtherParent) {}
+
+  rpc respTemplate (Template) returns (Template) {}
+}
+
+message Empty {}
+
+// see https://developers.google.com/protocol-buffers/docs/proto3#scalar
+message Scalar {
+  double double = 1;
+  float float = 2;
+  int32 int32 = 3;
+  int64 int64 = 4;
+  uint32 uint32 = 5;
+  uint64 uint64 = 6;
+  sint32 sint32 = 7;
+  sint64 sint64 = 8;
+  fixed32 fixed32 = 9;
+  fixed64 fixed64 = 10;
+  sfixed32 sfixed32 = 11;
+  sfixed64 sfixed64 = 12;
+  bool bool = 13;
+  string string = 14;
+  bytes bytes = 15;
+}
+
+message Naming {
+  string lowercase = 1;
+  string UPPERCASE = 2;
+  string snake_case = 3;
+  string camelCase = 4;
+}
+
+message Optional {
+  optional string opt = 1;
+}
+
+message Array {
+  repeated double double_array = 1;
+  repeated float float_array = 2;
+  repeated int32 int32_array = 3;
+  repeated int64 int64_array = 4;
+  repeated uint32 uint32_array = 5;
+  repeated uint64 uint64_array = 6;
+  repeated sint32 sint32_array = 7;
+  repeated sint64 sint64_array = 8;
+  repeated fixed32 fixed32_array = 9;
+  repeated fixed64 fixed64_array = 10;
+  repeated sfixed32 sfixed32_array = 11;
+  repeated sfixed64 sfixed64_array = 12;
+  repeated bool bool_array = 13;
+  repeated string string_array = 14;
+  repeated bytes bytes_array = 15;
+}
+
+enum Gender {
+  MALE = 0;
+  FEMALE = 1;
+  NB = 2;
+}
+
+message Parent {
+  Child child = 1;
+  optional Child maybe_child = 2;
+  repeated Child children = 3;
+  Gender gender = 4;
+}
+
+message Child {
+  string name = 1;
+}
+
+message Relaxed {
+  repeated string names = 1;
+  optional string nickname = 2;
+}
+
+message JsonPath {
+  optional string name = 1;
+  optional string composed_name = 2;
+  optional Child child = 3;
+}
+
+message OtherParent {
+  other.Other child = 1;
+}
+
+message Template {
+  string name = 1;
+}

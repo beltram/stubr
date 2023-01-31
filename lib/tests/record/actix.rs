@@ -24,7 +24,7 @@ async fn should_record_from_actix_integration_test() {
         .await
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "record-client-actix-11162265122061890704",
+        "record-client-actix-6106061188860212538",
         json!({
             "request": {
                 "method": "GET",
@@ -52,7 +52,7 @@ async fn should_record_from_actix_failing_integration_test() {
         .await
         .expect_status_internal_server_error();
     assert_recorded_stub_eq(
-        "record-client-actix-ko-7499948008303883645",
+        "record-client-actix-ko-2327414292507562131",
         json!({
             "request": {
                 "method": "GET",

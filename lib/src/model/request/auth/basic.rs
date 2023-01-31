@@ -1,9 +1,8 @@
-use serde::{Deserialize, Serialize};
-use wiremock::{Match, Request};
+use crate::wiremock::{Match, Request};
 
 use super::AUTHORIZATION_HEADER;
 
-#[derive(Serialize, Deserialize, Debug, Default, Hash)]
+#[derive(Debug, Clone, Default, Hash, serde::Serialize, serde::Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct BasicAuthStub {
     username: String,

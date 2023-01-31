@@ -1,26 +1,27 @@
+use anyhow::anyhow;
 use std::{
     fs::OpenOptions,
     hash::{Hash, Hasher},
     path::PathBuf,
 };
 
-use serde::{Deserialize, Serialize};
-use wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
+use crate::wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
 
 use request::RequestStub;
 use response::{
-    default::WiremockIsoResponse,
-    delay::Delay,
     template::{HandlebarTemplatable, StubTemplate},
-    ResponseAppender, ResponseStub,
+    ResponseStub,
 };
 
 use crate::Config;
 
+#[cfg(feature = "grpc")]
+pub mod grpc;
 pub mod request;
 pub mod response;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct JsonStub {
     #[serde(skip_serializing)]
     pub id: Option<String>,
@@ -30,42 +31,173 @@ pub struct JsonStub {
     pub priority: Option<u8>,
     #[serde(skip_serializing)]
     pub expect: Option<u32>,
-    pub request: RequestStub,
-    pub response: ResponseStub,
+    #[serde(rename = "request")]
+    pub http_request: Option<RequestStub>,
+    #[serde(rename = "response")]
+    pub http_response: Option<ResponseStub>,
+    #[cfg(feature = "grpc")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grpc_request: Option<grpc::request::GrpcRequestStub>,
+    #[cfg(feature = "grpc")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grpc_response: Option<grpc::response::GrpcResponseStub>,
+    /// Protobuf message descriptor file
+    #[cfg(feature = "grpc")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proto_file: Option<PathBuf>,
 }
 
 impl JsonStub {
     pub const DEFAULT_PRIORITY: u8 = 5;
 
-    pub(crate) fn try_creating_from(self, config: &Config) -> anyhow::Result<Mock> {
-        let expect = self.expect;
-        let mut mock = MockBuilder::try_from(&self.request)?.respond_with(self.into_respond(config));
-        if let (true, Some(expect)) = (config.verify, expect) {
-            mock = mock.expect(expect as u64);
-        }
-        Ok(mock)
+    fn is_http(&self) -> bool {
+        self.http_request.is_some() || self.http_response.is_some()
     }
 
-    pub fn into_respond<'a>(self, config: &Config) -> impl Respond + 'a {
-        let mut template = ResponseTemplate::new(self.response.status());
-        template = WiremockIsoResponse(&self).add(template);
-        template = Delay(&self, config).add(template);
-        if self.response.requires_response_templating() {
-            self.response.headers.register_template();
-            self.response.body.register_template();
+    #[cfg(feature = "grpc")]
+    fn is_grpc(&self) -> bool {
+        self.grpc_request.is_some() || self.grpc_response.is_some()
+    }
+
+    #[cfg(feature = "grpc")]
+    pub fn proto_file(&self) -> Option<&PathBuf> {
+        self.proto_file.as_ref().filter(|f| f.exists())
+    }
+
+    pub(crate) fn try_creating_from(self, config: &Config) -> anyhow::Result<Mock> {
+        let expect = self.expect;
+        if self.is_http() {
+            let req = self.http_request.clone().unwrap_or_default();
+            let mut mock = MockBuilder::try_from(&req)?.respond_with(self.into_respond(config));
+            if let (true, Some(expect)) = (config.verify, expect) {
+                mock = mock.expect(expect as u64);
+            }
+            Ok(mock)
+        } else {
+            #[cfg(feature = "grpc")]
+            {
+                if self.is_grpc() {
+                    let req = self.grpc_request.clone().unwrap_or_default();
+                    let mut mock =
+                        grpc::request::GrpcRequestStub::try_new(&req, self.proto_file())?.respond_with(self.into_respond(config));
+                    if let (true, Some(expect)) = (config.verify, expect) {
+                        mock = mock.expect(expect as u64);
+                    }
+                    return Ok(mock);
+                }
+            }
+            return Err(anyhow!("Invalid stub"));
+        }
+    }
+
+    pub fn into_respond<'a>(self, #[allow(unused_variables)] config: &Config) -> impl Respond + 'a {
+        #[cfg(not(feature = "grpc"))]
+        {
+            if let Some(resp) = self.http_response.clone() {
+                self.http_respond(resp, config)
+            } else if self.http_request.is_some() {
+                self.default_http_respond(config)
+            } else {
+                Self::fallback_respond()
+            }
+        }
+        #[cfg(feature = "grpc")]
+        {
+            if let Some(resp) = self.http_response.clone() {
+                self.http_respond(resp, config)
+            } else if self.http_request.is_some() {
+                self.default_http_respond(config)
+            } else if let Some((proto_file, resp)) = Some(self.proto_file.clone()).zip(self.grpc_response.clone()) {
+                Self::grpc_respond(proto_file, resp)
+            } else if self.grpc_request.is_some() {
+                Self::default_grpc_respond()
+            } else {
+                Self::fallback_respond()
+            }
+        }
+    }
+
+    fn http_respond(&self, resp: ResponseStub, config: &Config) -> StubTemplate {
+        use crate::model::response::ResponseAppender as _;
+
+        let mut template = ResponseTemplate::new(resp.status());
+        template = crate::model::response::default::WiremockIsoResponse(self.uuid.as_deref()).add(template);
+        template = crate::model::response::delay::Delay(resp.fixed_delay_milliseconds, config).add(template);
+        if resp.requires_response_templating() {
+            resp.headers.register_template();
+            resp.body.register_template();
             StubTemplate {
                 template,
-                response: self.response,
+                response: Some(resp),
                 requires_templating: true,
+                ..Default::default()
             }
         } else {
-            template = self.response.headers.add(template);
-            template = self.response.body.add(template);
+            template = resp.headers.add(template);
+            template = resp.body.add(template);
             StubTemplate {
                 template,
-                response: self.response,
+                response: Some(resp),
                 requires_templating: false,
+                ..Default::default()
             }
+        }
+    }
+
+    fn default_http_respond(&self, config: &Config) -> StubTemplate {
+        use crate::model::response::ResponseAppender as _;
+
+        let resp = &ResponseStub::default();
+        let mut template = ResponseTemplate::new(resp.status());
+        template = crate::model::response::default::WiremockIsoResponse(self.uuid.as_deref()).add(template);
+        template = crate::model::response::delay::Delay(resp.fixed_delay_milliseconds, config).add(template);
+        StubTemplate {
+            template,
+            requires_templating: false,
+            ..Default::default()
+        }
+    }
+
+    #[cfg(feature = "grpc")]
+    fn grpc_respond(proto_file: Option<PathBuf>, resp: crate::model::grpc::response::GrpcResponseStub) -> StubTemplate {
+        let message_descriptor = resp.body.as_ref().map(|_| resp.message_descriptor(proto_file.as_ref()));
+        if resp.requires_response_templating() {
+            let template = ResponseTemplate::new_grpc(resp.status());
+            resp.register_template();
+            StubTemplate {
+                template,
+                md: message_descriptor,
+                grpc_response: Some(resp),
+                requires_templating: true,
+                ..Default::default()
+            }
+        } else {
+            let mut template = ResponseTemplate::new_grpc(resp.status());
+            template = resp.register(template, proto_file.as_ref());
+            StubTemplate {
+                template,
+                md: message_descriptor,
+                grpc_response: Some(resp),
+                requires_templating: false,
+                ..Default::default()
+            }
+        }
+    }
+
+    #[cfg(feature = "grpc")]
+    fn default_grpc_respond() -> StubTemplate {
+        let template = ResponseTemplate::new_grpc(0);
+        StubTemplate {
+            template,
+            requires_templating: false,
+            ..Default::default()
+        }
+    }
+
+    fn fallback_respond() -> StubTemplate {
+        StubTemplate {
+            template: ResponseTemplate::new(200),
+            ..Default::default()
         }
     }
 }
@@ -86,8 +218,14 @@ impl Default for JsonStub {
             uuid: Option::default(),
             priority: Some(Self::DEFAULT_PRIORITY),
             expect: Option::default(),
-            request: RequestStub::default(),
-            response: ResponseStub::default(),
+            http_request: Option::default(),
+            http_response: Option::default(),
+            #[cfg(feature = "grpc")]
+            grpc_request: Option::default(),
+            #[cfg(feature = "grpc")]
+            grpc_response: Option::default(),
+            #[cfg(feature = "grpc")]
+            proto_file: Option::default(),
         }
     }
 }
@@ -103,7 +241,7 @@ impl Hash for JsonStub {
         if let Some(it) = self.priority.as_ref() {
             it.hash(state);
         }
-        self.request.hash(state);
-        self.response.hash(state);
+        self.http_request.hash(state);
+        self.http_response.hash(state);
     }
 }

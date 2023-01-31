@@ -10,7 +10,7 @@ async fn isahc_client_should_proxy_to_recorder() {
         .isahc_client()
         .get(stubr.path("/record/isahc"))
         .expect_status_ok();
-    assert_recorded_stub_exists("record-isahc-8701664963288208773")
+    assert_recorded_stub_exists("record-isahc-187414719431371161")
 }
 
 #[tokio::test(flavor = "multi_thread")]
@@ -23,5 +23,5 @@ async fn reqwest_client_should_proxy_to_recorder() {
         .send()
         .await
         .expect_status_ok();
-    assert_recorded_stub_exists("record-reqwest-7870253293408550511")
+    assert_recorded_stub_exists("record-reqwest-6324118377853619925")
 }

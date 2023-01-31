@@ -14,7 +14,7 @@ async fn proxy_should_forward_status_200() {
         .get(stubr.path("/status/200"))
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "status-200-2265763564283130440",
+        "status-200-15176007533047428427",
         json!({
             "request": {
                 "method": "GET",
@@ -34,7 +34,7 @@ async fn proxy_should_forward_status_400() {
         .get(stubr.path("/status/400"))
         .expect_status_bad_request();
     assert_recorded_stub_eq(
-        "status-400-8450859937848383497",
+        "status-400-12191037585246109125",
         json!({
             "request": {
                 "method": "GET",
@@ -54,7 +54,7 @@ async fn proxy_should_forward_status_500() {
         .get(stubr.path("/status/500"))
         .expect_status_internal_server_error();
     assert_recorded_stub_eq(
-        "status-500-7338203501353728751",
+        "status-500-12428620360552818957",
         json!({
             "request": {
                 "method": "GET",

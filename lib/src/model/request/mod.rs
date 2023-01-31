@@ -1,7 +1,6 @@
-use serde::{Deserialize, Serialize};
-use wiremock::MockBuilder;
+use crate::wiremock::MockBuilder;
 
-use body::BodyPatternStub;
+use body::BodyMatcherStub;
 use headers::HttpReqHeadersStub;
 use method::HttpMethodStub;
 use query::HttpQueryParamsStub;
@@ -18,7 +17,7 @@ pub mod method;
 pub mod query;
 pub mod url;
 
-#[derive(Serialize, Deserialize, Debug, Default, Hash)]
+#[derive(Debug, Clone, Default, Hash, serde::Serialize, serde::Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct RequestStub {
     #[serde(default)]
@@ -30,7 +29,7 @@ pub struct RequestStub {
     #[serde(flatten)]
     pub queries: HttpQueryParamsStub,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub body_patterns: Vec<BodyPatternStub>,
+    pub body_patterns: Vec<BodyMatcherStub>,
     #[serde(flatten, skip_serializing)]
     pub auth: AuthStub,
 }
@@ -50,6 +49,6 @@ impl TryFrom<&RequestStub> for MockBuilder {
 }
 
 /// Normalizes appending a struct into a Mock
-trait MockRegistrable {
+pub trait MockRegistrable {
     fn register(&self, mock: MockBuilder) -> MockBuilder;
 }

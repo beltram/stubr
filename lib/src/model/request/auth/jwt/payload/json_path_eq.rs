@@ -1,5 +1,5 @@
+use crate::wiremock::{Match, Request};
 use serde_json::Value;
-use wiremock::{Match, Request};
 
 use super::super::super::{
     super::json::{json_path_eq::JsonPathEqMatcher, JsonMatcher},

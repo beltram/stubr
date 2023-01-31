@@ -1,4 +1,4 @@
-use wiremock::matchers::{path_regex, PathRegexMatcher};
+use crate::wiremock::matchers::{path_regex, PathRegexMatcher};
 
 use super::HttpUrlStub;
 

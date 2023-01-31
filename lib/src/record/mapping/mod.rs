@@ -1,6 +1,7 @@
-use crate::record::RecordInput;
-
-use super::super::model::{request::RequestStub, response::ResponseStub, JsonStub};
+use crate::{
+    model::{request::RequestStub, response::ResponseStub, JsonStub},
+    record::RecordInput,
+};
 
 pub mod req;
 pub mod resp;
@@ -12,8 +13,14 @@ impl From<RecordInput<'_>> for JsonStub {
             uuid: None,
             priority: None,
             expect: None,
-            request: RequestStub::from((&mut *ex, cfg)),
-            response: ResponseStub::from((&mut *ex, cfg)),
+            http_request: Some(RequestStub::from((&mut *ex, cfg))),
+            http_response: Some(ResponseStub::from((&mut *ex, cfg))),
+            #[cfg(feature = "grpc")]
+            grpc_request: None,
+            #[cfg(feature = "grpc")]
+            grpc_response: None,
+            #[cfg(feature = "grpc")]
+            proto_file: None,
         }
     }
 }

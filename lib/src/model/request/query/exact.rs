@@ -1,5 +1,5 @@
+use crate::wiremock::matchers::{query_param, QueryParamExactMatcher};
 use itertools::Itertools;
-use wiremock::matchers::{query_param, QueryParamExactMatcher};
 
 use super::{super::matcher::RequestMatcherStub, HttpQueryParamsStub};
 

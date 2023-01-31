@@ -1,19 +1,25 @@
-use wiremock::{Match, Request};
+use crate::wiremock::{Match, Request};
 
-use super::BodyPatternStub;
+use super::BodyMatcherStub;
 
-pub struct BinaryEqualMatcher(Vec<u8>);
+pub struct BinaryExactMatcher(Vec<u8>);
 
-impl Match for BinaryEqualMatcher {
+impl Match for BinaryExactMatcher {
     fn matches(&self, req: &Request) -> bool {
-        self.0 == req.body
+        self.matching_binary(&req.body)
     }
 }
 
-impl TryFrom<&BodyPatternStub> for BinaryEqualMatcher {
+impl BinaryExactMatcher {
+    pub fn matching_binary(&self, bytes: &[u8]) -> bool {
+        self.0 == bytes
+    }
+}
+
+impl TryFrom<&BodyMatcherStub> for BinaryExactMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyMatcherStub) -> anyhow::Result<Self> {
         use base64::Engine as _;
         body.binary_equal_to
             .as_ref()

@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
+use crate::wiremock::{Match, Request};
 use regex::Regex;
-use wiremock::{Match, Request};
 
 use super::HttpUrlStub;
 

@@ -1,8 +1,8 @@
 use std::ops::Not;
 
+use crate::wiremock::{Match, Request};
 use itertools::Itertools;
 use regex::Regex;
-use wiremock::{Match, Request};
 
 use super::{super::matcher::RequestMatcherStub, HttpQueryParamsStub};
 

@@ -1,6 +1,6 @@
+use crate::wiremock::matchers::{path, query_param, PathExactMatcher, QueryParamExactMatcher};
 use http_types::Url;
 use itertools::Itertools;
-use wiremock::matchers::{path, query_param, PathExactMatcher, QueryParamExactMatcher};
 
 use super::HttpUrlStub;
 

@@ -17,7 +17,7 @@ async fn proxy_should_forward_response_headers() {
         .expect_status_ok()
         .expect_header("x-a", "a");
     assert_recorded_stub_eq(
-        "headers-resp-one-15944799029425559929",
+        "headers-resp-one-11264035141853528472",
         json!({
             "request": {
                 "method": "GET",
@@ -47,7 +47,7 @@ async fn proxy_should_forward_many_response_headers() {
         .expect_header("x-a", "a")
         .expect_header("x-b", "b");
     assert_recorded_stub_eq(
-        "headers-resp-many-5360517033018629606",
+        "headers-resp-many-883809299236747639",
         json!({
             "request": {
                 "method": "GET",

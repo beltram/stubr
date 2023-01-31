@@ -1,4 +1,4 @@
-use wiremock::ResponseTemplate;
+use crate::wiremock::ResponseTemplate;
 
 pub struct SupersedeHyper;
 

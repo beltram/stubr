@@ -15,7 +15,7 @@ async fn proxy_should_forward_request_headers() {
         .send(req_header(stubr.path("/headers/req/one"), &[("x-a", "a")]))
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "headers-req-one-1986741243441608371",
+        "headers-req-one-589153436603703847",
         json!({
             "request": {
                 "method": "GET",
@@ -38,7 +38,7 @@ async fn proxy_should_forward_many_request_headers() {
         .send(req_header(stubr.path("/headers/req/many"), &[("x-a", "a"), ("x-b", "b")]))
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "headers-req-many-8491675639794805236",
+        "headers-req-many-4350164631002911918",
         json!({
             "request": {
                 "method": "GET",

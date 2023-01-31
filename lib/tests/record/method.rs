@@ -15,7 +15,7 @@ async fn proxy_should_forward_get_method() {
         .get(stubr.uri())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "9143887468928371923",
+        "16070105561873391239",
         json!({
             "request": {"method": "GET"},
             "response": {"status": 200}
@@ -32,7 +32,7 @@ async fn proxy_should_forward_post_method() {
         .post(stubr.uri(), ())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "11472728421990930279",
+        "3563741245010119545",
         json!({
             "request": {"method": "POST"},
             "response": {"status": 200}
@@ -49,7 +49,7 @@ async fn proxy_should_forward_put_method() {
         .put(stubr.uri(), ())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "1225390682374767577",
+        "1973688257084432613",
         json!({
             "request": {"method": "PUT"},
             "response": {"status": 200}
@@ -66,7 +66,7 @@ async fn proxy_should_forward_patch_method() {
         .send(Request::patch(stubr.uri()).body(()).unwrap())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "1712620373831678724",
+        "7987513069340980095",
         json!({
             "request": {"method": "PATCH"},
             "response": {"status": 200}
@@ -83,7 +83,7 @@ async fn proxy_should_forward_delete_method() {
         .delete(stubr.uri())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "11155613335209754747",
+        "7518243568855435021",
         json!({
             "request": {"method": "DELETE"},
             "response": {"status": 200}
@@ -100,7 +100,7 @@ async fn proxy_should_forward_head_method() {
         .head(stubr.uri())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "5479092281103967096",
+        "1754379982893267979",
         json!({
             "request": {"method": "HEAD"},
             "response": {"status": 200}
@@ -117,7 +117,7 @@ async fn proxy_should_forward_options_method() {
         .send(Request::options(stubr.uri()).body(()).unwrap())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "15040751383196264990",
+        "13660603588866650429",
         json!({
             "request": {"method": "OPTIONS"},
             "response": {"status": 200}
@@ -134,7 +134,7 @@ async fn proxy_should_forward_trace_method() {
         .send(Request::trace(stubr.uri()).body(()).unwrap())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "14259663127736384512",
+        "4019904806937496827",
         json!({
             "request": {"method": "TRACE"},
             "response": {"status": 200}

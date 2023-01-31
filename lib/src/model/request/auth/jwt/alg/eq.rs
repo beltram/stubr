@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
+use crate::wiremock::{Match, Request};
 use jsonwebtoken::Algorithm;
-use wiremock::{Match, Request};
 
 use crate::model::request::auth::helpers::RequestAuthExtension;
 

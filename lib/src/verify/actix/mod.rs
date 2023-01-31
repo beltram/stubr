@@ -33,18 +33,20 @@ where
         if let Ok(app) = srv.new_service(AppConfig::default()).await {
             for (stub, name) in ProducerStubFinder::find_stubs(except) {
                 let req = StdRequest::try_from(&stub).unwrap_or_else(|_| panic!("Could not verify '{name:?}'. Invalid json stub."));
-                let test_req = TestRequest::from(&req).set_payload(Vec::<u8>::from(&stub.request)).to_request();
-                let resp: StdResponse = app
-                    .call(test_req)
-                    .await
-                    .unwrap_or_else(|_| panic!("Failed verifying stub {name:?}"))
-                    .into();
-                RequestAndStub {
-                    req,
-                    stub: stub.response,
-                    name,
+                if let Some((stub_req, stub_resp)) = stub.http_request.as_ref().zip(stub.http_response) {
+                    let test_req = TestRequest::from(&req).set_payload(Vec::<u8>::from(stub_req)).to_request();
+                    let resp: StdResponse = app
+                        .call(test_req)
+                        .await
+                        .unwrap_or_else(|_| panic!("Failed verifying stub {name:?}"))
+                        .into();
+                    RequestAndStub {
+                        req,
+                        stub: stub_resp,
+                        name,
+                    }
+                    .verify(resp);
                 }
-                .verify(resp);
             }
         }
     }

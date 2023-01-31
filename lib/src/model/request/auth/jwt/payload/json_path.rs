@@ -1,5 +1,5 @@
+use crate::wiremock::{Match, Request};
 use jsonpath_lib::Compiled;
-use wiremock::{Match, Request};
 
 use super::super::super::{
     super::json::{json_path::JsonPathMatcher, JsonMatcher},

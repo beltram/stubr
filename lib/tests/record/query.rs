@@ -14,7 +14,7 @@ async fn proxy_should_forward_query_param() {
         .get(stubr.path_query("/query/one", "a", "1"))
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "query-one-14477591495544065577",
+        "query-one-6575730308064016792",
         json!({
             "request": {
                 "method": "GET",
@@ -37,7 +37,7 @@ async fn proxy_should_forward_many_query_param() {
         .get(stubr.path_queries("/query/many", ("a", "1"), ("b", "2")))
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "query-many-15093486744474350709",
+        "query-many-8343223143721506453",
         json!({
             "request": {
                 "method": "GET",

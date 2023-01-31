@@ -1,8 +1,7 @@
 use std::hash::{Hash, Hasher};
 
-use serde::{Deserialize, Serialize};
+use crate::wiremock::{matchers::QueryParamExactMatcher, MockBuilder};
 use serde_json::{Map, Value};
-use wiremock::{matchers::QueryParamExactMatcher, MockBuilder};
 
 use absent::QueryAbsentMatcher;
 use case::QueryCaseInsensitiveMatcher;
@@ -17,7 +16,7 @@ mod contains;
 mod exact;
 mod matches;
 
-#[derive(Serialize, Deserialize, Debug, Default, Eq)]
+#[derive(Debug, Clone, Default, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HttpQueryParamsStub {
     // matches all request http headers

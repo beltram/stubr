@@ -1,30 +1,36 @@
+use crate::wiremock::{Match, Request};
 use serde_json::Value;
-use wiremock::{Match, Request};
 
 use super::{
     super::json::{eq::JsonExactMatcher, JsonMatcher},
-    BodyPatternStub,
+    BodyMatcherStub,
 };
 
-pub struct BodyExactMatcher(Value);
+pub struct BodyExactMatcher(pub Value);
 
 impl Match for BodyExactMatcher {
     fn matches(&self, request: &Request) -> bool {
-        serde_json::from_slice(request.body.as_slice())
+        self.matching_exact_json(request.body.as_slice())
+    }
+}
+
+impl BodyExactMatcher {
+    pub fn matching_exact_json(&self, bytes: &[u8]) -> bool {
+        serde_json::from_slice(bytes)
             .ok()
             .map(|body| JsonExactMatcher(&self.0).matches(&body))
             .unwrap_or_default()
     }
 }
 
-impl TryFrom<&BodyPatternStub> for BodyExactMatcher {
+impl TryFrom<&BodyMatcherStub> for BodyExactMatcher {
     type Error = anyhow::Error;
 
-    fn try_from(body: &BodyPatternStub) -> anyhow::Result<Self> {
-        let is_exact_matching = body.is_by_json_equality() && !body.is_ignore_extra_elements() && !body.is_ignore_array_order();
-        body.equal_to_json
+    fn try_from(matcher: &BodyMatcherStub) -> anyhow::Result<Self> {
+        matcher
+            .equal_to_json
             .as_ref()
-            .filter(|_| is_exact_matching)
+            .filter(|_| matcher.is_exact_matching())
             .map(|v| Self(v.to_owned()))
             .ok_or_else(|| anyhow::Error::msg(""))
     }

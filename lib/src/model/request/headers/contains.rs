@@ -1,8 +1,8 @@
 use std::str::FromStr;
 
+use crate::wiremock::{Match, Request};
 use http_types::headers::HeaderName;
 use itertools::Itertools;
-use wiremock::{Match, Request};
 
 use super::{super::matcher::RequestMatcherStub, HttpReqHeadersStub};
 

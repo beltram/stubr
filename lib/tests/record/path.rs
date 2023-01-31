@@ -14,7 +14,7 @@ async fn proxy_should_forward_path() {
         .get(stubr.path("/a/b/c"))
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "a-b-c-2182426142833608396",
+        "a-b-c-4871107063451896451",
         json!({
             "request": {
                 "method": "GET",

@@ -1,9 +1,13 @@
 use std::sync::RwLock;
 
+use crate::{
+    model::response::template::data::RequestData,
+    wiremock::{Request, Respond, ResponseTemplate},
+};
 use handlebars::Handlebars;
 use serde::Serialize;
-use wiremock::{Request, Respond, ResponseTemplate};
 
+use crate::model::response::ResponseStub;
 use data::HandlebarsData;
 use helpers::{
     any::{
@@ -19,12 +23,6 @@ use helpers::{
     string::StringHelper,
     trim::TrimHelper,
     url_encode::UrlEncodingHelper,
-};
-
-use crate::cloud::hyper::SupersedeHyper;
-use crate::{
-    cloud::opentracing::OpenTracing,
-    model::response::{template::data::RequestData, ResponseStub},
 };
 
 pub mod data;
@@ -77,17 +75,24 @@ lazy_static! {
     };
 }
 
+#[derive(Debug, Clone, Default)]
 pub struct StubTemplate {
     pub(crate) template: ResponseTemplate,
-    pub(crate) response: ResponseStub,
+    #[allow(dead_code)]
+    pub(crate) response: Option<crate::model::response::ResponseStub>,
+    #[cfg(feature = "grpc")]
+    pub(crate) grpc_response: Option<crate::model::grpc::response::GrpcResponseStub>,
+    #[cfg(feature = "grpc")]
+    pub(crate) md: Option<protobuf::reflect::MessageDescriptor>,
+    #[allow(dead_code)]
     pub(crate) requires_templating: bool,
 }
 
-impl Respond for StubTemplate {
-    fn respond(&self, req: &Request) -> ResponseTemplate {
-        let mut resp = self.template.clone();
-        resp = OpenTracing(req).add_opentracing_header(resp, self.response.user_defined_header_keys());
-        resp = SupersedeHyper::supersede_hyper_header(resp, self.response.user_defined_headers());
+impl StubTemplate {
+    #[cfg(not(feature = "grpc"))]
+    fn http_respond(&self, mut resp: ResponseTemplate, req: &Request, response: &ResponseStub) -> ResponseTemplate {
+        resp = crate::cloud::opentracing::OpenTracing(req).add_opentracing_header(resp, response.user_defined_header_keys());
+        resp = crate::cloud::hyper::SupersedeHyper::supersede_hyper_header(resp, response.user_defined_headers());
         if self.requires_templating {
             let data = HandlebarsData {
                 request: &RequestData::from(req),
@@ -95,16 +100,81 @@ impl Respond for StubTemplate {
                 stub_name: None,
                 is_verify: false,
             };
-            resp = self.response.body.render_response_template(resp, &data);
-            resp = self.response.headers.render_response_template(resp, &data);
+            resp = response.body.render_response_template(resp, &data);
+            resp = response.headers.render_response_template(resp, &data);
+        }
+        resp
+    }
+
+    #[cfg(feature = "grpc")]
+    fn http_respond(&self, mut resp: ResponseTemplate, req: &Request, response: &ResponseStub) -> ResponseTemplate {
+        resp = crate::cloud::opentracing::OpenTracing(req).add_opentracing_header(resp, response.user_defined_header_keys());
+        resp = crate::cloud::hyper::SupersedeHyper::supersede_hyper_header(resp, response.user_defined_headers());
+        if self.requires_templating {
+            let data = HandlebarsData {
+                request: &RequestData::from(req),
+                response: None,
+                stub_name: None,
+                is_verify: false,
+            };
+            resp = response.body.render_response_template(resp, &data, None);
+            resp = response.headers.render_response_template(resp, &data, None);
+        }
+        resp
+    }
+
+    #[cfg(feature = "grpc")]
+    fn grpc_respond(
+        &self, req: &Request, mut resp: ResponseTemplate, response: &crate::model::grpc::response::GrpcResponseStub,
+    ) -> ResponseTemplate {
+        if response.requires_response_templating() {
+            let request = self
+                .md
+                .as_ref()
+                .map(|md| RequestData::from_grpc_request(req, md))
+                .unwrap_or_default();
+            let data = HandlebarsData {
+                request: &request,
+                response: None,
+                stub_name: None,
+                is_verify: false,
+            };
+            resp = response.render_response_template(resp, &data, self.md.as_ref());
         }
         resp
     }
 }
 
+impl Respond for StubTemplate {
+    fn respond(&self, req: &Request) -> ResponseTemplate {
+        let resp = self.template.clone();
+        #[cfg(not(feature = "grpc"))]
+        if let Some(response) = self.response.as_ref() {
+            self.http_respond(resp, req, response)
+        } else {
+            resp
+        }
+        #[cfg(feature = "grpc")]
+        if let Some(response) = self.response.as_ref() {
+            self.http_respond(resp, req, response)
+        } else if let Some(response) = self.grpc_response.as_ref() {
+            self.grpc_respond(req, resp, response)
+        } else {
+            resp
+        }
+    }
+}
+
 pub trait HandlebarTemplatable {
     fn register_template(&self);
+
+    #[cfg(not(feature = "grpc"))]
     fn render_response_template(&self, template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate;
+
+    #[cfg(feature = "grpc")]
+    fn render_response_template(
+        &self, template: ResponseTemplate, data: &HandlebarsData, md: Option<&protobuf::reflect::MessageDescriptor>,
+    ) -> ResponseTemplate;
 
     fn register<S: AsRef<str>>(&self, name: &str, content: S) {
         if let Ok(mut handlebars) = HANDLEBARS.write() {

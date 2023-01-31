@@ -1,15 +1,15 @@
-use wiremock::MockBuilder;
+use crate::wiremock::MockBuilder;
 
 use json_path::JsonPayloadPathMatcher;
 
-use super::super::{super::BodyPatternStub, MockRegistrable};
+use super::super::{super::BodyMatcherStub, MockRegistrable};
 
 mod eq;
 mod json_path;
 mod json_path_contains;
 mod json_path_eq;
 
-pub struct JwtPayloadStub(pub Vec<BodyPatternStub>);
+pub struct JwtPayloadStub(pub Vec<BodyMatcherStub>);
 
 impl MockRegistrable for JwtPayloadStub {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {

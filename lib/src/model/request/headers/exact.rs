@@ -1,5 +1,5 @@
+use crate::wiremock::matchers::{header, HeaderExactMatcher};
 use itertools::Itertools;
-use wiremock::matchers::{header, HeaderExactMatcher};
 
 use super::{super::matcher::RequestMatcherStub, HttpReqHeadersStub};
 

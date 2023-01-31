@@ -1,0 +1,16 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "OtherParent",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "child": {
+            "name": "imported"
+          }
+        }
+      }
+    ]
+  },
+  "grpcResponse": {}
+}
