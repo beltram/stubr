@@ -1,0 +1,13 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {},
+  "grpcResponse": {
+    "message": "Naming",
+    "body": {
+      "lowercase": "lowercase",
+      "UPPERCASE": "UPPERCASE",
+      "snake_case": "snake_case",
+      "camelCase": "camelCase"
+    }
+  }
+}

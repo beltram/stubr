@@ -1,10 +1,10 @@
 use async_std::io::ReadExt;
 use std::{borrow::Cow, collections::HashMap, iter, str::from_utf8};
 
+use crate::wiremock::Request;
 use futures::executor::block_on;
 use itertools::Itertools;
 use serde_json::Value;
-use wiremock::Request;
 
 pub(crate) type Queries<'a> = HashMap<Cow<'a, str>, Value>;
 pub(crate) type Headers<'a> = HashMap<&'a str, Value>;

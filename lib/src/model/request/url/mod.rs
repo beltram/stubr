@@ -1,5 +1,4 @@
-use serde::{Deserialize, Serialize};
-use wiremock::{
+use crate::wiremock::{
     matchers::{PathExactMatcher, PathRegexMatcher},
     MockBuilder,
 };
@@ -14,7 +13,7 @@ mod url_path;
 mod url_path_pattern;
 mod url_pattern;
 
-#[derive(Serialize, Deserialize, Debug, Default, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Default, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct HttpUrlStub {
     // exact match on path only

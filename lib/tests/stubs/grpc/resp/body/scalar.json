@@ -1,0 +1,24 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {},
+  "grpcResponse": {
+    "message": "Scalar",
+    "body": {
+      "double": 1.7976931348623157e308,
+      "float": 3.4028235e38,
+      "int32": 2147483647,
+      "int64": "9223372036854775807",
+      "uint32": 4294967295,
+      "uint64": "18446744073709551615",
+      "sint32": -2147483648,
+      "sint64": "-9223372036854775808",
+      "fixed32": 4294967295,
+      "fixed64": "18446744073709551615",
+      "sfixed32": -2147483648,
+      "sfixed64": "-9223372036854775808",
+      "bool": true,
+      "string": "string",
+      "bytes": "Ynl0ZXM="
+    }
+  }
+}

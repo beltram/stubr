@@ -1,3 +1,4 @@
+use anyhow::anyhow;
 use http_types::{Method, Request, Url};
 
 use crate::model::{request::RequestStub, JsonStub};
@@ -15,7 +16,11 @@ impl TryFrom<&JsonStub> for StdRequest {
     type Error = anyhow::Error;
 
     fn try_from(stub: &JsonStub) -> anyhow::Result<Self> {
-        Ok(Self(Request::try_from(&stub.request)?))
+        stub.http_request
+            .as_ref()
+            .ok_or(anyhow!("no request to verify"))
+            .and_then(Request::try_from)
+            .map(Self)
     }
 }
 

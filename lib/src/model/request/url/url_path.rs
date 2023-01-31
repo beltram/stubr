@@ -1,4 +1,4 @@
-use wiremock::matchers::{path, PathExactMatcher};
+use crate::wiremock::matchers::{path, PathExactMatcher};
 
 use super::HttpUrlStub;
 

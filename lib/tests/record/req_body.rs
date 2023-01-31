@@ -14,7 +14,7 @@ async fn proxy_should_forward_json_request_body() {
         .post(stubr.path("/body/req/json"), json!({"a": { "b": "c" }}).to_string())
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "body-req-json-3154351531746535130",
+        "body-req-json-16407805234223938582",
         json!({
             "request": {
                 "method": "POST",

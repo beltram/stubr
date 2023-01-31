@@ -1,13 +1,12 @@
-use serde::{Deserialize, Serialize};
+use crate::wiremock::ResponseTemplate;
 use serde_json::{Map, Value};
-use wiremock::ResponseTemplate;
 
 use super::{
     template::{data::HandlebarsData, HandlebarTemplatable},
     ResponseAppender,
 };
 
-#[derive(Serialize, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Default, Clone, Eq, PartialEq)]
 pub struct HttpRespHeadersStub {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub headers: Option<Map<String, Value>>,
@@ -37,7 +36,23 @@ impl HandlebarTemplatable for HttpRespHeadersStub {
         }
     }
 
+    #[cfg(not(feature = "grpc"))]
     fn render_response_template(&self, mut resp: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
+        if let Some(headers) = self.headers.as_ref() {
+            for (k, v) in headers {
+                if let Some(v) = v.as_str() {
+                    let rendered = self.render(v, data);
+                    resp = resp.insert_header(k.as_str(), rendered.as_str())
+                }
+            }
+        }
+        resp
+    }
+
+    #[cfg(feature = "grpc")]
+    fn render_response_template(
+        &self, mut resp: ResponseTemplate, data: &HandlebarsData, _md: Option<&protobuf::reflect::MessageDescriptor>,
+    ) -> ResponseTemplate {
         if let Some(headers) = self.headers.as_ref() {
             for (k, v) in headers {
                 if let Some(v) = v.as_str() {

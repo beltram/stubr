@@ -1,0 +1,15 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "JsonPath",
+    "bodyPatterns": [
+      {
+        "expression": "$.child",
+        "equalToJson": {
+          "name": "bob"
+        }
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

@@ -1,6 +1,6 @@
+use crate::wiremock::Request;
 use jsonwebtoken::Header;
 use serde_json::Value;
-use wiremock::Request;
 
 use super::{AUTHORIZATION_HEADER, BEARER_PREFIX};
 

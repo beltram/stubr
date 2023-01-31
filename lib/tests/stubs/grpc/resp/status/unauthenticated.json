@@ -1,0 +1,7 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcResponse": {
+    "status": "UNAUTHENTICATED"
+  }
+}
+

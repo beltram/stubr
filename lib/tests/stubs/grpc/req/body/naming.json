@@ -1,0 +1,17 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "Naming",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "lowercase": "lowercase",
+          "UPPERCASE": "UPPERCASE",
+          "snake_case": "snake_case",
+          "camelCase": "camelCase"
+        }
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

@@ -1,5 +1,5 @@
 use crate::model::request::{
-    body::BodyPatternStub, headers::HttpReqHeadersStub, method::HttpMethodStub, query::HttpQueryParamsStub, url::HttpUrlStub, RequestStub,
+    body::BodyMatcherStub, headers::HttpReqHeadersStub, method::HttpMethodStub, query::HttpQueryParamsStub, url::HttpUrlStub, RequestStub,
 };
 use crate::record::RecordInput;
 
@@ -16,7 +16,7 @@ impl From<RecordInput<'_>> for RequestStub {
             url: HttpUrlStub::from(&mut *ex),
             headers: HttpReqHeadersStub::from((&mut *ex, cfg)),
             queries: HttpQueryParamsStub::from(&mut *ex),
-            body_patterns: Vec::<BodyPatternStub>::from(&mut *ex),
+            body_patterns: Vec::<BodyMatcherStub>::from(&mut *ex),
             ..Default::default()
         }
     }

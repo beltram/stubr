@@ -1,22 +1,21 @@
 use std::hash::{Hash, Hasher};
 
-use serde::{Deserialize, Serialize};
+use crate::wiremock::MockBuilder;
 use serde_json::Value;
-use wiremock::MockBuilder;
 
 use super::MockRegistrable;
 
-mod binary_eq;
+pub mod binary_eq;
 mod diff;
 pub mod eq;
-mod eq_relaxed;
-mod json_path;
-mod json_path_contains;
-mod json_path_eq;
+pub mod eq_relaxed;
+pub mod json_path;
+pub mod json_path_contains;
+pub mod json_path_eq;
 
-#[derive(Serialize, Deserialize, Debug, Default, Eq, Clone)]
+#[derive(Debug, Clone, Default, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct BodyPatternStub {
+pub struct BodyMatcherStub {
     /// strict equality
     #[serde(skip_serializing_if = "Option::is_none")]
     pub equal_to_json: Option<Value>,
@@ -42,7 +41,15 @@ pub struct BodyPatternStub {
     pub ignore_array_order: Option<bool>,
 }
 
-impl BodyPatternStub {
+impl BodyMatcherStub {
+    pub fn is_exact_matching(&self) -> bool {
+        self.is_by_json_equality() && !self.is_ignore_extra_elements() && !self.is_ignore_array_order()
+    }
+
+    pub fn is_relaxed_matching(&self) -> bool {
+        (self.is_ignore_extra_elements() || self.is_ignore_array_order()) && self.is_by_json_equality()
+    }
+
     fn is_by_json_equality(&self) -> bool {
         self.equal_to_json.is_some() && self.matches_json_path.is_none() && self.expression.is_none() && self.binary_equal_to.is_none()
     }
@@ -63,16 +70,16 @@ impl BodyPatternStub {
         self.binary_equal_to.is_some()
     }
 
-    fn is_ignore_extra_elements(&self) -> bool {
+    pub fn is_ignore_extra_elements(&self) -> bool {
         self.ignore_extra_elements.unwrap_or_default()
     }
 
-    fn is_ignore_array_order(&self) -> bool {
+    pub fn is_ignore_array_order(&self) -> bool {
         self.ignore_array_order.unwrap_or_default()
     }
 }
 
-impl MockRegistrable for Vec<BodyPatternStub> {
+impl MockRegistrable for Vec<BodyMatcherStub> {
     fn register(&self, mut mock: MockBuilder) -> MockBuilder {
         for body_pattern in self {
             if let Ok(exact_json) = eq::BodyExactMatcher::try_from(body_pattern) {
@@ -81,7 +88,7 @@ impl MockRegistrable for Vec<BodyPatternStub> {
             if let Ok(relaxed_exact_json) = eq_relaxed::JsonBodyRelaxedMatcher::try_from(body_pattern) {
                 mock = mock.and(relaxed_exact_json)
             }
-            if let Ok(json_path) = json_path::JsonBodyPathMatcher::try_from(body_pattern) {
+            if let Ok(json_path) = json_path::JsonPathBodyMatcher::try_from(body_pattern) {
                 mock = mock.and(json_path)
             }
             if let Ok(json_path_eq) = json_path_eq::JsonBodyPathEqMatcher::try_from(body_pattern) {
@@ -90,7 +97,7 @@ impl MockRegistrable for Vec<BodyPatternStub> {
             if let Ok(json_path_contains) = json_path_contains::JsonBodyPathContainsMatcher::try_from(body_pattern) {
                 mock = mock.and(json_path_contains)
             }
-            if let Ok(binary_equal) = binary_eq::BinaryEqualMatcher::try_from(body_pattern) {
+            if let Ok(binary_equal) = binary_eq::BinaryExactMatcher::try_from(body_pattern) {
                 mock = mock.and(binary_equal)
             }
         }
@@ -98,7 +105,7 @@ impl MockRegistrable for Vec<BodyPatternStub> {
     }
 }
 
-impl PartialEq for BodyPatternStub {
+impl PartialEq for BodyMatcherStub {
     fn eq(&self, other: &Self) -> bool {
         self.equal_to_json.as_ref().eq(&other.equal_to_json.as_ref())
             && self.matches_json_path.as_ref().eq(&other.matches_json_path.as_ref())
@@ -110,7 +117,7 @@ impl PartialEq for BodyPatternStub {
     }
 }
 
-impl Hash for BodyPatternStub {
+impl Hash for BodyMatcherStub {
     fn hash<H: Hasher>(&self, state: &mut H) {
         if let Some(it) = self.equal_to_json.as_ref() {
             it.to_string().hash(state)

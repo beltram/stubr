@@ -1,12 +1,9 @@
 use std::hash::{Hash, Hasher};
 
-use serde::{Deserialize, Serialize};
-use wiremock::ResponseTemplate;
+use crate::wiremock::ResponseTemplate;
 
 use body::BodyStub;
 use headers::HttpRespHeadersStub;
-
-use super::JsonStub;
 
 pub mod body;
 mod body_file;
@@ -15,7 +12,7 @@ pub mod delay;
 pub mod headers;
 pub mod template;
 
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Default, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct ResponseStub {
     /// HTTP response status

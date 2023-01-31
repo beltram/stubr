@@ -1,0 +1,19 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "Relaxed",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "names": [
+            "alice",
+            "bob"
+          ]
+        },
+        "ignoreExtraElements": true,
+        "ignoreArrayOrder": true
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

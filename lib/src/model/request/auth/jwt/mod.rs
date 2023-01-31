@@ -1,17 +1,16 @@
-use serde::{Deserialize, Serialize};
-use wiremock::MockBuilder;
+use crate::wiremock::MockBuilder;
 
-use super::super::{BodyPatternStub, MockRegistrable};
+use super::super::{BodyMatcherStub, MockRegistrable};
 
 mod alg;
 mod eq;
 mod payload;
 
-#[derive(Serialize, Deserialize, Debug, Default, Hash)]
+#[derive(Debug, Clone, Default, Hash, serde::Serialize, serde::Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct JwtAuthStub {
     equal_to: Option<String>,
-    payload_patterns: Option<Vec<BodyPatternStub>>,
+    payload_patterns: Option<Vec<BodyMatcherStub>>,
     alg: Option<alg::JwtAlgStub>,
 }
 

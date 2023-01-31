@@ -19,7 +19,7 @@ async fn should_allow_custom_output() {
         .isahc_client()
         .get(stubr.path("/status/200"))
         .expect_status_ok();
-    assert!(output.join("localhost").join("status-200-2265763564283130440.json").exists())
+    assert!(output.join("localhost").join("status-200-15176007533047428427.json").exists())
 }
 
 #[tokio::test(flavor = "multi_thread")]

@@ -24,7 +24,7 @@ fn should_record_from_reqwest_client() {
         .unwrap();
     Client::default().execute(req).unwrap().expect_status_ok();
     assert_recorded_stub_eq(
-        "record-client-reqwest-13942433254694754163",
+        "record-client-reqwest-16547708027734062086",
         json!({
             "request": {
                 "method": "GET",
@@ -55,7 +55,7 @@ fn should_record_from_reqwest_client_ko() {
         .unwrap();
     Client::default().execute(req).unwrap().expect_status_internal_server_error();
     assert_recorded_stub_eq(
-        "record-client-reqwest-ko-10154978272216290574",
+        "record-client-reqwest-ko-1702736503401582364",
         json!({
             "request": {
                 "method": "GET",

@@ -1,4 +1,4 @@
-use wiremock::{Match, Request};
+use crate::wiremock::{Match, Request};
 
 use super::{
     super::{AUTHORIZATION_HEADER, BEARER_PREFIX},

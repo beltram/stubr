@@ -1,10 +1,8 @@
 use std::hash::{Hash, Hasher};
 
-use serde::{Deserialize, Serialize};
-
 use super::pet::Pet;
 
-#[derive(Serialize, Deserialize, Debug, Eq, PartialOrd, Ord, Clone, Default)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Eq, PartialOrd, Ord, Clone, Default)]
 pub struct Store {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<usize>,

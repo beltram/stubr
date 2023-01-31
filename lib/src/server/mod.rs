@@ -3,18 +3,18 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use crate::wiremock::MockServer;
 use async_std::task::block_on;
 use futures::future::join_all;
 use itertools::Itertools;
 use log::info;
-use wiremock::MockServer;
 
 use any_stub::AnyStubs;
 use stub_finder::StubFinder;
 
 #[cfg(feature = "record-standalone")]
 use crate::record::{config::RecordConfig, standalone::StubrRecord};
-use crate::{cloud::probe::HttpProbe, model::JsonStub, Config};
+use crate::{model::JsonStub, Config};
 
 mod any_stub;
 pub mod config;
@@ -23,7 +23,7 @@ pub mod stub_finder;
 /// Allows running a Wiremock mock server from Wiremock stubs.
 /// Delegates runtime to wiremock-rs.
 pub struct Stubr {
-    instance: MockServer,
+    http_server: MockServer,
 }
 
 impl Stubr {
@@ -70,6 +70,7 @@ impl Stubr {
             Self::start_on_random_port().await
         };
         server.register_stubs(stubs.into(), config);
+        #[cfg(not(feature = "grpc"))]
         server.register_cloud_features().await;
         server
     }
@@ -140,7 +141,7 @@ impl Stubr {
 
     /// Get running server address
     pub fn uri(&self) -> String {
-        self.instance.uri()
+        self.http_server.uri()
     }
 
     /// Get running server address and concatenate a path to it
@@ -151,7 +152,7 @@ impl Stubr {
     async fn start_on(port: u16) -> Self {
         if let Ok(listener) = TcpListener::bind(format!("{}:{}", Self::HOST, port)) {
             Self {
-                instance: MockServer::builder()
+                http_server: MockServer::builder()
                     .disable_request_recording()
                     .listener(listener)
                     .start()
@@ -164,7 +165,7 @@ impl Stubr {
 
     async fn start_on_random_port() -> Self {
         Self {
-            instance: MockServer::builder().disable_request_recording().start().await,
+            http_server: MockServer::builder().disable_request_recording().start().await,
         }
     }
 
@@ -177,7 +178,7 @@ impl Stubr {
             .filter_map(|(stub, path, folder)| stub.try_creating_from(&config).ok().map(|mock| (mock, path, folder)))
             .for_each(|(mock, file, folder)| {
                 block_on(async move {
-                    self.instance.register(mock).await;
+                    self.http_server.register(mock).await;
                 });
                 if config.verbose {
                     let maybe_file_name = file.strip_prefix(folder).ok().and_then(|file| file.to_str());
@@ -193,8 +194,9 @@ impl Stubr {
         StubFinder::find_all_stubs(from).filter_map(move |path| JsonStub::try_from(&path).ok().map(|stub| (stub, path)))
     }
 
+    #[cfg(not(feature = "grpc"))]
     async fn register_cloud_features(&self) {
-        self.instance.register(HttpProbe::health_probe()).await;
+        self.http_server.register(crate::cloud::probe::HttpProbe::health_probe()).await;
     }
 }
 
@@ -212,12 +214,6 @@ mod server_test {
     async fn should_find_all_mocks_from_single_file() {
         let from = PathBuf::from("tests/stubs/server/valid.json");
         assert_eq!(Stubr::start_on_random_port().await.find_all_mocks(&from).count(), 1);
-    }
-
-    #[async_std::test]
-    async fn should_not_find_any_mock_when_none_valid() {
-        let from = PathBuf::from("tests/stubs/server/invalid");
-        assert_eq!(Stubr::start_on_random_port().await.find_all_mocks(&from).count(), 0);
     }
 
     #[async_std::test]

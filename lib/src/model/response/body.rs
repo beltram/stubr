@@ -7,11 +7,11 @@ use std::{
     str::{from_utf8, FromStr},
 };
 
+use crate::wiremock::ResponseTemplate;
 use handlebars::JsonValue;
 use itertools::Itertools;
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::Deserializer;
 use serde_json::{Map, Value};
-use wiremock::ResponseTemplate;
 
 use super::{
     body_file::BodyFile,
@@ -19,7 +19,7 @@ use super::{
     ResponseAppender,
 };
 
-#[derive(Serialize, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
+#[derive(serde::Serialize, serde::Deserialize, Debug, Default, Clone, Eq, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct BodyStub {
     /// plain text body
@@ -120,6 +120,7 @@ fn deserialize_body_file<'de, D>(path: D) -> Result<Option<BodyFile>, D::Error>
 where
     D: Deserializer<'de>,
 {
+    use serde::Deserialize as _;
     let body_file = String::deserialize(path).ok().map(PathBuf::from).map(|path| {
         let path_exists = path.exists();
         let extension = path.extension().and_then(OsStr::to_str).map(str::to_string);
@@ -159,7 +160,25 @@ impl HandlebarTemplatable for BodyStub {
         }
     }
 
+    #[cfg(not(feature = "grpc"))]
     fn render_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
+        if let Some(body) = self.body.as_ref() {
+            template = template.set_body_string(self.render(body, data));
+        } else if let Some(binary) = self.binary_body() {
+            template = template.set_body_bytes(binary);
+        } else if let Some(json_body) = self.render_json_body(self.json_body.as_ref(), data) {
+            template = template.set_body_json(json_body);
+        } else if let Some(body_file) = self.body_file_name.as_ref() {
+            let rendered = self.render(body_file.path.as_str(), data);
+            template = body_file.render_templated(template, rendered);
+        }
+        template
+    }
+
+    #[cfg(feature = "grpc")]
+    fn render_response_template(
+        &self, mut template: ResponseTemplate, data: &HandlebarsData, _md: Option<&protobuf::reflect::MessageDescriptor>,
+    ) -> ResponseTemplate {
         if let Some(body) = self.body.as_ref() {
             template = template.set_body_string(self.render(body, data));
         } else if let Some(binary) = self.binary_body() {

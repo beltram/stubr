@@ -1,6 +1,6 @@
+use crate::wiremock::ResponseTemplate;
 use serde::Serialize;
 use serde_json::Value;
-use wiremock::ResponseTemplate;
 
 use super::ResponseAppender;
 

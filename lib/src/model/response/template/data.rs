@@ -1,11 +1,10 @@
+use crate::wiremock::Request as WiremockRequest;
 use http_types::Method;
-use serde::Serialize;
 use serde_json::Value;
-use wiremock::Request as WiremockRequest;
 
 use super::req_ext::{Headers, Queries, RequestExt};
 
-#[derive(Serialize, Debug)]
+#[derive(serde::Serialize, Debug)]
 pub struct HandlebarsData<'a> {
     pub request: &'a RequestData<'a>,
     pub response: Option<&'a [u8]>,
@@ -13,7 +12,7 @@ pub struct HandlebarsData<'a> {
     pub is_verify: bool,
 }
 
-#[derive(Serialize, Debug)]
+#[derive(serde::Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct RequestData<'a> {
     path: &'a str,
@@ -24,6 +23,39 @@ pub struct RequestData<'a> {
     body: Option<Value>,
     query: Option<Queries<'a>>,
     headers: Option<Headers<'a>>,
+}
+
+impl Default for RequestData<'_> {
+    fn default() -> Self {
+        Self {
+            path: "",
+            path_segments: None,
+            url: "",
+            port: None,
+            method: Method::Get,
+            body: None,
+            query: None,
+            headers: None,
+        }
+    }
+}
+
+#[cfg(feature = "grpc")]
+impl<'a> RequestData<'a> {
+    pub fn from_grpc_request(req: &'a WiremockRequest, md: &protobuf::reflect::MessageDescriptor) -> Self {
+        let body = crate::model::grpc::request::proto_to_json_str(req.body.as_slice(), md);
+        let body = serde_json::from_str(&body).unwrap();
+        Self {
+            path: crate::model::grpc::request::path::GrpcPathMatcher::parse_svc_name(req),
+            path_segments: None,
+            url: "",
+            port: None,
+            method: Method::Post,
+            body: Some(body),
+            query: None,
+            headers: None,
+        }
+    }
 }
 
 impl<'a> From<&'a WiremockRequest> for RequestData<'a> {

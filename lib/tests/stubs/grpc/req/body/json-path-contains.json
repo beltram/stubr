@@ -1,0 +1,13 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "JsonPath",
+    "bodyPatterns": [
+      {
+        "expression": "$.name",
+        "contains": "a"
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

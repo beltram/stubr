@@ -1,14 +1,13 @@
 use std::hash::{Hash, Hasher};
 
-use serde::{Deserialize, Serialize};
-use wiremock::MockBuilder;
+use crate::wiremock::MockBuilder;
 
 use super::super::MockRegistrable;
 
 mod eq;
 mod one_of;
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct JwtAlgStub {
     equal_to: Option<String>,

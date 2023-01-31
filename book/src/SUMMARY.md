@@ -17,6 +17,7 @@
   - [isahc](./recording/isahc.md)
   - [reqwest](./recording/reqwest.md)
   - [standalone](./recording/standalone.md)
+- [gRPC](./grpc.md)
 - [Cli](./cli.md)
 - [Docker](./docker.md)
 - [Benchmark](./benchmark.md)

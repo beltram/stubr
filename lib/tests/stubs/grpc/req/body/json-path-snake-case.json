@@ -1,0 +1,12 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "JsonPath",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.composed_name"
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

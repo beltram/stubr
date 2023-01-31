@@ -1,0 +1,5 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {},
+  "grpcResponse": {}
+}

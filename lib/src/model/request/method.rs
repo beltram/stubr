@@ -1,13 +1,12 @@
-use serde::{Deserialize, Serialize};
-use wiremock::{
+use crate::wiremock::{
     matchers::{method, MethodExactMatcher},
     Match, Mock, MockBuilder, Request,
 };
 
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct HttpMethodStub(pub Verb);
 
-#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
+#[derive(Debug, Clone, Eq, PartialEq, Hash, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "UPPERCASE")]
 pub enum Verb {
     Any,

@@ -1,0 +1,58 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "Array",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "double_array": [
+            1.7976931348623157e308
+          ],
+          "float_array": [
+            3.4028235e38
+          ],
+          "int32_array": [
+            2147483647
+          ],
+          "int64_array": [
+            "9223372036854775807"
+          ],
+          "uint32_array": [
+            4294967295
+          ],
+          "uint64_array": [
+            "18446744073709551615"
+          ],
+          "sint32_array": [
+            -2147483648
+          ],
+          "sint64_array": [
+            "-9223372036854775808"
+          ],
+          "fixed32_array": [
+            4294967295
+          ],
+          "fixed64_array": [
+            "18446744073709551615"
+          ],
+          "sfixed32_array": [
+            -2147483648
+          ],
+          "sfixed64_array": [
+            "-9223372036854775808"
+          ],
+          "bool_array": [
+            true
+          ],
+          "string_array": [
+            "string"
+          ],
+          "bytes_array": [
+            "Ynl0ZXM="
+          ]
+        }
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

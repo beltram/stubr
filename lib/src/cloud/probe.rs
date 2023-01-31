@@ -1,8 +1,10 @@
-use http_types::Method;
-use wiremock::{
+#![allow(dead_code)]
+
+use crate::wiremock::{
     matchers::{method, path},
     Mock, ResponseTemplate,
 };
+use http_types::Method;
 
 pub struct HttpProbe;
 

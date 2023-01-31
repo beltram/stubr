@@ -16,7 +16,7 @@ async fn proxy_should_forward_success() {
         .get(stubr.path("/success"))
         .expect_status_ok();
     assert_recorded_stub_eq(
-        "success-10669332340318411644",
+        "success-3733506543638807964",
         json!({
             "request": {
                 "method": "GET",
@@ -36,7 +36,7 @@ async fn proxy_should_forward_errors() {
         .get(stubr.path("/not-found"))
         .expect_status_not_found();
     assert_recorded_stub_eq(
-        "not-found-18016034633652749749",
+        "not-found-1483931038205293293",
         json!({
             "request": {
                 "method": "GET",

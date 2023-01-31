@@ -278,99 +278,7 @@
           }
         },
         "bodyPatterns": {
-          "description": "Allows defining many request body matchers",
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "anyOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "equalToJson": {
-                    "description": "Request body must be strictly equal to this",
-                    "type": [
-                      "object",
-                      "array"
-                    ]
-                  },
-                  "ignoreExtraElements": {
-                    "description": "Ignore extra json fields supplied in request body",
-                    "type": "boolean",
-                    "default": false
-                  },
-                  "ignoreArrayOrder": {
-                    "description": "Ignore array items order",
-                    "type": "boolean",
-                    "default": false
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "matchesJsonPath": {
-                    "description": "Request body must match this json path",
-                    "type": "string",
-                    "x-intellij-language-injection": {
-                      "language": "JSONPath"
-                    }
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "expression",
-                  "contains"
-                ],
-                "properties": {
-                  "expression": {
-                    "description": "Request body must match this json path",
-                    "type": "string",
-                    "x-intellij-language-injection": {
-                      "language": "JSONPath"
-                    }
-                  },
-                  "contains": {
-                    "description": "Matched json path must contain this string",
-                    "type": "string"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "required": [
-                  "expression",
-                  "equalToJson"
-                ],
-                "properties": {
-                  "expression": {
-                    "description": "Request body must match this json path",
-                    "type": "string",
-                    "x-intellij-language-injection": {
-                      "language": "JSONPath"
-                    }
-                  },
-                  "equalToJson": {
-                    "description": "Matched json path must be equal to this",
-                    "type": [
-                      "object",
-                      "array"
-                    ]
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "binaryEqualTo": {
-                    "description": "Binary equality of a byte array with the supplied Base64 representation",
-                    "type": "string"
-                  }
-                }
-              }
-            ]
-          }
+          "$ref": "#/$defs/bodyPatterns"
         }
       }
     },
@@ -490,10 +398,238 @@
           }
         }
       }
+    },
+    "protoFile": {
+      "description": "Path to Protobuf file containing gRPC services and messages. It can find dependencies to other files as long as they are in this file's parent folder.",
+      "type": "string"
+    },
+    "grpcRequest": {
+      "description": "gRPC request matching",
+      "type": "object",
+      "properties": {
+        "message": {
+          "description": "Name of the Protobuf definition in 'protoFile'",
+          "type": "string"
+        },
+        "path": {
+          "description": "Name of the gRPC service",
+          "type": "string",
+          "format": "regex",
+          "x-intellij-language-injection": {
+            "language": "RegExp"
+          }
+        },
+        "bodyPatterns": {
+          "$ref": "#/$defs/bodyPatterns"
+        }
+      }
+    },
+    "grpcResponse": {
+      "description": "gRPC response templating",
+      "type": "object",
+      "properties": {
+        "status": {
+          "description": "gRPC status code",
+          "type": "string",
+          "enum": [
+            "OK",
+            "CANCELLED",
+            "UNKNOWN",
+            "INVALID_ARGUMENT",
+            "DEADLINE_EXCEEDED",
+            "NOT_FOUND",
+            "ALREADY_EXISTS",
+            "PERMISSION_DENIED",
+            "RESOURCE_EXHAUSTED",
+            "FAILED_PRECONDITION",
+            "ABORTED",
+            "OUT_OF_RANGE",
+            "UNIMPLEMENTED",
+            "INTERNAL",
+            "UNAVAILABLE",
+            "DATA_LOSS",
+            "UNAUTHENTICATED"
+          ]
+        },
+        "message": {
+          "description": "Name of the Protobuf definition in 'protoFile'",
+          "type": "string"
+        },
+        "body": {
+          "description": "gRPC response body as json. This is then encoded to Protobuf given the 'protoFile' definition.",
+          "type": [
+            "object",
+            "array"
+          ],
+          "patternProperties": {
+            "^.*$": {
+              "x-intellij-language-injection": {
+                "language": "Handlebars"
+              },
+              "patternProperties": {
+                "^.*$": {
+                  "x-intellij-language-injection": {
+                    "language": "Handlebars"
+                  },
+                  "patternProperties": {
+                    "^.*$": {
+                      "x-intellij-language-injection": {
+                        "language": "Handlebars"
+                      },
+                      "patternProperties": {
+                        "^.*$": {
+                          "x-intellij-language-injection": {
+                            "language": "Handlebars"
+                          },
+                          "patternProperties": {
+                            "^.*$": {
+                              "x-intellij-language-injection": {
+                                "language": "Handlebars"
+                              },
+                              "patternProperties": {
+                                "^.*$": {
+                                  "x-intellij-language-injection": {
+                                    "language": "Handlebars"
+                                  },
+                                  "patternProperties": {
+                                    "^.*$": {
+                                      "x-intellij-language-injection": {
+                                        "language": "Handlebars"
+                                      },
+                                      "patternProperties": {
+                                        "^.*$": {
+                                          "x-intellij-language-injection": {
+                                            "language": "Handlebars"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "transformers": {
+          "$ref": "#/$defs/transformers"
+        }
+      }
     }
   },
-  "required": [
-    "request",
-    "response"
-  ]
+  "required": [],
+  "$defs": {
+    "bodyPatterns": {
+      "description": "Allows defining many request body matchers",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "equalToJson": {
+                "description": "Request body must be strictly equal to this",
+                "type": [
+                  "object",
+                  "array"
+                ]
+              },
+              "ignoreExtraElements": {
+                "description": "Ignore extra json fields supplied in request body",
+                "type": "boolean",
+                "default": false
+              },
+              "ignoreArrayOrder": {
+                "description": "Ignore array items order",
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "matchesJsonPath": {
+                "description": "Request body must match this json path",
+                "type": "string",
+                "x-intellij-language-injection": {
+                  "language": "JSONPath"
+                }
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "expression",
+              "contains"
+            ],
+            "properties": {
+              "expression": {
+                "description": "Request body must match this json path",
+                "type": "string",
+                "x-intellij-language-injection": {
+                  "language": "JSONPath"
+                }
+              },
+              "contains": {
+                "description": "Matched json path must contain this string",
+                "type": "string"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "expression",
+              "equalToJson"
+            ],
+            "properties": {
+              "expression": {
+                "description": "Request body must match this json path",
+                "type": "string",
+                "x-intellij-language-injection": {
+                  "language": "JSONPath"
+                }
+              },
+              "equalToJson": {
+                "description": "Matched json path must be equal to this",
+                "type": [
+                  "object",
+                  "array"
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "binaryEqualTo": {
+                "description": "Binary equality of a byte array with the supplied Base64 representation",
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "transformers": {
+      "description": "Enables predefined response transformations",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "response-template"
+        ]
+      }
+    }
+  }
 }

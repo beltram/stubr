@@ -1,12 +1,10 @@
-use async_trait::async_trait;
-
 #[cfg(feature = "verify-actix")]
 pub mod actix;
 
 mod mapping;
 mod stub_finder;
 
-#[async_trait(? Send)]
+#[async_trait::async_trait(? Send)]
 pub trait StubrVerify<T>
 where
     Self: Sized,

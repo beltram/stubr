@@ -42,14 +42,14 @@ impl StubWriter {
     }
 
     fn base_path(&self) -> Option<String> {
-        self.stub
-            .request
-            .url
-            .url_path
-            .as_ref()
-            .map(|it| it.strip_prefix('/').unwrap_or(it))
-            .map(|it| it.replace('/', "-"))
-            .map(|it| format!("{it}-"))
+        self.stub.http_request.as_ref().and_then(|r| {
+            r.url
+                .url_path
+                .as_ref()
+                .map(|it| it.strip_prefix('/').unwrap_or(it))
+                .map(|it| it.replace('/', "-"))
+                .map(|it| format!("{it}-"))
+        })
     }
 
     fn output_and_create(&self, host: &str, output: Option<&PathBuf>) -> PathBuf {

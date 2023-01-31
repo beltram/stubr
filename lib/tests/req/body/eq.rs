@@ -131,6 +131,21 @@ async fn should_map_req_body_equal_to_obj() {
 
 #[async_std::test]
 #[stubr::mock("req/body/eq/obj.json")]
+async fn should_not_match_empty_obj() {
+    post(stubr.uri()).body(json!({"user": {}})).await.expect_status_not_found();
+}
+
+#[async_std::test]
+#[stubr::mock("req/body/eq/partial.json")]
+async fn should_not_match_obj_partially() {
+    post(stubr.uri()).body(json!({"a": "b", "c": "d"})).await.expect_status_ok();
+
+    post(stubr.uri()).body(json!({"a": "b"})).await.expect_status_not_found();
+    post(stubr.uri()).body(json!({"c": "d"})).await.expect_status_not_found();
+}
+
+#[async_std::test]
+#[stubr::mock("req/body/eq/obj.json")]
 async fn should_fail_when_req_body_key_not_equal_to_obj() {
     post(stubr.uri())
         .body(json!({"notUser": {"name": "jdoe"}}))

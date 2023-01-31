@@ -1,15 +1,15 @@
 use async_std::task::block_on;
 use serde_json::Value;
 
-use crate::model::request::body::BodyPatternStub;
+use crate::model::request::body::BodyMatcherStub;
 
 use super::super::super::RecordedExchange;
 
-impl From<&mut RecordedExchange> for Vec<BodyPatternStub> {
+impl From<&mut RecordedExchange> for Vec<BodyMatcherStub> {
     fn from(ex: &mut RecordedExchange) -> Self {
         block_on(async move { ex.0 .0.body_json::<Value>().await })
             .ok()
-            .map(|json_body| BodyPatternStub {
+            .map(|json_body| BodyMatcherStub {
                 equal_to_json: Some(json_body),
                 ..Default::default()
             })
@@ -36,11 +36,11 @@ mod req_body_mapping_tests {
             0: RecordedRequest(req),
             ..Default::default()
         };
-        let expected = BodyPatternStub {
+        let expected = BodyMatcherStub {
             equal_to_json: Some(body),
             ..Default::default()
         };
-        assert!(Vec::<BodyPatternStub>::from(&mut exchange).eq(&vec![expected]))
+        assert!(Vec::<BodyMatcherStub>::from(&mut exchange).eq(&vec![expected]))
     }
 
     #[test]
@@ -52,11 +52,11 @@ mod req_body_mapping_tests {
             0: RecordedRequest(req),
             ..Default::default()
         };
-        let expected = BodyPatternStub {
+        let expected = BodyMatcherStub {
             equal_to_json: Some(body),
             ..Default::default()
         };
-        assert!(Vec::<BodyPatternStub>::from(&mut exchange).eq(&vec![expected]))
+        assert!(Vec::<BodyMatcherStub>::from(&mut exchange).eq(&vec![expected]))
     }
 
     #[test]
@@ -66,6 +66,6 @@ mod req_body_mapping_tests {
             0: RecordedRequest(req),
             ..Default::default()
         };
-        assert!(Vec::<BodyPatternStub>::from(&mut exchange).is_empty())
+        assert!(Vec::<BodyMatcherStub>::from(&mut exchange).is_empty())
     }
 }

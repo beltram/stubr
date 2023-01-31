@@ -1,0 +1,28 @@
+{
+  "protoFile": "tests/grpc/protos/grpc.proto",
+  "grpcRequest": {
+    "message": "Parent",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "child": {
+            "name": "required-child"
+          },
+          "maybe_child": {
+            "name": "optional-child"
+          },
+          "children": [
+            {
+              "name": "child-1"
+            },
+            {
+              "name": "child-2"
+            }
+          ],
+          "gender": "FEMALE"
+        }
+      }
+    ]
+  },
+  "grpcResponse": {}
+}

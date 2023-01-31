@@ -1,9 +1,9 @@
 use std::{ops::Not, str::FromStr};
 
+use crate::wiremock::{Match, Request};
 use http_types::headers::HeaderName;
 use itertools::Itertools;
 use regex::Regex;
-use wiremock::{Match, Request};
 
 use super::{super::matcher::RequestMatcherStub, HttpReqHeadersStub};
 

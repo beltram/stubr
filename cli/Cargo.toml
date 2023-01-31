@@ -17,7 +17,7 @@ name = "stubr"
 path = "src/main.rs"
 
 [dependencies]
-stubr = { path = "../lib", version = "0.5.1", features = ["record-standalone"], default-features = false }
+stubr = { path = "../lib", version = "0.5.1", features = ["record-standalone", "grpc"], default-features = false }
 anyhow = { version = "1.0", default-features = false }
 directories = "4.0"
 clap = { version = "4.0", default-features = false, features = ["derive", "std"] }

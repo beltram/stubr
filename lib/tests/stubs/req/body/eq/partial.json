@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "bodyPatterns": [
+      {
+        "equalToJson": {
+          "a": "b",
+          "c": "d"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200
+  }
+}
