@@ -15,4 +15,4 @@ itertools = "0.10"
 
 [dev-dependencies]
 stubr = { path = "../lib", version = "0.5.1", features = ["verify-actix", "record-actix"] }
-asserhttp = { version = "0.5", features = ["actix"] }
+asserhttp = { version = "0.6", features = ["actix"] }
