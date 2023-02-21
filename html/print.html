@@ -33,6 +33,7 @@
 
     </head>
     <body>
+    <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "";
@@ -81,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started/unit-test.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting-started/unit-test.html"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li><li class="chapter-item expanded "><a href="contract/relaxing.html"><strong aria-hidden="true">3.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">6.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">7.</strong> Docker</a></li><li class="chapter-item expanded "><a href="benchmark.html"><strong aria-hidden="true">8.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">9.</strong> IDE completion</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="getting-started/unit-test.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="getting-started/unit-test.html"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li><li class="chapter-item expanded "><a href="contract/relaxing.html"><strong aria-hidden="true">3.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="stubs/response.html"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="grpc.html"><strong aria-hidden="true">6.</strong> gRPC</a></li><li class="chapter-item expanded "><a href="cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="benchmark.html"><strong aria-hidden="true">9.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -1656,6 +1657,40 @@ fn record_standalone() {
     let _proxy_uri = recorder.uri();
     // ☝️ then use this uri to configure your http client
 }</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="grpc"><a class="header" href="#grpc">gRPC</a></h1>
+<p>Stubr also supports mocking a gRPC service ! To do so, it
+leverages <a href="https://protobuf.dev/programming-guides/proto3/#json">Protobuf to json mapping</a> in order to ; first to reuse
+all the request matchers and response templates already available and implemented ; then, to let you instantiate (give a
+value to the fields) your messages using json (you can't assign a value to a field in Protobuf).</p>
+<p>The API looks like this:</p>
+<pre><code class="language-json">{
+  &quot;protoFile&quot;: &quot;path/to/grpc.proto&quot;, // protobuf file where gRPC service &amp; protobuf messages are defined
+  &quot;grpcRequest&quot;: {
+    &quot;message&quot;: &quot;Pet&quot;, // name of the body's message in 'protoFile' 
+    &quot;path&quot;: &quot;createDog&quot;, // name of the gRPC service to mock, supports Regex
+    &quot;bodyPatterns&quot;: [
+      {
+        &quot;equalToJson&quot;: { // literally the same matchers as in http
+          &quot;name&quot;: &quot;Rex&quot;,
+          &quot;race&quot;: &quot;dog&quot;
+        }
+      }
+    ]
+  },
+  &quot;grpcResponse&quot;: {
+    &quot;status&quot;: &quot;OK&quot;, // or &quot;CANCELLED&quot;, &quot;NOT_FOUND&quot; etc..
+    &quot;message&quot;: &quot;Pet&quot;, // name of the body's message in 'protoFile'
+    &quot;body&quot;: { // literally the same as in http, supports templating too
+      &quot;id&quot;: 1234,
+      &quot;name&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;,
+      &quot;race&quot;: &quot;{{jsonPath request.body '$.race'}}&quot;
+    },
+    &quot;transformers&quot;: [ // required for response templating
+      &quot;response-template&quot;
+    ]
+  }
+}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cli"><a class="header" href="#cli">Cli</a></h1>
 <p>You can use <a href="https://github.com/beltram/stubr">stubr</a> as a cli for serving Wiremock stubs on a local server or as proxy for recording http traffic into
 json stubs.</p>
@@ -1807,5 +1842,6 @@ pain when writing json from scratch.</p>
         });
         </script>
 
+    </div>
     </body>
 </html>
