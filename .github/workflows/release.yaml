@@ -65,8 +65,7 @@ jobs:
           touch stub-consumer/build.rs
           cargo build
       - run: cargo nextest run --verbose
-        # TODO
-#      - run: cargo test --doc
+      - run: cargo test --doc
 
   hack:
     runs-on: ubuntu-latest

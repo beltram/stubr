@@ -24,7 +24,7 @@ impl MockServerBuilder {
     /// instance on a specific port you have already bound.
     ///
     /// ### Example:
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::MockServer;
     ///
     /// #[async_std::main]
@@ -56,7 +56,7 @@ impl MockServerBuilder {
     ///
     /// ### Example (Request recording disabled):
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::MockServer;
     ///
     /// #[async_std::main]

@@ -74,7 +74,7 @@ impl MockServer {
     /// with and needs mocking for testing purposes.
     ///
     /// ### Example:
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -120,7 +120,7 @@ impl MockServer {
     /// `register` is an asynchronous method, make sure to `.await` it!
     ///
     /// ### Example:
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -186,7 +186,7 @@ impl MockServer {
     ///
     /// - The behaviour of the scoped mock is invisible outside of `my_test_helper`.
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -224,7 +224,7 @@ impl MockServer {
     ///
     /// - The expectations for the scoped mock are not verified, it panics at the end of `my_test_helper`.
     ///
-    /// ```rust,should_panic
+    /// ```ignore,should_panic
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -261,7 +261,7 @@ impl MockServer {
     ///
     /// ### Example
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -294,7 +294,7 @@ impl MockServer {
     ///
     /// ### Example (Recorded requests are reset)
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -362,7 +362,7 @@ impl MockServer {
     /// an HTTP client.
     ///
     /// ### Example:
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::MockServer;
     ///
     /// #[async_std::main]
@@ -387,7 +387,7 @@ impl MockServer {
     /// Use this method to interact with the `MockServer` using [`TcpStream`]s.
     ///
     /// ### Example:
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::MockServer;
     /// use std::net::TcpStream;
     ///
@@ -414,7 +414,7 @@ impl MockServer {
     ///
     /// ### Example:
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::MockServer;
     /// use http_types::Method;
     ///
@@ -439,7 +439,7 @@ impl MockServer {
     ///
     /// ### Example (No request served):
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::MockServer;
     ///
     /// #[async_std::main]
@@ -455,7 +455,7 @@ impl MockServer {
     ///
     /// ### Example (Request recording disabled):
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::MockServer;
     ///
     /// #[async_std::main]

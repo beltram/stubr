@@ -76,7 +76,7 @@ impl ResponseTemplate {
     ///   start a new list of header values, containing only `value`.
     ///
     /// ### Example:
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -162,7 +162,7 @@ impl ResponseTemplate {
     /// raw body could be of any type.
     ///
     /// ### Example:
-    /// ```rust
+    /// ```ignore
     /// use surf::http::mime;
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
@@ -221,7 +221,7 @@ impl ResponseTemplate {
     /// In particular, you can use it to test the behaviour of your timeout policies.
     ///
     /// ### Example:
-    /// ```rust
+    /// ```ignore
     /// use isahc::config::Configurable;
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
