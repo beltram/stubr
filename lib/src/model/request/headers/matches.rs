@@ -1,6 +1,8 @@
 use std::{ops::Not, str::FromStr};
 
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 use http_types::headers::HeaderName;
 use itertools::Itertools;
 use regex::Regex;
@@ -26,10 +28,10 @@ impl Match for HeaderRegexMatcher {
 }
 
 impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderRegexMatcher> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(headers: &HttpReqHeadersStub) -> anyhow::Result<Self> {
-        headers.get_headers().ok_or_else(|| anyhow::Error::msg("")).map(|iter| {
+    fn try_from(headers: &HttpReqHeadersStub) -> StubrResult<Self> {
+        headers.get_headers().ok_or_else(|| StubrError::QuietError).map(|iter| {
             iter.filter(|h| h.is_by_regex())
                 .filter_map(|it| HeaderRegexMatcher::try_from(&it).ok())
                 .collect_vec()
@@ -38,9 +40,9 @@ impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderRegexMatcher> {
 }
 
 impl TryFrom<&RequestMatcherStub> for HeaderRegexMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(header: &RequestMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(header: &RequestMatcherStub) -> StubrResult<Self> {
         let maybe_positive_regex = header
             .matches_as_regex()
             .filter(|_| header.is_matches())
@@ -53,6 +55,6 @@ impl TryFrom<&RequestMatcherStub> for HeaderRegexMatcher {
         };
         maybe_positive_regex
             .or_else(maybe_negative_regex)
-            .ok_or_else(|| anyhow::Error::msg("No header matcher by regex found"))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

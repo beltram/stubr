@@ -1,4 +1,6 @@
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 use serde_json::Value;
 
 use super::{
@@ -24,14 +26,14 @@ impl BodyExactMatcher {
 }
 
 impl TryFrom<&BodyMatcherStub> for BodyExactMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(matcher: &BodyMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(matcher: &BodyMatcherStub) -> StubrResult<Self> {
         matcher
             .equal_to_json
             .as_ref()
             .filter(|_| matcher.is_exact_matching())
             .map(|v| Self(v.to_owned()))
-            .ok_or_else(|| anyhow::Error::msg(""))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

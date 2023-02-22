@@ -1,5 +1,6 @@
 use crate::wiremock::MockBuilder;
 
+use crate::error::{StubrError, StubrResult};
 use body::BodyMatcherStub;
 use headers::HttpReqHeadersStub;
 use method::HttpMethodStub;
@@ -35,9 +36,9 @@ pub struct RequestStub {
 }
 
 impl TryFrom<&RequestStub> for MockBuilder {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(request: &RequestStub) -> anyhow::Result<Self> {
+    fn try_from(request: &RequestStub) -> StubrResult<Self> {
         let mut mock = MockBuilder::from(&request.method);
         mock = request.url.register(mock);
         mock = request.headers.register(mock);

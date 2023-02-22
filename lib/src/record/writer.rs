@@ -9,7 +9,7 @@ use std::{
 use http_types::Url;
 use log::info;
 
-use crate::{model::JsonStub, server::stub_finder::StubFinder};
+use crate::{model::JsonStub, server::stub_finder::StubFinder, StubrResult};
 
 pub(crate) struct StubWriter {
     pub(crate) stub: JsonStub,
@@ -18,21 +18,13 @@ pub(crate) struct StubWriter {
 impl StubWriter {
     const RECORDED_TEST_DIR: &'static str = "stubs";
 
-    pub(crate) fn write(&self, host: &str, output: Option<&PathBuf>) -> anyhow::Result<PathBuf> {
+    pub(crate) fn write(&self, host: &str, output: Option<&PathBuf>) -> StubrResult<PathBuf> {
         let output = self.output_and_create(host, output);
-        let file = output.join(self.stub_name());
-        File::create(&file)
-            .map_err(anyhow::Error::msg)
-            .and_then(|f| {
-                serde_json::to_writer_pretty(&f, &self.stub)
-                    .map_err(anyhow::Error::msg)
-                    .map(|_| file)
-            })
-            .map(|p| {
-                info!("Recorded stub in {:?}", p);
-                p
-            })
-            .map_err(anyhow::Error::msg)
+        let path = output.join(self.stub_name());
+        let file = File::create(&path)?;
+        serde_json::to_writer_pretty(&file, &self.stub)?;
+        info!("Recorded stub in {:?}", &file);
+        Ok(path)
     }
 
     pub(crate) fn stub_name(&self) -> String {

@@ -1,4 +1,6 @@
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 use serde_json::Value;
 
 use super::{
@@ -25,14 +27,14 @@ impl Match for JsonBodyPathEqMatcher {
 }
 
 impl TryFrom<&BodyMatcherStub> for JsonBodyPathEqMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(body: &BodyMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyMatcherStub) -> StubrResult<Self> {
         body.expression
             .as_ref()
             .filter(|_| body.is_by_json_path_eq())
             .and_then(|path| body.equal_to_json.as_ref().map(|eq| (path, eq)))
             .map(|(path, eq)| Self(path.to_string(), eq.to_owned()))
-            .ok_or_else(|| anyhow::Error::msg(""))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

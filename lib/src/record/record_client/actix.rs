@@ -16,6 +16,7 @@ use http_types::{
 };
 
 use crate::model::JsonStub;
+use crate::{StubrError, StubrResult};
 
 use super::super::{config::RecordConfig, writer::StubWriter, RecordedExchange, RecordedRequest, RecordedResponse};
 
@@ -60,11 +61,17 @@ where
     fn call(&self, req: ActixRequest) -> Self::Future {
         let cfg = self.cfg.clone();
         let (http_req, payload) = req.into_parts();
-        let RecordedRequestPair(rec_req, payload) = RecordedRequestPair::from((&http_req, payload));
+        let RecordedRequestPair(rec_req, payload) = RecordedRequestPair::try_from((&http_req, payload)).unwrap();
         let fut = self.service.call(ServiceRequest::from_parts(http_req, payload));
         Box::pin(async move {
             let resp: ActixServiceResponse = fut.await?;
-            let host = rec_req.0.url().host_str().unwrap().to_string();
+            let host = rec_req
+                .0
+                .url()
+                .host_str()
+                .ok_or(StubrError::RecordingError("Request uri lacks host"))
+                .unwrap()
+                .to_string();
             let RecordedResponsePair(resp, rec_resp) = RecordedResponsePair::from(resp);
             let mut exchange = RecordedExchange(rec_req, rec_resp);
             let stub = JsonStub::from((&mut exchange, &cfg));
@@ -77,9 +84,11 @@ where
 
 struct RecordedRequestPair(RecordedRequest, Payload);
 
-impl From<(&actix_web::HttpRequest, Payload)> for RecordedRequestPair {
-    fn from((req, rec_payload): (&actix_web::HttpRequest, Payload)) -> Self {
-        let method = HttpMethod::from_str(req.method().as_str()).unwrap_or(HttpMethod::Get);
+impl TryFrom<(&actix_web::HttpRequest, Payload)> for RecordedRequestPair {
+    type Error = StubrError;
+
+    fn try_from((req, rec_payload): (&actix_web::HttpRequest, Payload)) -> StubrResult<Self> {
+        let method = HttpMethod::from_str(req.method().as_str()).map_err(|e| e.into_inner())?;
         let path = req.uri().path();
         let scheme = req.uri().scheme().unwrap_or(&Scheme::HTTP);
         let host = req.uri().host().unwrap_or("localhost");
@@ -111,9 +120,9 @@ impl From<(&actix_web::HttpRequest, Payload)> for RecordedRequestPair {
             http_req.set_body(buf);
             let (mut payload_sender, payload) = actix_http::h1::Payload::create(true);
             payload_sender.feed_data(Bytes::from(buf));
-            Self(RecordedRequest(http_req), Payload::from(payload))
+            Ok(Self(RecordedRequest(http_req), Payload::from(payload)))
         } else {
-            Self(RecordedRequest(http_req), Payload::None)
+            Ok(Self(RecordedRequest(http_req), Payload::None))
         }
     }
 }
@@ -168,57 +177,32 @@ mod http_tests {
 
         #[test]
         fn should_map_method_get() {
-            assert_eq!(
-                RecordedRequestPair::from((&TestRequest::get().to_http_request(), Payload::None))
-                    .0
-                     .0
-                    .method(),
-                Method::Get
-            )
+            let recorded = RecordedRequestPair::try_from((&TestRequest::get().to_http_request(), Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.method(), Method::Get)
         }
 
         #[test]
         fn should_map_method_post() {
-            assert_eq!(
-                RecordedRequestPair::from((&TestRequest::post().to_http_request(), Payload::None))
-                    .0
-                     .0
-                    .method(),
-                Method::Post
-            )
+            let recorded = RecordedRequestPair::try_from((&TestRequest::post().to_http_request(), Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.method(), Method::Post)
         }
 
         #[test]
         fn should_map_method_put() {
-            assert_eq!(
-                RecordedRequestPair::from((&TestRequest::put().to_http_request(), Payload::None))
-                    .0
-                     .0
-                    .method(),
-                Method::Put
-            )
+            let recorded = RecordedRequestPair::try_from((&TestRequest::put().to_http_request(), Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.method(), Method::Put)
         }
 
         #[test]
         fn should_map_method_patch() {
-            assert_eq!(
-                RecordedRequestPair::from((&TestRequest::patch().to_http_request(), Payload::None))
-                    .0
-                     .0
-                    .method(),
-                Method::Patch
-            )
+            let recorded = RecordedRequestPair::try_from((&TestRequest::patch().to_http_request(), Payload::None));
+            assert_eq!(recorded.unwrap().0 .0.method(), Method::Patch)
         }
 
         #[test]
         fn should_map_method_delete() {
-            assert_eq!(
-                RecordedRequestPair::from((&TestRequest::delete().to_http_request(), Payload::None))
-                    .0
-                     .0
-                    .method(),
-                Method::Delete
-            )
+            let recorded = RecordedRequestPair::try_from((&TestRequest::delete().to_http_request(), Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.method(), Method::Delete)
         }
     }
 
@@ -228,43 +212,43 @@ mod http_tests {
         #[test]
         fn should_map_scheme() {
             let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
-            assert_eq!(RecordedRequestPair::from((&input, Payload::None)).0 .0.url().scheme(), "https")
+            let recorded = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.url().scheme(), "https")
         }
 
         #[test]
         fn should_map_host() {
             let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
-            assert_eq!(
-                RecordedRequestPair::from((&input, Payload::None)).0 .0.url().host_str(),
-                Some("github.com")
-            )
+            let recorded = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.url().host_str(), Some("github.com"))
         }
 
         #[test]
         fn should_map_port() {
             let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
-            assert_eq!(RecordedRequestPair::from((&input, Payload::None)).0 .0.url().port(), Some(8080))
+            let recorded = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.url().port(), Some(8080))
         }
 
         #[test]
         fn should_not_fail_when_port_missing() {
             let input = TestRequest::get().uri("https://github.com").to_http_request();
-            assert!(RecordedRequestPair::from((&input, Payload::None)).0 .0.url().port().is_none())
+            let recorded = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
+            assert!(recorded.0 .0.url().port().is_none())
         }
 
         #[test]
         fn should_map_path() {
             let input = TestRequest::get().uri("https://github.com:8080/api/colors").to_http_request();
-            assert_eq!(
-                RecordedRequestPair::from((&input, Payload::None)).0 .0.url().path(),
-                "/api/colors"
-            )
+            let recorded = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.url().path(), "/api/colors")
         }
 
         #[test]
         fn should_not_fail_when_path_missing() {
             let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
-            assert_eq!(RecordedRequestPair::from((&input, Payload::None)).0 .0.url().path(), "/")
+            let recorded = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
+            assert_eq!(recorded.0 .0.url().path(), "/")
         }
     }
 
@@ -276,7 +260,7 @@ mod http_tests {
         #[test]
         fn should_map_one_query_param() {
             let input = TestRequest::get().uri("https://github.com:8080?a=1").to_http_request();
-            let output = RecordedRequestPair::from((&input, Payload::None));
+            let output = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
             let mut queries = output.0 .0.url().query_pairs();
             assert_eq!(queries.next(), Some((Cow::Borrowed("a"), Cow::Borrowed("1"))))
         }
@@ -284,19 +268,14 @@ mod http_tests {
         #[test]
         fn should_not_fail_when_no_query_param() {
             let input = TestRequest::get().uri("https://github.com:8080").to_http_request();
-            assert!(RecordedRequestPair::from((&input, Payload::None))
-                .0
-                 .0
-                .url()
-                .query_pairs()
-                .next()
-                .is_none())
+            let recorded = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
+            assert!(recorded.0 .0.url().query_pairs().next().is_none())
         }
 
         #[test]
         fn should_map_many_query_param() {
             let input = TestRequest::get().uri("https://github.com:8080?a=1&b=2").to_http_request();
-            let output = RecordedRequestPair::from((&input, Payload::None));
+            let output = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
             let mut queries = output.0 .0.url().query_pairs();
             assert_eq!(queries.next(), Some((Cow::Borrowed("a"), Cow::Borrowed("1"))));
             assert_eq!(queries.next(), Some((Cow::Borrowed("b"), Cow::Borrowed("2"))))
@@ -309,7 +288,7 @@ mod http_tests {
         #[test]
         fn should_map_one_req_header() {
             let input = TestRequest::get().insert_header(("x-a", "a")).to_http_request();
-            let output = RecordedRequestPair::from((&input, Payload::None));
+            let output = RecordedRequestPair::try_from((&input, Payload::None)).unwrap();
             let ha = output.0 .0.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
         }
@@ -317,7 +296,7 @@ mod http_tests {
         #[test]
         fn should_not_fail_when_no_req_header() {
             let input = TestRequest::get().to_http_request();
-            let mut output = RecordedRequestPair::from((&input, Payload::None)).0 .0;
+            let mut output = RecordedRequestPair::try_from((&input, Payload::None)).unwrap().0 .0;
             output.remove_header("content-type");
             assert!(output.header_names().collect_vec().is_empty());
             assert!(output.header_values().collect_vec().is_empty());
@@ -329,7 +308,7 @@ mod http_tests {
                 .insert_header(("x-a", "a"))
                 .insert_header(("x-b", "b"))
                 .to_http_request();
-            let output = RecordedRequestPair::from((&input, Payload::None)).0 .0;
+            let output = RecordedRequestPair::try_from((&input, Payload::None)).unwrap().0 .0;
             let ha = output.header("x-a").unwrap().get(0);
             assert_eq!(ha.unwrap().as_str(), "a");
             let hb = output.header("x-b").unwrap().get(0);
@@ -339,7 +318,7 @@ mod http_tests {
         #[test]
         fn should_map_multi_req_header() {
             let input = TestRequest::get().insert_header(("x-m", "a, b")).to_http_request();
-            let output = RecordedRequestPair::from((&input, Payload::None)).0 .0;
+            let output = RecordedRequestPair::try_from((&input, Payload::None)).unwrap().0 .0;
             let multi = output.header("x-m").unwrap();
             assert_eq!(multi.get(0).unwrap().as_str(), "a");
             assert_eq!(multi.get(1).unwrap().as_str(), "b");
@@ -356,7 +335,7 @@ mod http_tests {
         fn should_map_json_req_body() {
             let input_body = json!({"a": "b"});
             let (req, payload) = TestRequest::post().set_json(&input_body).to_http_parts();
-            let mut output = RecordedRequestPair::from((&req, payload)).0 .0;
+            let mut output = RecordedRequestPair::try_from((&req, payload)).unwrap().0 .0;
             let body = block_on(async move { output.body_json::<Value>().await.unwrap() });
             assert_eq!(body, input_body);
         }
@@ -364,7 +343,7 @@ mod http_tests {
         #[test]
         fn should_map_text_req_body() {
             let (req, payload) = TestRequest::post().set_payload("Hello World!").to_http_parts();
-            let mut output = RecordedRequestPair::from((&req, payload)).0 .0;
+            let mut output = RecordedRequestPair::try_from((&req, payload)).unwrap().0 .0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert_eq!(&body, b"Hello World!");
         }
@@ -372,7 +351,7 @@ mod http_tests {
         #[test]
         fn should_not_fail_when_req_body_empty() {
             let (req, payload) = TestRequest::post().set_payload(String::new()).to_http_parts();
-            let mut output = RecordedRequestPair::from((&req, payload)).0 .0;
+            let mut output = RecordedRequestPair::try_from((&req, payload)).unwrap().0 .0;
             let body = block_on(async move { output.body_bytes().await.unwrap() });
             assert!(body.is_empty());
         }

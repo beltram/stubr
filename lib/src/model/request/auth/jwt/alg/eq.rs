@@ -1,9 +1,9 @@
-use std::str::FromStr;
-
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
 use jsonwebtoken::Algorithm;
 
 use crate::model::request::auth::helpers::RequestAuthExtension;
+use crate::StubrError;
 
 use super::JwtAlgStub;
 
@@ -16,13 +16,14 @@ impl Match for JwtAlgExactMatcher {
 }
 
 impl TryFrom<&JwtAlgStub> for JwtAlgExactMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(stub: &JwtAlgStub) -> anyhow::Result<Self> {
+    fn try_from(stub: &JwtAlgStub) -> StubrResult<Self> {
         stub.equal_to
             .as_ref()
-            .and_then(|eq| Algorithm::from_str(eq).ok())
+            .map(|eq| eq.parse())
+            .transpose()?
             .map(Self)
-            .ok_or_else(|| anyhow::Error::msg(""))
+            .ok_or(StubrError::QuietError)
     }
 }

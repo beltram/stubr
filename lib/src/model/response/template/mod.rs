@@ -1,9 +1,6 @@
 use std::sync::RwLock;
 
-use crate::{
-    model::response::template::data::RequestData,
-    wiremock::{Request, Respond, ResponseTemplate},
-};
+use crate::{model::response::template::data::RequestData, StubrResult, wiremock::{Request, Respond, ResponseTemplate}};
 use handlebars::Handlebars;
 use serde::Serialize;
 
@@ -126,12 +123,13 @@ impl StubTemplate {
     #[cfg(feature = "grpc")]
     fn grpc_respond(
         &self, req: &Request, mut resp: ResponseTemplate, response: &crate::model::grpc::response::GrpcResponseStub,
-    ) -> ResponseTemplate {
+    ) -> StubrResult<ResponseTemplate> {
         if response.requires_response_templating() {
             let request = self
                 .md
                 .as_ref()
-                .map(|md| RequestData::from_grpc_request(req, md))
+                .map(|md| RequestData::try_from_grpc_request(req, md))
+                .transpose()?
                 .unwrap_or_default();
             let data = HandlebarsData {
                 request: &request,
@@ -141,7 +139,7 @@ impl StubTemplate {
             };
             resp = response.render_response_template(resp, &data, self.md.as_ref());
         }
-        resp
+        Ok(resp)
     }
 }
 

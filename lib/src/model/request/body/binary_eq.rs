@@ -1,4 +1,6 @@
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 
 use super::BodyMatcherStub;
 
@@ -17,15 +19,15 @@ impl BinaryExactMatcher {
 }
 
 impl TryFrom<&BodyMatcherStub> for BinaryExactMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(body: &BodyMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyMatcherStub) -> StubrResult<Self> {
         use base64::Engine as _;
         body.binary_equal_to
             .as_ref()
             .filter(|_| body.is_by_binary_equality())
             .and_then(|it| base64::prelude::BASE64_STANDARD.decode(it).ok())
             .map(Self)
-            .ok_or_else(|| anyhow::Error::msg(""))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

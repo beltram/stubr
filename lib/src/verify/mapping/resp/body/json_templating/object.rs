@@ -1,4 +1,3 @@
-use anyhow::anyhow;
 use itertools::Itertools;
 use serde_json::{Map, Value};
 
@@ -11,6 +10,7 @@ use crate::model::response::{
     },
     ResponseStub,
 };
+use crate::{StubrError, StubrResult};
 
 use super::{
     super::super::{StdResponse, Verifier},
@@ -50,15 +50,15 @@ impl JsonObjectVerifier<'_> {
 }
 
 impl<'a> TryFrom<&'a JsonBodyTemplatingVerifier> for JsonObjectVerifier<'a> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(parent: &'a JsonBodyTemplatingVerifier) -> anyhow::Result<Self> {
+    fn try_from(parent: &'a JsonBodyTemplatingVerifier) -> StubrResult<Self> {
         parent
             .actual
             .as_object()
             .zip(parent.expected.as_object())
             .map(|(actual, expected)| Self { actual, expected })
-            .ok_or_else(|| anyhow!(""))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }
 

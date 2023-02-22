@@ -1,4 +1,5 @@
 use crate::wiremock::{Match, Request};
+use crate::{StubrError, StubrResult};
 use itertools::Itertools;
 
 use super::{super::matcher::RequestMatcherStub, HttpQueryParamsStub};
@@ -16,10 +17,10 @@ impl Match for QueryCaseInsensitiveMatcher {
 }
 
 impl TryFrom<&HttpQueryParamsStub> for Vec<QueryCaseInsensitiveMatcher> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(queries: &HttpQueryParamsStub) -> anyhow::Result<Self> {
-        queries.get_queries().ok_or_else(|| anyhow::Error::msg("")).map(|iter| {
+    fn try_from(queries: &HttpQueryParamsStub) -> StubrResult<Self> {
+        queries.get_queries().ok_or_else(|| StubrError::QuietError).map(|iter| {
             iter.filter(|q| q.is_case_insensitive())
                 .filter_map(|it| QueryCaseInsensitiveMatcher::try_from(&it).ok())
                 .collect_vec()
@@ -28,13 +29,13 @@ impl TryFrom<&HttpQueryParamsStub> for Vec<QueryCaseInsensitiveMatcher> {
 }
 
 impl TryFrom<&RequestMatcherStub> for QueryCaseInsensitiveMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(query: &RequestMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(query: &RequestMatcherStub) -> StubrResult<Self> {
         query
             .equal_to_as_str()
             .filter(|_| query.is_case_insensitive())
             .map(|it| QueryCaseInsensitiveMatcher(query.key.to_string(), it))
-            .ok_or_else(|| anyhow::Error::msg("No case insensitive query matcher found"))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

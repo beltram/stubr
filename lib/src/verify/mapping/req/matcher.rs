@@ -1,10 +1,10 @@
 use std::str::FromStr;
 
-use anyhow::Error;
 use itertools::Itertools;
 use serde_json::Value;
 
 use crate::{
+    error::{StubrError, StubrResult},
     gen::{regex::RegexRndGenerator, string::StringRndGenerator},
     model::request::matcher::MatcherValueStub,
 };
@@ -19,7 +19,7 @@ impl MatcherValueStubMapper {
             .or_else(|| value.as_i64().map(|it| it.to_string()))
             .or_else(|| value.as_f64().map(|it| it.to_string()))
             .or_else(|| value.as_bool().map(|it| it.to_string()))
-            .or_else(|| value.as_null().map(|_| String::from("null")))
+            .or_else(|| value.as_null().map(|_| "null".to_string()))
             .map(|it| if case_insensitive { Self::map_case_insensitive(it) } else { it })
     }
 
@@ -49,18 +49,19 @@ impl MatcherValueStubMapper {
 }
 
 impl TryFrom<&MatcherValueStub> for String {
-    type Error = Error;
+    type Error = StubrError;
 
-    fn try_from(matcher: &MatcherValueStub) -> anyhow::Result<Self> {
+    fn try_from(matcher: &MatcherValueStub) -> StubrResult<Self> {
         if let Some(equal_to) = matcher.equal_to.as_ref() {
             let case_insensitive = matcher.case_insensitive.unwrap_or_default();
-            MatcherValueStubMapper::map_equal_to(equal_to, case_insensitive).ok_or_else(|| Error::msg("Invalid 'equal_to'"))
+            MatcherValueStubMapper::map_equal_to(equal_to, case_insensitive)
+                .ok_or_else(|| StubrError::InvalidRequestBodyMatcher("equal_to"))
         } else if let Some(contains) = matcher.contains.as_ref() {
-            MatcherValueStubMapper::map_contains(contains).ok_or_else(|| Error::msg("Invalid 'contains'"))
+            MatcherValueStubMapper::map_contains(contains).ok_or_else(|| StubrError::InvalidRequestBodyMatcher("contains"))
         } else if let Some(matches) = matcher.matches.as_ref().and_then(Value::as_str) {
-            MatcherValueStubMapper::map_matches(matches).ok_or_else(|| Error::msg("Invalid 'matches'"))
+            MatcherValueStubMapper::map_matches(matches).ok_or_else(|| StubrError::InvalidRequestBodyMatcher("matches"))
         } else {
-            Err(Error::msg("No matcher defined"))
+            Err(StubrError::NoRequestBodyMatcher)
         }
     }
 }

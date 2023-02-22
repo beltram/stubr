@@ -1,4 +1,5 @@
 use crate::wiremock::Request as WiremockRequest;
+use crate::StubrResult;
 use http_types::Method;
 use serde_json::Value;
 
@@ -42,10 +43,10 @@ impl Default for RequestData<'_> {
 
 #[cfg(feature = "grpc")]
 impl<'a> RequestData<'a> {
-    pub fn from_grpc_request(req: &'a WiremockRequest, md: &protobuf::reflect::MessageDescriptor) -> Self {
+    pub fn try_from_grpc_request(req: &'a WiremockRequest, md: &protobuf::reflect::MessageDescriptor) -> StubrResult<Self> {
         let body = crate::model::grpc::request::proto_to_json_str(req.body.as_slice(), md);
         let body = serde_json::from_str(&body).unwrap();
-        Self {
+        Ok(Self {
             path: crate::model::grpc::request::path::GrpcPathMatcher::parse_svc_name(req),
             path_segments: None,
             url: "",
@@ -54,7 +55,7 @@ impl<'a> RequestData<'a> {
             body: Some(body),
             query: None,
             headers: None,
-        }
+        })
     }
 }
 

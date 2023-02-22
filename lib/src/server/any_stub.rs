@@ -2,6 +2,14 @@ use std::path::PathBuf;
 
 pub struct AnyStubs(pub Vec<PathBuf>);
 
+impl std::ops::Deref for AnyStubs {
+    type Target = Vec<PathBuf>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
 impl From<PathBuf> for AnyStubs {
     fn from(path: PathBuf) -> Self {
         Self(vec![path])

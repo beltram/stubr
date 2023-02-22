@@ -1,3 +1,4 @@
+use crate::error::StubrResult;
 use rand::{Rng, SeedableRng};
 use rand_xorshift::XorShiftRng;
 use regex_syntax::ParserBuilder;
@@ -6,17 +7,13 @@ use regex_syntax::ParserBuilder;
 pub struct RegexRndGenerator<'a>(pub &'a str);
 
 impl RegexRndGenerator<'_> {
-    pub fn try_generate(self) -> anyhow::Result<String> {
+    pub fn try_generate(self) -> StubrResult<String> {
         const MAX_REPEAT: u32 = 10;
         let mut rng = XorShiftRng::seed_from_u64(42);
         let mut parser = ParserBuilder::new().unicode(false).build();
         let hir = parser.parse(self.0)?;
         let gen = rand_regex::Regex::with_hir(hir, MAX_REPEAT)?;
-        (&mut rng)
-            .sample_iter(&gen)
-            .take(1)
-            .next()
-            .ok_or_else(|| anyhow::Error::msg(format!("Failed generating random string from regex '{}'", self.0)))
+        Ok(rng.sample::<String, _>(&gen))
     }
 }
 

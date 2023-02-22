@@ -14,6 +14,10 @@ mod jwt;
 
 const BEARER_PREFIX: &str = "Bearer";
 
+lazy_static! {
+    pub(crate) static ref AUTHORIZATION_HEADER: HeaderName = HeaderName::from_str("authorization").expect("Implementation error");
+}
+
 #[derive(Debug, Clone, Default, Hash, serde::Serialize, serde::Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct AuthStub {
@@ -33,8 +37,4 @@ impl MockRegistrable for AuthStub {
         }
         mock
     }
-}
-
-lazy_static! {
-    pub(crate) static ref AUTHORIZATION_HEADER: HeaderName = HeaderName::from_str("authorization").unwrap();
 }

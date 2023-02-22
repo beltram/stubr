@@ -3,6 +3,7 @@ use std::{
     path::PathBuf,
 };
 
+use crate::StubrError;
 use http_types::Url;
 use log::{error, info};
 
@@ -12,7 +13,7 @@ impl RecordLogger {
     pub fn success(file: PathBuf, status: u16, method: &str, url: &Url) {
         info!("{} -> {:?}", ExchangeLog(status, method, url), file);
     }
-    pub fn error(error: anyhow::Error, status: u16, method: &str, url: &Url) {
+    pub fn error(error: StubrError, status: u16, method: &str, url: &Url) {
         error!("failed recording {} because {:?}", ExchangeLog(status, method, url), error);
     }
 }
