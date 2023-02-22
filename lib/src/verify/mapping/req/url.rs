@@ -1,5 +1,6 @@
 use http_types::Url;
 
+use crate::error::{StubrError, StubrResult};
 use crate::{gen::regex::RegexRndGenerator, model::request::RequestStub};
 
 struct UrlStubMapper;
@@ -29,9 +30,9 @@ impl UrlStubMapper {
 }
 
 impl TryFrom<&RequestStub> for Url {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(stub: &RequestStub) -> anyhow::Result<Self> {
+    fn try_from(stub: &RequestStub) -> StubrResult<Self> {
         const BASE_URL: &str = "http://localhost/";
         let mut url = Self::parse(BASE_URL)?.join(&UrlStubMapper::url_from_matcher(stub))?;
         for (k, v) in Vec::<(String, String)>::from(&stub.queries).iter() {

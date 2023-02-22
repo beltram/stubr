@@ -1,4 +1,6 @@
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 
 use super::{
     super::{AUTHORIZATION_HEADER, BEARER_PREFIX},
@@ -17,12 +19,12 @@ impl Match for JwtExactMatcher {
 }
 
 impl TryFrom<&JwtAuthStub> for JwtExactMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(stub: &JwtAuthStub) -> anyhow::Result<Self> {
+    fn try_from(stub: &JwtAuthStub) -> StubrResult<Self> {
         stub.equal_to
             .as_ref()
             .map(|eq| Self(format!("{BEARER_PREFIX} {eq}")))
-            .ok_or_else(|| anyhow::Error::msg(""))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

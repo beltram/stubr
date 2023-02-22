@@ -1,15 +1,12 @@
 use crate::wiremock::matchers::{path, PathExactMatcher};
+use crate::{StubrError, StubrResult};
 
 use super::HttpUrlStub;
 
 impl TryFrom<&HttpUrlStub> for PathExactMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(http_url: &HttpUrlStub) -> anyhow::Result<Self> {
-        http_url
-            .url_path
-            .as_deref()
-            .map(path)
-            .ok_or_else(|| anyhow::Error::msg("No 'urlPath'"))
+    fn try_from(http_url: &HttpUrlStub) -> StubrResult<Self> {
+        http_url.url_path.as_deref().map(path).ok_or_else(|| StubrError::QuietError)
     }
 }

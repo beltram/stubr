@@ -1,6 +1,8 @@
 use std::str::FromStr;
 
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 use http_types::headers::HeaderName;
 use itertools::Itertools;
 
@@ -19,10 +21,10 @@ impl Match for HeaderContainsMatcher {
 }
 
 impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderContainsMatcher> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(headers: &HttpReqHeadersStub) -> anyhow::Result<Self> {
-        headers.get_headers().ok_or_else(|| anyhow::Error::msg("")).map(|iter| {
+    fn try_from(headers: &HttpReqHeadersStub) -> StubrResult<Self> {
+        headers.get_headers().ok_or_else(|| StubrError::QuietError).map(|iter| {
             iter.filter(|h| h.is_contains())
                 .filter_map(|it| HeaderContainsMatcher::try_from(&it).ok())
                 .collect_vec()
@@ -31,15 +33,15 @@ impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderContainsMatcher> {
 }
 
 impl TryFrom<&RequestMatcherStub> for HeaderContainsMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(header: &RequestMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(header: &RequestMatcherStub) -> StubrResult<Self> {
         header
             .value
             .as_ref()
             .filter(|_| header.is_contains())
             .and_then(|it| it.contains.as_ref())
             .map(|contains| HeaderContainsMatcher(header.key.to_string(), contains.to_string()))
-            .ok_or_else(|| anyhow::Error::msg("No header contains matcher found"))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

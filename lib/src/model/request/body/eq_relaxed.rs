@@ -1,4 +1,6 @@
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 use serde_json::Value;
 
 use super::{
@@ -49,9 +51,9 @@ impl JsonBodyRelaxedMatcher {
 }
 
 impl TryFrom<&BodyMatcherStub> for JsonBodyRelaxedMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(body: &BodyMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(body: &BodyMatcherStub) -> StubrResult<Self> {
         body.equal_to_json
             .as_ref()
             .filter(|_| body.is_relaxed_matching())
@@ -60,6 +62,6 @@ impl TryFrom<&BodyMatcherStub> for JsonBodyRelaxedMatcher {
                 is_ignore_extra_elements: body.is_ignore_extra_elements(),
                 is_ignore_array_order: body.is_ignore_array_order(),
             })
-            .ok_or_else(|| anyhow::Error::msg(""))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

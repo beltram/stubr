@@ -1,4 +1,5 @@
 use crate::wiremock::matchers::{path, query_param, PathExactMatcher, QueryParamExactMatcher};
+use crate::{StubrError, StubrResult};
 use http_types::Url;
 use itertools::Itertools;
 
@@ -7,23 +8,24 @@ use super::HttpUrlStub;
 pub struct ExactPathAndQueryMatcher(pub PathExactMatcher, pub Vec<QueryParamExactMatcher>);
 
 impl TryFrom<&HttpUrlStub> for ExactPathAndQueryMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(http_url: &HttpUrlStub) -> anyhow::Result<Self> {
-        Url::try_from(http_url).map(Self::from).map_err(anyhow::Error::msg)
+    fn try_from(http_url: &HttpUrlStub) -> StubrResult<Self> {
+        Url::try_from(http_url).map(Self::from)
     }
 }
 
 impl TryFrom<&HttpUrlStub> for Url {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(http_url: &HttpUrlStub) -> anyhow::Result<Self> {
+    fn try_from(http_url: &HttpUrlStub) -> StubrResult<Self> {
         http_url
             .url
             .as_ref()
             .map(|it| format!("http://localhost{it}"))
-            .and_then(|it| Url::parse(&it).ok())
-            .ok_or_else(|| anyhow::Error::msg("No 'url'"))
+            .map(|it| Url::parse(&it))
+            .transpose()?
+            .ok_or_else(|| StubrError::QuietError)
     }
 }
 

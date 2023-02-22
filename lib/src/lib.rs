@@ -104,7 +104,10 @@ pub use verify::actix::lifecycle::ActixVerifyLifecycle;
 #[cfg(feature = "verify")]
 pub use verify::{StubrVerify, VerifyExcept};
 
+pub use error::{StubrError, StubrResult};
+
 mod cloud;
+pub mod error;
 mod gen;
 mod model;
 #[cfg(any(

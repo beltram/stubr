@@ -1,6 +1,8 @@
 use std::str::FromStr;
 
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 use http_types::headers::HeaderName;
 use itertools::Itertools;
 
@@ -18,10 +20,10 @@ impl Match for HeaderAbsentMatcher {
 }
 
 impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderAbsentMatcher> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(headers: &HttpReqHeadersStub) -> Result<Self, Self::Error> {
-        headers.get_headers().ok_or_else(|| anyhow::Error::msg("")).map(|iter| {
+    fn try_from(headers: &HttpReqHeadersStub) -> StubrResult<Self> {
+        headers.get_headers().ok_or_else(|| StubrError::QuietError).map(|iter| {
             iter.filter(|h| h.is_absent())
                 .filter_map(|it| HeaderAbsentMatcher::try_from(&it).ok())
                 .collect_vec()
@@ -30,14 +32,14 @@ impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderAbsentMatcher> {
 }
 
 impl TryFrom<&RequestMatcherStub> for HeaderAbsentMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(header: &RequestMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(header: &RequestMatcherStub) -> StubrResult<Self> {
         header
             .value
             .as_ref()
             .filter(|_| header.is_absent())
             .map(|it| HeaderAbsentMatcher(header.key.to_string(), it.absent.unwrap_or_default()))
-            .ok_or_else(|| anyhow::Error::msg("No header absent matcher found"))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

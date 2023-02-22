@@ -1,5 +1,6 @@
 use std::{ops::Not, str::FromStr};
 
+use crate::{StubrError, StubrResult};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -103,9 +104,9 @@ impl RequestMatcherStub {
 }
 
 impl TryFrom<(&String, &Value)> for RequestMatcherStub {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from((k, v): (&String, &Value)) -> anyhow::Result<Self> {
+    fn try_from((k, v): (&String, &Value)) -> StubrResult<Self> {
         Ok(Self {
             key: k.to_owned(),
             value: serde_json::from_value(v.to_owned()).ok(),

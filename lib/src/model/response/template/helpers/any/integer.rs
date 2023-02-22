@@ -1,5 +1,6 @@
 use std::str::from_utf8;
 
+use crate::StubrResult;
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, RenderContext};
 use rand::random;
 
@@ -19,7 +20,7 @@ impl AnyInteger {
 }
 
 impl AnyTemplate for AnyInteger {
-    fn generate<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> anyhow::Result<String> {
+    fn generate<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>) -> StubrResult<String> {
         Ok(match h.name() {
             Self::I64 => random::<i64>().to_string(),
             Self::U64 => random::<u64>().to_string(),
@@ -33,32 +34,32 @@ impl AnyTemplate for AnyInteger {
         })
     }
 
-    fn verify<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, response: Vec<u8>) {
-        let is_int = from_utf8(response.as_slice())
-            .ok()
-            .map(|s| match h.name() {
-                Self::I64 => s.parse::<i64>().is_ok(),
-                Self::U64 => s.parse::<u64>().is_ok(),
-                Self::I32 => s.parse::<i32>().is_ok(),
-                Self::U32 => s.parse::<u32>().is_ok(),
-                Self::I16 => s.parse::<i16>().is_ok(),
-                Self::U16 => s.parse::<u16>().is_ok(),
-                Self::I8 => s.parse::<i8>().is_ok(),
-                Self::U8 => s.parse::<u8>().is_ok(),
-                _ => false,
-            })
-            .unwrap_or_default();
+    fn verify<'reg: 'rc, 'rc>(
+        &self, h: &Helper<'reg, 'rc>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, response: Vec<u8>,
+    ) -> StubrResult<()> {
+        let resp = from_utf8(&response[..])?;
+        let is_int = match h.name() {
+            Self::I64 => resp.parse::<i64>().is_ok(),
+            Self::U64 => resp.parse::<u64>().is_ok(),
+            Self::I32 => resp.parse::<i32>().is_ok(),
+            Self::U32 => resp.parse::<u32>().is_ok(),
+            Self::I16 => resp.parse::<i16>().is_ok(),
+            Self::U16 => resp.parse::<u16>().is_ok(),
+            Self::I8 => resp.parse::<i8>().is_ok(),
+            Self::U8 => resp.parse::<u8>().is_ok(),
+            _ => false,
+        };
         assert!(
             !response.is_empty() && is_int,
-            "Verification failed for stub '{}'. Expected response body to {} but was '{}'",
+            "Verification failed for stub '{}'. Expected response body to {} but was '{resp}'",
             ctx.stub_name(),
-            self.expected(h, rc),
-            from_utf8(response.as_slice()).unwrap_or_default()
+            self.expected(h, rc)?,
         );
+        Ok(())
     }
 
-    fn expected<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> String {
-        match h.name() {
+    fn expected<'reg: 'rc, 'rc>(&self, h: &Helper<'reg, 'rc>, _: &mut RenderContext<'reg, 'rc>) -> StubrResult<String> {
+        Ok(match h.name() {
             Self::I64 => "be an i64",
             Self::U64 => "be an u64",
             Self::I32 => "be an i32",
@@ -69,7 +70,7 @@ impl AnyTemplate for AnyInteger {
             Self::U8 => "be an u8",
             _ => "be an integer",
         }
-        .to_string()
+        .to_string())
     }
 }
 
@@ -77,6 +78,6 @@ impl HelperDef for AnyInteger {
     fn call<'reg: 'rc, 'rc>(
         &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, ctx: &'rc Context, rc: &mut RenderContext<'reg, 'rc>, out: &mut dyn Output,
     ) -> HelperResult {
-        self.render(h, ctx, rc, out)
+        Ok(self.render(h, ctx, rc, out)?)
     }
 }

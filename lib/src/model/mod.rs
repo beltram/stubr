@@ -1,4 +1,3 @@
-use anyhow::anyhow;
 use std::{
     fs::OpenOptions,
     hash::{Hash, Hasher},
@@ -13,6 +12,7 @@ use response::{
     ResponseStub,
 };
 
+use crate::error::{StubrError, StubrResult};
 use crate::Config;
 
 #[cfg(feature = "grpc")]
@@ -64,7 +64,7 @@ impl JsonStub {
         self.proto_file.as_ref().filter(|f| f.exists())
     }
 
-    pub(crate) fn try_creating_from(self, config: &Config) -> anyhow::Result<Mock> {
+    pub(crate) fn try_creating_from(self, config: &Config, file: &PathBuf) -> StubrResult<Mock> {
         let expect = self.expect;
         if self.is_http() {
             let req = self.http_request.clone().unwrap_or_default();
@@ -86,7 +86,7 @@ impl JsonStub {
                     return Ok(mock);
                 }
             }
-            return Err(anyhow!("Invalid stub"));
+            Err(StubrError::InvalidStub(file.clone()))
         }
     }
 
@@ -203,11 +203,11 @@ impl JsonStub {
 }
 
 impl TryFrom<&PathBuf> for JsonStub {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(maybe_stub: &PathBuf) -> anyhow::Result<Self> {
+    fn try_from(maybe_stub: &PathBuf) -> StubrResult<Self> {
         let file = OpenOptions::new().read(true).open(maybe_stub)?;
-        serde_json::from_reader(file).map_err(anyhow::Error::msg)
+        Ok(serde_json::from_reader(file)?)
     }
 }
 

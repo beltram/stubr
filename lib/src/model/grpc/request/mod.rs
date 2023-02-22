@@ -1,15 +1,17 @@
-use crate::wiremock::MockBuilder;
 use crate::{
-    model::grpc::proto::parse_message_descriptor,
-    model::request::{
-        body::BodyMatcherStub,
-        method::{HttpMethodStub, Verb},
+    error::StubrResult,
+    model::{
+        grpc::proto::parse_message_descriptor,
+        request::{
+            body::BodyMatcherStub,
+            method::{HttpMethodStub, Verb},
+        },
     },
+    wiremock::MockBuilder,
+    StubrError,
 };
-use anyhow::anyhow;
 use protobuf::reflect::MessageDescriptor;
-use std::hash::Hash;
-use std::path::PathBuf;
+use std::{hash::Hash, path::PathBuf};
 
 pub mod binary_eq;
 pub mod eq;
@@ -34,13 +36,13 @@ pub struct GrpcRequestStub {
 }
 
 impl GrpcRequestStub {
-    pub fn try_new(request: &GrpcRequestStub, proto_file: Option<&PathBuf>) -> anyhow::Result<MockBuilder> {
+    pub fn try_new(request: &GrpcRequestStub, proto_file: Option<&PathBuf>) -> StubrResult<MockBuilder> {
         let mut mock = MockBuilder::from(&HttpMethodStub(Verb::Post));
         if let Some(path) = request.path.as_ref() {
             mock = mock.and(path::GrpcPathMatcher::try_new(path));
         }
         if let Some(matchers) = request.body_patterns.as_ref() {
-            let proto_file = proto_file.ok_or(anyhow!("A 'proto_file' has to be declared for request body matching"))?;
+            let proto_file = proto_file.ok_or(StubrError::MissingProtobufFile)?;
             let md = request.descriptor(proto_file);
             for matcher in matchers {
                 if let Some(exact_json) = eq::GrpcBodyExactMatcher::try_new(matcher, md.clone()) {

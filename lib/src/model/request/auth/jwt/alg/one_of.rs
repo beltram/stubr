@@ -1,4 +1,6 @@
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 use jsonwebtoken::Algorithm;
 
 use super::{super::super::helpers::RequestAuthExtension, JwtAlgStub};
@@ -12,12 +14,12 @@ impl Match for JwtAlgOneOfMatcher {
 }
 
 impl TryFrom<&JwtAlgStub> for JwtAlgOneOfMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(stub: &JwtAlgStub) -> anyhow::Result<Self> {
+    fn try_from(stub: &JwtAlgStub) -> StubrResult<Self> {
         stub.one_of
             .as_ref()
-            .map(|o| Self(o.to_owned()))
-            .ok_or_else(|| anyhow::Error::msg(""))
+            .map(|o| Self(o.clone()))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

@@ -1,12 +1,13 @@
-use anyhow::anyhow;
-
-use crate::model::response::{
-    template::{
-        data::{HandlebarsData, RequestData},
-        utils::TemplateExt,
-        HandlebarTemplatable,
+use crate::{
+    model::response::{
+        template::{
+            data::{HandlebarsData, RequestData},
+            utils::TemplateExt,
+            HandlebarTemplatable,
+        },
+        ResponseStub,
     },
-    ResponseStub,
+    StubrError, StubrResult,
 };
 
 use super::{
@@ -20,15 +21,15 @@ pub struct JsonStrVerifier<'a> {
 }
 
 impl<'a> TryFrom<&'a JsonBodyTemplatingVerifier> for JsonStrVerifier<'a> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(parent: &'a JsonBodyTemplatingVerifier) -> anyhow::Result<Self> {
+    fn try_from(parent: &'a JsonBodyTemplatingVerifier) -> StubrResult<Self> {
         parent
             .actual
             .as_str()
             .zip(parent.expected.as_str())
             .map(|(actual, expected)| Self { actual, expected })
-            .ok_or_else(|| anyhow!(""))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }
 

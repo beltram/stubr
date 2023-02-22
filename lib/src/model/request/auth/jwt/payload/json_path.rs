@@ -1,18 +1,21 @@
-use crate::wiremock::{Match, Request};
-use jsonpath_lib::Compiled;
-
-use super::super::super::{
-    super::json::{json_path::JsonPathMatcher, JsonMatcher},
-    helpers::RequestAuthExtension,
+use crate::{
+    error::{StubrError, StubrResult},
+    model::request::{
+        auth::helpers::RequestAuthExtension,
+        json::{json_path::JsonPathMatcher, JsonMatcher},
+    },
+    wiremock::{Match, Request},
 };
 
-pub struct JsonPayloadPathMatcher(Compiled);
+pub struct JsonPayloadPathMatcher(jsonpath_lib::Compiled);
 
 impl TryFrom<&str> for JsonPayloadPathMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(path: &str) -> anyhow::Result<Self> {
-        jsonpath_lib::Compiled::compile(path).map(Self).map_err(anyhow::Error::msg)
+    fn try_from(path: &str) -> StubrResult<Self> {
+        jsonpath_lib::Compiled::compile(path)
+            .map_err(StubrError::JsonPathError)
+            .map(Self)
     }
 }
 

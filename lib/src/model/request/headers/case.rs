@@ -1,6 +1,8 @@
 use std::str::FromStr;
 
+use crate::error::StubrResult;
 use crate::wiremock::{Match, Request};
+use crate::StubrError;
 use http_types::headers::HeaderName;
 use itertools::Itertools;
 
@@ -19,10 +21,10 @@ impl Match for HeaderCaseInsensitiveMatcher {
 }
 
 impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderCaseInsensitiveMatcher> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(headers: &HttpReqHeadersStub) -> anyhow::Result<Self> {
-        headers.get_headers().ok_or_else(|| anyhow::Error::msg("")).map(|iter| {
+    fn try_from(headers: &HttpReqHeadersStub) -> StubrResult<Self> {
+        headers.get_headers().ok_or_else(|| StubrError::QuietError).map(|iter| {
             iter.filter(|h| h.is_case_insensitive())
                 .filter_map(|it| HeaderCaseInsensitiveMatcher::try_from(&it).ok())
                 .collect_vec()
@@ -31,13 +33,13 @@ impl TryFrom<&HttpReqHeadersStub> for Vec<HeaderCaseInsensitiveMatcher> {
 }
 
 impl TryFrom<&RequestMatcherStub> for HeaderCaseInsensitiveMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(header: &RequestMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(header: &RequestMatcherStub) -> StubrResult<Self> {
         header
             .equal_to_as_str()
             .filter(|_| header.is_case_insensitive())
             .map(|it| HeaderCaseInsensitiveMatcher(header.key.to_string(), it))
-            .ok_or_else(|| anyhow::Error::msg("No case insensitive header matcher found"))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

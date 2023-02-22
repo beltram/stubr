@@ -1,6 +1,7 @@
 use std::ops::Not;
 
 use crate::wiremock::{Match, Request};
+use crate::{StubrError, StubrResult};
 use itertools::Itertools;
 use regex::Regex;
 
@@ -25,10 +26,10 @@ impl Match for QueryRegexMatcher {
 }
 
 impl TryFrom<&HttpQueryParamsStub> for Vec<QueryRegexMatcher> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(queries: &HttpQueryParamsStub) -> anyhow::Result<Self> {
-        queries.get_queries().ok_or_else(|| anyhow::Error::msg("")).map(|iter| {
+    fn try_from(queries: &HttpQueryParamsStub) -> StubrResult<Self> {
+        queries.get_queries().ok_or_else(|| StubrError::QuietError).map(|iter| {
             iter.filter(|q| q.is_by_regex())
                 .filter_map(|it| QueryRegexMatcher::try_from(&it).ok())
                 .collect_vec()
@@ -37,9 +38,9 @@ impl TryFrom<&HttpQueryParamsStub> for Vec<QueryRegexMatcher> {
 }
 
 impl TryFrom<&RequestMatcherStub> for QueryRegexMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(query: &RequestMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(query: &RequestMatcherStub) -> StubrResult<Self> {
         let maybe_positive_regex = query
             .matches_as_regex()
             .filter(|_| query.is_matches())
@@ -52,6 +53,6 @@ impl TryFrom<&RequestMatcherStub> for QueryRegexMatcher {
         };
         maybe_positive_regex
             .or_else(maybe_negative_regex)
-            .ok_or_else(|| anyhow::Error::msg("No query matcher by regex found"))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

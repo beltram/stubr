@@ -1,4 +1,5 @@
 use crate::wiremock::{Match, Request};
+use crate::{StubrError, StubrResult};
 use itertools::Itertools;
 
 use super::{super::matcher::RequestMatcherStub, HttpQueryParamsStub};
@@ -16,10 +17,10 @@ impl Match for QueryContainsMatcher {
 }
 
 impl TryFrom<&HttpQueryParamsStub> for Vec<QueryContainsMatcher> {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(queries: &HttpQueryParamsStub) -> anyhow::Result<Self> {
-        queries.get_queries().ok_or_else(|| anyhow::Error::msg("")).map(|iter| {
+    fn try_from(queries: &HttpQueryParamsStub) -> StubrResult<Self> {
+        queries.get_queries().ok_or_else(|| StubrError::QuietError).map(|iter| {
             iter.filter(|h| h.is_contains())
                 .filter_map(|it| QueryContainsMatcher::try_from(&it).ok())
                 .collect_vec()
@@ -28,15 +29,15 @@ impl TryFrom<&HttpQueryParamsStub> for Vec<QueryContainsMatcher> {
 }
 
 impl TryFrom<&RequestMatcherStub> for QueryContainsMatcher {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(query: &RequestMatcherStub) -> anyhow::Result<Self> {
+    fn try_from(query: &RequestMatcherStub) -> StubrResult<Self> {
         query
             .value
             .as_ref()
             .filter(|_| query.is_contains())
             .and_then(|it| it.contains.as_ref())
             .map(|it| QueryContainsMatcher(query.key.to_string(), it.to_string()))
-            .ok_or_else(|| anyhow::Error::msg("No query contains matcher found"))
+            .ok_or_else(|| StubrError::QuietError)
     }
 }

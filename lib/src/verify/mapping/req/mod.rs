@@ -1,7 +1,8 @@
-use anyhow::anyhow;
+use crate::{
+    error::{StubrError, StubrResult},
+    model::{request::RequestStub, JsonStub},
+};
 use http_types::{Method, Request, Url};
-
-use crate::model::{request::RequestStub, JsonStub};
 
 mod body;
 mod header;
@@ -13,21 +14,22 @@ mod url;
 pub struct StdRequest(pub Request);
 
 impl TryFrom<&JsonStub> for StdRequest {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(stub: &JsonStub) -> anyhow::Result<Self> {
-        stub.http_request
-            .as_ref()
-            .ok_or(anyhow!("no request to verify"))
-            .and_then(Request::try_from)
-            .map(Self)
+    fn try_from(stub: &JsonStub) -> StubrResult<Self> {
+        let req = if let Some(req) = stub.http_request.as_ref() {
+            Request::try_from(req)?
+        } else {
+            Request::try_from(&RequestStub::default())?
+        };
+        Ok(Self(req))
     }
 }
 
 impl TryFrom<&RequestStub> for Request {
-    type Error = anyhow::Error;
+    type Error = StubrError;
 
-    fn try_from(stub: &RequestStub) -> anyhow::Result<Self> {
+    fn try_from(stub: &RequestStub) -> StubrResult<Self> {
         let mut req = Request::new(Method::from(&stub.method), Url::try_from(stub)?);
         if let Ok(headers) = Vec::<(String, String)>::try_from(&stub.headers) {
             for (k, v) in headers {
