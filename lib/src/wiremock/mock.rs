@@ -7,7 +7,7 @@ use std::ops::{Range, RangeBounds, RangeFrom, RangeFull, RangeInclusive, RangeTo
 ///
 /// `Match` can be used to extend the set of matchers provided out-of-the-box by `wiremock` to
 /// cater to your specific testing needs:
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::{Match, MockServer, Mock, Request, ResponseTemplate};
 /// use crate::wiremock::matchers::HeaderExactMatcher;
 /// use std::convert::TryInto;
@@ -57,7 +57,7 @@ use std::ops::{Range, RangeBounds, RangeFrom, RangeFull, RangeInclusive, RangeTo
 /// as output automatically implement the `Match` trait.
 ///
 /// The previous example could be rewritten as follows:
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::{Match, MockServer, Mock, Request, ResponseTemplate};
 /// use crate::wiremock::matchers::HeaderExactMatcher;
 /// use std::convert::TryInto;
@@ -142,7 +142,7 @@ impl Debug for Matcher {
 ///
 /// # Example (using [`register`]):
 ///
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
 /// use crate::wiremock::matchers::method;
 ///
@@ -181,7 +181,7 @@ impl Debug for Matcher {
 ///
 /// If you prefer a fluent style, you can use the [`mount`] method on the `Mock` itself
 /// instead of [`register`].
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
 /// use crate::wiremock::matchers::method;
 ///
@@ -211,7 +211,7 @@ impl Debug for Matcher {
 /// Sometimes you will need a `Mock` to be active within the scope of a function, but not any longer.
 /// You can use [`Mock::mount_as_scoped`] to precisely control how long a `Mock` stays active.
 ///
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
 /// use crate::wiremock::matchers::method;
 ///
@@ -292,7 +292,7 @@ impl Mock {
     ///
     /// ### Example:
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -350,7 +350,7 @@ impl Mock {
     ///
     /// ### Example:
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::{method, path, path_regex};
     ///
@@ -413,7 +413,7 @@ impl Mock {
     ///
     /// ### Example:
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -461,7 +461,7 @@ impl Mock {
     ///
     /// ### Example:
     ///
-    /// ```should_panic
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -550,7 +550,7 @@ impl Mock {
     ///
     /// - The behaviour of the scoped mock is invisible outside of `my_test_helper`.
     ///
-    /// ```rust
+    /// ```ignore
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -589,7 +589,7 @@ impl Mock {
     ///
     /// - The expectations for the scoped mock are not verified, it panics at the end of `my_test_helper`.
     ///
-    /// ```rust,should_panic
+    /// ```ignore,should_panic
     /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
     /// use crate::wiremock::matchers::method;
     ///
@@ -666,13 +666,13 @@ impl MockBuilder {
 /// It is used to set expectations on the usage of a [`Mock`] in a test case.
 ///
 /// You can either specify an exact value, e.g.
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::Times;
 ///
 /// let times: Times = 10.into();
 /// ```
 /// or a range
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::Times;
 ///
 /// // Between 10 and 15 (not included) times

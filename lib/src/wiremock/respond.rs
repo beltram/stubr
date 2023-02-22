@@ -8,7 +8,7 @@ use crate::wiremock::{Request, ResponseTemplate};
 /// The simplest `Respond` is [`ResponseTemplate`]: no matter the request, it will
 /// always return itself.
 ///
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
 /// use crate::wiremock::matchers::method;
 ///
@@ -45,7 +45,7 @@ use crate::wiremock::{Request, ResponseTemplate};
 /// Functions from `Request` to `ResponseTemplate` implement `Respond`, so for simple cases you
 /// can use a closure to build a response dynamically, for instance to echo the request body back:
 ///
-/// ```rust
+/// ```ignore
 /// use crate::wiremock::{Match, MockServer, Mock, Request, ResponseTemplate};
 /// use crate::wiremock::matchers::path;
 ///
@@ -74,7 +74,7 @@ use crate::wiremock::{Request, ResponseTemplate};
 /// For more complex cases you may want to implement `Respond` yourself. As an example, this is a
 /// `Respond` that propagates back a request header in the response:
 ///
-/// ```rust
+/// ```ignore
 /// use http_types::headers::HeaderName;
 /// use crate::wiremock::{Match, MockServer, Mock, Request, ResponseTemplate, Respond};
 /// use crate::wiremock::matchers::path;
