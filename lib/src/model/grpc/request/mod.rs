@@ -1,3 +1,7 @@
+use std::{hash::Hash, path::PathBuf};
+
+use protobuf::reflect::MessageDescriptor;
+
 use crate::{
     error::StubrResult,
     model::{
@@ -10,8 +14,6 @@ use crate::{
     wiremock::MockBuilder,
     StubrError,
 };
-use protobuf::reflect::MessageDescriptor;
-use std::{hash::Hash, path::PathBuf};
 
 pub mod binary_eq;
 pub mod eq;
@@ -39,11 +41,11 @@ impl GrpcRequestStub {
     pub fn try_new(request: &GrpcRequestStub, proto_file: Option<&PathBuf>) -> StubrResult<MockBuilder> {
         let mut mock = MockBuilder::from(&HttpMethodStub(Verb::Post));
         if let Some(path) = request.path.as_ref() {
-            mock = mock.and(path::GrpcPathMatcher::try_new(path));
+            mock = mock.and(path::GrpcPathMatcher::try_new(path)?);
         }
         if let Some(matchers) = request.body_patterns.as_ref() {
-            let proto_file = proto_file.ok_or(StubrError::MissingProtobufFile)?;
-            let md = request.descriptor(proto_file);
+            let proto_file = proto_file.ok_or(StubrError::MissingProtoFile)?;
+            let md = request.descriptor(proto_file)?;
             for matcher in matchers {
                 if let Some(exact_json) = eq::GrpcBodyExactMatcher::try_new(matcher, md.clone()) {
                     mock = mock.and(exact_json)
@@ -68,23 +70,20 @@ impl GrpcRequestStub {
         Ok(mock)
     }
 
-    pub fn descriptor(&self, proto_file: &PathBuf) -> MessageDescriptor {
-        let msg = self
-            .message
-            .as_ref()
-            .expect("A message has to be defined to find the protobuf definition");
+    pub fn descriptor(&self, proto_file: &PathBuf) -> StubrResult<MessageDescriptor> {
+        let msg = self.message.as_ref().ok_or(StubrError::MissingProtoMessage)?;
         parse_message_descriptor(msg, proto_file)
     }
 }
 
-pub fn proto_to_json_str(message: &[u8], md: &MessageDescriptor) -> String {
+pub fn proto_to_json_str(message: &[u8], md: &MessageDescriptor) -> StubrResult<String> {
     let body = &message[5..];
-    let message = md.parse_from_bytes(body).unwrap();
+    let message = md.parse_from_bytes(body)?;
     let options = protobuf_json_mapping::PrintOptions {
         enum_values_int: false,
         proto_field_name: true,
         always_output_default_values: false,
         ..Default::default()
     };
-    protobuf_json_mapping::print_to_string_with_options(&*message, &options).unwrap()
+    Ok(protobuf_json_mapping::print_to_string_with_options(&*message, &options)?)
 }

@@ -14,7 +14,7 @@ pub(crate) mod bare_server;
 mod builder;
 mod exposed_server;
 pub(crate) mod hyper;
-mod pool;
+// mod pool;
 
 pub use bare_server::MockGuard;
 pub use builder::MockServerBuilder;

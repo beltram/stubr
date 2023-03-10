@@ -1,5 +1,6 @@
 use crate::wiremock::respond::Respond;
 use crate::wiremock::{MockGuard, MockServer, Request, ResponseTemplate};
+use crate::StubrResult;
 use std::fmt::{Debug, Formatter};
 use std::ops::{Range, RangeBounds, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive};
 
@@ -626,7 +627,7 @@ impl Mock {
 
     /// Given a [`Request`](crate::Request) build an instance a [`ResponseTemplate`] using
     /// the responder associated with the `Mock`.
-    pub(crate) fn response_template(&self, request: &Request) -> ResponseTemplate {
+    pub(crate) fn response_template(&self, request: &Request) -> StubrResult<ResponseTemplate> {
         self.response.respond(request)
     }
 }

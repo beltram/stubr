@@ -1,7 +1,9 @@
-use crate::wiremock::{Match, Request};
-
-use crate::model::request::body::{json_path_contains::JsonBodyPathContainsMatcher, BodyMatcherStub};
 use protobuf::reflect::MessageDescriptor;
+
+use crate::{
+    model::request::body::{json_path_contains::JsonBodyPathContainsMatcher, BodyMatcherStub},
+    wiremock::{Match, Request}
+};
 
 pub struct GrpcJsonPathContainsBodyMatcher(JsonBodyPathContainsMatcher, MessageDescriptor);
 
@@ -13,7 +15,8 @@ impl GrpcJsonPathContainsBodyMatcher {
 
 impl Match for GrpcJsonPathContainsBodyMatcher {
     fn matches(&self, request: &Request) -> bool {
-        let proto = super::proto_to_json_str(&request.body, &self.1);
-        self.0.matching_json_path_contains(proto.as_bytes())
+        super::proto_to_json_str(&request.body, &self.1)
+            .map(|proto| self.0.matching_json_path_contains(proto.as_bytes()))
+            .unwrap_or_default()
     }
 }

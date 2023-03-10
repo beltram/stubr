@@ -1,4 +1,5 @@
 use crate::wiremock::ResponseTemplate;
+use crate::StubrResult;
 use serde_json::{Map, Value};
 
 use super::{
@@ -52,7 +53,7 @@ impl HandlebarTemplatable for HttpRespHeadersStub {
     #[cfg(feature = "grpc")]
     fn render_response_template(
         &self, mut resp: ResponseTemplate, data: &HandlebarsData, _md: Option<&protobuf::reflect::MessageDescriptor>,
-    ) -> ResponseTemplate {
+    ) -> StubrResult<ResponseTemplate> {
         if let Some(headers) = self.headers.as_ref() {
             for (k, v) in headers {
                 if let Some(v) = v.as_str() {
@@ -61,6 +62,6 @@ impl HandlebarTemplatable for HttpRespHeadersStub {
                 }
             }
         }
-        resp
+        Ok(resp)
     }
 }

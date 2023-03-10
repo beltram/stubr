@@ -1,9 +1,11 @@
-use crate::wiremock::mock_server::hyper::run_server;
+use std::net::{SocketAddr, TcpListener, TcpStream};
+use std::sync::Arc;
+
+use crate::wiremock::mock_server::hyper::try_run_server;
 use crate::wiremock::mock_set::MockId;
 use crate::wiremock::mock_set::MountedMockSet;
 use crate::wiremock::{mock::Mock, verification::VerificationOutcome, Request};
-use std::net::{SocketAddr, TcpListener, TcpStream};
-use std::sync::Arc;
+use crate::StubrResult;
 
 /// An HTTP web-server running in the background to behave as one of your dependencies using `Mock`s
 /// for testing purposes.
@@ -40,7 +42,7 @@ impl MockServerState {
 impl BareMockServer {
     /// Start a new instance of a `BareMockServer` listening on the specified
     /// [`TcpListener`](TcpListener).
-    pub(super) async fn start(listener: TcpListener, request_recording: RequestRecording) -> Self {
+    pub(super) async fn start(listener: TcpListener, request_recording: RequestRecording) -> StubrResult<Self> {
         let (shutdown_trigger, shutdown_receiver) = tokio::sync::oneshot::channel();
         let received_requests = match request_recording {
             RequestRecording::Enabled => Some(Vec::new()),
@@ -54,14 +56,16 @@ impl BareMockServer {
 
         let server_state = state.clone();
         std::thread::spawn(move || {
-            let server_future = run_server(listener, server_state, shutdown_receiver);
+            let server_future = try_run_server(listener, server_state, shutdown_receiver);
 
             let runtime = tokio::runtime::Builder::new_current_thread()
                 .enable_all()
                 .build()
                 .expect("Cannot build local tokio runtime");
 
-            tokio::task::LocalSet::new().block_on(&runtime, server_future)
+            tokio::task::LocalSet::new()
+                .block_on(&runtime, server_future)
+                .map_err(|e| e.to_string())
         });
         for _ in 0..40 {
             if TcpStream::connect_timeout(&server_address, std::time::Duration::from_millis(25)).is_ok() {
@@ -70,11 +74,11 @@ impl BareMockServer {
             futures_timer::Delay::new(std::time::Duration::from_millis(25)).await;
         }
 
-        Self {
+        Ok(Self {
             state,
             server_address,
             _shutdown_trigger: shutdown_trigger,
-        }
+        })
     }
 
     /// Register a `Mock` on an instance of `BareMockServer`.

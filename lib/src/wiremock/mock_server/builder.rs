@@ -1,6 +1,7 @@
 use crate::wiremock::mock_server::bare_server::{BareMockServer, RequestRecording};
 use crate::wiremock::mock_server::exposed_server::InnerServer;
 use crate::wiremock::MockServer;
+use crate::StubrResult;
 use std::net::TcpListener;
 
 /// A builder providing a fluent API to assemble a [`MockServer`] step-by-step.  
@@ -77,7 +78,7 @@ impl MockServerBuilder {
     }
 
     /// Finalise the builder to get an instance of a [`BareMockServer`].
-    pub(super) async fn build_bare(self) -> BareMockServer {
+    pub(super) async fn build_bare(self) -> StubrResult<BareMockServer> {
         let listener = if let Some(listener) = self.listener {
             listener
         } else {
@@ -92,7 +93,7 @@ impl MockServerBuilder {
     }
 
     /// Finalise the builder and launch the [`MockServer`] instance!
-    pub async fn start(self) -> MockServer {
-        MockServer::new(InnerServer::Bare(self.build_bare().await))
+    pub async fn start(self) -> StubrResult<MockServer> {
+        Ok(MockServer::new(InnerServer::Bare(self.build_bare().await?)))
     }
 }

@@ -1,10 +1,14 @@
-use crate::wiremock::mock_server::bare_server::BareMockServer;
-use crate::wiremock::mock_server::pool::{get_pooled_mock_server, PooledMockServer};
-use crate::wiremock::mock_server::MockServerBuilder;
-use crate::wiremock::{mock::Mock, verification::VerificationOutcome, MockGuard, Request};
-use log::debug;
 use std::net::SocketAddr;
 use std::ops::Deref;
+
+use log::debug;
+
+use crate::wiremock::{
+    mock::Mock,
+    mock_server::{bare_server::BareMockServer, MockServerBuilder},
+    verification::VerificationOutcome,
+    MockGuard, Request,
+};
 
 /// An HTTP web-server running in the background to behave as one of your dependencies using [`Mock`]s
 /// for testing purposes.
@@ -38,7 +42,6 @@ pub struct MockServer(InnerServer);
 /// on `InnerServer` in `MockServer` - the compiler does all the boring heavy-lifting for us.
 pub(super) enum InnerServer {
     Bare(BareMockServer),
-    Pooled(PooledMockServer),
 }
 
 impl Deref for InnerServer {
@@ -47,7 +50,6 @@ impl Deref for InnerServer {
     fn deref(&self) -> &Self::Target {
         match self {
             InnerServer::Bare(b) => b,
-            InnerServer::Pooled(p) => p.deref(),
         }
     }
 }
@@ -63,53 +65,6 @@ impl MockServer {
     /// If this is not your case, use [`MockServer::start`].
     pub fn builder() -> MockServerBuilder {
         MockServerBuilder::new()
-    }
-
-    /// Start a new instance of a `MockServer` listening on a random port.
-    ///
-    /// Each instance of `MockServer` is fully isolated: `start` takes care of finding a random port
-    /// available on your local machine which is assigned to the new `MockServer`.
-    ///
-    /// You should use one instance of `MockServer` for each REST API that your application interacts
-    /// with and needs mocking for testing purposes.
-    ///
-    /// ### Example:
-    /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
-    ///
-    /// #[async_std::main]
-    /// async fn main() {
-    ///     // Arrange
-    ///     let mock_server_one = MockServer::start().await;
-    ///     let mock_server_two = MockServer::start().await;
-    ///
-    ///     assert!(mock_server_one.address() != mock_server_two.address());
-    ///
-    ///     let mock = Mock::given(method("GET")).respond_with(ResponseTemplate::new(200));
-    ///     // Registering the mock with the first mock server - it's now effective!
-    ///     // But it *won't* be used by the second mock server!
-    ///     mock_server_one.register(mock).await;
-    ///
-    ///     // Act
-    ///
-    ///     let status = surf::get(&mock_server_one.uri())
-    ///         .await
-    ///         .unwrap()
-    ///         .status();
-    ///     assert_eq!(status, 200);
-    ///
-    ///     // This would have matched our mock, but we haven't registered it for `mock_server_two`!
-    ///     // Hence it returns a 404, the default response when no mocks matched on the mock server.
-    ///     let status = surf::get(&mock_server_two.uri())
-    ///         .await
-    ///         .unwrap()
-    ///         .status();
-    ///     assert_eq!(status, 404);
-    /// }
-    /// ```
-    pub async fn start() -> Self {
-        Self(InnerServer::Pooled(get_pooled_mock_server().await))
     }
 
     /// Register a [`Mock`] on an instance of `MockServer`.  

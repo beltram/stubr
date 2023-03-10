@@ -1,4 +1,5 @@
 use http_types::url;
+use std::num::TryFromIntError;
 
 pub type StubrResult<T> = Result<T, StubrError>;
 
@@ -27,6 +28,16 @@ pub enum StubrError {
     #[error(transparent)]
     ActixError(#[from] actix_web::Error),
     #[error(transparent)]
+    HyperError(#[from] hyper::Error),
+    #[error(transparent)]
+    ProtobufError(#[from] protobuf::Error),
+    #[error(transparent)]
+    Protobuf2JsonError(#[from] protobuf_json_mapping::PrintError),
+    #[error(transparent)]
+    Protobuf2JsonParseError(#[from] protobuf_json_mapping::ParseError),
+    #[error(transparent)]
+    IntConversionError(#[from] TryFromIntError),
+    #[error(transparent)]
     HttpError(#[from] anyhow::Error),
     #[error("json path error '{0}'")]
     JsonPathError(String),
@@ -41,7 +52,13 @@ pub enum StubrError {
     #[error("Error while recording because {0}")]
     RecordingError(&'static str),
     #[error("Missing Protobuf file in stub")]
-    MissingProtobufFile,
+    MissingProtoFile,
+    #[error("Could not find protobuf file at path {0:?}")]
+    ProtobufFileNotFound(std::path::PathBuf),
+    #[error("Provided protobuf message '{0}' not found in file {1:?}")]
+    ProtoMessageNotFound(String, std::path::PathBuf),
+    #[error("A protobuf 'message' has to be defined in stub")]
+    MissingProtoMessage,
 }
 
 impl From<StubrError> for handlebars::RenderError {
