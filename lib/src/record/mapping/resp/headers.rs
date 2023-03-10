@@ -8,7 +8,6 @@ impl From<RecordInput<'_>> for HttpRespHeadersStub {
         let resp = ex.resp();
         let headers = resp
             .header_names()
-            .into_iter()
             .sorted_by(|a, b| Ord::cmp(a.as_str(), b.as_str()))
             .filter(|k| {
                 !cfg.except_response_headers

@@ -64,7 +64,7 @@ impl JsonStub {
         self.proto_file.as_ref().filter(|f| f.exists())
     }
 
-    pub(crate) fn try_creating_from(self, config: &Config, file: &PathBuf) -> StubrResult<Mock> {
+    pub(crate) fn try_creating_from(self, config: &Config, file: &std::path::Path) -> StubrResult<Mock> {
         let expect = self.expect;
         if self.is_http() {
             let req = self.http_request.clone().unwrap_or_default();
@@ -86,7 +86,7 @@ impl JsonStub {
                     return Ok(mock);
                 }
             }
-            Err(StubrError::InvalidStub(file.clone()))
+            Err(StubrError::InvalidStub(file.to_path_buf()))
         }
     }
 

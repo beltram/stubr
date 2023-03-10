@@ -11,7 +11,6 @@ impl From<RecordInput<'_>> for HttpReqHeadersStub {
         let req = ex.req();
         let headers = req
             .header_names()
-            .into_iter()
             .sorted_by(|a, b| Ord::cmp(a.as_str(), b.as_str()))
             .filter(|k| {
                 !cfg.except_request_headers

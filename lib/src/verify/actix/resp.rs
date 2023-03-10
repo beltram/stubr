@@ -90,7 +90,7 @@ mod actix_resp_mapping_tests {
         fn should_not_fail_when_no_headers() {
             let resp = ActixResponse::Ok().finish();
             let std_resp = StdResponse::from(ActixServiceResponse::new(req(), resp)).0;
-            assert_eq!(std_resp.header_names().into_iter().count(), 1);
+            assert_eq!(std_resp.header_names().count(), 1);
         }
 
         #[test]

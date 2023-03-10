@@ -19,9 +19,3 @@ pub use mock_server::{MockGuard, MockServer, MockServerBuilder};
 pub use request::Request;
 pub use respond::Respond;
 pub use response_template::ResponseTemplate;
-
-#[derive(thiserror::Error, Debug)]
-pub enum WiremockError {
-    #[error("Invalid stub '{0:?}'")]
-    Respo(std::path::PathBuf),
-}

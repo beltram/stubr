@@ -9,13 +9,13 @@ pub enum StubrError {
     #[error(transparent)]
     UrlError(#[from] url::ParseError),
     #[error(transparent)]
-    RegexSyntaxError(#[from] regex_syntax::Error),
+    RegexSyntaxError(#[from] Box<regex_syntax::Error>),
     #[error(transparent)]
     RegexError(#[from] regex::Error),
     #[error(transparent)]
     Utf8Error(#[from] std::str::Utf8Error),
     #[error(transparent)]
-    RandRegexError(#[from] rand_regex::Error),
+    RandRegexError(#[from] Box<rand_regex::Error>),
     #[error(transparent)]
     JwtError(#[from] jsonwebtoken::errors::Error),
     #[error(transparent)]
@@ -38,10 +38,8 @@ pub enum StubrError {
     InvalidTemplate(&'static str, &'static str),
     #[error("Internal error which should not bubble up")]
     QuietError,
-
     #[error("Error while recording because {0}")]
     RecordingError(&'static str),
-
     #[error("Missing Protobuf file in stub")]
     MissingProtobufFile,
 }

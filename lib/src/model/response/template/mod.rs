@@ -1,6 +1,10 @@
 use std::sync::RwLock;
 
-use crate::{model::response::template::data::RequestData, StubrResult, wiremock::{Request, Respond, ResponseTemplate}};
+use crate::{
+    model::response::template::data::RequestData,
+    wiremock::{Request, Respond, ResponseTemplate},
+    StubrResult,
+};
 use handlebars::Handlebars;
 use serde::Serialize;
 
@@ -156,7 +160,7 @@ impl Respond for StubTemplate {
         if let Some(response) = self.response.as_ref() {
             self.http_respond(resp, req, response)
         } else if let Some(response) = self.grpc_response.as_ref() {
-            self.grpc_respond(req, resp, response)
+            self.grpc_respond(req, resp, response).unwrap()
         } else {
             resp
         }

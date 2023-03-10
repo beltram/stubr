@@ -11,8 +11,8 @@ impl RegexRndGenerator<'_> {
         const MAX_REPEAT: u32 = 10;
         let mut rng = XorShiftRng::seed_from_u64(42);
         let mut parser = ParserBuilder::new().unicode(false).build();
-        let hir = parser.parse(self.0)?;
-        let gen = rand_regex::Regex::with_hir(hir, MAX_REPEAT)?;
+        let hir = parser.parse(self.0).map_err(Box::new)?;
+        let gen = rand_regex::Regex::with_hir(hir, MAX_REPEAT).map_err(Box::new)?;
         Ok(rng.sample::<String, _>(&gen))
     }
 }

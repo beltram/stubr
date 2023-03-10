@@ -14,7 +14,6 @@ impl Reply for RecordedResponse {
         let headers = self
             .0
             .header_names()
-            .into_iter()
             .filter_map(|k| self.0.header(k).map(|v| (k, v)))
             .map(|(k, v)| (k.as_str(), v.as_str()))
             .collect_vec();
