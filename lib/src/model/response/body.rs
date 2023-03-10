@@ -8,6 +8,7 @@ use std::{
 };
 
 use crate::wiremock::ResponseTemplate;
+use crate::StubrResult;
 use handlebars::JsonValue;
 use itertools::Itertools;
 use serde::Deserializer;
@@ -178,7 +179,7 @@ impl HandlebarTemplatable for BodyStub {
     #[cfg(feature = "grpc")]
     fn render_response_template(
         &self, mut template: ResponseTemplate, data: &HandlebarsData, _md: Option<&protobuf::reflect::MessageDescriptor>,
-    ) -> ResponseTemplate {
+    ) -> StubrResult<ResponseTemplate> {
         if let Some(body) = self.body.as_ref() {
             template = template.set_body_string(self.render(body, data));
         } else if let Some(binary) = self.binary_body() {
@@ -189,7 +190,7 @@ impl HandlebarTemplatable for BodyStub {
             let rendered = self.render(body_file.path.as_str(), data);
             template = body_file.render_templated(template, rendered);
         }
-        template
+        Ok(template)
     }
 }
 

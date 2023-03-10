@@ -44,8 +44,8 @@ impl Default for RequestData<'_> {
 #[cfg(feature = "grpc")]
 impl<'a> RequestData<'a> {
     pub fn try_from_grpc_request(req: &'a WiremockRequest, md: &protobuf::reflect::MessageDescriptor) -> StubrResult<Self> {
-        let body = crate::model::grpc::request::proto_to_json_str(req.body.as_slice(), md);
-        let body = serde_json::from_str(&body).unwrap();
+        let body = crate::model::grpc::request::proto_to_json_str(req.body.as_slice(), md)?;
+        let body = serde_json::from_str(&body)?;
         Ok(Self {
             path: crate::model::grpc::request::path::GrpcPathMatcher::parse_svc_name(req),
             path_segments: None,

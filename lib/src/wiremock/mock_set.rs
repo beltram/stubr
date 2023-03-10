@@ -54,7 +54,7 @@ impl MountedMockSet {
                 continue;
             }
             if mock.matches(&request) {
-                response_template = Some(mock.response_template(&request));
+                response_template = mock.response_template(&request).ok();
                 break;
             }
         }

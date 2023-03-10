@@ -3,7 +3,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::wiremock::MockServer;
 use async_std::task::block_on;
 use futures::future::join_all;
 use itertools::Itertools;
@@ -15,6 +14,7 @@ use stub_finder::StubFinder;
 use crate::error::StubrResult;
 #[cfg(feature = "record-standalone")]
 use crate::record::{config::RecordConfig, standalone::StubrRecord};
+use crate::wiremock::MockServer;
 use crate::{model::JsonStub, Config};
 
 mod any_stub;
@@ -50,11 +50,11 @@ impl Stubr {
         T: Into<AnyStubs>,
     {
         let server = if let Some(p) = config.port {
-            Self::start_on(p).await
+            Self::try_start_on(p).await
         } else {
-            Self::start_on_random_port().await
-        };
-        server.register_stubs(stubs.into(), config)?;
+            Self::try_start_on_random_port().await
+        }?;
+        server.try_register_stubs(stubs.into(), config)?;
         #[cfg(not(feature = "grpc"))]
         server.register_cloud_features().await;
         Ok(server)
@@ -150,31 +150,29 @@ impl Stubr {
         format!("{}{}", self.uri(), path)
     }
 
-    async fn start_on(port: u16) -> Self {
+    async fn try_start_on(port: u16) -> StubrResult<Self> {
         if let Ok(listener) = TcpListener::bind(format!("{}:{}", Self::HOST, port)) {
-            Self {
-                http_server: MockServer::builder()
-                    .disable_request_recording()
-                    .listener(listener)
-                    .start()
-                    .await,
-            }
+            let http_server = MockServer::builder()
+                .disable_request_recording()
+                .listener(listener)
+                .start()
+                .await?;
+            Ok(Self { http_server })
         } else {
-            Self::start_on_random_port().await
+            Self::try_start_on_random_port().await
         }
     }
 
-    async fn start_on_random_port() -> Self {
-        Self {
-            http_server: MockServer::builder().disable_request_recording().start().await,
-        }
+    async fn try_start_on_random_port() -> StubrResult<Self> {
+        let http_server = MockServer::builder().disable_request_recording().start().await?;
+        Ok(Self { http_server })
     }
 
-    fn register_stubs(&self, stub_folder: AnyStubs, config: Config) -> StubrResult<()> {
+    fn try_register_stubs(&self, stub_folder: AnyStubs, config: Config) -> StubrResult<()> {
         stub_folder
             .0
             .iter()
-            .filter_map(|folder| self.find_all_mocks(folder).ok().map(|mocks| (folder, mocks)))
+            .filter_map(|folder| self.try_find_all_mocks(folder).ok().map(|mocks| (folder, mocks)))
             .flat_map(|(folder, mocks)| mocks.map(move |(s, p)| (s, p, folder)))
             .sorted_by(|(a, ..), (b, ..)| a.priority.cmp(&b.priority))
             .filter_map(|(stub, file, folder)| stub.try_creating_from(&config, &file).ok().map(|mock| (mock, file, folder)))
@@ -193,7 +191,7 @@ impl Stubr {
     }
 
     #[allow(clippy::needless_lifetimes)]
-    fn find_all_mocks<'a>(&self, from: &Path) -> StubrResult<impl Iterator<Item = (JsonStub, PathBuf)> + 'a> {
+    fn try_find_all_mocks<'a>(&self, from: &Path) -> StubrResult<impl Iterator<Item = (JsonStub, PathBuf)> + 'a> {
         Ok(StubFinder::find_all_stubs(from).filter_map(move |path| JsonStub::try_from(&path).ok().map(|stub| (stub, path))))
     }
 
@@ -303,25 +301,25 @@ mod server_test {
     #[async_std::test]
     async fn should_find_all_mocks_from_dir() {
         let from = PathBuf::from("tests/stubs/server");
-        assert!(Stubr::start_on_random_port()
-            .await
-            .find_all_mocks(&from)
-            .unwrap()
-            .count()
-            .gt(&2));
+        let stubr = Stubr::try_start_on_random_port().await.unwrap();
+        assert!(stubr.try_find_all_mocks(&from).unwrap().count().gt(&2));
     }
 
     #[async_std::test]
     async fn should_find_all_mocks_from_single_file() {
         let from = PathBuf::from("tests/stubs/server/valid.json");
-        assert_eq!(Stubr::start_on_random_port().await.find_all_mocks(&from).unwrap().count(), 1);
+        let stubr = Stubr::try_start_on_random_port().await.unwrap();
+        assert_eq!(stubr.try_find_all_mocks(&from).unwrap().count(), 1);
     }
 
     #[async_std::test]
     async fn should_not_find_any_mock_when_path_does_not_exist() {
         let from = PathBuf::from("tests/stubs/server/unknown");
-        assert_eq!(Stubr::start_on_random_port().await.find_all_mocks(&from).unwrap().count(), 0);
+        let stubr = Stubr::try_start_on_random_port().await.unwrap();
+        assert_eq!(stubr.try_find_all_mocks(&from).unwrap().count(), 0);
+
         let from = PathBuf::from("tests/stubs/server/unknown.json");
-        assert_eq!(Stubr::start_on_random_port().await.find_all_mocks(&from).unwrap().count(), 0);
+        let stubr = Stubr::try_start_on_random_port().await.unwrap();
+        assert_eq!(stubr.try_find_all_mocks(&from).unwrap().count(), 0);
     }
 }

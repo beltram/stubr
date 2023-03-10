@@ -1,15 +1,18 @@
-use crate::wiremock::mock_server::bare_server::MockServerState;
-use hyper::http;
-use hyper::service::{make_service_fn, service_fn};
-use std::net::TcpListener;
-use std::sync::Arc;
+use std::{net::TcpListener, sync::Arc};
+
+use hyper::{
+    http,
+    service::{make_service_fn, service_fn},
+};
+
+use crate::{wiremock::mock_server::bare_server::MockServerState, StubrResult};
 
 type DynError = Box<dyn std::error::Error + Send + Sync>;
 
 /// The actual HTTP server responding to incoming requests according to the specified mocks.
-pub(super) async fn run_server(
+pub(super) async fn try_run_server(
     listener: TcpListener, server_state: Arc<tokio::sync::RwLock<MockServerState>>, shutdown_signal: tokio::sync::oneshot::Receiver<()>,
-) {
+) -> StubrResult<()> {
     let request_handler = make_service_fn(move |_| {
         let server_state = server_state.clone();
         async move {
@@ -46,9 +49,7 @@ pub(super) async fn run_server(
             let _ = shutdown_signal.await;
         });
 
-    if let Err(e) = server.await {
-        panic!("Mock server failed: {}", e);
-    }
+    Ok(server.await?)
 }
 
 async fn handle_http(

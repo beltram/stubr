@@ -1,7 +1,9 @@
-use crate::wiremock::{Match, Request};
-
-use crate::model::request::body::{eq_relaxed::JsonBodyRelaxedMatcher, BodyMatcherStub};
 use protobuf::reflect::MessageDescriptor;
+
+use crate::{
+    model::request::body::{eq_relaxed::JsonBodyRelaxedMatcher, BodyMatcherStub},
+    wiremock::{Match, Request},
+};
 
 pub struct GrpcBodyRelaxedMatcher(JsonBodyRelaxedMatcher, MessageDescriptor);
 
@@ -13,7 +15,8 @@ impl GrpcBodyRelaxedMatcher {
 
 impl Match for GrpcBodyRelaxedMatcher {
     fn matches(&self, request: &Request) -> bool {
-        let proto = super::proto_to_json_str(&request.body, &self.1);
-        self.0.matching_relaxed_json(proto.as_bytes())
+        super::proto_to_json_str(&request.body, &self.1)
+            .map(|proto| self.0.matching_relaxed_json(proto.as_bytes()))
+            .unwrap_or_default()
     }
 }

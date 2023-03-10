@@ -4,8 +4,6 @@ use std::{
     path::PathBuf,
 };
 
-use crate::wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
-
 use request::RequestStub;
 use response::{
     template::{HandlebarTemplatable, StubTemplate},
@@ -13,6 +11,7 @@ use response::{
 };
 
 use crate::error::{StubrError, StubrResult};
+use crate::wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
 use crate::Config;
 
 #[cfg(feature = "grpc")]
@@ -68,7 +67,7 @@ impl JsonStub {
         let expect = self.expect;
         if self.is_http() {
             let req = self.http_request.clone().unwrap_or_default();
-            let mut mock = MockBuilder::try_from(&req)?.respond_with(self.into_respond(config));
+            let mut mock = MockBuilder::try_from(&req)?.respond_with(self.into_respond(config)?);
             if let (true, Some(expect)) = (config.verify, expect) {
                 mock = mock.expect(expect as u64);
             }
@@ -79,7 +78,7 @@ impl JsonStub {
                 if self.is_grpc() {
                     let req = self.grpc_request.clone().unwrap_or_default();
                     let mut mock =
-                        grpc::request::GrpcRequestStub::try_new(&req, self.proto_file())?.respond_with(self.into_respond(config));
+                        grpc::request::GrpcRequestStub::try_new(&req, self.proto_file())?.respond_with(self.into_respond(config)?);
                     if let (true, Some(expect)) = (config.verify, expect) {
                         mock = mock.expect(expect as u64);
                     }
@@ -90,30 +89,32 @@ impl JsonStub {
         }
     }
 
-    pub fn into_respond<'a>(self, #[allow(unused_variables)] config: &Config) -> impl Respond + 'a {
+    pub fn into_respond<'a>(self, config: &Config) -> StubrResult<impl Respond + 'a> {
         #[cfg(not(feature = "grpc"))]
         {
-            if let Some(resp) = self.http_response.clone() {
+            let respond = if let Some(resp) = self.http_response.clone() {
                 self.http_respond(resp, config)
             } else if self.http_request.is_some() {
                 self.default_http_respond(config)
             } else {
                 Self::fallback_respond()
-            }
+            };
+            Ok(respond)
         }
         #[cfg(feature = "grpc")]
         {
-            if let Some(resp) = self.http_response.clone() {
+            let respond = if let Some(resp) = self.http_response.clone() {
                 self.http_respond(resp, config)
             } else if self.http_request.is_some() {
                 self.default_http_respond(config)
             } else if let Some((proto_file, resp)) = Some(self.proto_file.clone()).zip(self.grpc_response.clone()) {
-                Self::grpc_respond(proto_file, resp)
+                Self::grpc_respond(proto_file, resp)?
             } else if self.grpc_request.is_some() {
                 Self::default_grpc_respond()
             } else {
                 Self::fallback_respond()
-            }
+            };
+            Ok(respond)
         }
     }
 
@@ -159,28 +160,32 @@ impl JsonStub {
     }
 
     #[cfg(feature = "grpc")]
-    fn grpc_respond(proto_file: Option<PathBuf>, resp: crate::model::grpc::response::GrpcResponseStub) -> StubTemplate {
-        let message_descriptor = resp.body.as_ref().map(|_| resp.message_descriptor(proto_file.as_ref()));
+    fn grpc_respond(proto_file: Option<PathBuf>, resp: grpc::response::GrpcResponseStub) -> StubrResult<StubTemplate> {
+        let message_descriptor = resp
+            .body
+            .as_ref()
+            .map(|_| resp.message_descriptor(proto_file.as_ref()))
+            .transpose()?;
         if resp.requires_response_templating() {
             let template = ResponseTemplate::new_grpc(resp.status());
             resp.register_template();
-            StubTemplate {
+            Ok(StubTemplate {
                 template,
                 md: message_descriptor,
                 grpc_response: Some(resp),
                 requires_templating: true,
                 ..Default::default()
-            }
+            })
         } else {
             let mut template = ResponseTemplate::new_grpc(resp.status());
-            template = resp.register(template, proto_file.as_ref());
-            StubTemplate {
+            template = resp.register(template, proto_file.as_ref())?;
+            Ok(StubTemplate {
                 template,
                 md: message_descriptor,
                 grpc_response: Some(resp),
                 requires_templating: false,
                 ..Default::default()
-            }
+            })
         }
     }
 

@@ -108,7 +108,7 @@ impl StubTemplate {
     }
 
     #[cfg(feature = "grpc")]
-    fn http_respond(&self, mut resp: ResponseTemplate, req: &Request, response: &ResponseStub) -> ResponseTemplate {
+    fn http_respond(&self, mut resp: ResponseTemplate, req: &Request, response: &ResponseStub) -> StubrResult<ResponseTemplate> {
         resp = crate::cloud::opentracing::OpenTracing(req).add_opentracing_header(resp, response.user_defined_header_keys());
         resp = crate::cloud::hyper::SupersedeHyper::supersede_hyper_header(resp, response.user_defined_headers());
         if self.requires_templating {
@@ -118,10 +118,10 @@ impl StubTemplate {
                 stub_name: None,
                 is_verify: false,
             };
-            resp = response.body.render_response_template(resp, &data, None);
-            resp = response.headers.render_response_template(resp, &data, None);
+            resp = response.body.render_response_template(resp, &data, None)?;
+            resp = response.headers.render_response_template(resp, &data, None)?;
         }
-        resp
+        Ok(resp)
     }
 
     #[cfg(feature = "grpc")]
@@ -141,28 +141,28 @@ impl StubTemplate {
                 stub_name: None,
                 is_verify: false,
             };
-            resp = response.render_response_template(resp, &data, self.md.as_ref());
+            resp = response.render_response_template(resp, &data, self.md.as_ref())?;
         }
         Ok(resp)
     }
 }
 
 impl Respond for StubTemplate {
-    fn respond(&self, req: &Request) -> ResponseTemplate {
+    fn respond(&self, req: &Request) -> StubrResult<ResponseTemplate> {
         let resp = self.template.clone();
         #[cfg(not(feature = "grpc"))]
         if let Some(response) = self.response.as_ref() {
-            self.http_respond(resp, req, response)
+            Ok(self.http_respond(resp, req, response)?)
         } else {
-            resp
+            Ok(resp)
         }
         #[cfg(feature = "grpc")]
         if let Some(response) = self.response.as_ref() {
-            self.http_respond(resp, req, response)
+            Ok(self.http_respond(resp, req, response)?)
         } else if let Some(response) = self.grpc_response.as_ref() {
-            self.grpc_respond(req, resp, response).unwrap()
+            Ok(self.grpc_respond(req, resp, response)?)
         } else {
-            resp
+            Ok(resp)
         }
     }
 }
@@ -176,7 +176,7 @@ pub trait HandlebarTemplatable {
     #[cfg(feature = "grpc")]
     fn render_response_template(
         &self, template: ResponseTemplate, data: &HandlebarsData, md: Option<&protobuf::reflect::MessageDescriptor>,
-    ) -> ResponseTemplate;
+    ) -> StubrResult<ResponseTemplate>;
 
     fn register<S: AsRef<str>>(&self, name: &str, content: S) {
         if let Ok(mut handlebars) = HANDLEBARS.write() {

@@ -1,4 +1,5 @@
 use crate::wiremock::{Request, ResponseTemplate};
+use crate::StubrResult;
 
 /// Anything that implements `Respond` can be used to reply to an incoming request when a
 /// [`Mock`] is activated.
@@ -128,14 +129,14 @@ pub trait Respond: Send + Sync {
     /// [`Request`]: crate::Request
     /// [`MockServer`]: crate::MockServer
     /// [`ResponseTemplate`]: crate::ResponseTemplate
-    fn respond(&self, request: &Request) -> ResponseTemplate;
+    fn respond(&self, request: &Request) -> StubrResult<ResponseTemplate>;
 }
 
 /// A `ResponseTemplate` is the simplest `Respond` implementation: it returns a clone of itself
 /// no matter what the incoming request contains!
 impl Respond for ResponseTemplate {
-    fn respond(&self, _request: &Request) -> ResponseTemplate {
-        self.clone()
+    fn respond(&self, _request: &Request) -> StubrResult<ResponseTemplate> {
+        Ok(self.clone())
     }
 }
 
@@ -143,7 +144,7 @@ impl<F> Respond for F
 where
     F: Send + Sync + Fn(&Request) -> ResponseTemplate,
 {
-    fn respond(&self, request: &Request) -> ResponseTemplate {
-        (self)(request)
+    fn respond(&self, request: &Request) -> StubrResult<ResponseTemplate> {
+        Ok((self)(request))
     }
 }

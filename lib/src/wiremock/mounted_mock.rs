@@ -1,4 +1,5 @@
 use crate::wiremock::{verification::VerificationReport, Match, Mock, Request, ResponseTemplate};
+use crate::StubrResult;
 
 /// Given the behaviour specification as a [`Mock`](crate::Mock), keep track of runtime information
 /// concerning this mock - e.g. how many times it matched on a incoming request.
@@ -60,7 +61,7 @@ impl MountedMock {
         }
     }
 
-    pub(crate) fn response_template(&self, request: &Request) -> ResponseTemplate {
+    pub(crate) fn response_template(&self, request: &Request) -> StubrResult<ResponseTemplate> {
         self.specification.response_template(request)
     }
 

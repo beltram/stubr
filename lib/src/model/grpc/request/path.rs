@@ -1,10 +1,11 @@
 use crate::wiremock::{Match, Request};
+use crate::StubrResult;
 
 pub struct GrpcPathMatcher(regex::Regex);
 
 impl GrpcPathMatcher {
-    pub fn try_new(path: &str) -> Self {
-        Self(regex::Regex::new(path).unwrap())
+    pub fn try_new(path: &str) -> StubrResult<Self> {
+        Ok(Self(regex::Regex::new(path)?))
     }
 
     pub fn parse_svc_name(request: &Request) -> &str {
