@@ -13,7 +13,7 @@ categories = ["command-line-utilities", "development-tools::testing"]
 include = ["/src/*", "/Cargo.toml"]
 
 [build-dependencies]
-tonic-build = "0.8"
+tonic-build = "0.9"
 
 [dependencies]
 anyhow = "1.0"
