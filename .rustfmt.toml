@@ -6,5 +6,5 @@ merge_derives = true
 edition = "2021"
 chain_width = 80
 fn_call_width = 80
-fn_args_layout = "Compressed"
+fn_params_layout = "Compressed"
 match_block_trailing_comma = true
