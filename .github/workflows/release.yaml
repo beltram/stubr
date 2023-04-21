@@ -9,6 +9,8 @@ on: [push]
 env:
   CARGO_TERM_COLOR: always
   STATIC_BUILD_TARGET: x86_64-unknown-linux-musl
+  CARGO_NET_GIT_FETCH_WITH_CLI: true
+  CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
 
 jobs:
 
