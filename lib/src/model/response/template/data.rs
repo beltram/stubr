@@ -1,5 +1,4 @@
-use crate::wiremock::Request as WiremockRequest;
-use crate::StubrResult;
+use crate::{wiremock::Request as WiremockRequest, StubrResult};
 use http_types::Method;
 use serde_json::Value;
 

@@ -91,7 +91,7 @@ pub struct StubTemplate {
 
 impl StubTemplate {
     #[cfg(not(feature = "grpc"))]
-    fn http_respond(&self, mut resp: ResponseTemplate, req: &Request, response: &ResponseStub) -> ResponseTemplate {
+    fn http_respond(&self, mut resp: ResponseTemplate, req: &Request, response: &ResponseStub) -> StubrResult<ResponseTemplate> {
         resp = crate::cloud::opentracing::OpenTracing(req).add_opentracing_header(resp, response.user_defined_header_keys());
         resp = crate::cloud::hyper::SupersedeHyper::supersede_hyper_header(resp, response.user_defined_headers());
         if self.requires_templating {
@@ -104,7 +104,7 @@ impl StubTemplate {
             resp = response.body.render_response_template(resp, &data);
             resp = response.headers.render_response_template(resp, &data);
         }
-        resp
+        Ok(resp)
     }
 
     #[cfg(feature = "grpc")]

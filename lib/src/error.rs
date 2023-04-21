@@ -25,14 +25,18 @@ pub enum StubrError {
     IoError(#[from] std::io::Error),
     #[error(transparent)]
     JsonError(#[from] serde_json::Error),
+    #[cfg(any(feature = "verify-actix", feature = "record-actix"))]
     #[error(transparent)]
     ActixError(#[from] actix_web::Error),
     #[error(transparent)]
     HyperError(#[from] hyper::Error),
+    #[cfg(feature = "grpc")]
     #[error(transparent)]
     ProtobufError(#[from] protobuf::Error),
+    #[cfg(feature = "grpc")]
     #[error(transparent)]
     Protobuf2JsonError(#[from] protobuf_json_mapping::PrintError),
+    #[cfg(feature = "grpc")]
     #[error(transparent)]
     Protobuf2JsonParseError(#[from] protobuf_json_mapping::ParseError),
     #[error(transparent)]
