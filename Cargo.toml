@@ -18,6 +18,3 @@ panic = "abort"
 [profile.dev]
 # improves compilation performances on macos
 split-debuginfo = "unpacked"
-
-[patch.crates-io.warp-reverse-proxy]
-path = "../tmp/warp-reverse-proxy"
