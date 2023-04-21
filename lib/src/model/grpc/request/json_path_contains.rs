@@ -2,7 +2,7 @@ use protobuf::reflect::MessageDescriptor;
 
 use crate::{
     model::request::body::{json_path_contains::JsonBodyPathContainsMatcher, BodyMatcherStub},
-    wiremock::{Match, Request}
+    wiremock::{Match, Request},
 };
 
 pub struct GrpcJsonPathContainsBodyMatcher(JsonBodyPathContainsMatcher, MessageDescriptor);
