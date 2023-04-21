@@ -13,7 +13,7 @@ categories = ["command-line-utilities", "development-tools::testing"]
 include = ["/src/*", "/Cargo.toml"]
 
 [build-dependencies]
-tonic-build = "0.8"
+tonic-build = "0.9"
 
 [dependencies]
 anyhow = "1.0"
@@ -60,7 +60,7 @@ warp-reverse-proxy = { version = "1.0", optional = true, default-features = fals
 tokio = { version = "1.16", features = ["rt", "io-util", "time"] }
 
 # For gRPC
-tonic = { version = "0.8", optional = true }
+tonic = { version = "0.9", optional = true }
 
 protobuf-json-mapping = { version = "3.2", optional = true }
 protobuf = { version = "=3.2.0", optional = true }
@@ -76,7 +76,6 @@ async-std = { version = "1.12", features = ["attributes"] }
 stubr = { path = ".", features = ["record-standalone", "record-isahc", "record-reqwest", "record-actix", "verify-actix", "grpc"] }
 surf = "2.3"
 tempfile = "3.3"
-asserhttp = { version = "0.6", features = ["surf", "isahc", "reqwest", "actix", "tonic"] }
 isahc = { version = "1.7", features = ["json"] }
 tokio = { version = "1.16", features = ["macros", "rt-multi-thread"] }
 criterion = { version = "0.4", features = ["async_std", "html_reports"] }
@@ -84,6 +83,8 @@ actix-web = { version = "4.2", default-features = false, features = ["macros"] }
 uuid = "1.1"
 email-address-parser = "1.0"
 prost = "0.11"
+
+asserhttp = { version = "0.6", features = ["surf", "isahc", "reqwest", "actix", "tonic"] }
 
 [[bench]]
 name = "startup"
