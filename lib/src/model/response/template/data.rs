@@ -1,5 +1,4 @@
 use crate::{wiremock::Request as WiremockRequest, StubrResult};
-use http_types::Method;
 use serde_json::Value;
 
 use super::req_ext::{Headers, Queries, RequestExt};
@@ -12,30 +11,46 @@ pub struct HandlebarsData<'a> {
     pub is_verify: bool,
 }
 
+#[derive(Debug, Clone, serde::Serialize)]
+#[serde(untagged)]
+pub enum MethodData<#[cfg(feature = "grpc")] 'a> {
+    Http(http_types::Method),
+    #[cfg(feature = "grpc")]
+    Grpc(&'a str),
+}
+
 #[derive(serde::Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct RequestData<'a> {
     path: &'a str,
+    #[cfg(not(feature = "grpc"))]
+    method: MethodData,
+    #[cfg(feature = "grpc")]
+    method: MethodData<'a>,
     path_segments: Option<Vec<&'a str>>,
     url: &'a str,
     port: Option<u16>,
-    method: Method,
     body: Option<Value>,
     query: Option<Queries<'a>>,
     headers: Option<Headers<'a>>,
+    #[serde(rename = "service")]
+    #[cfg(feature = "grpc")]
+    grpc_service: Option<&'a str>,
 }
 
 impl Default for RequestData<'_> {
     fn default() -> Self {
         Self {
             path: "",
+            method: MethodData::Http(http_types::Method::Get),
             path_segments: None,
             url: "",
             port: None,
-            method: Method::Get,
             body: None,
             query: None,
             headers: None,
+            #[cfg(feature = "grpc")]
+            grpc_service: None,
         }
     }
 }
@@ -45,15 +60,18 @@ impl<'a> RequestData<'a> {
     pub fn try_from_grpc_request(req: &'a WiremockRequest, md: &protobuf::reflect::MessageDescriptor) -> StubrResult<Self> {
         let body = crate::model::grpc::request::proto_to_json_str(req.body.as_slice(), md)?;
         let body = serde_json::from_str(&body)?;
+        let (grpc_method, grpc_svc) = crate::model::grpc::request::method::parse_path(req)?;
         Ok(Self {
-            path: crate::model::grpc::request::path::GrpcPathMatcher::parse_svc_name(req),
+            path: "",
             path_segments: None,
+            method: MethodData::Grpc(grpc_method.0),
             url: "",
             port: None,
-            method: Method::Post,
             body: Some(body),
             query: None,
             headers: None,
+            #[cfg(feature = "grpc")]
+            grpc_service: Some(grpc_svc.0),
         })
     }
 }
@@ -65,10 +83,11 @@ impl<'a> From<&'a WiremockRequest> for RequestData<'a> {
             path_segments: req.path_segments(),
             url: req.uri(),
             port: req.url.port(),
-            method: req.method,
+            method: MethodData::Http(req.method),
             body: req.body(),
             query: req.queries(),
             headers: req.headers(),
+            ..Default::default()
         }
     }
 }
@@ -81,16 +100,17 @@ impl<'a> From<&'a mut http_types::Request> for RequestData<'a> {
             path_segments: req.path_segments(),
             url: req.uri(),
             port: req.url().port(),
-            method: req.method(),
+            method: MethodData::Http(req.method()),
             body,
             query: req.queries(),
             headers: req.headers(),
+            ..Default::default()
         }
     }
 }
 
 #[cfg(test)]
-mod request_data_tests {
+mod tests {
     use std::{borrow::Cow, collections::HashMap, str::FromStr};
 
     use http_types::{
@@ -146,9 +166,9 @@ mod request_data_tests {
         #[test]
         fn should_take_request_method() {
             let req = request("https://localhost", Some(Method::Get), &[], None);
-            assert_eq!(RequestData::from(&req).method, Method::Get);
+            assert!(matches!(RequestData::from(&req).method, MethodData::Http(Method::Get)));
             let req = request("https://localhost", Some(Method::Post), &[], None);
-            assert_eq!(RequestData::from(&req).method, Method::Post);
+            assert!(matches!(RequestData::from(&req).method, MethodData::Http(Method::Post)));
         }
 
         #[test]
@@ -292,9 +312,9 @@ mod request_data_tests {
         #[test]
         fn should_take_request_method() {
             let mut req = request("https://localhost", Some(Method::Get), &[], None);
-            assert_eq!(RequestData::from(&mut req).method, Method::Get);
+            assert!(matches!(RequestData::from(&mut req).method, MethodData::Http(Method::Get)));
             let mut req = request("https://localhost", Some(Method::Post), &[], None);
-            assert_eq!(RequestData::from(&mut req).method, Method::Post);
+            assert!(matches!(RequestData::from(&mut req).method, MethodData::Http(Method::Post)));
         }
 
         #[test]

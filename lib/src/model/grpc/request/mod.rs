@@ -3,7 +3,6 @@ use std::{hash::Hash, path::PathBuf};
 use protobuf::reflect::MessageDescriptor;
 
 use crate::{
-    error::StubrResult,
     model::{
         grpc::proto::parse_message_descriptor,
         request::{
@@ -12,7 +11,7 @@ use crate::{
         },
     },
     wiremock::MockBuilder,
-    StubrError,
+    StubrError, StubrResult,
 };
 
 pub mod binary_eq;
@@ -21,7 +20,7 @@ pub mod eq_relaxed;
 pub mod json_path;
 pub mod json_path_contains;
 pub mod json_path_eq;
-pub mod path;
+pub mod method;
 
 #[derive(Debug, Clone, Hash, Default, serde::Serialize, serde::Deserialize)]
 #[serde(default, rename_all = "camelCase")]
@@ -29,9 +28,12 @@ pub struct GrpcRequestStub {
     /// Name of the message definition within protobuf
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    /// Name of the gRPC method
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub method: Option<String>,
     /// Name of the gRPC service
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
+    pub service: Option<String>,
     /// request body matchers
     #[serde(skip_serializing_if = "Option::is_none")]
     pub body_patterns: Option<Vec<BodyMatcherStub>>,
@@ -40,8 +42,11 @@ pub struct GrpcRequestStub {
 impl GrpcRequestStub {
     pub fn try_new(request: &GrpcRequestStub, proto_file: Option<&PathBuf>) -> StubrResult<MockBuilder> {
         let mut mock = MockBuilder::from(&HttpMethodStub(Verb::Post));
-        if let Some(path) = request.path.as_ref() {
-            mock = mock.and(path::GrpcPathMatcher::try_new(path)?);
+        if let Some(method) = request.method.as_ref() {
+            mock = mock.and(method::GrpcMethodMatcher::try_new(method)?);
+        }
+        if let Some(svc) = request.service.as_ref() {
+            mock = mock.and(method::GrpcSvcMatcher::try_new(svc)?);
         }
         if let Some(matchers) = request.body_patterns.as_ref() {
             let proto_file = proto_file.ok_or(StubrError::MissingProtoFile)?;

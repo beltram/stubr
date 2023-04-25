@@ -4,7 +4,7 @@
   "grpcResponse": {
     "message": "Template",
     "body": {
-      "name": "{{request.path}}"
+      "name": "{{request.method}}"
     },
     "transformers": [
       "response-template"

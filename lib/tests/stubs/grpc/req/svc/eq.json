@@ -1,7 +1,7 @@
 {
   "protoFile": "tests/grpc/protos/grpc.proto",
   "grpcRequest": {
-    "path": "reqPathEq(.*)"
+    "service": "GrpcOther"
   },
   "grpcResponse": {}
 }

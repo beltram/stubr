@@ -63,6 +63,8 @@ pub enum StubrError {
     ProtoMessageNotFound(String, std::path::PathBuf),
     #[error("A protobuf 'message' has to be defined in stub")]
     MissingProtoMessage,
+    #[error("Unexpected invalid gRPC request")]
+    InvalidGrpcRequest,
 }
 
 impl From<StubrError> for handlebars::RenderError {

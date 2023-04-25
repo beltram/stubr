@@ -66,7 +66,7 @@ jobs:
           touch actix-consumer/build.rs
           touch stub-consumer/build.rs
           cargo build
-      - run: cargo nextest run --verbose
+      - run: cargo nextest run --verbose --all-features
       - run: cargo test --doc
 
   hack:

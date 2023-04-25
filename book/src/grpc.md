@@ -12,7 +12,8 @@ The API looks like this:
   "protoFile": "path/to/grpc.proto", // protobuf file where gRPC service & protobuf messages are defined
   "grpcRequest": {
     "message": "Pet", // name of the body's message in 'protoFile' 
-    "path": "createDog", // name of the gRPC service to mock, supports Regex
+    "service": "PetStore", // (optional) name of the gRPC service to mock, supports Regex
+    "method": "createDog", // (optional) name of the gRPC method to mock, supports Regex
     "bodyPatterns": [
       {
         "equalToJson": { // literally the same matchers as in http
@@ -28,7 +29,9 @@ The API looks like this:
     "body": { // literally the same as in http, supports templating too
       "id": 1234,
       "name": "{{jsonPath request.body '$.name'}}",
-      "race": "{{jsonPath request.body '$.race'}}"
+      "race": "{{jsonPath request.body '$.race'}}",
+      "action": "{{request.method}}", // only 2 differences with standard templates
+      "service": "{{request.service}}"
     },
     "transformers": [ // required for response templating
       "response-template"

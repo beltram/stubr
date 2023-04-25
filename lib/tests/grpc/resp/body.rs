@@ -182,9 +182,9 @@ pub mod template {
     }
 
     #[tokio::test]
-    #[stubr::mock("grpc/resp/body/template-path.json")]
-    async fn should_template_request_path() {
-        // should return request path
+    #[stubr::mock("grpc/resp/body/template-method.json")]
+    async fn should_template_request_method() {
+        // should return request method
         let req = tonic::Request::new(Template { name: "alice".to_string() });
         stubr
             .connect()
@@ -195,5 +195,19 @@ pub mod template {
             .expect_body(Template {
                 name: "respTemplate".to_string(),
             });
+    }
+
+    #[tokio::test]
+    #[stubr::mock("grpc/resp/body/template-service.json")]
+    async fn should_template_request_service() {
+        // should return request method
+        let req = tonic::Request::new(Template { name: "alice".to_string() });
+        stubr
+            .connect()
+            .await
+            .resp_template(req)
+            .await
+            .expect_status_ok()
+            .expect_body(Template { name: "Grpc".to_string() });
     }
 }

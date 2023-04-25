@@ -1,6 +1,5 @@
 use asserhttp::*;
 use serde_json::json;
-use surf::get;
 
 use stubr::Config;
 
@@ -9,7 +8,7 @@ use crate::utils::*;
 #[async_std::test]
 #[stubr::mock("resp/template/url/path.json")]
 async fn should_template_request_path() {
-    get(stubr.path_query("/api/path", "name", "beltram"))
+    surf::get(stubr.path_query("/api/path", "name", "beltram"))
         .await
         .expect_status_ok()
         .expect_body_text_eq("/api/path")
@@ -19,7 +18,7 @@ async fn should_template_request_path() {
 #[async_std::test]
 #[stubr::mock("resp/template/url/url.json")]
 async fn should_template_request_url() {
-    get(stubr.path_query("/api/path", "name", "beltram"))
+    surf::get(stubr.path_query("/api/path", "name", "beltram"))
         .await
         .expect_status_ok()
         .expect_body_text_eq("/api/path?name&#x3D;beltram")
@@ -34,7 +33,7 @@ async fn should_template_request_port() {
         ..Default::default()
     };
     let stubr = Stubr::start_with("tests/stubs/resp/template/url/port.json", cfg).await;
-    get(stubr.path("/api/port"))
+    surf::get(stubr.path("/api/port"))
         .await
         .expect_status_ok()
         .expect_body_text_eq("59000")
@@ -94,7 +93,7 @@ async fn should_template_request_method_lowercase() {
 #[async_std::test]
 #[stubr::mock("resp/template/url/path-segments.json")]
 async fn should_template_request_path_segments() {
-    get(stubr.path("/one/two/three"))
+    surf::get(stubr.path("/one/two/three"))
         .await
         .expect_status_ok()
         .expect_body_text_eq("two")
@@ -107,12 +106,12 @@ mod path_segment_types {
     #[async_std::test]
     #[stubr::mock("resp/template/url/path-segments-type.json")]
     async fn should_template_request_path_segments_int() {
-        get(stubr.path("/path/segments/1"))
+        surf::get(stubr.path("/path/segments/1"))
             .await
             .expect_status_ok()
             .expect_content_type_json()
             .expect_body_json_eq(json!({"path": 1}));
-        get(stubr.path("/path/segments/-1"))
+        surf::get(stubr.path("/path/segments/-1"))
             .await
             .expect_status_ok()
             .expect_content_type_json()
@@ -122,12 +121,12 @@ mod path_segment_types {
     #[async_std::test]
     #[stubr::mock("resp/template/url/path-segments-type.json")]
     async fn should_template_request_path_segments_boolean() {
-        get(stubr.path("/path/segments/true"))
+        surf::get(stubr.path("/path/segments/true"))
             .await
             .expect_status_ok()
             .expect_content_type_json()
             .expect_body_json_eq(json!({"path": true}));
-        get(stubr.path("/path/segments/false"))
+        surf::get(stubr.path("/path/segments/false"))
             .await
             .expect_status_ok()
             .expect_content_type_json()
@@ -137,7 +136,7 @@ mod path_segment_types {
     #[async_std::test]
     #[stubr::mock("resp/template/url/path-segments-type.json")]
     async fn should_template_request_path_segments_null() {
-        get(stubr.path("/path/segments/null"))
+        surf::get(stubr.path("/path/segments/null"))
             .await
             .expect_status_ok()
             .expect_content_type_json()
