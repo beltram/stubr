@@ -32,7 +32,13 @@ service Grpc {
   rpc respTemplate (Template) returns (Template) {}
 }
 
+service GrpcOther {
+  rpc reqPathEq (EmptyOther) returns (EmptyOther) {}
+  rpc reqPathEqRegex (EmptyOther) returns (EmptyOther) {}
+}
+
 message Empty {}
+message EmptyOther {}
 
 // see https://developers.google.com/protocol-buffers/docs/proto3#scalar
 message Scalar {

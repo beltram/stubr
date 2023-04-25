@@ -411,8 +411,16 @@
           "description": "Name of the Protobuf definition in 'protoFile'",
           "type": "string"
         },
-        "path": {
-          "description": "Name of the gRPC service",
+        "method": {
+          "description": "Name of the gRPC method to match against",
+          "type": "string",
+          "format": "regex",
+          "x-intellij-language-injection": {
+            "language": "RegExp"
+          }
+        },
+        "service": {
+          "description": "Name of the gRPC service to match against",
           "type": "string",
           "format": "regex",
           "x-intellij-language-injection": {
