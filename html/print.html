@@ -71,10 +71,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -1667,7 +1669,8 @@ value to the fields) your messages using json (you can't assign a value to a fie
   &quot;protoFile&quot;: &quot;path/to/grpc.proto&quot;, // protobuf file where gRPC service &amp; protobuf messages are defined
   &quot;grpcRequest&quot;: {
     &quot;message&quot;: &quot;Pet&quot;, // name of the body's message in 'protoFile' 
-    &quot;path&quot;: &quot;createDog&quot;, // name of the gRPC service to mock, supports Regex
+    &quot;service&quot;: &quot;PetStore&quot;, // (optional) name of the gRPC service to mock, supports Regex
+    &quot;method&quot;: &quot;createDog&quot;, // (optional) name of the gRPC method to mock, supports Regex
     &quot;bodyPatterns&quot;: [
       {
         &quot;equalToJson&quot;: { // literally the same matchers as in http
@@ -1683,7 +1686,9 @@ value to the fields) your messages using json (you can't assign a value to a fie
     &quot;body&quot;: { // literally the same as in http, supports templating too
       &quot;id&quot;: 1234,
       &quot;name&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;,
-      &quot;race&quot;: &quot;{{jsonPath request.body '$.race'}}&quot;
+      &quot;race&quot;: &quot;{{jsonPath request.body '$.race'}}&quot;,
+      &quot;action&quot;: &quot;{{request.method}}&quot;, // only 2 differences with standard templates
+      &quot;service&quot;: &quot;{{request.service}}&quot;
     },
     &quot;transformers&quot;: [ // required for response templating
       &quot;response-template&quot;
