@@ -79,7 +79,7 @@ surf = "2.3"
 tempfile = "3.3"
 isahc = { version = "1.7", features = ["json"] }
 tokio = { version = "1.16", features = ["macros", "rt-multi-thread"] }
-criterion = { version = "0.4", features = ["async_std", "html_reports"] }
+criterion = { version = "0.5", features = ["async_std", "html_reports"] }
 actix-web = { version = "4.2", default-features = false, features = ["macros"] }
 uuid = "1.1"
 email-address-parser = "1.0"
