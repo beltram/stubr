@@ -119,7 +119,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
       - run: cargo build --release
       - name: upx
-        uses: svenstaro/upx-action@2.2.0
+        uses: svenstaro/upx-action@2.3.0
         with:
           file: ${{ matrix.from-file }}
           args: ${{ matrix.args }}
