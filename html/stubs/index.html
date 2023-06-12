@@ -200,6 +200,11 @@ as possible.</p>
   &quot;response&quot;: {
     &quot;status&quot;: 200, // (required) response status
     &quot;fixedDelayMilliseconds&quot;: 2000, // delays response by 2 seconds
+    &quot;delayDistribution&quot;: { // a random delay..
+      &quot;type&quot;: &quot;lognormal&quot;, // ..with logarithmic distribution
+      &quot;median&quot;: 100, // The 50th percentile of latencies in milliseconds
+      &quot;sigma&quot;: 0.1 // Standard deviation. The larger the value, the longer the tail
+    },
     &quot;jsonBody&quot;: { // json response body (automatically adds 'content-type:application/json' header)
       &quot;name&quot;: &quot;john&quot;,
       &quot;surnames&quot;: [ &quot;jdoe&quot;, &quot;johnny&quot; ]

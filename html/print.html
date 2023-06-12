@@ -1071,6 +1071,11 @@ as possible.</p>
   &quot;response&quot;: {
     &quot;status&quot;: 200, // (required) response status
     &quot;fixedDelayMilliseconds&quot;: 2000, // delays response by 2 seconds
+    &quot;delayDistribution&quot;: { // a random delay..
+      &quot;type&quot;: &quot;lognormal&quot;, // ..with logarithmic distribution
+      &quot;median&quot;: 100, // The 50th percentile of latencies in milliseconds
+      &quot;sigma&quot;: 0.1 // Standard deviation. The larger the value, the longer the tail
+    },
     &quot;jsonBody&quot;: { // json response body (automatically adds 'content-type:application/json' header)
       &quot;name&quot;: &quot;john&quot;,
       &quot;surnames&quot;: [ &quot;jdoe&quot;, &quot;johnny&quot; ]
@@ -1516,13 +1521,22 @@ see <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List">
 <li><code>urlEncode</code> for url encoding the value. Use <code>decode=true</code> to decode</li>
 </ul>
 <h2 id="simulate-fault"><a class="header" href="#simulate-fault">Simulate fault</a></h2>
-<p>You can also use <a href="https://github.com/beltram/stubr">stubr</a> to simulate http server runtime behaviour. And most of the time you'll want to introduce
+<p>You can also use <a href="https://github.com/beltram/stubr">stubr</a> to simulate http server runtime behaviour. And most of the
+time you'll want to introduce
 latencies
 to check how your consuming application reacts to such delays. Currently, the options are quite sparse but should grow !</p>
 <pre><code class="language-json">{
   &quot;expect&quot;: 2,
   &quot;response&quot;: {
     &quot;fixedDelayMilliseconds&quot;: 2000
+  },
+  &quot;delayDistribution&quot;: {
+    // a random delay with logarithmic distribution
+    &quot;type&quot;: &quot;lognormal&quot;,
+    &quot;median&quot;: 100,
+    // The 50th percentile of latencies in milliseconds
+    &quot;sigma&quot;: 0.1
+    // Standard deviation. The larger the value, the longer the tail
   }
 }
 </code></pre>
@@ -1530,9 +1544,22 @@ to check how your consuming application reacts to such delays. Currently, the op
 <li><code>expect</code> will allow to verify that your unit test has not called the given stub more than N times. Turn it on like
 this <code>stubr::Stubr::start_with(stubr::Config { verify: true, ..Default::default() })</code>
 or <code>#[stubr::mock(verify = true)]</code> with the attribute macro</li>
-<li><code>fixedDelayMilliseconds</code> a delay (in milliseconds) added everytime this stub is matched. If you are using <a href="https://github.com/beltram/stubr">stubr</a>
+<li><code>fixedDelayMilliseconds</code> a delay (in milliseconds) added everytime this stub is matched. If you are
+using <a href="https://github.com/beltram/stubr">stubr</a>
 standalone through the <a href="stubs/../cli.html">cli</a>, this value can be either superseded by <code>--delay</code> or complemented
 by <code>--latency</code></li>
+<li><code>delayDistribution</code> for random delays (always in milliseconds), use <code>type</code> to choose the one
+<ul>
+<li><code>lognormal</code> is a pretty good approximation of long tailed latencies centered on the 50th
+percentile. <a href="https://www.wolframalpha.com/input/?i=lognormaldistribution%28log%2890%29%2C+0.4%29">Try different values</a>
+to find a good approximation.
+<ul>
+<li><code>median</code>: the 50th percentile of latencies in milliseconds</li>
+<li><code>sigma</code>: standard deviation. The larger the value, the longer the tail.</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="recording-1"><a class="header" href="#recording-1">Recording</a></h1>
 <p>Writing stubs by hand can be... well, painful. More often than not, you already have an existing app ready and you just
