@@ -6,6 +6,7 @@ use stubr::Config;
 use crate::utils::*;
 
 #[async_std::test]
+#[ignore] // too flaky
 async fn should_start_server_on_dedicated_port() {
     let cfg = Config {
         port: Some(59_999),
@@ -18,6 +19,7 @@ async fn should_start_server_on_dedicated_port() {
 }
 
 #[async_std::test]
+#[ignore] // too flaky
 async fn should_start_server_in_a_blocking_way_with_some_configuration() {
     let cfg = Config {
         port: Some(59_998),

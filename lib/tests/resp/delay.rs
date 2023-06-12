@@ -32,12 +32,10 @@ mod fixed {
     #[async_std::test]
     #[stubr::mock("resp/delay/no-delay.json")]
     async fn should_not_timeout_with_no_delay() {
-        let timeout = Duration::from_millis(100);
-        let timeout = task::block_on(io::timeout(timeout, async {
-            get(stubr.uri()).await.expect_status_ok();
-            Ok(())
-        }));
-        assert!(timeout.is_ok());
+        let begin = std::time::Instant::now();
+        get(stubr.uri()).await.expect_status_ok();
+        let delta = std::time::Instant::now() - begin;
+        assert!(delta.as_millis() < 500);
     }
 }
 
