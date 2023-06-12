@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "delayDistribution": {
+      "type": "lognormal",
+      "median": 100,
+      "sigma": 0.1
+    }
+  }
+}

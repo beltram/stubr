@@ -298,6 +298,32 @@
           "type": "integer",
           "minimum": 0
         },
+        "delayDistribution": {
+          "description": "Random delay in milliseconds",
+          "type": "object",
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "description": "Distribution: 'lognormal' is a pretty good approximation of long tailed latencies centered on the 50th percentile.",
+                  "type": "string",
+                  "enum": [
+                    "lognormal"
+                  ]
+                },
+                "median": {
+                  "description": "The 50th percentile of latencies in milliseconds",
+                  "type": "integer"
+                },
+                "sigma": {
+                  "description": "Standard deviation. The larger the value, the longer the tail",
+                  "type": "number"
+                }
+              }
+            }
+          ]
+        },
         "body": {
           "description": "Text response body, adds 'Content-Type:application/text' header in the response",
           "type": "string",

@@ -40,7 +40,7 @@ impl MountedMockSet {
             }
         }
         if let Some(response_template) = response_template {
-            let delay = response_template.delay().map(|d| Delay::new(d.to_owned()));
+            let delay = response_template.delay().map(|d| Delay::new(d.into_owned()));
             (response_template.generate_grpc_response(), delay)
         } else {
             let default_resp = tonic::codegen::http::Response::builder()
@@ -64,6 +64,7 @@ impl ResponseTemplate {
             mime: None,
             body: None,
             delay: None,
+            lognormal_delay: None,
         }
     }
 

@@ -59,7 +59,7 @@ impl MountedMockSet {
             }
         }
         if let Some(response_template) = response_template {
-            let delay = response_template.delay().map(|d| Delay::new(d.to_owned()));
+            let delay = response_template.delay().map(|d| Delay::new(d.into_owned()));
             (response_template.generate_response(), delay)
         } else {
             debug!("Got unexpected request:\n{}", request);

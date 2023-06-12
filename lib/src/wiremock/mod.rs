@@ -1,6 +1,7 @@
 //! Forking the excellent [wiremock](https://crates.io/crates/wiremock) since this crates will
 //! diverge a lot from it: gRPC support, focus more on standalone mode and using it in Docker
 //! meaning no panic allowed
+mod delay;
 #[cfg(feature = "grpc")]
 pub mod grpc;
 pub mod http;

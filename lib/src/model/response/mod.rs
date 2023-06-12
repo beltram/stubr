@@ -2,6 +2,7 @@ use std::hash::{Hash, Hasher};
 
 use crate::wiremock::ResponseTemplate;
 
+use crate::model::response::delay::RandomDelay;
 use body::BodyStub;
 use headers::HttpRespHeadersStub;
 
@@ -21,6 +22,9 @@ pub struct ResponseStub {
     /// delay in milliseconds to apply to the response
     #[serde(skip_serializing)]
     pub fixed_delay_milliseconds: Option<u64>,
+    /// random delay accepting different distributions
+    #[serde(skip_serializing)]
+    pub delay_distribution: Option<RandomDelay>,
     /// HTTP response body
     #[serde(flatten)]
     pub body: BodyStub,

@@ -122,8 +122,8 @@ impl JsonStub {
         use crate::model::response::ResponseAppender as _;
 
         let mut template = ResponseTemplate::new(resp.status());
-        template = crate::model::response::default::WiremockIsoResponse(self.uuid.as_deref()).add(template);
-        template = crate::model::response::delay::Delay(resp.fixed_delay_milliseconds, config).add(template);
+        template = response::default::WiremockIsoResponse(self.uuid.as_deref()).add(template);
+        template = response::delay::Delay(resp.fixed_delay_milliseconds, &resp.delay_distribution, config).add(template);
         if resp.requires_response_templating() {
             resp.headers.register_template();
             resp.body.register_template();
@@ -150,8 +150,8 @@ impl JsonStub {
 
         let resp = &ResponseStub::default();
         let mut template = ResponseTemplate::new(resp.status());
-        template = crate::model::response::default::WiremockIsoResponse(self.uuid.as_deref()).add(template);
-        template = crate::model::response::delay::Delay(resp.fixed_delay_milliseconds, config).add(template);
+        template = response::default::WiremockIsoResponse(self.uuid.as_deref()).add(template);
+        template = response::delay::Delay(resp.fixed_delay_milliseconds, &resp.delay_distribution, config).add(template);
         StubTemplate {
             template,
             requires_templating: false,

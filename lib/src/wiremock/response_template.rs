@@ -1,3 +1,4 @@
+use crate::wiremock::delay::LognormalDelay;
 use http_types::headers::{HeaderName, HeaderValue};
 use http_types::{Response, StatusCode};
 use serde::Serialize;
@@ -19,6 +20,7 @@ pub struct ResponseTemplate {
     pub(crate) headers: HashMap<HeaderName, Vec<HeaderValue>>,
     pub(crate) body: Option<Vec<u8>>,
     pub(crate) delay: Option<Duration>,
+    pub(crate) lognormal_delay: Option<LognormalDelay>,
 }
 
 // `wiremock` is a crate meant for testing - failures are most likely not handled/temporary mistakes.
@@ -255,7 +257,12 @@ impl ResponseTemplate {
     /// [`MockServer`]: crate::mock_server::MockServer
     pub fn set_delay(mut self, delay: Duration) -> Self {
         self.delay = Some(delay);
+        self
+    }
 
+    /// see [https://wiremock.org/docs/simulating-faults/#lognormal-delay]
+    pub fn set_lognormal_delay(mut self, median: u64, sigma: f64) -> Self {
+        self.lognormal_delay = Some(LognormalDelay { median, sigma });
         self
     }
 
@@ -282,7 +289,13 @@ impl ResponseTemplate {
     }
 
     /// Retrieve the response delay.
-    pub(crate) fn delay(&self) -> &Option<Duration> {
-        &self.delay
+    pub(crate) fn delay(&self) -> Option<std::borrow::Cow<Duration>> {
+        if let Some(delay) = self.delay.as_ref() {
+            Some(std::borrow::Cow::Borrowed(delay))
+        } else {
+            self.lognormal_delay
+                .as_ref()
+                .map(|lognormal_delay| std::borrow::Cow::Owned(lognormal_delay.new_sample()))
+        }
     }
 }

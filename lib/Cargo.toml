@@ -45,6 +45,7 @@ rand = "0.8"
 regex-syntax = { version = "0.6", default-features = false }
 rand_regex = { version = "0.15", default-features = false }
 thiserror = "1.0"
+jandom = "0.3"
 
 isahc = { version = "1.7", optional = true, default-features = false }
 reqwest = { version = "0.11", optional = true, default-features = false }

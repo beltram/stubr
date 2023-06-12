@@ -58,6 +58,11 @@ You will find here in a single snippet **ALL** the fields/helpers available to y
   "response": {
     "status": 200, // (required) response status
     "fixedDelayMilliseconds": 2000, // delays response by 2 seconds
+    "delayDistribution": { // a random delay..
+      "type": "lognormal", // ..with logarithmic distribution
+      "median": 100, // The 50th percentile of latencies in milliseconds
+      "sigma": 0.1 // Standard deviation. The larger the value, the longer the tail
+    },
     "jsonBody": { // json response body (automatically adds 'content-type:application/json' header)
       "name": "john",
       "surnames": [ "jdoe", "johnny" ]

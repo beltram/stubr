@@ -10,10 +10,11 @@ impl From<RecordInput<'_>> for ResponseStub {
     fn from((ex, cfg): RecordInput) -> Self {
         Self {
             status: Some(ex.resp().status().into()),
-            fixed_delay_milliseconds: None,
             body: BodyStub::from(&mut *ex),
             headers: HttpRespHeadersStub::from((&mut *ex, cfg)),
             transformers: vec![],
+            fixed_delay_milliseconds: None,
+            delay_distribution: None,
         }
     }
 }

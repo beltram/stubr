@@ -228,7 +228,8 @@ You also sometimes have to generate dynamic data or to transform existing one:
 
 ## Simulate fault
 
-You can also use [stubr](https://github.com/beltram/stubr) to simulate http server runtime behaviour. And most of the time you'll want to introduce
+You can also use [stubr](https://github.com/beltram/stubr) to simulate http server runtime behaviour. And most of the
+time you'll want to introduce
 latencies
 to check how your consuming application reacts to such delays. Currently, the options are quite sparse but should grow !
 
@@ -237,6 +238,14 @@ to check how your consuming application reacts to such delays. Currently, the op
   "expect": 2,
   "response": {
     "fixedDelayMilliseconds": 2000
+  },
+  "delayDistribution": {
+    // a random delay with logarithmic distribution
+    "type": "lognormal",
+    "median": 100,
+    // The 50th percentile of latencies in milliseconds
+    "sigma": 0.1
+    // Standard deviation. The larger the value, the longer the tail
   }
 }
 ```
@@ -244,6 +253,13 @@ to check how your consuming application reacts to such delays. Currently, the op
 * `expect` will allow to verify that your unit test has not called the given stub more than N times. Turn it on like
   this `stubr::Stubr::start_with(stubr::Config { verify: true, ..Default::default() })`
   or `#[stubr::mock(verify = true)]` with the attribute macro
-* `fixedDelayMilliseconds` a delay (in milliseconds) added everytime this stub is matched. If you are using [stubr](https://github.com/beltram/stubr)
+* `fixedDelayMilliseconds` a delay (in milliseconds) added everytime this stub is matched. If you are
+  using [stubr](https://github.com/beltram/stubr)
   standalone through the [cli](../cli.md), this value can be either superseded by `--delay` or complemented
   by `--latency`
+* `delayDistribution` for random delays (always in milliseconds), use `type` to choose the one
+    * `lognormal` is a pretty good approximation of long tailed latencies centered on the 50th
+      percentile. [Try different values](https://www.wolframalpha.com/input/?i=lognormaldistribution%28log%2890%29%2C+0.4%29)
+      to find a good approximation.
+        * `median`: the 50th percentile of latencies in milliseconds
+        * `sigma`: standard deviation. The larger the value, the longer the tail.
