@@ -54,6 +54,6 @@ where
             (self.before_each)(data);
         }
         let fut = self.service.call(ServiceRequest::from_parts(http_req, payload));
-        Box::pin(async move { fut.await })
+        Box::pin(fut)
     }
 }
