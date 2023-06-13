@@ -8,9 +8,12 @@ pub struct LognormalDelay {
 impl LognormalDelay {
     /// see [https://github.com/wiremock/wiremock/blob/60e9e858068548786af4a1a434b52fd1376c4d43/src/main/java/com/github/tomakehurst/wiremock/http/LogNormal.java#L52]
     pub fn new_sample(&self) -> core::time::Duration {
-        let seed = rand::random::<i64>();
-        let rand = jandom::Random::new(seed).next_gaussian();
-        let milli = ((rand * self.sigma).exp() * self.median as f64).round() as u64;
+        let mean = self.median as f64;
+        // TODO: error handling
+        let normal = rand_distr::LogNormal::new(mean.ln(), self.sigma).unwrap();
+
+        use rand_distr::Distribution as _;
+        let milli = normal.sample(&mut rand::thread_rng()) as u64;
         core::time::Duration::from_millis(milli)
     }
 }
