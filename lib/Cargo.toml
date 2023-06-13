@@ -12,7 +12,7 @@ categories = ["command-line-utilities", "development-tools::testing"]
 
 include = ["/src/*", "/Cargo.toml"]
 
-[build-dependencies]
+[target.'cfg(not(target_env = "musl"))'.build-dependencies]
 tonic-build = "0.9"
 
 [dependencies]
