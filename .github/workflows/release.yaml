@@ -201,7 +201,7 @@ jobs:
         uses: arduino/setup-protoc@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - run: apt-get install protobuf-compiler
+#      - run: apt-get install protobuf-compiler
       - name: build-musl
         uses: gmiam/rust-musl-action@master
         with:
