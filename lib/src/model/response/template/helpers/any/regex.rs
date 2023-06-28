@@ -5,7 +5,7 @@ use crate::gen::regex::RegexRndGenerator;
 use crate::{StubrError, StubrResult};
 
 use super::{
-    super::{utils_str::ValueExt, verify::VerifyDetect},
+    super::{verify::VerifyDetect, ValueExt},
     AnyTemplate,
 };
 

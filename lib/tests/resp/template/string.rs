@@ -44,3 +44,14 @@ async fn should_template_lowercase() {
         .expect_body_text_eq("john")
         .expect_content_type_text();
 }
+
+#[async_std::test]
+#[stubr::mock("resp/template/string/replace.json")]
+async fn should_template_replace() {
+    post(stubr.uri())
+        .body("Handlebars")
+        .await
+        .expect_status_ok()
+        .expect_body_text_eq("Hbndlebbrs")
+        .expect_content_type_text();
+}

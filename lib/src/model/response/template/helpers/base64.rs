@@ -3,7 +3,7 @@ use std::str::from_utf8;
 use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, PathAndJson, RenderContext, RenderError};
 use serde_json::Value;
 
-use super::utils_str::ValueExt;
+use super::ValueExt;
 
 pub struct Base64Helper;
 

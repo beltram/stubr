@@ -22,6 +22,7 @@ use helpers::{
     numbers::NumberHelper,
     size::SizeHelper,
     string::StringHelper,
+    string_replace::StringReplaceHelper,
     trim::TrimHelper,
     url_encode::UrlEncodingHelper,
 };
@@ -47,6 +48,7 @@ lazy_static! {
         handlebars.register_helper(StringHelper::DECAPITALIZE, Box::new(StringHelper));
         handlebars.register_helper(StringHelper::UPPER, Box::new(StringHelper));
         handlebars.register_helper(StringHelper::LOWER, Box::new(StringHelper));
+        handlebars.register_helper(StringReplaceHelper::REPLACE, Box::new(StringReplaceHelper));
         handlebars.register_helper(SizeHelper::NAME, Box::new(SizeHelper));
         handlebars.register_helper(AnyRegex::NAME, Box::new(AnyRegex));
         handlebars.register_helper(AnyNonBlank::NAME, Box::new(AnyNonBlank));

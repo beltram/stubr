@@ -99,6 +99,7 @@ You will find here in a single snippet **ALL** the fields/helpers available to y
       "number-is-odd": "{{isOdd 3}}", // or 'isEven'
       "string-capitalized": "{{capitalize mister}}", // or 'decapitalize'
       "string-uppercase": "{{upper mister}}", // or 'lower'
+      "string-replace": "{{replace request.body 'a' 'b'}}", // e.g. given "Handlebars" in request body returns "Hbndlebbrs"
       "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
       "string-trim": "{{trim request.body}}", // removes leading & trailing whitespaces
       "size": "{{size request.body}}", // string length or array length

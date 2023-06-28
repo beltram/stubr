@@ -1,12 +1,11 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use super::HelperExt;
 use chrono::{prelude::*, Duration};
 use chrono_tz::Tz;
 use handlebars::{Context, Handlebars, Helper, HelperDef, RenderContext, RenderError, ScopedJson};
 use humantime::parse_duration;
 use serde_json::Value;
-
-use super::utils_str::ValueExt;
 
 pub struct NowHelper;
 
@@ -23,7 +22,7 @@ impl NowHelper {
     }
 
     fn fmt_with_custom_format(now: DateTime<Utc>, h: &Helper) -> Option<String> {
-        if let Some(format) = Self::get_hash(h, Self::FORMAT) {
+        if let Some(format) = h.get_str_hash(Self::FORMAT) {
             match format {
                 Self::EPOCH => SystemTime::now()
                     .duration_since(UNIX_EPOCH)
@@ -40,12 +39,8 @@ impl NowHelper {
         }
     }
 
-    fn get_hash<'a>(h: &'a Helper, key: &str) -> Option<&'a str> {
-        h.hash_get(key)?.relative_path().map(String::escape_single_quotes)
-    }
-
     fn apply_offset(now: DateTime<Utc>, h: &Helper) -> DateTime<Utc> {
-        Self::get_hash(h, Self::OFFSET)
+        h.get_str_hash(Self::OFFSET)
             .map(|it| it.replace(' ', ""))
             .and_then(|offset| Self::compute_offset(now, offset))
             .unwrap_or(now)
@@ -65,7 +60,7 @@ impl NowHelper {
     }
 
     fn apply_timezone(now: DateTime<Utc>, h: &Helper) -> DateTime<Utc> {
-        Self::get_hash(h, Self::TIMEZONE)
+        h.get_str_hash(Self::TIMEZONE)
             .and_then(|timezone| timezone.parse().ok())
             .map(|tz: Tz| tz.offset_from_utc_datetime(&now.naive_utc()).fix().local_minus_utc())
             .map(i64::from)

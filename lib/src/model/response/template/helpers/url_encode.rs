@@ -2,7 +2,7 @@ use handlebars::{Context, Handlebars, Helper, HelperDef, PathAndJson, RenderCont
 use percent_encoding::{percent_decode_str, utf8_percent_encode, NON_ALPHANUMERIC};
 use serde_json::Value;
 
-use super::utils_str::ValueExt;
+use super::ValueExt;
 
 pub struct UrlEncodingHelper;
 
