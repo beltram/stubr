@@ -92,7 +92,7 @@ impl Verifier<'_> for JsonObjectVerifier<'_> {
                         stub_name: Some(name),
                     };
                     stub.body.register(expected, expected);
-                    let render = stub.body.render(expected, &data);
+                    let render = stub.body.render(expected, &data).unwrap_or_default();
                     if expected.is_predictable() {
                         assert_eq!(
                             va,

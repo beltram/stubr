@@ -23,7 +23,7 @@ impl Verifier<'_> for TextBodyTemplatingVerifier {
             stub_name: Some(name),
         };
         stub.body.register(&self.expected, &self.expected);
-        let expected = stub.body.render(&self.expected, &data);
+        let expected = stub.body.render(&self.expected, &data).unwrap_or_default();
         if self.expected.is_predictable() {
             assert_eq!(
                 self.actual, expected,

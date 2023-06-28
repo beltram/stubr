@@ -70,6 +70,7 @@ You will find here in a single snippet **ALL** the fields/helpers available to y
     "body": "Hello World !", // text response (automatically adds 'Content-Type:text/plain' header)
     "base64Body": "AQID", // binary Base 64 body
     "bodyFileName": "tests/stubs/response.json", // path to a .json or .txt file containing the response
+    "bodyFileName": "tests/stubs/{{request.pathSegments.[1]}}.json", // supports templating
     "headers": {
       "content-type": "application/pdf" // returns this response header
     },

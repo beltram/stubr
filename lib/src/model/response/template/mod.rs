@@ -101,8 +101,8 @@ impl StubTemplate {
                 stub_name: None,
                 is_verify: false,
             };
-            resp = response.body.render_response_template(resp, &data);
-            resp = response.headers.render_response_template(resp, &data);
+            resp = response.body.render_response_template(resp, &data)?;
+            resp = response.headers.render_response_template(resp, &data)?;
         }
         Ok(resp)
     }
@@ -171,36 +171,26 @@ pub trait HandlebarTemplatable {
     fn register_template(&self);
 
     #[cfg(not(feature = "grpc"))]
-    fn render_response_template(&self, template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate;
+    fn render_response_template(&self, template: ResponseTemplate, data: &HandlebarsData) -> StubrResult<ResponseTemplate>;
 
     #[cfg(feature = "grpc")]
     fn render_response_template(
         &self, template: ResponseTemplate, data: &HandlebarsData, md: Option<&protobuf::reflect::MessageDescriptor>,
     ) -> StubrResult<ResponseTemplate>;
 
-    fn register<S: AsRef<str>>(&self, name: &str, content: S) {
+    fn register(&self, name: &str, content: impl AsRef<str>) {
         if let Ok(mut handlebars) = HANDLEBARS.write() {
             handlebars.register_template_string(name, content).unwrap_or_default();
         }
     }
 
-    /// Template has to be registered first before being rendered here
-    /// Better for performances
-    fn render<T: Serialize>(&self, name: &str, data: &T) -> String {
-        HANDLEBARS
-            .read()
-            .ok()
-            .and_then(|it| it.render(name, data).ok())
-            .unwrap_or_default()
+    fn has_template(&self, name: &str) -> bool {
+        HANDLEBARS.read().map(|h| h.has_template(name)).unwrap_or_default()
     }
 
-    /// Template does not have to be registered first
-    /// Simpler
-    fn render_template<T: Serialize>(&self, name: &str, data: &T) -> String {
-        HANDLEBARS
-            .read()
-            .ok()
-            .and_then(|it| it.render_template(name, data).ok())
-            .unwrap_or_default()
+    /// Template has to be registered first before being rendered here
+    /// Better for performances
+    fn render<T: Serialize>(&self, name: &str, data: &T) -> Option<String> {
+        HANDLEBARS.read().ok().and_then(|it| it.render(name, data).ok())
     }
 }

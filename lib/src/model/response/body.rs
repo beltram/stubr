@@ -67,7 +67,7 @@ impl BodyStub {
 
     fn render_json_obj(&self, json_body: &Map<String, Value>, data: &HandlebarsData) -> Value {
         let obj = json_body.into_iter().map(|(key, value)| match value {
-            Value::String(s) => (key.to_owned(), Self::cast_to_value(self.render(s, data))),
+            Value::String(s) => (key.to_owned(), Self::cast_to_value(self.render(s, data).unwrap_or_default())),
             Value::Object(o) => (key.to_owned(), self.render_json_obj(o, data)),
             Value::Array(a) => (key.to_owned(), self.render_json_array(a, data)),
             _ => (key.to_owned(), value.to_owned()),
@@ -80,7 +80,7 @@ impl BodyStub {
             json_body
                 .iter()
                 .map(|value| match value {
-                    Value::String(s) => Self::cast_to_value(self.render(s, data)),
+                    Value::String(s) => Self::cast_to_value(self.render(s, data).unwrap_or_default()),
                     Value::Object(o) => self.render_json_obj(o, data),
                     Value::Array(a) => self.render_json_array(a, data),
                     _ => value.to_owned(),
@@ -115,6 +115,39 @@ impl BodyStub {
             .as_ref()
             .and_then(|b| base64::prelude::BASE64_STANDARD.decode(b).ok())
     }
+
+    fn _render_response_template(&self, template: ResponseTemplate, data: &HandlebarsData) -> StubrResult<ResponseTemplate> {
+        if let Some(body) = self.body.as_ref() {
+            return Ok(template.set_body_string(self.render(body, data).unwrap_or_default()));
+        }
+        if let Some(binary) = self.binary_body() {
+            return Ok(template.set_body_bytes(binary));
+        }
+        if let Some(json_body) = self.render_json_body(self.json_body.as_ref(), data) {
+            return Ok(template.set_body_json(json_body));
+        }
+        if let Some(body_file) = self.body_file_name.as_ref() {
+            return if let Some(path) = &self.render(&body_file.canonicalize_path(), data) {
+                if self.has_template(path) {
+                    let rendered_content = self.render(path, data).unwrap_or_default();
+                    return Ok(body_file.render_templated(template, rendered_content));
+                }
+                let file = PathBuf::from(path);
+                if file.exists() {
+                    let content = read_file(&file);
+                    // register for next uses to be faster
+                    self.register(path, content);
+                    let rendered_content = self.render(path, data).unwrap_or_default();
+                    return Ok(body_file.render_templated(template, rendered_content));
+                }
+                Ok(ResponseTemplate::new(404))
+            } else {
+                let rendered_content = self.render(body_file.path.as_str(), data).unwrap_or_default();
+                Ok(body_file.render_templated(template, rendered_content))
+            };
+        }
+        Ok(template)
+    }
 }
 
 fn deserialize_body_file<'de, D>(path: D) -> Result<Option<BodyFile>, D::Error>
@@ -125,16 +158,7 @@ where
     let body_file = String::deserialize(path).ok().map(PathBuf::from).map(|path| {
         let path_exists = path.exists();
         let extension = path.extension().and_then(OsStr::to_str).map(str::to_string);
-        let content = OpenOptions::new()
-            .read(true)
-            .open(&path)
-            .ok()
-            .and_then(|mut file| {
-                let mut buf = vec![];
-                file.read_to_end(&mut buf).map(|_| buf).ok()
-            })
-            .and_then(|bytes| from_utf8(bytes.as_slice()).map(str::to_string).ok())
-            .unwrap_or_default();
+        let content = read_file(&path);
         let path = path.to_str().map(str::to_string).unwrap_or_default();
         BodyFile {
             path_exists,
@@ -144,6 +168,19 @@ where
         }
     });
     Ok(body_file)
+}
+
+fn read_file(path: &PathBuf) -> String {
+    OpenOptions::new()
+        .read(true)
+        .open(path)
+        .ok()
+        .and_then(|mut file| {
+            let mut buf = vec![];
+            file.read_to_end(&mut buf).map(|_| buf).ok()
+        })
+        .and_then(|bytes| from_utf8(bytes.as_slice()).map(str::to_string).ok())
+        .unwrap_or_default()
 }
 
 impl HandlebarTemplatable for BodyStub {
@@ -157,40 +194,21 @@ impl HandlebarTemplatable for BodyStub {
                 self.register_json_body_template(array.iter());
             }
         } else if let Some(body_file) = self.body_file_name.as_ref() {
+            self.register(&body_file.canonicalize_path(), body_file.path.as_str());
             self.register(body_file.path.as_str(), &body_file.content);
         }
     }
 
     #[cfg(not(feature = "grpc"))]
-    fn render_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> ResponseTemplate {
-        if let Some(body) = self.body.as_ref() {
-            template = template.set_body_string(self.render(body, data));
-        } else if let Some(binary) = self.binary_body() {
-            template = template.set_body_bytes(binary);
-        } else if let Some(json_body) = self.render_json_body(self.json_body.as_ref(), data) {
-            template = template.set_body_json(json_body);
-        } else if let Some(body_file) = self.body_file_name.as_ref() {
-            let rendered = self.render(body_file.path.as_str(), data);
-            template = body_file.render_templated(template, rendered);
-        }
-        template
+    fn render_response_template(&self, mut template: ResponseTemplate, data: &HandlebarsData) -> StubrResult<ResponseTemplate> {
+        self._render_response_template(template, data)
     }
 
     #[cfg(feature = "grpc")]
     fn render_response_template(
-        &self, mut template: ResponseTemplate, data: &HandlebarsData, _md: Option<&protobuf::reflect::MessageDescriptor>,
+        &self, template: ResponseTemplate, data: &HandlebarsData, _md: Option<&protobuf::reflect::MessageDescriptor>,
     ) -> StubrResult<ResponseTemplate> {
-        if let Some(body) = self.body.as_ref() {
-            template = template.set_body_string(self.render(body, data));
-        } else if let Some(binary) = self.binary_body() {
-            template = template.set_body_bytes(binary);
-        } else if let Some(json_body) = self.render_json_body(self.json_body.as_ref(), data) {
-            template = template.set_body_json(json_body);
-        } else if let Some(body_file) = self.body_file_name.as_ref() {
-            let rendered = self.render(body_file.path.as_str(), data);
-            template = body_file.render_templated(template, rendered);
-        }
-        Ok(template)
+        self._render_response_template(template, data)
     }
 }
 
