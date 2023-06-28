@@ -1,3 +1,4 @@
+use crate::model::response::template::helpers::HelperExt;
 use handlebars::{Context, Handlebars, Helper, HelperDef, RenderContext, RenderError, ScopedJson};
 use serde_json::Value;
 
@@ -8,10 +9,6 @@ impl StringHelper {
     pub const DECAPITALIZE: &'static str = "decapitalize";
     pub const UPPER: &'static str = "upper";
     pub const LOWER: &'static str = "lower";
-
-    fn value<'a>(h: &'a Helper) -> Option<&'a str> {
-        h.params().get(0)?.value().as_str()
-    }
 
     fn capitalize(value: &str) -> String {
         Self::map_first(value, char::to_ascii_uppercase)
@@ -33,14 +30,15 @@ impl HelperDef for StringHelper {
     fn call_inner<'reg: 'rc, 'rc>(
         &self, h: &Helper<'reg, 'rc>, _: &'reg Handlebars<'reg>, _: &'rc Context, _: &mut RenderContext<'reg, 'rc>,
     ) -> Result<ScopedJson<'reg, 'rc>, RenderError> {
-        Self::value(h)
+        h.get_first_str_value()
             .map(|value| match h.name() {
-                Self::UPPER => value.to_uppercase(),
-                Self::LOWER => value.to_lowercase(),
-                Self::CAPITALIZE => Self::capitalize(value),
-                Self::DECAPITALIZE => Self::decapitalize(value),
-                _ => panic!("Unexpected error"),
+                Self::UPPER => Ok(value.to_uppercase()),
+                Self::LOWER => Ok(value.to_lowercase()),
+                Self::CAPITALIZE => Ok(Self::capitalize(value)),
+                Self::DECAPITALIZE => Ok(Self::decapitalize(value)),
+                _ => Err(RenderError::new("Unsupported string helper")),
             })
+            .transpose()?
             .ok_or_else(|| RenderError::new("Invalid string case transform response template"))
             .map(Value::from)
             .map(ScopedJson::from)

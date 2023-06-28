@@ -2,7 +2,7 @@ use handlebars::{Context, Handlebars, Helper, HelperDef, HelperResult, Output, P
 use itertools::Itertools;
 use rand::prelude::IteratorRandom;
 
-use crate::{model::response::template::helpers::utils_str::ValueExt, StubrError, StubrResult};
+use crate::{model::response::template::helpers::ValueExt, StubrError, StubrResult};
 
 use super::{super::verify::VerifyDetect, AnyTemplate};
 

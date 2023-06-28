@@ -193,6 +193,7 @@ You also sometimes have to generate dynamic data or to transform existing one:
       "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
       "string-capitalized": "{{capitalize request.body}}",
       "string-uppercase": "{{upper request.body}}",
+      "string-replace": "{{replace request.body 'a' 'b'}}",
       "string-trim": "{{trim request.body}}",
       "size": "{{size request.body}}",
       "base64-encode": "{{base64 request.body padding=false}}",
@@ -217,8 +218,11 @@ You also sometimes have to generate dynamic data or to transform existing one:
     * `timezone` for using a string timezone (
       see [list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List))
 * `isOdd` or `isEven` returns a boolean whether the numeric value is an even or odd integer
-* `capitalize` first letter to uppercase e.g. `mister` becomes `Mister`
+* `capitalize` first letter to uppercase e.g. `mister` becomes `Mister`. There's also a `decapitalize` to do the
+  opposite.
 * `upper` or `lower` recapitalizes the whole word
+* `replace` for replacing a pattern with given input e.g. `{{replace request.body 'a' 'b'}}` will replace all the `a` in
+  the request body with `b`
 * `stripes` returns alternate values depending if the tested value is even or odd
 * `trim` removes leading & trailing whitespaces
 * `size` returns the number of bytes for a string (⚠️ not the number of characters) or the size of an array

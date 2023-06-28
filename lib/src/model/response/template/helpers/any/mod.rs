@@ -1,7 +1,7 @@
 use crate::StubrResult;
 use handlebars::{Context, Helper, Output, RenderContext, RenderError};
 
-use super::{super::verify::Verifiable, utils_str::ValueExt, verify::VerifyDetect};
+use super::{super::verify::Verifiable, verify::VerifyDetect, ValueExt};
 
 pub mod alpha_numeric;
 pub mod boolean;
