@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "tests/stubs/resp/body/{{request.pathSegments.[1]}}.json",
+    "transformers": [
+      "response-template"
+    ]
+  }
+}

@@ -337,7 +337,14 @@
         },
         "bodyFileName": {
           "description": "Relative path to a .json or .txt file containing response body",
-          "type": "string"
+          "type": "string",
+          "patternProperties": {
+            "^.*$": {
+              "x-intellij-language-injection": {
+                "language": "Handlebars"
+              }
+            }
+          }
         },
         "jsonBody": {
           "description": "Json response body, adds 'Content-Type:application/json' header in the response",

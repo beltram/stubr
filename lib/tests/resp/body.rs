@@ -166,3 +166,28 @@ mod file {
         get(stubr.uri()).await.expect_status_internal_server_error();
     }
 }
+
+mod file_template {
+    use super::*;
+
+    #[async_std::test]
+    #[stubr::mock("resp/body/body-file-template.json")]
+    async fn from_file_with_template_should_succeed() {
+        get(stubr.path("/body/a"))
+            .await
+            .expect_status_ok()
+            .expect_body_json_eq(json!({"name": "a"}))
+            .expect_content_type_json();
+        get(stubr.path("/body/b"))
+            .await
+            .expect_status_ok()
+            .expect_body_json_eq(json!({"name": "b"}))
+            .expect_content_type_json();
+    }
+
+    #[async_std::test]
+    #[stubr::mock("resp/body/body-file-template.json")]
+    async fn from_file_with_template_should_fail() {
+        get(stubr.path("/body/c")).await.expect_status_not_found();
+    }
+}

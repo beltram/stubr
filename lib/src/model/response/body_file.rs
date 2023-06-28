@@ -16,6 +16,8 @@ impl BodyFile {
     const JSON_EXT: &'static str = "json";
     const TEXT_EXT: &'static str = "txt";
 
+    const BODY_FILE_NAME_PREFIX: &'static str = "STUBR_BODY_FILE_NAME_TEMPLATE_PREFIX_";
+
     fn maybe_as_json(&self) -> Option<Value> {
         self.extension
             .as_deref()
@@ -37,25 +39,21 @@ impl BodyFile {
     fn is_text(&self) -> bool {
         self.extension.as_deref().map(|ext| ext == Self::TEXT_EXT).unwrap_or_default()
     }
+
+    pub(crate) fn canonicalize_path(&self) -> String {
+        format!("{}{}", Self::BODY_FILE_NAME_PREFIX, self.path)
+    }
 }
 
 impl BodyFile {
-    pub fn render_templated(&self, mut resp: ResponseTemplate, content: String) -> ResponseTemplate {
-        if !self.path_exists {
-            resp = ResponseTemplate::new(500)
-        } else if self.is_json() {
-            let maybe_content: Option<Value> = serde_json::from_str(&content).ok();
-            if let Some(content) = maybe_content {
-                resp = resp.set_body_json(content);
-            } else {
-                resp = ResponseTemplate::new(500)
-            }
-        } else if self.is_text() {
-            resp = resp.set_body_string(content);
-        } else {
-            resp = ResponseTemplate::new(500)
+    pub fn render_templated(&self, resp: ResponseTemplate, content: String) -> ResponseTemplate {
+        if let Some(content) = self.is_json().then_some(serde_json::from_str::<Value>(&content).ok()) {
+            return resp.set_body_json(content);
         }
-        resp
+        if self.is_text() {
+            return resp.set_body_string(content);
+        }
+        ResponseTemplate::new(500)
     }
 }
 

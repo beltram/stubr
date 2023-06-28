@@ -55,7 +55,7 @@ impl HandlebarTemplatable for GrpcResponseStub {
     }
 
     #[cfg(not(feature = "grpc"))]
-    fn render_response_template(&self, mut _template: ResponseTemplate, _data: &HandlebarsData) -> ResponseTemplate {
+    fn render_response_template(&self, mut _template: ResponseTemplate, _data: &HandlebarsData) -> StubrResult<ResponseTemplate> {
         unimplemented!()
     }
 }
