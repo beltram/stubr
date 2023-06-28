@@ -212,6 +212,7 @@ as possible.</p>
     &quot;body&quot;: &quot;Hello World !&quot;, // text response (automatically adds 'Content-Type:text/plain' header)
     &quot;base64Body&quot;: &quot;AQID&quot;, // binary Base 64 body
     &quot;bodyFileName&quot;: &quot;tests/stubs/response.json&quot;, // path to a .json or .txt file containing the response
+    &quot;bodyFileName&quot;: &quot;tests/stubs/{{request.pathSegments.[1]}}.json&quot;, // supports templating
     &quot;headers&quot;: {
       &quot;content-type&quot;: &quot;application/pdf&quot; // returns this response header
     },

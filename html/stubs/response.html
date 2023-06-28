@@ -194,7 +194,8 @@ but you can relax all those fields with templates. We'll see that immediately in
 for <code>bodyFileName</code>.</li>
 <li><code>base64Body</code> if the body is not utf-8 encoded use it to supply a body as byte. Those have to be base 64 encoded.</li>
 <li><code>bodyFileName</code> when the response gets large or to factorize some very common bodies, it is sometimes preferable to
-extract it in a file. When using it in a Rust project, the file path is relative to the workspace root.</li>
+extract it in a file. When using it in a Rust project, the file path is relative to the workspace root. You can also
+use templating to dynamically select a file.</li>
 <li><code>jsonBody</code> when the body is json. Even though such a body can be defined with all the previous fields, it is more
 convenient to define a json response body here.</li>
 </ul>
