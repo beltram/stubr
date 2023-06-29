@@ -214,4 +214,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/beltram/stubr:${{ steps.vars.outputs.tag }} , ghcr.io/beltram/stubr:latest
+          tags: ghcr.io/beltram/stubr:${{github.ref_name}}, ghcr.io/beltram/stubr:latest
