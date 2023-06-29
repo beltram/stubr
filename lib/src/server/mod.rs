@@ -14,10 +14,10 @@ use stub_finder::StubFinder;
 use crate::error::StubrResult;
 #[cfg(feature = "record-standalone")]
 use crate::record::{config::RecordConfig, standalone::StubrRecord};
-use crate::wiremock::MockServer;
+use crate::wiremock_rs::MockServer;
 use crate::{model::JsonStub, Config};
 
-mod any_stub;
+pub mod any_stub;
 pub mod config;
 pub mod stub_finder;
 

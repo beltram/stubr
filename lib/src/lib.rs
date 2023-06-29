@@ -93,16 +93,20 @@ pub use record::record_client::actix::{ActixRecord, ActixRecordMiddleware};
 #[cfg(feature = "record-standalone")]
 pub use record::standalone::StubrRecord;
 pub use server::{config::Config, Stubr};
-#[cfg(feature = "attributes")]
-pub use stubr_attributes::apps;
-#[cfg(feature = "attributes")]
-pub use stubr_attributes::mock;
+#[cfg(all(feature = "attributes", feature = "iso"))]
+pub use stubr_attributes::iso;
 #[cfg(all(feature = "record-standalone", feature = "attributes"))]
 pub use stubr_attributes::record;
+#[cfg(all(feature = "attributes", feature = "wiremock"))]
+pub use stubr_attributes::wiremock;
+#[cfg(feature = "attributes")]
+pub use stubr_attributes::{apps, mock};
 #[cfg(feature = "verify-actix")]
 pub use verify::actix::lifecycle::ActixVerifyLifecycle;
 #[cfg(feature = "verify")]
 pub use verify::{StubrVerify, VerifyExcept};
+#[cfg(feature = "wiremock")]
+pub use wiremock_java::{WiremockExt, WiremockImage};
 
 pub use error::{StubrError, StubrResult};
 
@@ -120,4 +124,6 @@ mod record;
 mod server;
 #[cfg(feature = "verify")]
 mod verify;
-mod wiremock;
+#[cfg(feature = "wiremock")]
+mod wiremock_java;
+mod wiremock_rs;

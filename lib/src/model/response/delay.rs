@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use crate::wiremock::ResponseTemplate;
+use crate::wiremock_rs::ResponseTemplate;
 
 use crate::Config;
 

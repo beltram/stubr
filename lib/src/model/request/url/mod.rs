@@ -1,4 +1,4 @@
-use crate::wiremock::{
+use crate::wiremock_rs::{
     matchers::{PathExactMatcher, PathRegexMatcher},
     MockBuilder,
 };

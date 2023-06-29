@@ -10,7 +10,7 @@ use crate::{
             method::{HttpMethodStub, Verb},
         },
     },
-    wiremock::MockBuilder,
+    wiremock_rs::MockBuilder,
     StubrError, StubrResult,
 };
 

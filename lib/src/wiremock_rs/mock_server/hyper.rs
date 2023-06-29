@@ -5,7 +5,7 @@ use hyper::{
     service::{make_service_fn, service_fn},
 };
 
-use crate::{wiremock::mock_server::bare_server::MockServerState, StubrResult};
+use crate::{wiremock_rs::mock_server::bare_server::MockServerState, StubrResult};
 
 type DynError = Box<dyn std::error::Error + Send + Sync>;
 
@@ -24,7 +24,7 @@ pub(super) async fn try_run_server(
                         Some(b"application/grpc") => {
                             #[cfg(feature = "grpc")]
                             {
-                                crate::wiremock::grpc::handle_grpc(request, server_state).await
+                                crate::wiremock_rs::grpc::handle_grpc(request, server_state).await
                             }
                             #[cfg(not(feature = "grpc"))]
                             {
@@ -55,7 +55,7 @@ pub(super) async fn try_run_server(
 async fn handle_http(
     request: hyper::Request<hyper::Body>, server_state: Arc<tokio::sync::RwLock<MockServerState>>,
 ) -> Result<hyper::Response<hyper::Body>, Box<dyn std::error::Error + Send + Sync>> {
-    let wiremock_request = crate::wiremock::Request::from_hyper(request).await;
+    let wiremock_request = crate::wiremock_rs::Request::from_hyper(request).await;
     let (response, delay) = server_state.write().await.handle_request(wiremock_request).await;
 
     // We do not wait for the delay within the handler otherwise we would be

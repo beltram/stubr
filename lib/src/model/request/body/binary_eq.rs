@@ -1,5 +1,5 @@
 use crate::error::StubrResult;
-use crate::wiremock::{Match, Request};
+use crate::wiremock_rs::{Match, Request};
 use crate::StubrError;
 
 use super::BodyMatcherStub;

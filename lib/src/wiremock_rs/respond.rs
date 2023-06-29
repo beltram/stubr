@@ -1,4 +1,4 @@
-use crate::wiremock::{Request, ResponseTemplate};
+use crate::wiremock_rs::{Request, ResponseTemplate};
 use crate::StubrResult;
 
 /// Anything that implements `Respond` can be used to reply to an incoming request when a
@@ -10,8 +10,8 @@ use crate::StubrResult;
 /// always return itself.
 ///
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::method;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::method;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -47,8 +47,8 @@ use crate::StubrResult;
 /// can use a closure to build a response dynamically, for instance to echo the request body back:
 ///
 /// ```ignore
-/// use crate::wiremock::{Match, MockServer, Mock, Request, ResponseTemplate};
-/// use crate::wiremock::matchers::path;
+/// use crate::wiremock_rs::{Match, MockServer, Mock, Request, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::path;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -77,8 +77,8 @@ use crate::StubrResult;
 ///
 /// ```ignore
 /// use http_types::headers::HeaderName;
-/// use crate::wiremock::{Match, MockServer, Mock, Request, ResponseTemplate, Respond};
-/// use crate::wiremock::matchers::path;
+/// use crate::wiremock_rs::{Match, MockServer, Mock, Request, ResponseTemplate, Respond};
+/// use crate::wiremock_rs::matchers::path;
 /// use std::convert::TryInto;
 /// use std::str::FromStr;
 ///

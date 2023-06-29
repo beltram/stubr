@@ -1,5 +1,5 @@
 use crate::error::StubrResult;
-use crate::wiremock::{Match, Request};
+use crate::wiremock_rs::{Match, Request};
 use jsonwebtoken::Algorithm;
 
 use crate::model::request::auth::helpers::RequestAuthExtension;

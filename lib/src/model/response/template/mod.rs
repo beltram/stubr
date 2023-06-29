@@ -2,7 +2,7 @@ use std::sync::RwLock;
 
 use crate::{
     model::response::template::data::RequestData,
-    wiremock::{Request, Respond, ResponseTemplate},
+    wiremock_rs::{Request, Respond, ResponseTemplate},
     StubrResult,
 };
 use handlebars::Handlebars;

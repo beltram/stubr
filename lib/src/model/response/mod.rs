@@ -1,6 +1,6 @@
 use std::hash::{Hash, Hasher};
 
-use crate::wiremock::ResponseTemplate;
+use crate::wiremock_rs::ResponseTemplate;
 
 use crate::model::response::delay::RandomDelay;
 use body::BodyStub;

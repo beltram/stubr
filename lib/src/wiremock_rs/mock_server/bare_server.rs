@@ -1,10 +1,10 @@
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::sync::Arc;
 
-use crate::wiremock::mock_server::hyper::try_run_server;
-use crate::wiremock::mock_set::MockId;
-use crate::wiremock::mock_set::MountedMockSet;
-use crate::wiremock::{mock::Mock, verification::VerificationOutcome, Request};
+use crate::wiremock_rs::mock_server::hyper::try_run_server;
+use crate::wiremock_rs::mock_set::MockId;
+use crate::wiremock_rs::mock_set::MountedMockSet;
+use crate::wiremock_rs::{mock::Mock, verification::VerificationOutcome, Request};
 use crate::StubrResult;
 
 /// An HTTP web-server running in the background to behave as one of your dependencies using `Mock`s
@@ -180,7 +180,7 @@ pub struct MockGuard {
 }
 
 impl MockGuard {
-    pub async fn received_requests(&self) -> Vec<crate::wiremock::Request> {
+    pub async fn received_requests(&self) -> Vec<crate::wiremock_rs::Request> {
         let state = self.server_state.read().await;
         let (mounted_mock, _) = &state.mock_set[self.mock_id];
         mounted_mock.received_requests()

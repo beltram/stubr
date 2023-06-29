@@ -11,6 +11,7 @@ env:
   STATIC_BUILD_TARGET: x86_64-unknown-linux-musl
   CARGO_NET_GIT_FETCH_WITH_CLI: true
   CARGO_REGISTRIES_CRATES_IO_PROTOCOL: sparse
+  RUST_BACKTRACE: '1'
 
 jobs:
 
@@ -66,7 +67,15 @@ jobs:
           touch actix-consumer/build.rs
           touch stub-consumer/build.rs
           cargo build
-      - run: cargo nextest run --verbose --all-features
+      - name: Enable Docker Remote API on Localhost
+        shell: bash
+        run: |
+          sudo mkdir -p /etc/systemd/system/docker.service.d/
+          sudo cp ./.github/docker.override.conf /etc/systemd/system/docker.service.d/override.conf
+          sudo systemctl daemon-reload
+          sudo systemctl restart docker
+#      - run: cargo nextest run --verbose --all-features
+      - run: cargo test --all-features
       - run: cargo test --doc
 
   hack:

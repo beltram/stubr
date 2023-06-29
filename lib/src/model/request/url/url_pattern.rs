@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::wiremock::{Match, Request};
+use crate::wiremock_rs::{Match, Request};
 use crate::{StubrError, StubrResult};
 use regex::Regex;
 

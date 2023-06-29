@@ -1,5 +1,5 @@
 use crate::error::StubrResult;
-use crate::wiremock::matchers::{header, HeaderExactMatcher};
+use crate::wiremock_rs::matchers::{header, HeaderExactMatcher};
 use crate::StubrError;
 use itertools::Itertools;
 

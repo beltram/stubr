@@ -1,4 +1,4 @@
-use crate::wiremock::{verification::VerificationReport, Match, Mock, Request, ResponseTemplate};
+use crate::wiremock_rs::{verification::VerificationReport, Match, Mock, Request, ResponseTemplate};
 use crate::StubrResult;
 
 /// Given the behaviour specification as a [`Mock`](crate::Mock), keep track of runtime information
@@ -14,7 +14,7 @@ pub(crate) struct MountedMock {
     position_in_set: usize,
 
     // matched requests:
-    matched_requests: Vec<crate::wiremock::Request>,
+    matched_requests: Vec<crate::wiremock_rs::Request>,
 }
 
 impl MountedMock {

@@ -7,7 +7,7 @@ use std::{
     str::{from_utf8, FromStr},
 };
 
-use crate::wiremock::ResponseTemplate;
+use crate::wiremock_rs::ResponseTemplate;
 use crate::StubrResult;
 use handlebars::JsonValue;
 use itertools::Itertools;

@@ -3,7 +3,7 @@ use std::ops::Deref;
 
 use log::debug;
 
-use crate::wiremock::{
+use crate::wiremock_rs::{
     mock::Mock,
     mock_server::{bare_server::BareMockServer, MockServerBuilder},
     verification::VerificationOutcome,
@@ -76,8 +76,8 @@ impl MockServer {
     ///
     /// ### Example:
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -142,8 +142,8 @@ impl MockServer {
     /// - The behaviour of the scoped mock is invisible outside of `my_test_helper`.
     ///
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// async fn my_test_helper(mock_server: &MockServer) {
     ///     let mock = Mock::given(method("GET"))
@@ -180,8 +180,8 @@ impl MockServer {
     /// - The expectations for the scoped mock are not verified, it panics at the end of `my_test_helper`.
     ///
     /// ```ignore,should_panic
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// async fn my_test_helper(mock_server: &MockServer) {
     ///     let mock = Mock::given(method("GET"))
@@ -217,8 +217,8 @@ impl MockServer {
     /// ### Example
     ///
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -250,8 +250,8 @@ impl MockServer {
     /// ### Example (Recorded requests are reset)
     ///
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -318,7 +318,7 @@ impl MockServer {
     ///
     /// ### Example:
     /// ```ignore
-    /// use crate::wiremock::MockServer;
+    /// use crate::wiremock_rs::MockServer;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -343,7 +343,7 @@ impl MockServer {
     ///
     /// ### Example:
     /// ```ignore
-    /// use crate::wiremock::MockServer;
+    /// use crate::wiremock_rs::MockServer;
     /// use std::net::TcpStream;
     ///
     /// #[async_std::main]
@@ -370,7 +370,7 @@ impl MockServer {
     /// ### Example:
     ///
     /// ```ignore
-    /// use crate::wiremock::MockServer;
+    /// use crate::wiremock_rs::MockServer;
     /// use http_types::Method;
     ///
     /// #[async_std::main]
@@ -395,7 +395,7 @@ impl MockServer {
     /// ### Example (No request served):
     ///
     /// ```ignore
-    /// use crate::wiremock::MockServer;
+    /// use crate::wiremock_rs::MockServer;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -411,7 +411,7 @@ impl MockServer {
     /// ### Example (Request recording disabled):
     ///
     /// ```ignore
-    /// use crate::wiremock::MockServer;
+    /// use crate::wiremock_rs::MockServer;
     ///
     /// #[async_std::main]
     /// async fn main() {

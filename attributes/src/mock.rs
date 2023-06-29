@@ -22,11 +22,11 @@ pub(crate) fn mock_transform(args: AttributeArgs, item: TokenStream) -> syn::Res
     })
 }
 
-struct Args {
-    paths: Vec<LitStr>,
-    full_path: Option<LitStr>,
-    port: Option<LitInt>,
-    verify: Option<LitBool>,
+pub(crate) struct Args {
+    pub(crate) paths: Vec<LitStr>,
+    pub(crate) full_path: Option<LitStr>,
+    pub(crate) port: Option<LitInt>,
+    pub(crate) verify: Option<LitBool>,
 }
 
 impl Args {
@@ -35,7 +35,7 @@ impl Args {
     const ATTR_PORT: &'static str = "port";
     const ATTR_VERIFY: &'static str = "verify";
 
-    fn path(&self) -> TokenStream {
+    pub(crate) fn path(&self) -> TokenStream {
         self.full_path().unwrap_or_else(|| self.default_path())
     }
 
@@ -56,7 +56,7 @@ impl Args {
         }
     }
 
-    fn port(&self) -> TokenStream {
+    pub(crate) fn port(&self) -> TokenStream {
         self.port
             .as_ref()
             .map(|p| p.into_token_stream())
@@ -129,7 +129,7 @@ impl TryFrom<AttributeArgs> for Args {
     }
 }
 
-fn starter(func: &ItemFn, args: &Args) -> TokenStream {
+pub(crate) fn starter(func: &ItemFn, args: &Args) -> TokenStream {
     let path = args.path();
     let port = args.port();
     let verify = args.verify();

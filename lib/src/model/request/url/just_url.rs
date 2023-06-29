@@ -1,4 +1,4 @@
-use crate::wiremock::matchers::{path, query_param, PathExactMatcher, QueryParamExactMatcher};
+use crate::wiremock_rs::matchers::{path, query_param, PathExactMatcher, QueryParamExactMatcher};
 use crate::{StubrError, StubrResult};
 use http_types::Url;
 use itertools::Itertools;

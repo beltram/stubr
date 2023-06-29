@@ -11,7 +11,7 @@ use response::{
 };
 
 use crate::error::{StubrError, StubrResult};
-use crate::wiremock::{Mock, MockBuilder, Respond, ResponseTemplate};
+use crate::wiremock_rs::{Mock, MockBuilder, Respond, ResponseTemplate};
 use crate::Config;
 
 #[cfg(feature = "grpc")]

@@ -9,7 +9,7 @@ use crate::model::{
     grpc::proto::parse_message_descriptor,
     response::{body::BodyStub, template::data::HandlebarsData, template::HandlebarTemplatable},
 };
-use crate::wiremock::ResponseTemplate;
+use crate::wiremock_rs::ResponseTemplate;
 use crate::{StubrError, StubrResult};
 
 #[derive(serde::Serialize, serde::Deserialize, Debug, Default, Clone)]

@@ -36,6 +36,13 @@ impl UriAndQuery for Stubr {
     }
 }
 
+impl<'a, T: testcontainers::Image> UriAndQuery for testcontainers::Container<'a, T> {
+    fn get_uri(&self) -> String {
+        let port = self.get_host_port_ipv4(stubr::WiremockImage::PORT);
+        format!("http://localhost:{port}")
+    }
+}
+
 pub fn assert_recorded_stub_eq(id: &str, expected: Value) {
     let content = File::open(stub_file(id))
         .ok()

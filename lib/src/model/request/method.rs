@@ -1,5 +1,5 @@
 use crate::{
-    wiremock::{
+    wiremock_rs::{
         matchers::{method, MethodExactMatcher},
         Match, Mock, MockBuilder, Request,
     },

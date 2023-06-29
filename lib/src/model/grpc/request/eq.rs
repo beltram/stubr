@@ -2,7 +2,7 @@ use protobuf::reflect::MessageDescriptor;
 
 use crate::{
     model::request::body::{eq::BodyExactMatcher, BodyMatcherStub},
-    wiremock::{Match, Request},
+    wiremock_rs::{Match, Request},
 };
 
 pub struct GrpcBodyExactMatcher(BodyExactMatcher, MessageDescriptor);
