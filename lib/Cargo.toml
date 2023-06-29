@@ -21,7 +21,7 @@ stubr-attributes = { path = "../attributes", version = "0.6.2", optional = true 
 async-trait = "0.1"
 serde_json = { version = "1.0", default-features = false }
 http-types = { version = "2.12", default-features = false, features = ["hyperium_http"] }
-itertools = "0.10"
+itertools = "0.11"
 const_format = "0.2"
 regex = "1.6"
 jsonpath_lib = "0.3"
