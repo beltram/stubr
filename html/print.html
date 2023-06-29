@@ -1112,6 +1112,7 @@ as possible.</p>
       &quot;number-is-odd&quot;: &quot;{{isOdd 3}}&quot;, // or 'isEven'
       &quot;string-capitalized&quot;: &quot;{{capitalize mister}}&quot;, // or 'decapitalize'
       &quot;string-uppercase&quot;: &quot;{{upper mister}}&quot;, // or 'lower'
+      &quot;string-replace&quot;: &quot;{{replace request.body 'a' 'b'}}&quot;, // e.g. given &quot;Handlebars&quot; in request body returns &quot;Hbndlebbrs&quot;
       &quot;number-stripes&quot;: &quot;{{stripes request.body 'if-even' 'if-odd'}}&quot;,
       &quot;string-trim&quot;: &quot;{{trim request.body}}&quot;, // removes leading &amp; trailing whitespaces
       &quot;size&quot;: &quot;{{size request.body}}&quot;, // string length or array length
@@ -1479,6 +1480,7 @@ for selecting the right field. Use an <a href="https://jsonpath.com/">online JSO
       &quot;number-stripes&quot;: &quot;{{stripes request.body 'if-even' 'if-odd'}}&quot;,
       &quot;string-capitalized&quot;: &quot;{{capitalize request.body}}&quot;,
       &quot;string-uppercase&quot;: &quot;{{upper request.body}}&quot;,
+      &quot;string-replace&quot;: &quot;{{replace request.body 'a' 'b'}}&quot;,
       &quot;string-trim&quot;: &quot;{{trim request.body}}&quot;,
       &quot;size&quot;: &quot;{{size request.body}}&quot;,
       &quot;base64-encode&quot;: &quot;{{base64 request.body padding=false}}&quot;,
@@ -1509,8 +1511,11 @@ see <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List">
 </ul>
 </li>
 <li><code>isOdd</code> or <code>isEven</code> returns a boolean whether the numeric value is an even or odd integer</li>
-<li><code>capitalize</code> first letter to uppercase e.g. <code>mister</code> becomes <code>Mister</code></li>
+<li><code>capitalize</code> first letter to uppercase e.g. <code>mister</code> becomes <code>Mister</code>. There's also a <code>decapitalize</code> to do the
+opposite.</li>
 <li><code>upper</code> or <code>lower</code> recapitalizes the whole word</li>
+<li><code>replace</code> for replacing a pattern with given input e.g. <code>{{replace request.body 'a' 'b'}}</code> will replace all the <code>a</code> in
+the request body with <code>b</code></li>
 <li><code>stripes</code> returns alternate values depending if the tested value is even or odd</li>
 <li><code>trim</code> removes leading &amp; trailing whitespaces</li>
 <li><code>size</code> returns the number of bytes for a string (⚠️ not the number of characters) or the size of an array</li>
