@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::wiremock::{
+use crate::wiremock_rs::{
     matchers::{method, path},
     Mock, ResponseTemplate,
 };

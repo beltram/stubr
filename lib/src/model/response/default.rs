@@ -1,4 +1,4 @@
-use crate::wiremock::ResponseTemplate;
+use crate::wiremock_rs::ResponseTemplate;
 use const_format::concatcp;
 use http_types::headers::SERVER;
 

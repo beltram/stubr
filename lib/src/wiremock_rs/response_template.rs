@@ -1,4 +1,4 @@
-use crate::wiremock::delay::LognormalDelay;
+use crate::wiremock_rs::delay::LognormalDelay;
 use http_types::headers::{HeaderName, HeaderValue};
 use http_types::{Response, StatusCode};
 use serde::Serialize;
@@ -79,8 +79,8 @@ impl ResponseTemplate {
     ///
     /// ### Example:
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -166,8 +166,8 @@ impl ResponseTemplate {
     /// ### Example:
     /// ```ignore
     /// use surf::http::mime;
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// mod external {
     ///     // This could be a method of a struct that is
@@ -225,8 +225,8 @@ impl ResponseTemplate {
     /// ### Example:
     /// ```ignore
     /// use isahc::config::Configurable;
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     /// use std::time::Duration;
     /// use async_std::prelude::FutureExt;
     ///

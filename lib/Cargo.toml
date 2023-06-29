@@ -72,9 +72,12 @@ assert-json-diff = "2.0"
 hyper = { version = "0.14", features = ["full"] }
 futures-timer = "3.0"
 
+# For wiremock java feature
+testcontainers = { version = "0.14", optional = true }
+
 [dev-dependencies]
 async-std = { version = "1.12", features = ["attributes"] }
-stubr = { path = ".", features = ["record-standalone", "record-isahc", "record-reqwest", "record-actix", "verify-actix", "grpc"] }
+stubr = { path = ".", features = ["record-standalone", "record-isahc", "record-reqwest", "record-actix", "verify-actix", "grpc", "wiremock", "iso"] }
 surf = "2.3"
 tempfile = "3.3"
 isahc = { version = "1.7", features = ["json"] }
@@ -118,3 +121,5 @@ record-isahc = ["isahc"]
 record-reqwest = ["reqwest", "reqwest/blocking"]
 record-actix = ["actix-web", "actix-http", "actix-service", "futures-util"]
 grpc = ["dep:tonic", "dep:protobuf", "dep:protobuf-json-mapping", "dep:protobuf-parse"]
+wiremock = ["testcontainers", "stubr-attributes/wiremock"]
+iso = ["wiremock", "stubr-attributes/iso"]

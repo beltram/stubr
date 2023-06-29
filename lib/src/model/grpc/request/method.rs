@@ -1,4 +1,4 @@
-use crate::wiremock::{Match, Request};
+use crate::wiremock_rs::{Match, Request};
 use crate::{StubrError, StubrResult};
 
 pub struct GrpcMethodMatcher(regex::Regex);

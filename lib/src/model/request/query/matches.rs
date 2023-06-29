@@ -1,6 +1,6 @@
 use std::ops::Not;
 
-use crate::wiremock::{Match, Request};
+use crate::wiremock_rs::{Match, Request};
 use crate::{StubrError, StubrResult};
 use itertools::Itertools;
 use regex::Regex;

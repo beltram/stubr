@@ -1,4 +1,4 @@
-use crate::wiremock::MockBuilder;
+use crate::wiremock_rs::MockBuilder;
 
 use json_path::JsonPayloadPathMatcher;
 

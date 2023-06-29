@@ -1,6 +1,6 @@
 use std::hash::{Hash, Hasher};
 
-use crate::wiremock::{matchers::QueryParamExactMatcher, MockBuilder};
+use crate::wiremock_rs::{matchers::QueryParamExactMatcher, MockBuilder};
 use serde_json::{Map, Value};
 
 use absent::QueryAbsentMatcher;

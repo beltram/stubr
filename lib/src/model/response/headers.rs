@@ -1,4 +1,4 @@
-use crate::wiremock::ResponseTemplate;
+use crate::wiremock_rs::ResponseTemplate;
 use crate::StubrResult;
 use serde_json::{Map, Value};
 

@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::wiremock::MockBuilder;
+use crate::wiremock_rs::MockBuilder;
 use http_types::headers::HeaderName;
 
 use basic::{BasicAuthMatcher, BasicAuthStub};

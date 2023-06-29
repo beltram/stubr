@@ -1,4 +1,4 @@
-use crate::wiremock::matchers::{path, PathExactMatcher};
+use crate::wiremock_rs::matchers::{path, PathExactMatcher};
 use crate::{StubrError, StubrResult};
 
 use super::HttpUrlStub;

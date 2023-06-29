@@ -1,4 +1,4 @@
-use crate::wiremock::{Match, Request};
+use crate::wiremock_rs::{Match, Request};
 use serde_json::Value;
 
 use super::super::super::{

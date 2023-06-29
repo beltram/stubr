@@ -4,7 +4,7 @@ use crate::{
         auth::helpers::RequestAuthExtension,
         json::{json_path::JsonPathMatcher, JsonMatcher},
     },
-    wiremock::{Match, Request},
+    wiremock_rs::{Match, Request},
 };
 
 pub struct JsonPayloadPathMatcher(jsonpath_lib::Compiled);

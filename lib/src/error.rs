@@ -65,6 +65,8 @@ pub enum StubrError {
     MissingProtoMessage,
     #[error("Unexpected invalid gRPC request")]
     InvalidGrpcRequest,
+    #[error("Could not convert file {0:?} name to utf-8 string")]
+    FileNameError(std::path::PathBuf),
 }
 
 impl From<StubrError> for handlebars::RenderError {

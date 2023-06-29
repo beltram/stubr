@@ -25,3 +25,8 @@ itertools = "0.11"
 isahc = "1.7"
 async-std = "1.12"
 asserhttp = "0.6"
+
+[features]
+default = []
+wiremock = []
+iso = ["wiremock"]

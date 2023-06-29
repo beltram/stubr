@@ -5,8 +5,12 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 mod apps;
+#[cfg(feature = "iso")]
+mod iso;
 mod mock;
 mod record;
+#[cfg(feature = "wiremock")]
+mod wiremock;
 
 /// Starts a Stubr mock server and creates a `stubr` variable which can be used to call the server e.g. `stubr.uri()`.
 /// It supports both standard and async test functions.
@@ -117,4 +121,18 @@ pub fn record(args: TokenStream, item: TokenStream) -> TokenStream {
 pub fn apps(args: TokenStream, item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);
     apps::apps_transform(args, item.into()).unwrap().into()
+}
+
+#[cfg(feature = "wiremock")]
+#[proc_macro_attribute]
+pub fn wiremock(args: TokenStream, item: TokenStream) -> TokenStream {
+    let args = syn::parse_macro_input!(args as syn::AttributeArgs);
+    wiremock::wiremock_transform(args, item.into()).unwrap().into()
+}
+
+#[cfg(feature = "iso")]
+#[proc_macro_attribute]
+pub fn iso(args: TokenStream, item: TokenStream) -> TokenStream {
+    let args = syn::parse_macro_input!(args as syn::AttributeArgs);
+    iso::iso_transform(args, item.into()).unwrap().into()
 }

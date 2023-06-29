@@ -1,8 +1,8 @@
-use crate::wiremock::{
+use crate::wiremock_rs::{
     mounted_mock::MountedMock,
     verification::{VerificationOutcome, VerificationReport},
 };
-use crate::wiremock::{Mock, Request, ResponseTemplate};
+use crate::wiremock_rs::{Mock, Request, ResponseTemplate};
 use futures_timer::Delay;
 use http_types::{Response, StatusCode};
 use log::debug;
@@ -158,9 +158,9 @@ pub(crate) enum MountedMockState {
 
 #[cfg(test)]
 mod tests {
-    use crate::wiremock::matchers::path;
-    use crate::wiremock::mock_set::{MountedMockSet, MountedMockState};
-    use crate::wiremock::{Mock, ResponseTemplate};
+    use crate::wiremock_rs::matchers::path;
+    use crate::wiremock_rs::mock_set::{MountedMockSet, MountedMockState};
+    use crate::wiremock_rs::{Mock, ResponseTemplate};
 
     #[test]
     fn generation_is_incremented_for_every_reset() {

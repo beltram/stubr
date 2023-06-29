@@ -1,6 +1,6 @@
-use crate::wiremock::mock_server::bare_server::{BareMockServer, RequestRecording};
-use crate::wiremock::mock_server::exposed_server::InnerServer;
-use crate::wiremock::MockServer;
+use crate::wiremock_rs::mock_server::bare_server::{BareMockServer, RequestRecording};
+use crate::wiremock_rs::mock_server::exposed_server::InnerServer;
+use crate::wiremock_rs::MockServer;
 use crate::StubrResult;
 use std::net::TcpListener;
 
@@ -26,7 +26,7 @@ impl MockServerBuilder {
     ///
     /// ### Example:
     /// ```ignore
-    /// use crate::wiremock::MockServer;
+    /// use crate::wiremock_rs::MockServer;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -58,7 +58,7 @@ impl MockServerBuilder {
     /// ### Example (Request recording disabled):
     ///
     /// ```ignore
-    /// use crate::wiremock::MockServer;
+    /// use crate::wiremock_rs::MockServer;
     ///
     /// #[async_std::main]
     /// async fn main() {

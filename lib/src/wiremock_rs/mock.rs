@@ -1,5 +1,5 @@
-use crate::wiremock::respond::Respond;
-use crate::wiremock::{MockGuard, MockServer, Request, ResponseTemplate};
+use crate::wiremock_rs::respond::Respond;
+use crate::wiremock_rs::{MockGuard, MockServer, Request, ResponseTemplate};
 use crate::StubrResult;
 use std::fmt::{Debug, Formatter};
 use std::ops::{Range, RangeBounds, RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive};
@@ -9,8 +9,8 @@ use std::ops::{Range, RangeBounds, RangeFrom, RangeFull, RangeInclusive, RangeTo
 /// `Match` can be used to extend the set of matchers provided out-of-the-box by `wiremock` to
 /// cater to your specific testing needs:
 /// ```ignore
-/// use crate::wiremock::{Match, MockServer, Mock, Request, ResponseTemplate};
-/// use crate::wiremock::matchers::HeaderExactMatcher;
+/// use crate::wiremock_rs::{Match, MockServer, Mock, Request, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::HeaderExactMatcher;
 /// use std::convert::TryInto;
 ///
 /// // Check that a header with the specified name exists and its value has an odd length.
@@ -59,8 +59,8 @@ use std::ops::{Range, RangeBounds, RangeFrom, RangeFull, RangeInclusive, RangeTo
 ///
 /// The previous example could be rewritten as follows:
 /// ```ignore
-/// use crate::wiremock::{Match, MockServer, Mock, Request, ResponseTemplate};
-/// use crate::wiremock::matchers::HeaderExactMatcher;
+/// use crate::wiremock_rs::{Match, MockServer, Mock, Request, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::HeaderExactMatcher;
 /// use std::convert::TryInto;
 ///
 /// #[async_std::main]
@@ -144,8 +144,8 @@ impl Debug for Matcher {
 /// # Example (using [`register`]):
 ///
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::method;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::method;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -183,8 +183,8 @@ impl Debug for Matcher {
 /// If you prefer a fluent style, you can use the [`mount`] method on the `Mock` itself
 /// instead of [`register`].
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::method;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::method;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -213,8 +213,8 @@ impl Debug for Matcher {
 /// You can use [`Mock::mount_as_scoped`] to precisely control how long a `Mock` stays active.
 ///
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::method;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::method;
 ///
 /// async fn my_test_helper(mock_server: &MockServer) {
 ///     let mock_guard = Mock::given(method("GET"))
@@ -294,8 +294,8 @@ impl Mock {
     /// ### Example:
     ///
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -352,8 +352,8 @@ impl Mock {
     /// ### Example:
     ///
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::{method, path, path_regex};
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::{method, path, path_regex};
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -415,8 +415,8 @@ impl Mock {
     /// ### Example:
     ///
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -463,8 +463,8 @@ impl Mock {
     /// ### Example:
     ///
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// #[async_std::main]
     /// async fn main() {
@@ -552,8 +552,8 @@ impl Mock {
     /// - The behaviour of the scoped mock is invisible outside of `my_test_helper`.
     ///
     /// ```ignore
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// async fn my_test_helper(mock_server: &MockServer) {
     ///     let mock_guard = Mock::given(method("GET"))
@@ -591,8 +591,8 @@ impl Mock {
     /// - The expectations for the scoped mock are not verified, it panics at the end of `my_test_helper`.
     ///
     /// ```ignore,should_panic
-    /// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-    /// use crate::wiremock::matchers::method;
+    /// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+    /// use crate::wiremock_rs::matchers::method;
     ///
     /// async fn my_test_helper(mock_server: &MockServer) {
     ///     let mock_guard = Mock::given(method("GET"))
@@ -668,13 +668,13 @@ impl MockBuilder {
 ///
 /// You can either specify an exact value, e.g.
 /// ```ignore
-/// use crate::wiremock::Times;
+/// use crate::wiremock_rs::Times;
 ///
 /// let times: Times = 10.into();
 /// ```
 /// or a range
 /// ```ignore
-/// use crate::wiremock::Times;
+/// use crate::wiremock_rs::Times;
 ///
 /// // Between 10 and 15 (not included) times
 /// let times: Times = (10..15).into();

@@ -1,4 +1,4 @@
-use crate::wiremock::matchers::{query_param, QueryParamExactMatcher};
+use crate::wiremock_rs::matchers::{query_param, QueryParamExactMatcher};
 use crate::{StubrError, StubrResult};
 use itertools::Itertools;
 

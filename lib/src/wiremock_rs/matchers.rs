@@ -7,7 +7,7 @@
 //! as input automatically implement [`Match`] and can be used where a matcher is expected.
 //!
 //! Check [`Match`]'s documentation for examples.
-use crate::wiremock::{Match, Request};
+use crate::wiremock_rs::{Match, Request};
 use http_types::headers::{HeaderName, HeaderValue, HeaderValues};
 use http_types::{Method, Url};
 use regex::Regex;
@@ -32,8 +32,8 @@ where
 ///
 /// ### Example:
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::method;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::method;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -88,8 +88,8 @@ impl Match for MethodExactMatcher {
 ///
 /// ### Example:
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::path;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::path;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -117,8 +117,8 @@ impl Match for MethodExactMatcher {
 /// The path matcher ignores query parameters:
 ///
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::path;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::path;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -184,8 +184,8 @@ impl Match for PathExactMatcher {
 ///
 /// ### Example:
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::path_regex;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::path_regex;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -210,8 +210,8 @@ impl Match for PathExactMatcher {
 ///
 /// ### Example:
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::path_regex;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::path_regex;
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -262,8 +262,8 @@ impl Match for PathRegexMatcher {
 ///
 /// ### Example:
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::{header, headers};
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::{header, headers};
 ///
 /// #[async_std::main]
 /// async fn main() {
@@ -332,8 +332,8 @@ impl Match for HeaderExactMatcher {
 ///
 /// ### Example:
 /// ```ignore
-/// use crate::wiremock::{MockServer, Mock, ResponseTemplate};
-/// use crate::wiremock::matchers::query_param;
+/// use crate::wiremock_rs::{MockServer, Mock, ResponseTemplate};
+/// use crate::wiremock_rs::matchers::query_param;
 ///
 /// #[async_std::main]
 /// async fn main() {

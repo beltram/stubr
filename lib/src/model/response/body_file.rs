@@ -1,4 +1,4 @@
-use crate::wiremock::ResponseTemplate;
+use crate::wiremock_rs::ResponseTemplate;
 use serde::Serialize;
 use serde_json::Value;
 

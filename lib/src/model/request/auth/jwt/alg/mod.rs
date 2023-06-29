@@ -1,6 +1,6 @@
 use std::hash::{Hash, Hasher};
 
-use crate::wiremock::MockBuilder;
+use crate::wiremock_rs::MockBuilder;
 
 use super::super::MockRegistrable;
 

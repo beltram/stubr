@@ -1,4 +1,4 @@
-use crate::{wiremock::Request as WiremockRequest, StubrResult};
+use crate::{wiremock_rs::Request as WiremockRequest, StubrResult};
 use serde_json::Value;
 
 use super::req_ext::{Headers, Queries, RequestExt};

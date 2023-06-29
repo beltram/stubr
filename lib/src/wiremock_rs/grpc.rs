@@ -1,5 +1,5 @@
-use crate::wiremock::mock_set::MountedMockState;
-use crate::wiremock::{mock_server::bare_server::MockServerState, mock_set::MountedMockSet, ResponseTemplate};
+use crate::wiremock_rs::mock_set::MountedMockState;
+use crate::wiremock_rs::{mock_server::bare_server::MockServerState, mock_set::MountedMockSet, ResponseTemplate};
 use futures_timer::Delay;
 use hyper::{Body, Request};
 use std::sync::Arc;
@@ -8,7 +8,7 @@ use tokio::sync::RwLock;
 pub(crate) async fn handle_grpc(
     request: Request<Body>, server_state: Arc<RwLock<MockServerState>>,
 ) -> Result<hyper::Response<hyper::Body>, Box<dyn std::error::Error + Send + Sync>> {
-    let wiremock_request = crate::wiremock::Request::from_hyper(request).await;
+    let wiremock_request = crate::wiremock_rs::Request::from_hyper(request).await;
     let (response, delay) = server_state.write().await.handle_grpc_request(wiremock_request).await;
 
     if let Some(delay) = delay {
@@ -20,14 +20,16 @@ pub(crate) async fn handle_grpc(
 
 impl MockServerState {
     pub(crate) async fn handle_grpc_request(
-        &mut self, request: crate::wiremock::Request,
+        &mut self, request: crate::wiremock_rs::Request,
     ) -> (hyper::Response<hyper::Body>, Option<futures_timer::Delay>) {
         self.mock_set.handle_grpc_request(request).await
     }
 }
 
 impl MountedMockSet {
-    pub(crate) async fn handle_grpc_request(&mut self, request: crate::wiremock::Request) -> (hyper::Response<hyper::Body>, Option<Delay>) {
+    pub(crate) async fn handle_grpc_request(
+        &mut self, request: crate::wiremock_rs::Request,
+    ) -> (hyper::Response<hyper::Body>, Option<Delay>) {
         let mut response_template: Option<ResponseTemplate> = None;
         self.mocks.sort_by_key(|(m, _)| m.specification.priority);
         for (mock, mock_state) in &mut self.mocks {

@@ -1,6 +1,6 @@
 use std::hash::{Hash, Hasher};
 
-use crate::wiremock::MockBuilder;
+use crate::wiremock_rs::MockBuilder;
 use serde_json::Value;
 
 use super::MockRegistrable;

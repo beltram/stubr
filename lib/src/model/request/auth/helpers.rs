@@ -1,4 +1,4 @@
-use crate::wiremock::Request;
+use crate::wiremock_rs::Request;
 use jsonwebtoken::Header;
 use serde_json::Value;
 
