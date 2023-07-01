@@ -56,19 +56,7 @@ impl StubFinder {
     }
 
     pub fn output_dir() -> Option<PathBuf> {
-        let var = Self::LIB_PATH_ENV_VAR;
-        let result = env::var(var);
-        let unix = env::var("LD_LIBRARY_PATH");
-        let macos = env::var("DYLD_FALLBACK_LIBRARY_PATH");
-        let out_dir = env::var("OUT_DIR");
-        let a = env::var("CARGO_TARGET_TMPDIR");
-        let b = env::var("CARGO_MANIFEST_DIR");
-        let c = env::var("CARGO_BUILD_TARGET");
-        let d = env::var("CARGO_BUILD_TARGET_DIR");
-        let e = env::var("CARGO_BUILD_DEP_INFO_BASEDIR");
-        let f = env::var("CARGO_TARGET_DIR");
-        let g = env::var("CARGO_PRIMARY_PACKAGE");
-        let lib_path = result.ok()?;
+        let lib_path = env::var(Self::LIB_PATH_ENV_VAR).ok()?;
         lib_path
             .split(':')
             .map(PathBuf::from)
