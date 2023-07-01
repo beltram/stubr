@@ -94,7 +94,7 @@ pub use record::record_client::actix::{ActixRecord, ActixRecordMiddleware};
 pub use record::standalone::StubrRecord;
 pub use server::{config::Config, Stubr};
 #[cfg(all(feature = "attributes", feature = "iso"))]
-pub use stubr_attributes::iso;
+pub use stubr_attributes::{iso_test};
 #[cfg(all(feature = "record-standalone", feature = "attributes"))]
 pub use stubr_attributes::record;
 #[cfg(all(feature = "attributes", feature = "wiremock"))]

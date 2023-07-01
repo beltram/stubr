@@ -132,7 +132,7 @@ pub fn wiremock(args: TokenStream, item: TokenStream) -> TokenStream {
 
 #[cfg(feature = "iso")]
 #[proc_macro_attribute]
-pub fn iso(args: TokenStream, item: TokenStream) -> TokenStream {
+pub fn iso_test(args: TokenStream, item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(args as syn::AttributeArgs);
     iso::iso_transform(args, item.into()).unwrap().into()
 }

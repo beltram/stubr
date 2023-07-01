@@ -1,3 +1,4 @@
+use core::time::Duration;
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::sync::Arc;
 
@@ -52,7 +53,7 @@ impl BareMockServer {
             mock_set: MountedMockSet::new(),
             received_requests,
         }));
-        let server_address = listener.local_addr().expect("Failed to get server address.");
+        let server_address = listener.local_addr()?;
 
         let server_state = state.clone();
         std::thread::spawn(move || {
@@ -68,10 +69,10 @@ impl BareMockServer {
                 .map_err(|e| e.to_string())
         });
         for _ in 0..40 {
-            if TcpStream::connect_timeout(&server_address, std::time::Duration::from_millis(25)).is_ok() {
+            if TcpStream::connect_timeout(&server_address, Duration::from_millis(25)).is_ok() {
                 break;
             }
-            futures_timer::Delay::new(std::time::Duration::from_millis(25)).await;
+            futures_timer::Delay::new(Duration::from_millis(25)).await;
         }
 
         Ok(Self {

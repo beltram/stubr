@@ -1,27 +1,32 @@
-use crate::wiremock_rs::mock_set::MountedMockState;
-use crate::wiremock_rs::{mock_server::bare_server::MockServerState, mock_set::MountedMockSet, ResponseTemplate};
+use crate::{
+    error::HyperError,
+    wiremock_rs::mock_set::MountedMockState,
+    wiremock_rs::{mock_server::bare_server::MockServerState, mock_set::MountedMockSet, ResponseTemplate},
+};
 use futures_timer::Delay;
 use hyper::{Body, Request};
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
+type HyperResult<T> = Result<T, HyperError>;
+
 pub(crate) async fn handle_grpc(
     request: Request<Body>, server_state: Arc<RwLock<MockServerState>>,
-) -> Result<hyper::Response<hyper::Body>, Box<dyn std::error::Error + Send + Sync>> {
+) -> HyperResult<hyper::Response<hyper::Body>> {
     let wiremock_request = crate::wiremock_rs::Request::from_hyper(request).await;
-    let (response, delay) = server_state.write().await.handle_grpc_request(wiremock_request).await;
+    let (response, delay) = server_state.write().await.handle_grpc_request(wiremock_request).await?;
 
     if let Some(delay) = delay {
         delay.await;
     }
 
-    Ok::<_, Box<dyn std::error::Error + Send + Sync>>(response)
+    HyperResult::Ok(response)
 }
 
 impl MockServerState {
     pub(crate) async fn handle_grpc_request(
         &mut self, request: crate::wiremock_rs::Request,
-    ) -> (hyper::Response<hyper::Body>, Option<futures_timer::Delay>) {
+    ) -> HyperResult<(hyper::Response<Body>, Option<Delay>)> {
         self.mock_set.handle_grpc_request(request).await
     }
 }
@@ -29,7 +34,7 @@ impl MockServerState {
 impl MountedMockSet {
     pub(crate) async fn handle_grpc_request(
         &mut self, request: crate::wiremock_rs::Request,
-    ) -> (hyper::Response<hyper::Body>, Option<Delay>) {
+    ) -> HyperResult<(hyper::Response<hyper::Body>, Option<Delay>)> {
         let mut response_template: Option<ResponseTemplate> = None;
         self.mocks.sort_by_key(|(m, _)| m.specification.priority);
         for (mock, mock_state) in &mut self.mocks {
@@ -43,15 +48,14 @@ impl MountedMockSet {
         }
         if let Some(response_template) = response_template {
             let delay = response_template.delay().map(|d| Delay::new(d.into_owned()));
-            (response_template.generate_grpc_response(), delay)
+            Ok((response_template.generate_grpc_response()?, delay))
         } else {
             let default_resp = tonic::codegen::http::Response::builder()
                 .status(200)
                 .header::<_, i32>("grpc-status", tonic::Code::NotFound.into())
                 .header("content-type", "application/grpc")
-                .body(hyper::Body::from(vec![0u8; 5]))
-                .unwrap();
-            (default_resp, None)
+                .body(hyper::Body::from(vec![0u8; 5]))?;
+            Ok((default_resp, None))
         }
     }
 }
@@ -71,15 +75,14 @@ impl ResponseTemplate {
     }
 
     /// Generate a response from the template.
-    pub(crate) fn generate_grpc_response(&self) -> hyper::Response<hyper::Body> {
+    pub(crate) fn generate_grpc_response(&self) -> HyperResult<hyper::Response<hyper::Body>> {
         let body = self.body.clone().unwrap_or_else(|| vec![0u8; 5]);
         let body = hyper::Body::from(body);
-        let code: i32 = self.grpc_status_code.unwrap().into();
-        tonic::codegen::http::Response::builder()
+        let code: i32 = self.grpc_status_code.ok_or(HyperError::ImplementationError)?.into();
+        Ok(tonic::codegen::http::Response::builder()
             .status(200)
             .header("grpc-status", code.to_string())
             .header("content-type", "application/grpc")
-            .body(body)
-            .unwrap()
+            .body(body)?)
     }
 }

@@ -5,8 +5,10 @@ pub type StubrResult<T> = Result<T, StubrError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum StubrError {
-    #[error("Invalid stub '{0:?}'")]
+    #[error("Invalid stub {0:?}")]
     InvalidStub(std::path::PathBuf),
+    #[error("Stub {0:?} not found")]
+    StubNotFound(std::path::PathBuf),
     #[error(transparent)]
     UrlError(#[from] url::ParseError),
     #[error(transparent)]
@@ -43,6 +45,8 @@ pub enum StubrError {
     IntConversionError(#[from] TryFromIntError),
     #[error(transparent)]
     HttpError(#[from] anyhow::Error),
+    #[error(transparent)]
+    HyperServerError(#[from] HyperError),
     #[error("json path error '{0}'")]
     JsonPathError(String),
     #[error("A request body matcher must contain at least one matcher")]
@@ -76,4 +80,22 @@ impl From<StubrError> for handlebars::RenderError {
             _ => handlebars::RenderError::new("Unknown"),
         }
     }
+}
+
+/// Dedicated error for building internal hyper server.
+/// This has to be Send + Sync
+#[derive(thiserror::Error, Debug)]
+pub enum HyperError {
+    #[error("Internal error")]
+    ImplementationError,
+    #[error(transparent)]
+    HyperError(#[from] hyper::Error),
+    #[error(transparent)]
+    InvalidHeaderName(#[from] http::header::InvalidHeaderName),
+    #[error(transparent)]
+    InvalidHeaderValue(#[from] http::header::InvalidHeaderValue),
+    #[error(transparent)]
+    HttpError(#[from] http::Error),
+    #[error("Error with http_types")]
+    HttpTypesError,
 }

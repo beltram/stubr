@@ -57,16 +57,20 @@ impl ResponseTemplate {
         V: TryInto<HeaderValue>,
         <V as TryInto<HeaderValue>>::Error: std::fmt::Debug,
     {
-        let key = key.try_into().expect("Failed to convert into header name.");
-        let value = value.try_into().expect("Failed to convert into header value.");
-        match self.headers.get_mut(&key) {
-            Some(headers) => {
-                headers.push(value);
-            },
-            None => {
-                self.headers.insert(key, vec![value]);
-            },
-        }
+        let key = key.try_into().unwrap();
+        let value = value.try_into().unwrap();
+        self.headers.entry(key).or_insert_with(|| vec![value]);
+        self
+    }
+
+    /// Append a header `value` to list of headers with `key` as header name.
+    ///
+    /// Unlike `insert_header`, this function will not override the contents of a header:
+    /// - if there are no header values with `key` as header name, it will insert one;
+    /// - if there are already some values with `key` as header name, it will append to the
+    ///   existing list.
+    pub fn append_multi_header<const N: usize>(mut self, key: HeaderName, values: [HeaderValue; N]) -> Self {
+        self.headers.entry(key).or_insert_with(|| values.into_iter().collect());
         self
     }
 

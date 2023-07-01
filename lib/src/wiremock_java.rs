@@ -15,6 +15,7 @@ impl WiremockImage {
     const TAG: &'static str = "2.35.0";
     pub const PORT: u16 = 80;
     pub const MAPPINGS_DIR: &'static str = "/home/wiremock/mappings";
+    pub const START_MSG: &'static str = "The WireMock server is started .....";
 
     #[allow(dead_code)]
     pub fn try_run(docker: &Cli, stubs: impl Into<AnyStubs>) -> StubrResult<testcontainers::Container<'_, Self>> {
@@ -27,7 +28,7 @@ impl WiremockImage {
     fn write_stubs(&self, stubs: &Vec<PathBuf>) -> StubrResult<()> {
         for stub in stubs {
             if !stub.exists() {
-                panic!("Could not find stub {stub:?}")
+                return Err(StubrError::StubNotFound(stub.clone()));
             }
             let filename = stub
                 .file_name()
@@ -66,7 +67,9 @@ impl testcontainers::Image for WiremockImage {
     }
 
     fn ready_conditions(&self) -> Vec<WaitFor> {
-        vec![WaitFor::seconds(10)]
+        vec![WaitFor::StdOutMessage {
+            message: Self::START_MSG.to_string(),
+        }]
     }
 
     fn volumes(&self) -> Box<dyn Iterator<Item = (&String, &String)> + '_> {
@@ -96,7 +99,18 @@ pub struct WiremockArgs;
 
 impl testcontainers::ImageArgs for WiremockArgs {
     fn into_iterator(self) -> Box<dyn Iterator<Item = String>> {
-        Box::new(vec!["--port".to_string(), WiremockImage::PORT.to_string(), "--verbose".to_string()].into_iter())
+        Box::new(
+            vec![
+                "--port".to_string(),
+                WiremockImage::PORT.to_string(),
+                "--verbose".to_string(),
+                "--no-request-journal".to_string(),
+                "--async-response-enabled".to_string(),
+                "--local-response-templating".to_string(),
+                "--disable-banner".to_string(),
+            ]
+            .into_iter(),
+        )
     }
 }
 
