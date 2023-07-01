@@ -9,6 +9,10 @@ pub enum StubrError {
     InvalidStub(std::path::PathBuf),
     #[error("Stub {0:?} not found")]
     StubNotFound(std::path::PathBuf),
+    #[error("App {0:?} not found")]
+    AppNotFound(String),
+    #[error("Could not find output directory")]
+    OutputDirFound,
     #[error(transparent)]
     UrlError(#[from] url::ParseError),
     #[error(transparent)]
@@ -71,6 +75,8 @@ pub enum StubrError {
     InvalidGrpcRequest,
     #[error("Could not convert file {0:?} name to utf-8 string")]
     FileNameError(std::path::PathBuf),
+    #[error(transparent)]
+    EnvVarError(#[from] std::env::VarError),
 }
 
 impl From<StubrError> for handlebars::RenderError {

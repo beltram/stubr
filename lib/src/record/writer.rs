@@ -9,7 +9,7 @@ use std::{
 use http_types::Url;
 use log::info;
 
-use crate::{model::JsonStub, server::stub_finder::StubFinder, StubrResult};
+use crate::{model::JsonStub, server::stub_finder::StubFinder, StubrError, StubrResult};
 
 pub(crate) struct StubWriter {
     pub(crate) stub: JsonStub,
@@ -19,7 +19,7 @@ impl StubWriter {
     const RECORDED_TEST_DIR: &'static str = "stubs";
 
     pub(crate) fn write(&self, host: &str, output: Option<&PathBuf>) -> StubrResult<PathBuf> {
-        let output = self.output_and_create(host, output);
+        let output = self.try_output_and_create(host, output)?;
         let path = output.join(self.stub_name());
         let file = File::create(&path)?;
         serde_json::to_writer_pretty(&file, &self.stub)?;
@@ -44,15 +44,16 @@ impl StubWriter {
         })
     }
 
-    fn output_and_create(&self, host: &str, output: Option<&PathBuf>) -> PathBuf {
+    fn try_output_and_create(&self, host: &str, output: Option<&PathBuf>) -> StubrResult<PathBuf> {
         let output = output
             .map(|it| it.to_path_buf())
-            .unwrap_or_else(Self::default_output)
-            .join(self.dir_name(host));
+            .or_else(|| Self::default_output())
+            .ok_or(StubrError::OutputDirFound);
+        let output = output?.join(self.dir_name(host));
         if !output.exists() {
-            create_dir_all(&output).unwrap_or_else(|_| panic!("Failed creating recorded stubs output directory at '{:?}'", &output));
+            create_dir_all(&output)?;
         }
-        output
+        Ok(output)
     }
 
     fn dir_name(&self, host: &str) -> String {
@@ -77,7 +78,7 @@ impl StubWriter {
         }
     }
 
-    fn default_output() -> PathBuf {
-        StubFinder::output_dir().join(Self::RECORDED_TEST_DIR)
+    fn default_output() -> Option<PathBuf> {
+        Some(StubFinder::output_dir()?.join(Self::RECORDED_TEST_DIR))
     }
 }

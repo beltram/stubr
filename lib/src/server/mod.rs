@@ -104,7 +104,8 @@ impl Stubr {
     /// Runs stubs of a remote producer app.
     /// * `name` - producer name
     pub async fn try_app_with(name: &str, config: Config) -> StubrResult<Self> {
-        Self::try_start_with(StubFinder::find_app(name), config).await
+        let app = StubFinder::find_app(name)?;
+        Self::try_start_with(app, config).await
     }
 
     /// Runs stubs of a remote producer app.
@@ -260,7 +261,8 @@ impl Stubr {
 
     /// see [Stubr::try_app_with]
     pub async fn app_with(name: &str, config: Config) -> Self {
-        Self::start_with(StubFinder::find_app(name), config).await
+        let app = StubFinder::find_app(name).expect(&format!("Could not find app {name}"));
+        Self::start_with(app, config).await
     }
 
     /// see [Stubr::try_app_blocking]

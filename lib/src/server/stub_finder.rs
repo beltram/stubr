@@ -1,10 +1,11 @@
-use std::fs::read_dir;
 use std::{
     env,
     ffi::OsStr,
+    fs::read_dir,
     path::{Path, PathBuf},
 };
 
+use crate::{StubrError, StubrResult};
 use itertools::Itertools;
 
 pub struct StubFinder;
@@ -47,23 +48,22 @@ impl StubFinder {
         stubs
     }
 
-    pub fn find_app(name: &str) -> PathBuf {
-        env::var("CARGO_PKG_NAME")
-            .ok()
-            .map(|pkg| Self::output_dir().join(Self::LOCAL_DIR).join(pkg).join(name))
-            .filter(|path| path.exists())
-            .unwrap_or_else(|| panic!("Could not find app '{name}'"))
+    pub fn find_app(name: &str) -> StubrResult<PathBuf> {
+        let pkg = env::var("CARGO_PKG_NAME")?;
+        let out_dir = Self::output_dir().ok_or(StubrError::OutputDirFound)?;
+        let app = out_dir.join(Self::LOCAL_DIR).join(pkg).join(name);
+        app.exists().then(|| app).ok_or(StubrError::AppNotFound(name.to_string()))
     }
 
-    pub fn output_dir() -> PathBuf {
-        env::var(Self::LIB_PATH_ENV_VAR)
-            .ok()
-            .and_then(|v| v.split(':').map(PathBuf::from).find(|p| Self::is_target_debug(p)))
-            .and_then(|p| p.parent().map(|it| it.to_path_buf()))
-            .expect("Failed locating '/target' directory")
+    pub fn output_dir() -> Option<PathBuf> {
+        env::var(Self::LIB_PATH_ENV_VAR).ok().and_then(|v| {
+            v.split(':')
+                .map(PathBuf::from)
+                .find_map(|p| Self::find_target(&p).or_else(|| Self::find_target(p.parent()?)))
+        })
     }
 
-    fn is_target_debug(path: &Path) -> bool {
+    fn find_target(path: &Path) -> Option<PathBuf> {
         let is_named = |p: &Path, name: &str| {
             p.file_name()
                 .and_then(OsStr::to_str)
@@ -71,9 +71,11 @@ impl StubFinder {
                 .and_then(|v| v.first().map(|it| it.to_string()))
                 == Some(name.to_string())
         };
+        println!("Looking for {path:?}");
         let debug = is_named(path, "debug");
         let target = path.parent().map(|p| is_named(p, "target")).unwrap_or_default();
-        debug && target
+        let found = debug && target;
+        found.then_some(path.parent()?.to_path_buf())
     }
 }
 
