@@ -56,11 +56,11 @@ impl StubFinder {
     }
 
     pub fn output_dir() -> Option<PathBuf> {
-        env::var(Self::LIB_PATH_ENV_VAR).ok().and_then(|v| {
-            v.split(':')
-                .map(PathBuf::from)
-                .find_map(|p| Self::find_target(&p).or_else(|| Self::find_target(p.parent()?)))
-        })
+        let lib_path = env::var(Self::LIB_PATH_ENV_VAR).ok()?;
+        lib_path
+            .split(':')
+            .map(PathBuf::from)
+            .find_map(|p| Self::find_target(&p).or_else(|| Self::find_target(p.parent()?)))
     }
 
     fn find_target(path: &Path) -> Option<PathBuf> {
@@ -71,7 +71,6 @@ impl StubFinder {
                 .and_then(|v| v.first().map(|it| it.to_string()))
                 == Some(name.to_string())
         };
-        println!("Looking for {path:?}");
         let debug = is_named(path, "debug");
         let target = path.parent().map(|p| is_named(p, "target")).unwrap_or_default();
         let found = debug && target;

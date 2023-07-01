@@ -46,7 +46,7 @@ impl StubWriter {
 
     fn try_output_and_create(&self, host: &str, output: Option<&PathBuf>) -> StubrResult<PathBuf> {
         let output = output
-            .map(|it| it.to_path_buf())
+            .cloned()
             .or_else(|| Self::default_output())
             .ok_or(StubrError::OutputDirFound);
         let output = output?.join(self.dir_name(host));

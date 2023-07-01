@@ -261,7 +261,7 @@ impl Stubr {
 
     /// see [Stubr::try_app_with]
     pub async fn app_with(name: &str, config: Config) -> Self {
-        let app = StubFinder::find_app(name).expect(&format!("Could not find app {name}"));
+        let app = StubFinder::find_app(name).expect(&format!("Could not find app '{name}'"));
         Self::start_with(app, config).await
     }
 
