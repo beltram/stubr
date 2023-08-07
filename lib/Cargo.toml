@@ -43,7 +43,7 @@ jsonwebtoken = { version = "8.1", default-features = false }
 rand_xorshift = "0.3"
 rand = "0.8"
 regex-syntax = { version = "0.6", default-features = false }
-rand_regex = { version = "0.15", default-features = false }
+rand_regex = { version = "0.16", default-features = false }
 thiserror = "1.0"
 rand_distr = "0.4"
 
