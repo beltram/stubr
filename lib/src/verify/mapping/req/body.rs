@@ -27,7 +27,7 @@ impl From<&RequestStub> for Vec<u8> {
                     .unique()
                     .fold(Value::default(), |mut acc, it| {
                         if let Some(value) = it.to_partial_value() {
-                            acc.merge(value);
+                            acc.merge(&value);
                         }
                         acc
                     });
