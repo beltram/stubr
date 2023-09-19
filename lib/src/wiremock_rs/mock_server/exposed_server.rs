@@ -207,6 +207,7 @@ impl MockServer {
     ///     assert_eq!(status, 404);
     /// }
     /// ```
+    #[allow(dead_code)]
     pub async fn register_as_scoped(&self, mock: Mock) -> MockGuard {
         self.0.register_as_scoped(mock).await
     }
@@ -273,6 +274,7 @@ impl MockServer {
     ///     assert!(received_requests.is_empty())
     /// }
     /// ```
+    #[allow(dead_code)]
     pub async fn reset(&self) {
         self.0.reset().await;
     }
@@ -357,6 +359,7 @@ impl MockServer {
     /// ```
     ///
     /// [`TcpStream`]: std::net::TcpStream
+    #[allow(dead_code)]
     pub fn address(&self) -> &SocketAddr {
         self.0.address()
     }
@@ -423,6 +426,7 @@ impl MockServer {
     ///     assert!(received_requests.is_none());
     /// }
     /// ```
+    #[allow(dead_code)]
     pub async fn received_requests(&self) -> Option<Vec<Request>> {
         self.0.received_requests().await
     }

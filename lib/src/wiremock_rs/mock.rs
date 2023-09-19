@@ -335,6 +335,7 @@ impl Mock {
     /// ```
     ///
     /// [`matchers`]: crate::matchers
+    #[allow(dead_code)]
     pub fn up_to_n_times(mut self, n: u64) -> Mock {
         assert!(n > 0, "n must be strictly greater than 0!");
         self.max_n_matches = Some(n);
@@ -386,6 +387,7 @@ impl Mock {
     /// ```
     ///
     /// [`matchers`]: crate::matchers
+    #[allow(dead_code)]
     pub fn with_priority(mut self, p: u8) -> Mock {
         assert!(p > 0, "priority must be strictly greater than 0!");
         self.priority = p;
@@ -507,6 +509,7 @@ impl Mock {
     ///     // is not satisfied and the test will panic.
     /// }
     /// ```
+    #[allow(dead_code)]
     pub fn named<T: Into<String>>(mut self, mock_name: T) -> Self {
         self.name = Some(mock_name.into());
         self
@@ -521,6 +524,7 @@ impl Mock {
     ///
     /// [`register`]: MockServer::register
     /// [`mount`]: Mock::mount
+    #[allow(dead_code)]
     pub async fn mount(self, server: &MockServer) {
         server.register(self).await;
     }
@@ -621,6 +625,7 @@ impl Mock {
     /// ```
     ///
     /// [`mount`]: Mock::mount
+    #[allow(dead_code)]
     pub async fn mount_as_scoped(self, server: &MockServer) -> MockGuard {
         server.register_as_scoped(self).await
     }

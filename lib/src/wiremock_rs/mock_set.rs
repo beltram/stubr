@@ -78,6 +78,7 @@ impl MountedMockSet {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) fn reset(&mut self) {
         self.mocks = vec![];
         self.generation += 1;

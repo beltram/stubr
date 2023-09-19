@@ -204,6 +204,7 @@ impl ResponseTemplate {
     ///     assert_eq!(res.content_type(), Some(mime::JSON));
     /// }
     /// ```
+    #[allow(dead_code)]
     pub fn set_body_raw<B>(mut self, body: B, mime: &str) -> Self
     where
         B: TryInto<Vec<u8>>,

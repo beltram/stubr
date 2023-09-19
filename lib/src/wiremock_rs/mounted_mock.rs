@@ -65,6 +65,7 @@ impl MountedMock {
         self.specification.response_template(request)
     }
 
+    #[allow(dead_code)]
     pub(crate) fn received_requests(&self) -> Vec<Request> {
         self.matched_requests.clone()
     }

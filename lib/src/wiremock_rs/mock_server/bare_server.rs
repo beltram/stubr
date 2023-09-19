@@ -95,6 +95,7 @@ impl BareMockServer {
     /// When using `register_as_scoped`, your `Mock`s will be active as long as the returned `MockGuard` is not dropped.
     /// When the returned `MockGuard` is dropped, `MockServer` will verify that the expectations set on the scoped `Mock` were
     /// verified - if not, it will panic.
+    #[allow(dead_code)]
     pub async fn register_as_scoped(&self, mock: Mock) -> MockGuard {
         let mock_id = self.state.write().await.mock_set.register(mock);
         MockGuard {
@@ -108,6 +109,7 @@ impl BareMockServer {
     ///
     /// It *must* be called if you plan to reuse a `BareMockServer` instance (i.e. in our
     /// `MockServerPoolManager`).
+    #[allow(dead_code)]
     pub(crate) async fn reset(&self) {
         let mut state = self.state.write().await;
         state.mock_set.reset();
@@ -134,6 +136,7 @@ impl BareMockServer {
     /// Return the socket address of this running instance of `BareMockServer`, e.g. `127.0.0.1:4372`.
     ///
     /// Use this method to interact with the `BareMockServer` using `TcpStream`s.
+    #[allow(dead_code)]
     pub(crate) fn address(&self) -> &SocketAddr {
         &self.server_address
     }
@@ -180,6 +183,7 @@ pub struct MockGuard {
 }
 
 impl MockGuard {
+    #[allow(dead_code)]
     pub async fn received_requests(&self) -> Vec<crate::wiremock_rs::Request> {
         let state = self.server_state.read().await;
         let (mounted_mock, _) = &state.mock_set[self.mock_id];

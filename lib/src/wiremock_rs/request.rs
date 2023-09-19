@@ -45,10 +45,12 @@ impl fmt::Display for Request {
 }
 
 impl Request {
+    #[allow(dead_code)]
     pub fn body_json<T: DeserializeOwned>(&self) -> Result<T, serde_json::Error> {
         serde_json::from_slice(&self.body)
     }
 
+    #[allow(dead_code)]
     pub async fn from(mut request: http_types::Request) -> Request {
         let method = request.method();
         let url = request.url().to_owned();
