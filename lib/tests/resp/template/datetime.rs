@@ -107,7 +107,9 @@ async fn should_template_now_with_custom_timezone() {
 
 fn is_close_to(from: String, rounding: Duration, alter: fn(DateTime<Utc>) -> DateTime<Utc>) {
     let parsed = DateTime::<FixedOffset>::parse_from_rfc3339(from.as_str()).unwrap();
-    let received: DateTime<Utc> = DateTime::from_utc(parsed.naive_utc(), Utc).duration_round(rounding).unwrap();
+    let received: DateTime<Utc> = DateTime::from_naive_utc_and_offset(parsed.naive_utc(), Utc)
+        .duration_round(rounding)
+        .unwrap();
     let received = alter(received);
     let approx_now = Utc::now().duration_round(rounding).unwrap();
     assert_eq!(approx_now, received)
