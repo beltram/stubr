@@ -43,7 +43,7 @@ impl BodyStub {
 
     pub fn register_json_body_template<'a, T>(&self, json_values: T)
     where
-        T: Iterator<Item = &'a JsonValue>,
+        T: Iterator<Item=&'a JsonValue>,
     {
         json_values
             .into_iter()
@@ -55,7 +55,7 @@ impl BodyStub {
             Value::String(s) => self.register(s, s),
             Value::Object(o) => self.register_json_body_template(o.values()),
             Value::Array(a) => self.register_json_body_template(a.iter()),
-            _ => {},
+            _ => {}
         }
     }
 
@@ -67,7 +67,7 @@ impl BodyStub {
 
     fn render_json_obj(&self, json_body: &Map<String, Value>, data: &HandlebarsData) -> Value {
         let obj = json_body.into_iter().map(|(key, value)| match value {
-            Value::String(s) => (key.to_owned(), Self::cast_to_value(self.render(s, data).unwrap_or_default())),
+            Value::String(s) => (key.to_owned(), Self::unwrap_templating(self.render(s, data).unwrap_or_default())),
             Value::Object(o) => (key.to_owned(), self.render_json_obj(o, data)),
             Value::Array(a) => (key.to_owned(), self.render_json_array(a, data)),
             _ => (key.to_owned(), value.to_owned()),
@@ -80,7 +80,7 @@ impl BodyStub {
             json_body
                 .iter()
                 .map(|value| match value {
-                    Value::String(s) => Self::cast_to_value(self.render(s, data).unwrap_or_default()),
+                    Value::String(s) => Self::unwrap_templating(self.render(s, data).unwrap_or_default()),
                     Value::Object(o) => self.render_json_obj(o, data),
                     Value::Array(a) => self.render_json_array(a, data),
                     _ => value.to_owned(),
@@ -90,23 +90,26 @@ impl BodyStub {
     }
 
     /// Tries to dynamically guess the "actual" json type of the string
-    fn cast_to_value(raw: String) -> Value {
-        if let Ok(i) = raw.parse::<i32>() {
-            Value::from(i)
-        } else if let Ok(b) = raw.parse::<bool>() {
-            Value::from(b)
-        } else if let Ok(f) = raw.parse::<f64>() {
-            Value::from(f)
-        } else if &raw == "null" {
-            Value::Null
-        } else {
-            let len = raw.len();
-            match raw {
-                o if o.ends_with(Self::OBJECT_IDENTIFIER) => Value::from_str(&o[..len - Self::OBJECT_IDENTIFIER.len()]).unwrap_or_default(),
-                a if a.ends_with(Self::ARRAY_IDENTIFIER) => Value::from_str(&a[..len - Self::ARRAY_IDENTIFIER.len()]).unwrap_or_default(),
-                _ => Value::from(raw),
+    fn unwrap_templating(raw: String) -> Value {
+        if raw.starts_with("[[[") && raw.ends_with("]]]") {
+            let raw = raw.trim_start_matches("[[[").trim_end_matches("]]]");
+            if let Ok(i) = raw.parse::<i32>() {
+                Value::from(i)
+            } else if let Ok(b) = raw.parse::<bool>() {
+                Value::from(b)
+            } else if let Ok(f) = raw.parse::<f64>() {
+                Value::from(f)
+            } else if raw == "null" {
+                Value::Null
+            } else {
+                let len = raw.len();
+                match raw {
+                    o if o.ends_with(Self::OBJECT_IDENTIFIER) => Value::from_str(&o[..len - Self::OBJECT_IDENTIFIER.len()]).unwrap_or_default(),
+                    a if a.ends_with(Self::ARRAY_IDENTIFIER) => Value::from_str(&a[..len - Self::ARRAY_IDENTIFIER.len()]).unwrap_or_default(),
+                    _ => Value::from(raw),
+                }
             }
-        }
+        } else { Value::String(raw) }
     }
 
     fn binary_body(&self) -> Option<Vec<u8>> {

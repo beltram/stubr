@@ -7,11 +7,15 @@
     "jsonBody": {
       "name": "john",
       "age": 42,
+      "ageStr": "42",
       "candidate": true,
       "surnames": [
         "jdoe",
         "johnny"
       ]
-    }
+    },
+    "transformers": [
+      "response-template"
+    ]
   }
 }

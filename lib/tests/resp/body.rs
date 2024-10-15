@@ -86,7 +86,7 @@ mod json {
     #[async_std::test]
     #[stubr::mock("resp/body/json.json")]
     async fn should_map_json_response_body() {
-        let expected = json!({"name": "john", "age": 42, "candidate": true, "surnames": ["jdoe", "johnny"]});
+        let expected = json!({"name": "john", "age": 42, "ageStr": "42", "candidate": true, "surnames": ["jdoe", "johnny"]});
         get(stubr.uri())
             .await
             .expect_status_ok()
