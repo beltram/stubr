@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -7,10 +7,10 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
         <link rel="icon" href="../favicon.svg">
         <link rel="shortcut icon" href="../favicon.png">
@@ -30,15 +30,17 @@
 
         <!-- Custom theme stylesheets -->
 
-    </head>
-    <body>
-    <div id="body-container">
+
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
-
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
@@ -60,43 +62,49 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('no-js')
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            html.classList.add("js");
         </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var html = document.querySelector('html');
             var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
             }
+            sidebar_toggle.checked = sidebar === 'visible';
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started/unit-test.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting-started/unit-test.html"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="../getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li><li class="chapter-item expanded "><a href="../contract/relaxing.html"><strong aria-hidden="true">3.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html" class="active"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../grpc.html"><strong aria-hidden="true">6.</strong> gRPC</a></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../benchmark.html"><strong aria-hidden="true">9.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
@@ -150,23 +158,23 @@ incoming http request as we defined it with <a href="../stubs/request.html">requ
 <h2 id="status"><a class="header" href="#status">Status</a></h2>
 <p>The http response status. In the range <code>[100..599]</code>.</p>
 <pre><code class="language-json">{
-  &quot;response&quot;: {
-    &quot;status&quot;: 200
+  "response": {
+    "status": 200
   }
 }
 </code></pre>
 <h2 id="header"><a class="header" href="#header">Header</a></h2>
 <p>Http response headers. Note that keys are case-insensitive. Multivalued headers are not supported yet. You can
-use <a href="#response-templating">response templating</a> here as well if you add <code>&quot;transformers&quot;: [&quot;response-template&quot;]</code>.</p>
+use <a href="#response-templating">response templating</a> here as well if you add <code>"transformers": ["response-template"]</code>.</p>
 <pre><code class="language-json">{
-  &quot;response&quot;: {
-    &quot;transformers&quot;: [
-      &quot;response-template&quot;
+  "response": {
+    "transformers": [
+      "response-template"
     ],
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: &quot;application/json&quot;,
-      &quot;ETag&quot;: &quot;33a64df551425fcc55e4d42a148795d9f25f89d4&quot;,
-      &quot;location&quot;: &quot;{{request.url}}/1234&quot;
+    "headers": {
+      "content-type": "application/json",
+      "ETag": "33a64df551425fcc55e4d42a148795d9f25f89d4",
+      "location": "{{request.url}}/1234"
     }
   }
 }
@@ -175,15 +183,15 @@ use <a href="#response-templating">response templating</a> here as well if you a
 <p>There are different ways to define a http response. We'll just focus here on supplying hardcoded values in the response,
 but you can relax all those fields with templates. We'll see that immediately in the next chapter.</p>
 <pre><code class="language-json">{
-  &quot;response&quot;: {
-    &quot;body&quot;: &quot;Hello World !&quot;,
-    &quot;base64Body&quot;: &quot;AQID&quot;,
-    &quot;bodyFileName&quot;: &quot;tests/stubs/response.json&quot;,
-    &quot;jsonBody&quot;: {
-      &quot;name&quot;: &quot;john&quot;,
-      &quot;surnames&quot;: [
-        &quot;jdoe&quot;,
-        &quot;johnny&quot;
+  "response": {
+    "body": "Hello World !",
+    "base64Body": "AQID",
+    "bodyFileName": "tests/stubs/response.json",
+    "jsonBody": {
+      "name": "john",
+      "surnames": [
+        "jdoe",
+        "johnny"
       ]
     }
   }
@@ -203,41 +211,41 @@ convenient to define a json response body here.</li>
 <p>Using only hardcoded values is a good way to start mocking things. But as time goes on, your project might start to get
 bloated with a lot of stubs. You will also see the limit of hardcoded values when
 doing <a href="../contract/index.html">contract testing</a>.</p>
-<p>In order to &quot;relax&quot; your stub, you will have to use <a href="https://handlebarsjs.com/">Handlebars</a> helpers. They will allow you
+<p>In order to "relax" your stub, you will have to use <a href="https://handlebarsjs.com/">Handlebars</a> helpers. They will allow you
 to have random values generated for you, because, most of the time, that's what the actual application does. And, as a
-consumer, you also don't care about the actual value of this field in your test i.e. <code>&quot;age&quot;: &quot;{{anyU8}}&quot;</code> will work in
+consumer, you also don't care about the actual value of this field in your test i.e. <code>"age": "{{anyU8}}"</code> will work in
 all your unit tests because none of your unit tests expects a particular value for this field.</p>
-<p>In order to use a Handlebars helper, you need to add <code>&quot;transformers&quot;: [&quot;response-template&quot;]</code>.</p>
+<p>In order to use a Handlebars helper, you need to add <code>"transformers": ["response-template"]</code>.</p>
 <p>Keep in mind that such helper will also be used to generate assertions when you will be using this stub
 for <a href="../contract/index.html">contract testing</a> while <a href="../contract/producer.html">verifying your producer</a>.</p>
 <p>NB: those templates are not available in <a href="https://github.com/tomakehurst/wiremock">Wiremock</a>, you can only use them in
 <a href="https://github.com/beltram/stubr">stubr</a>.</p>
 <pre><code class="language-json">{
-  &quot;response&quot;: {
-    &quot;transformers&quot;: [
-      &quot;response-template&quot;
+  "response": {
+    "transformers": [
+      "response-template"
     ],
-    &quot;jsonBody&quot;: {
-      &quot;regex&quot;: &quot;{{anyRegex '[a-z]{4}'}}&quot;,
-      &quot;string&quot;: &quot;{{anyNonEmptyString}}&quot;,
-      &quot;alphanum&quot;: &quot;{{anyAlphaNumeric}}&quot;,
-      &quot;boolean&quot;: &quot;{{anyBoolean}}&quot;,
-      &quot;uuid&quot;: &quot;{{anyUuid}}&quot;,
-      &quot;ip&quot;: &quot;{{anyIpAddress}}&quot;,
-      &quot;host&quot;: &quot;{{anyHostname}}&quot;,
-      &quot;email&quot;: &quot;{{anyEmail}}&quot;,
-      &quot;enum&quot;: &quot;{{anyOf 'alpha' 'beta' 'gamma'}}&quot;,
-      &quot;number&quot;: &quot;{{anyNumber}}&quot;,
-      &quot;integer&quot;: &quot;{{anyI32}}&quot;,
-      &quot;float&quot;: &quot;{{anyFloat}}&quot;,
-      &quot;anyDate&quot;: &quot;{{anyDate}}&quot;
+    "jsonBody": {
+      "regex": "{{anyRegex '[a-z]{4}'}}",
+      "string": "{{anyNonEmptyString}}",
+      "alphanum": "{{anyAlphaNumeric}}",
+      "boolean": "{{anyBoolean}}",
+      "uuid": "{{anyUuid}}",
+      "ip": "{{anyIpAddress}}",
+      "host": "{{anyHostname}}",
+      "email": "{{anyEmail}}",
+      "enum": "{{anyOf 'alpha' 'beta' 'gamma'}}",
+      "number": "{{anyNumber}}",
+      "integer": "{{anyI32}}",
+      "float": "{{anyFloat}}",
+      "anyDate": "{{anyDate}}"
     }
   }
 }
 </code></pre>
 <ul>
 <li><code>anyRegex</code> generates a value matching this regex. Tip: most of the time will be used for strings but if this regex
-defines an integer, a float or a boolean and is used in <code>&quot;jsonBody&quot;&quot;</code> the generated value will be cast</li>
+defines an integer, a float or a boolean and is used in <code>"jsonBody""</code> the generated value will be cast</li>
 <li><code>anyNonEmptyString</code> or <code>anyNonBlankString</code> generates an arbitrary utf-8 string</li>
 <li><code>anyAlphaNumeric</code> generates an arbitrary string with only alphanumeric characters</li>
 <li><code>anyBoolean</code> generates either <code>true</code> or <code>false</code></li>
@@ -260,21 +268,21 @@ are: <code>anyU64</code>, <code>anyI64</code>, <code>anyU32</code>, <code>anyI32
 app. Very often, a field in the response is the exact same as the one in the request e.g. in a POST request to create
 a REST resource. You can use in your response parts of the request to do so.</p>
 <pre><code class="language-json">{
-  &quot;response&quot;: {
-    &quot;transformers&quot;: [
-      &quot;response-template&quot;
+  "response": {
+    "transformers": [
+      "response-template"
     ],
-    &quot;jsonBody&quot;: {
-      &quot;url-path-and-query&quot;: &quot;{{request.url}}&quot;,
-      &quot;url-path&quot;: &quot;{{request.path}}&quot;,
-      &quot;url-path-segments&quot;: &quot;{{request.pathSegments.[1]}}&quot;,
-      &quot;query&quot;: &quot;{{request.query.kind}}&quot;,
-      &quot;multi-query&quot;: &quot;{{request.query.kind.[1]}}&quot;,
-      &quot;method&quot;: &quot;{{request.method}}&quot;,
-      &quot;header&quot;: &quot;{{request.headers.Content-Type}}&quot;,
-      &quot;multi-header&quot;: &quot;{{request.headers.cache-control.[0]}}&quot;,
-      &quot;body&quot;: &quot;{{request.body}}&quot;,
-      &quot;from-request&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;
+    "jsonBody": {
+      "url-path-and-query": "{{request.url}}",
+      "url-path": "{{request.path}}",
+      "url-path-segments": "{{request.pathSegments.[1]}}",
+      "query": "{{request.query.kind}}",
+      "multi-query": "{{request.query.kind.[1]}}",
+      "method": "{{request.method}}",
+      "header": "{{request.headers.Content-Type}}",
+      "multi-header": "{{request.headers.cache-control.[0]}}",
+      "body": "{{request.body}}",
+      "from-request": "{{jsonPath request.body '$.name'}}"
     }
   }
 }
@@ -298,29 +306,29 @@ for selecting the right field. Use an <a href="https://jsonpath.com/">online JSO
 </ul>
 <p>You also sometimes have to generate dynamic data or to transform existing one:</p>
 <pre><code class="language-json">{
-  &quot;response&quot;: {
-    &quot;transformers&quot;: [
-      &quot;response-template&quot;
+  "response": {
+    "transformers": [
+      "response-template"
     ],
-    &quot;jsonBody&quot;: {
-      &quot;now&quot;: &quot;{{now}}&quot;,
-      &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;,
-      &quot;now-fmt-epoch&quot;: &quot;{{now format='epoch'}}&quot;,
-      &quot;now-fmt-unix&quot;: &quot;{{now format='unix'}}&quot;,
-      &quot;now-positive-offset&quot;: &quot;{{now offset='3 days'}}&quot;,
-      &quot;now-negative-offset&quot;: &quot;{{now offset='-3 days'}}&quot;,
-      &quot;now-with-timezone&quot;: &quot;{{now timezone='Europe/Rome'}}&quot;,
-      &quot;number-is-odd&quot;: &quot;{{isOdd request.body}}&quot;,
-      &quot;number-stripes&quot;: &quot;{{stripes request.body 'if-even' 'if-odd'}}&quot;,
-      &quot;string-capitalized&quot;: &quot;{{capitalize request.body}}&quot;,
-      &quot;string-uppercase&quot;: &quot;{{upper request.body}}&quot;,
-      &quot;string-replace&quot;: &quot;{{replace request.body 'a' 'b'}}&quot;,
-      &quot;string-trim&quot;: &quot;{{trim request.body}}&quot;,
-      &quot;size&quot;: &quot;{{size request.body}}&quot;,
-      &quot;base64-encode&quot;: &quot;{{base64 request.body padding=false}}&quot;,
-      &quot;base64-decode&quot;: &quot;{{base64 request.body decode=true}}&quot;,
-      &quot;url-encode&quot;: &quot;{{urlEncode request.header.x-raw}}&quot;,
-      &quot;url-decode&quot;: &quot;{{urlEncode request.header.x-encoded decode=true}}&quot;
+    "jsonBody": {
+      "now": "{{now}}",
+      "now-fmt": "{{now format='yyyy/MM/dd'}}",
+      "now-fmt-epoch": "{{now format='epoch'}}",
+      "now-fmt-unix": "{{now format='unix'}}",
+      "now-positive-offset": "{{now offset='3 days'}}",
+      "now-negative-offset": "{{now offset='-3 days'}}",
+      "now-with-timezone": "{{now timezone='Europe/Rome'}}",
+      "number-is-odd": "{{isOdd request.body}}",
+      "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
+      "string-capitalized": "{{capitalize request.body}}",
+      "string-uppercase": "{{upper request.body}}",
+      "string-replace": "{{replace request.body 'a' 'b'}}",
+      "string-trim": "{{trim request.body}}",
+      "size": "{{size request.body}}",
+      "base64-encode": "{{base64 request.body padding=false}}",
+      "base64-decode": "{{base64 request.body decode=true}}",
+      "url-encode": "{{urlEncode request.header.x-raw}}",
+      "url-decode": "{{urlEncode request.header.x-encoded decode=true}}"
     }
   }
 }
@@ -367,16 +375,16 @@ time you'll want to introduce
 latencies
 to check how your consuming application reacts to such delays. Currently, the options are quite sparse but should grow !</p>
 <pre><code class="language-json">{
-  &quot;expect&quot;: 2,
-  &quot;response&quot;: {
-    &quot;fixedDelayMilliseconds&quot;: 2000
+  "expect": 2,
+  "response": {
+    "fixedDelayMilliseconds": 2000
   },
-  &quot;delayDistribution&quot;: {
+  "delayDistribution": {
     // a random delay with logarithmic distribution
-    &quot;type&quot;: &quot;lognormal&quot;,
-    &quot;median&quot;: 100,
+    "type": "lognormal",
+    "median": 100,
     // The 50th percentile of latencies in milliseconds
-    &quot;sigma&quot;: 0.1
+    "sigma": 0.1
     // Standard deviation. The larger the value, the longer the tail
   }
 }
@@ -411,7 +419,7 @@ to find a good approximation.
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../recording/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../recording/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -425,7 +433,7 @@ to find a good approximation.
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../recording/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../recording/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

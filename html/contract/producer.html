@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -7,10 +7,10 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
         <link rel="icon" href="../favicon.svg">
         <link rel="shortcut icon" href="../favicon.png">
@@ -30,15 +30,17 @@
 
         <!-- Custom theme stylesheets -->
 
-    </head>
-    <body>
-    <div id="body-container">
+
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
-
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
@@ -60,43 +62,49 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('no-js')
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            html.classList.add("js");
         </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var html = document.querySelector('html');
             var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
             }
+            sidebar_toggle.checked = sidebar === 'visible';
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started/unit-test.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting-started/unit-test.html"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="../getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html" class="active"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li><li class="chapter-item expanded "><a href="../contract/relaxing.html"><strong aria-hidden="true">3.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../grpc.html"><strong aria-hidden="true">6.</strong> gRPC</a></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../benchmark.html"><strong aria-hidden="true">9.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
@@ -158,7 +166,7 @@ use actix_web::web;
 // simple in-memory database
 pub type Database = std::sync::RwLock&lt;std::collections::HashMap&lt;u32, Beer&gt;&gt;;
 
-#[actix_web::post(&quot;/beers&quot;)]
+#[actix_web::post("/beers")]
 pub async fn create(mut beer: web::Json&lt;Beer&gt;, db: web::Data&lt;Database&gt;) -&gt; impl actix_web::Responder {
     let exists = db.read().unwrap().iter().any(|(_, b)| &amp;beer.0 == b);
     if !exists {
@@ -171,11 +179,11 @@ pub async fn create(mut beer: web::Json&lt;Beer&gt;, db: web::Data&lt;Database&g
     } else {
         actix_web::HttpResponse::Conflict()
             .content_type(ContentType::json())
-            .body(serde_json::json!({&quot;message&quot;: &quot;Beer already exists&quot;}).to_string())
+            .body(serde_json::json!({"message": "Beer already exists"}).to_string())
     }
 }
 
-#[actix_web::get(&quot;/beers/{id}&quot;)]
+#[actix_web::get("/beers/{id}")]
 pub async fn find_by_id(path: web::Path&lt;u32&gt;, db: web::Data&lt;Database&gt;) -&gt; impl actix_web::Responder {
     let id = path.into_inner();
     if let Some(beer) = db.read().unwrap().get(&amp;id) {
@@ -185,7 +193,7 @@ pub async fn find_by_id(path: web::Path&lt;u32&gt;, db: web::Data&lt;Database&gt
     } else {
         actix_web::HttpResponse::NotFound()
             .content_type(ContentType::json())
-            .body(serde_json::json!({&quot;message&quot;: &quot;Beer not found&quot;}).to_string())
+            .body(serde_json::json!({"message": "Beer not found"}).to_string())
     }
 }
 
@@ -202,8 +210,8 @@ impl PartialEq for Beer {
     }
 }</code></pre>
 <h2 id="tests"><a class="header" href="#tests">tests</a></h2>
-<p>Then as we do things seriously, we will write some tests. For the <code>create</code> endpoint we'll have a nominal case where the 
-beer we create succeeds and another negative one where it fails because we have a uniqueness constraint on the Beer's 
+<p>Then as we do things seriously, we will write some tests. For the <code>create</code> endpoint we'll have a nominal case where the
+beer we create succeeds and another negative one where it fails because we have a uniqueness constraint on the Beer's
 <code>name</code> and <code>price</code> fields. For the <code>find_by_id</code> one, we'll have a nominal case and a <code>404 Not Found</code> one.</p>
 <pre><code class="language-rust ignore noplayground edition2021">use actix_web::{
     test::{call_service, init_service, TestRequest},
@@ -224,7 +232,7 @@ mod find_by_id {
             .wrap(stubr::ActixRecord::default()); // 👈 record
         let beers = sample();
         let (id, to_find) = beers.get(0).unwrap();
-        let req = TestRequest::get().uri(&amp;format!(&quot;/beers/{id}&quot;)).to_request();
+        let req = TestRequest::get().uri(&amp;format!("/beers/{id}")).to_request();
         call_service(&amp;init_service(app).await, req)
             .await
             .expect_status_ok()
@@ -238,7 +246,7 @@ mod find_by_id {
             .app_data(sample_db())
             .service(find_by_id)
             .wrap(stubr::ActixRecord::default()); // 👈 record
-        let req = TestRequest::get().uri(&quot;/beers/999&quot;).to_request();
+        let req = TestRequest::get().uri("/beers/999").to_request();
         call_service(&amp;init_service(app).await, req).await.expect_status_not_found();
     }
 }
@@ -250,14 +258,14 @@ mod create {
     async fn create_should_create_one() {
         let beer = Beer {
             id: None,
-            name: &quot;Heineken&quot;.to_string(),
+            name: "Heineken".to_string(),
             price: 4,
         };
         let app = App::new()
             .app_data(empty_db())
             .service(create)
             .wrap(stubr::ActixRecord::default()); // 👈 record
-        let req = TestRequest::post().uri(&quot;/beers&quot;).set_json(beer.clone()).to_request();
+        let req = TestRequest::post().uri("/beers").set_json(beer.clone()).to_request();
         call_service(&amp;init_service(app).await, req)
             .await
             .expect_status_created()
@@ -276,7 +284,7 @@ mod create {
             .app_data(sample_db())
             .service(create)
             .wrap(stubr::ActixRecord::default()); // 👈 record
-        let req = TestRequest::post().uri(&quot;/beers&quot;).set_json(beer.clone()).to_request();
+        let req = TestRequest::post().uri("/beers").set_json(beer.clone()).to_request();
         call_service(&amp;init_service(app).await, req).await.expect_status_conflict();
     }
 }
@@ -295,7 +303,7 @@ pub fn sample() -&gt; [(u32, Beer); 2] {
             0,
             Beer {
                 id: Some(0),
-                name: &quot;Leffe&quot;.to_string(),
+                name: "Leffe".to_string(),
                 price: 5,
             },
         ),
@@ -303,48 +311,48 @@ pub fn sample() -&gt; [(u32, Beer); 2] {
             1,
             Beer {
                 id: Some(1),
-                name: &quot;1664&quot;.to_string(),
+                name: "1664".to_string(),
                 price: 3,
             },
         ),
     ]
 }</code></pre>
 <h2 id="recording"><a class="header" href="#recording">recording</a></h2>
-<p>Although it is optional, we'll use <a href="../recording/actix.html">recording</a> here to easily create one stub for each test. 
-Recording is triggered by the <code>.wrap(stubr::ActixRecord::default())</code> line. Those recorded stubs will be in 
-<code>target/stubs/localhost</code>. </p>
+<p>Although it is optional, we'll use <a href="../recording/actix.html">recording</a> here to easily create one stub for each test.
+Recording is triggered by the <code>.wrap(stubr::ActixRecord::default())</code> line. Those recorded stubs will be in
+<code>target/stubs/localhost</code>.</p>
 <h2 id="import-stubs"><a class="header" href="#import-stubs">import stubs</a></h2>
-<p>In order for a producer to expose stubs, they have to live in a <code>stubs</code> folder in the root of your project. So 
+<p>In order for a producer to expose stubs, they have to live in a <code>stubs</code> folder in the root of your project. So
 copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove recording noise) to match the following.</p>
 <details>
 <summary><b>create</b></summary>
 <pre><code class="language-json">{
-  &quot;request&quot;: {
-    &quot;method&quot;: &quot;POST&quot;,
-    &quot;urlPath&quot;: &quot;/beers&quot;,
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: {
-        &quot;equalTo&quot;: &quot;application/json&quot;
+  "request": {
+    "method": "POST",
+    "urlPath": "/beers",
+    "headers": {
+      "content-type": {
+        "equalTo": "application/json"
       }
     },
-    &quot;bodyPatterns&quot;: [
+    "bodyPatterns": [
       {
-        &quot;equalToJson&quot;: {
-          &quot;name&quot;: &quot;Heineken&quot;,
-          &quot;price&quot;: 4
+        "equalToJson": {
+          "name": "Heineken",
+          "price": 4
         }
       }
     ]
   },
-  &quot;response&quot;: {
-    &quot;status&quot;: 201,
-    &quot;jsonBody&quot;: {
-      &quot;id&quot;: 2,
-      &quot;name&quot;: &quot;Heineken&quot;,
-      &quot;price&quot;: 4
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "id": 2,
+      "name": "Heineken",
+      "price": 4
     },
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: &quot;application/json&quot;
+    "headers": {
+      "content-type": "application/json"
     }
   }
 }
@@ -353,30 +361,30 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
 <details>
 <summary><b>create with name conflict</b></summary>
 <pre><code class="language-json">{
-  &quot;request&quot;: {
-    &quot;method&quot;: &quot;POST&quot;,
-    &quot;urlPath&quot;: &quot;/beers&quot;,
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: {
-        &quot;equalTo&quot;: &quot;application/json&quot;
+  "request": {
+    "method": "POST",
+    "urlPath": "/beers",
+    "headers": {
+      "content-type": {
+        "equalTo": "application/json"
       }
     },
-    &quot;bodyPatterns&quot;: [
+    "bodyPatterns": [
       {
-        &quot;equalToJson&quot;: {
-          &quot;name&quot;: &quot;Leffe&quot;,
-          &quot;price&quot;: 5
+        "equalToJson": {
+          "name": "Leffe",
+          "price": 5
         }
       }
     ]
   },
-  &quot;response&quot;: {
-    &quot;status&quot;: 409,
-    &quot;jsonBody&quot;: {
-      &quot;message&quot;: &quot;Beer already exists&quot;
+  "response": {
+    "status": 409,
+    "jsonBody": {
+      "message": "Beer already exists"
     },
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: &quot;application/json&quot;
+    "headers": {
+      "content-type": "application/json"
     }
   }
 }
@@ -385,19 +393,19 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
 <details>
 <summary><b>find by id</b></summary>
 <pre><code class="language-json">{
-  &quot;request&quot;: {
-    &quot;method&quot;: &quot;GET&quot;,
-    &quot;urlPath&quot;: &quot;/beers/0&quot;
+  "request": {
+    "method": "GET",
+    "urlPath": "/beers/0"
   },
-  &quot;response&quot;: {
-    &quot;status&quot;: 200,
-    &quot;jsonBody&quot;: {
-      &quot;id&quot;: 0,
-      &quot;name&quot;: &quot;Leffe&quot;,
-      &quot;price&quot;: 5
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "id": 0,
+      "name": "Leffe",
+      "price": 5
     },
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: &quot;application/json&quot;
+    "headers": {
+      "content-type": "application/json"
     }
   }
 }
@@ -406,17 +414,17 @@ copy/paste the 4 recorded stubs into this folder and arrange them a bit (remove 
 <details>
 <summary><b>find by id not found</b></summary>
 <pre><code class="language-json">{
-  &quot;request&quot;: {
-    &quot;method&quot;: &quot;GET&quot;,
-    &quot;urlPath&quot;: &quot;/beers/404&quot;
+  "request": {
+    "method": "GET",
+    "urlPath": "/beers/404"
   },
-  &quot;response&quot;: {
-    &quot;status&quot;: 404,
-    &quot;jsonBody&quot;: {
-      &quot;message&quot;: &quot;Beer not found&quot;
+  "response": {
+    "status": 404,
+    "jsonBody": {
+      "message": "Beer not found"
     },
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: &quot;application/json&quot;
+    "headers": {
+      "content-type": "application/json"
     }
   }
 }
@@ -429,12 +437,12 @@ stubs possible, it has to be explicit in a test. It is advised to declare it in 
 <p>Such a test will start by declaring your actix app with all the endpoints. In order to verify it, <a href="https://github.com/beltram/stubr">stubr</a> will create a
 test for every stub in <code>./stubs</code> by converting, for each, the <code>request</code> part in an actual actix integration test.</p>
 <p>But you might need some state ! For example, think of the <code>find by id</code> endpoint. It cannot be verified if your database
-is empty. Likewise, stubs are verified in no particular order (since anyway your endpoint are most likely stateless, 
-right ?). Executing some tests (for example a &quot;delete&quot; endpoint) might affect others. So before each test, we have to
+is empty. Likewise, stubs are verified in no particular order (since anyway your endpoint are most likely stateless,
+right ?). Executing some tests (for example a "delete" endpoint) might affect others. So before each test, we have to
 reset our application state. You can do that with the <code>stubr::ActixVerifyLifecycle</code> middleware, for example here to
 wipe our database then populate it with our sample data (it is recommended to reuse the same as in your tests).</p>
 <p>Finally, call <code>.verify()</code> (a bit different in our example) to launch the verification test. If it passes, you have the
-guarantee your stubs accurately represent your application API. </p>
+guarantee your stubs accurately represent your application API.</p>
 <pre><code class="language-rust ignore noplayground edition2021">use crate::api::beer::*;
 use actix_producer::api::beer::*;
 
@@ -456,7 +464,7 @@ async fn should_verify() {
         }))
         // required because this sample lives in a project with other stubs.
         // Otherwise just use '.verify()'
-        .verify_except(|stub_name: &amp;str| stub_name.starts_with(&quot;pet-&quot;))
+        .verify_except(|stub_name: &amp;str| stub_name.starts_with("pet-"))
         .await;
 }</code></pre>
 <p>Now let's use those stubs in a consumer.</p>
@@ -469,7 +477,7 @@ async fn should_verify() {
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../contract/consumer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../contract/consumer.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -483,7 +491,7 @@ async fn should_verify() {
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../contract/consumer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../contract/consumer.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

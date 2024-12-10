@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js light">
+<html lang="en" class="light sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -7,10 +7,10 @@
 
 
         <!-- Custom HTML head -->
-        
+
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
         <link rel="icon" href="../favicon.svg">
         <link rel="shortcut icon" href="../favicon.png">
@@ -30,15 +30,17 @@
 
         <!-- Custom theme stylesheets -->
 
-    </head>
-    <body>
-    <div id="body-container">
+
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "../";
             var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
         </script>
-
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
@@ -60,43 +62,49 @@
             var theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('no-js')
+            const html = document.documentElement;
             html.classList.remove('light')
             html.classList.add(theme);
-            html.classList.add('js');
+            html.classList.add("js");
         </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var html = document.querySelector('html');
             var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
             }
+            sidebar_toggle.checked = sidebar === 'visible';
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="../index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="../getting-started/unit-test.html"><strong aria-hidden="true">2.</strong> Getting started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting-started/unit-test.html"><strong aria-hidden="true">2.1.</strong> unit test</a></li><li class="chapter-item expanded "><a href="../getting-started/standalone.html"><strong aria-hidden="true">2.2.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../contract/index.html"><strong aria-hidden="true">3.</strong> Contract Testing</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../contract/producer.html"><strong aria-hidden="true">3.1.</strong> As a producer</a></li><li class="chapter-item expanded "><a href="../contract/consumer.html"><strong aria-hidden="true">3.2.</strong> As a consumer</a></li><li class="chapter-item expanded "><a href="../contract/relaxing.html"><strong aria-hidden="true">3.3.</strong> Relaxing</a></li></ol></li><li class="chapter-item expanded "><a href="../stubs/index.html" class="active"><strong aria-hidden="true">4.</strong> Writing Stubs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stubs/request.html"><strong aria-hidden="true">4.1.</strong> Request</a></li><li class="chapter-item expanded "><a href="../stubs/response.html"><strong aria-hidden="true">4.2.</strong> Response</a></li></ol></li><li class="chapter-item expanded "><a href="../recording/index.html"><strong aria-hidden="true">5.</strong> Recording</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../recording/actix.html"><strong aria-hidden="true">5.1.</strong> Actix</a></li><li class="chapter-item expanded "><a href="../recording/cli.html"><strong aria-hidden="true">5.2.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../recording/isahc.html"><strong aria-hidden="true">5.3.</strong> isahc</a></li><li class="chapter-item expanded "><a href="../recording/reqwest.html"><strong aria-hidden="true">5.4.</strong> reqwest</a></li><li class="chapter-item expanded "><a href="../recording/standalone.html"><strong aria-hidden="true">5.5.</strong> standalone</a></li></ol></li><li class="chapter-item expanded "><a href="../grpc.html"><strong aria-hidden="true">6.</strong> gRPC</a></li><li class="chapter-item expanded "><a href="../cli.html"><strong aria-hidden="true">7.</strong> Cli</a></li><li class="chapter-item expanded "><a href="../docker.html"><strong aria-hidden="true">8.</strong> Docker</a></li><li class="chapter-item expanded "><a href="../benchmark.html"><strong aria-hidden="true">9.</strong> Benchmark</a></li><li class="chapter-item expanded "><a href="../ide-completion.html"><strong aria-hidden="true">10.</strong> IDE completion</a></li></ol>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                                <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
@@ -151,118 +159,118 @@ you still have to know how to write a stub and what helpers you have in order to
 as possible.</p>
 <p>You will find here in a single snippet <strong>ALL</strong> the fields/helpers available to you:</p>
 <pre><code class="language-json">{
-  &quot;id&quot;: &quot;82d86e05-9ee0-44ca-9a8d-1fc6f719437e&quot;, // (optional) unique stub identifier. Returned in 'Matched-Stub-Id' header
-  &quot;priority&quot;: 1, // (optional) helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest
-  &quot;request&quot;: {
-    &quot;method&quot;: &quot;GET&quot;, // (optional) http method. Can be &quot;ANY&quot; to match any method. Defaults to &quot;ANY&quot;
-    &quot;urlPath&quot;: &quot;/api/exact-uri&quot;, // exact URI match
-    &quot;urlPathPattern&quot;: &quot;/api/regex-uri/([a-z]{4})&quot;, // URI must match regex
-    &quot;urlPattern&quot;: &quot;/api/regex-uri/([a-z]{4})\\?and=([a-z]{4})&quot;, // URI &amp; query must match regex
-    &quot;url&quot;: &quot;/api/uri?age=young&quot;, // raw URI + query parameters by equality matching
-    &quot;queryParameters&quot;: {
-      &quot;firstname&quot;: { &quot;equalTo&quot;: &quot;beltram&quot; }, // by equality matching (can also be an int, or a boolean)
-      &quot;lastname&quot;: { &quot;equalTo&quot;: &quot;maldant&quot;, &quot;caseInsensitive&quot;: true }, // case insensitve equality
-      &quot;age&quot;: { &quot;absent&quot;: true }, // must be absent
-      &quot;city&quot;: { &quot;contains&quot;: &quot;a&quot; }, // must contain the letter 'a'
-      &quot;title&quot;: { &quot;matches&quot;: &quot;([A-Za-z]+)&quot; }, // must match regex
-      &quot;job&quot;: { &quot;doesNotMatch&quot;: &quot;([A-Za-z]+)&quot; }, // or must not match regex
+  "id": "82d86e05-9ee0-44ca-9a8d-1fc6f719437e", // (optional) unique stub identifier. Returned in 'Matched-Stub-Id' header
+  "priority": 1, // (optional) helps solving interlaced conditions (many stubs match the request). 1 is the highest priority, 255 the lowest
+  "request": {
+    "method": "GET", // (optional) http method. Can be "ANY" to match any method. Defaults to "ANY"
+    "urlPath": "/api/exact-uri", // exact URI match
+    "urlPathPattern": "/api/regex-uri/([a-z]{4})", // URI must match regex
+    "urlPattern": "/api/regex-uri/([a-z]{4})\\?and=([a-z]{4})", // URI &amp; query must match regex
+    "url": "/api/uri?age=young", // raw URI + query parameters by equality matching
+    "queryParameters": {
+      "firstname": { "equalTo": "beltram" }, // by equality matching (can also be an int, or a boolean)
+      "lastname": { "equalTo": "maldant", "caseInsensitive": true }, // case insensitve equality
+      "age": { "absent": true }, // must be absent
+      "city": { "contains": "a" }, // must contain the letter 'a'
+      "title": { "matches": "([A-Za-z]+)" }, // must match regex
+      "job": { "doesNotMatch": "([A-Za-z]+)" }, // or must not match regex
     },
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: { &quot;equalTo&quot;: &quot;application/json&quot; } // by equality matching
+    "headers": {
+      "content-type": { "equalTo": "application/json" } // by equality matching
       // .. then all matchers described above for query parameters are also applicable here
     },
-    &quot;basicAuth&quot; : { // exact Basic authentication matching
-      &quot;username&quot;: &quot;user&quot;,
-      &quot;password&quot;: &quot;pass&quot;
+    "basicAuth" : { // exact Basic authentication matching
+      "username": "user",
+      "password": "pass"
     },
-    &quot;jwtAuth&quot;: {
-      &quot;equalTo&quot;: &quot;eyJhbGciOiJSUzI1NiJ9.e30.MBkQ...&quot;, // plain JWT token
-      &quot;alg&quot;: {
-        &quot;equalTo&quot;: &quot;RS256&quot;, // JWT algorithm by equality matcher
-        &quot;oneOf&quot;: [&quot;RS256&quot;, &quot;HS256&quot;] // JWT must contain one of these algorithms
+    "jwtAuth": {
+      "equalTo": "eyJhbGciOiJSUzI1NiJ9.e30.MBkQ...", // plain JWT token
+      "alg": {
+        "equalTo": "RS256", // JWT algorithm by equality matcher
+        "oneOf": ["RS256", "HS256"] // JWT must contain one of these algorithms
       },
-      &quot;payloadPatterns&quot;: [
+      "payloadPatterns": [
         // all matchers available in 'bodyPatterns' ⬇️
       ]
     },
-    &quot;bodyPatterns&quot;: [
-      { &quot;equalToJson&quot;: {&quot;name&quot;: &quot;bob&quot;} }, // strict json request body equality
-      { &quot;equalToJson&quot;: {&quot;name&quot;: &quot;bob&quot;}, &quot;ignoreExtraElements&quot;: true }, // ignore extra json fields supplied in request body. Default to false.
-      { &quot;equalToJson&quot;: {&quot;name&quot;: &quot;bob&quot;}, &quot;ignoreArrayOrder&quot;: true }, // ignore array items order. Default to false.
-      { &quot;matchesJsonPath&quot;: &quot;$.name&quot; }, // must just match json path
-      { &quot;matchesJsonPath&quot;: &quot;$.consoles[?(@.name == 'xbox')]&quot; }, // must match json path + equality
-      { &quot;matchesJsonPath&quot;: &quot;$.consoles[?(@.price &gt; 200)]&quot; }, // must match json path + bound
-      { &quot;expression&quot;: &quot;$.name&quot;, &quot;contains&quot;: &quot;at&quot; }, // must match json path + contain the string 'at'
-      { &quot;expression&quot;: &quot;$.user&quot;, &quot;equalToJson&quot;: { &quot;name&quot;: &quot;bob&quot; } }, // must match json path + be equal
-      { &quot;binaryEqualTo&quot;: &quot;AQID&quot; /* Base 64 */ } // byte array equality
+    "bodyPatterns": [
+      { "equalToJson": {"name": "bob"} }, // strict json request body equality
+      { "equalToJson": {"name": "bob"}, "ignoreExtraElements": true }, // ignore extra json fields supplied in request body. Default to false.
+      { "equalToJson": {"name": "bob"}, "ignoreArrayOrder": true }, // ignore array items order. Default to false.
+      { "matchesJsonPath": "$.name" }, // must just match json path
+      { "matchesJsonPath": "$.consoles[?(@.name == 'xbox')]" }, // must match json path + equality
+      { "matchesJsonPath": "$.consoles[?(@.price &gt; 200)]" }, // must match json path + bound
+      { "expression": "$.name", "contains": "at" }, // must match json path + contain the string 'at'
+      { "expression": "$.user", "equalToJson": { "name": "bob" } }, // must match json path + be equal
+      { "binaryEqualTo": "AQID" /* Base 64 */ } // byte array equality
     ]
   },
-  &quot;response&quot;: {
-    &quot;status&quot;: 200, // (required) response status
-    &quot;fixedDelayMilliseconds&quot;: 2000, // delays response by 2 seconds
-    &quot;delayDistribution&quot;: { // a random delay..
-      &quot;type&quot;: &quot;lognormal&quot;, // ..with logarithmic distribution
-      &quot;median&quot;: 100, // The 50th percentile of latencies in milliseconds
-      &quot;sigma&quot;: 0.1 // Standard deviation. The larger the value, the longer the tail
+  "response": {
+    "status": 200, // (required) response status
+    "fixedDelayMilliseconds": 2000, // delays response by 2 seconds
+    "delayDistribution": { // a random delay..
+      "type": "lognormal", // ..with logarithmic distribution
+      "median": 100, // The 50th percentile of latencies in milliseconds
+      "sigma": 0.1 // Standard deviation. The larger the value, the longer the tail
     },
-    &quot;jsonBody&quot;: { // json response body (automatically adds 'content-type:application/json' header)
-      &quot;name&quot;: &quot;john&quot;,
-      &quot;surnames&quot;: [ &quot;jdoe&quot;, &quot;johnny&quot; ]
+    "jsonBody": { // json response body (automatically adds 'content-type:application/json' header)
+      "name": "john",
+      "surnames": [ "jdoe", "johnny" ]
     },
-    &quot;body&quot;: &quot;Hello World !&quot;, // text response (automatically adds 'Content-Type:text/plain' header)
-    &quot;base64Body&quot;: &quot;AQID&quot;, // binary Base 64 body
-    &quot;bodyFileName&quot;: &quot;tests/stubs/response.json&quot;, // path to a .json or .txt file containing the response
-    &quot;bodyFileName&quot;: &quot;tests/stubs/{{request.pathSegments.[1]}}.json&quot;, // supports templating
-    &quot;headers&quot;: {
-      &quot;content-type&quot;: &quot;application/pdf&quot; // returns this response header
+    "body": "Hello World !", // text response (automatically adds 'Content-Type:text/plain' header)
+    "base64Body": "AQID", // binary Base 64 body
+    "bodyFileName": "tests/stubs/response.json", // path to a .json or .txt file containing the response
+    "bodyFileName": "tests/stubs/{{request.pathSegments.[1]}}.json", // supports templating
+    "headers": {
+      "content-type": "application/pdf" // returns this response header
     },
     // ..now response templating
     // it uses handlebars and allows you to define dynamic response based upon the content of the request
-    // it can be used in &quot;jsonBody&quot;, &quot;body&quot;, &quot;bodyFileName&quot; or &quot;headers&quot;
-    &quot;transformers&quot;: [&quot;response-template&quot;], // required to activate response templating
-    &quot;jsonBody&quot;: {
-      &quot;url-path-and-query&quot;: &quot;{{request.url}}&quot;,
-      &quot;url-path&quot;: &quot;{{request.path}}&quot;,
-      &quot;url-path-segments&quot;: &quot;{{request.pathSegments.[1]}}&quot;, // returns 'two' given '/one/two/three' path
-      &quot;query&quot;: &quot;{{request.query.kind}}&quot;, // returns 'comics' given '/api/books?kind=comics'
-      &quot;multi-query&quot;: &quot;{{request.query.kind.[1]}}&quot;, // returns 'novel' given '/api/books?kind=comics&amp;kind=novel'
-      &quot;method&quot;: &quot;{{request.method}}&quot;, // http request method e.g. &quot;POST&quot;
-      &quot;header&quot;: &quot;{{request.headers.Content-Type}}&quot;, // returns request header with given key
-      &quot;multi-header&quot;: &quot;{{request.headers.cache-control.[0]}}&quot;, // returns first value of &quot;cache-control&quot; values
-      &quot;body&quot;: &quot;{{request.body}}&quot;, // returns raw request body
-      &quot;from-request&quot;: &quot;{{jsonPath request.body '$.name'}}&quot;, // takes field 'name' from json request body
-      &quot;now&quot;: &quot;{{now}}&quot;, // current datetime (UTC)
-      &quot;now-fmt&quot;: &quot;{{now format='yyyy/MM/dd'}}&quot;, // with custom Java SimpleDateFormat
-      &quot;now-fmt-epoch&quot;: &quot;{{now format='epoch'}}&quot;, // epoch in milliseconds
-      &quot;now-fmt-unix&quot;: &quot;{{now format='unix'}}&quot;, // epoch in seconds
-      &quot;now-positive-offset&quot;: &quot;{{now offset='3 days'}}&quot;, // human time positive offset
-      &quot;now-negative-offset&quot;: &quot;{{now offset='-3 days'}}&quot;, // human time negative offset
-      &quot;now-with-timezone&quot;: &quot;{{now timezone='Europe/Rome'}}&quot;,
-      &quot;number-is-odd&quot;: &quot;{{isOdd 3}}&quot;, // or 'isEven'
-      &quot;string-capitalized&quot;: &quot;{{capitalize mister}}&quot;, // or 'decapitalize'
-      &quot;string-uppercase&quot;: &quot;{{upper mister}}&quot;, // or 'lower'
-      &quot;string-replace&quot;: &quot;{{replace request.body 'a' 'b'}}&quot;, // e.g. given &quot;Handlebars&quot; in request body returns &quot;Hbndlebbrs&quot;
-      &quot;number-stripes&quot;: &quot;{{stripes request.body 'if-even' 'if-odd'}}&quot;,
-      &quot;string-trim&quot;: &quot;{{trim request.body}}&quot;, // removes leading &amp; trailing whitespaces
-      &quot;size&quot;: &quot;{{size request.body}}&quot;, // string length or array length
-      &quot;base64-encode&quot;: &quot;{{base64 request.body padding=false}}&quot;, // padding is optional and defaults to true
-      &quot;base64-decode&quot;: &quot;{{base64 request.body decode=true}}&quot;,
-      &quot;url-encode&quot;: &quot;{{urlEncode request.header.x-raw}}&quot;,
-      &quot;url-decode&quot;: &quot;{{urlEncode request.header.x-encoded decode=true}}&quot;,
+    // it can be used in "jsonBody", "body", "bodyFileName" or "headers"
+    "transformers": ["response-template"], // required to activate response templating
+    "jsonBody": {
+      "url-path-and-query": "{{request.url}}",
+      "url-path": "{{request.path}}",
+      "url-path-segments": "{{request.pathSegments.[1]}}", // returns 'two' given '/one/two/three' path
+      "query": "{{request.query.kind}}", // returns 'comics' given '/api/books?kind=comics'
+      "multi-query": "{{request.query.kind.[1]}}", // returns 'novel' given '/api/books?kind=comics&amp;kind=novel'
+      "method": "{{request.method}}", // http request method e.g. "POST"
+      "header": "{{request.headers.Content-Type}}", // returns request header with given key
+      "multi-header": "{{request.headers.cache-control.[0]}}", // returns first value of "cache-control" values
+      "body": "{{request.body}}", // returns raw request body
+      "from-request": "{{jsonPath request.body '$.name'}}", // takes field 'name' from json request body
+      "now": "{{now}}", // current datetime (UTC)
+      "now-fmt": "{{now format='yyyy/MM/dd'}}", // with custom Java SimpleDateFormat
+      "now-fmt-epoch": "{{now format='epoch'}}", // epoch in milliseconds
+      "now-fmt-unix": "{{now format='unix'}}", // epoch in seconds
+      "now-positive-offset": "{{now offset='3 days'}}", // human time positive offset
+      "now-negative-offset": "{{now offset='-3 days'}}", // human time negative offset
+      "now-with-timezone": "{{now timezone='Europe/Rome'}}",
+      "number-is-odd": "{{isOdd 3}}", // or 'isEven'
+      "string-capitalized": "{{capitalize mister}}", // or 'decapitalize'
+      "string-uppercase": "{{upper mister}}", // or 'lower'
+      "string-replace": "{{replace request.body 'a' 'b'}}", // e.g. given "Handlebars" in request body returns "Hbndlebbrs"
+      "number-stripes": "{{stripes request.body 'if-even' 'if-odd'}}",
+      "string-trim": "{{trim request.body}}", // removes leading &amp; trailing whitespaces
+      "size": "{{size request.body}}", // string length or array length
+      "base64-encode": "{{base64 request.body padding=false}}", // padding is optional and defaults to true
+      "base64-decode": "{{base64 request.body decode=true}}",
+      "url-encode": "{{urlEncode request.header.x-raw}}",
+      "url-decode": "{{urlEncode request.header.x-encoded decode=true}}",
       // you can also use 'any*' helpers. They will produce a random value
-      &quot;regex&quot;: &quot;{{anyRegex '[a-z]{4}'}}&quot;, // generate a random string matching regex
-      &quot;string&quot;: &quot;{{anyNonEmptyString}}&quot;, // or '{{anyNonEmptyString}}'
-      &quot;alphanum&quot;: &quot;{{anyAlphaNumeric}}&quot;,
-      &quot;boolean&quot;: &quot;{{anyBoolean}}&quot;,
-      &quot;uuid&quot;: &quot;{{anyUuid}}&quot;,
-      &quot;ip&quot;: &quot;{{anyIpAddress}}&quot;, // e.g. '127.0.0.1'
-      &quot;host&quot;: &quot;{{anyHostname}}&quot;, // e.g. 'https://github.com'
-      &quot;email&quot;: &quot;{{anyEmail}}&quot;, // e.g. 'john.doe@gmail.com'
-      &quot;enum&quot;: &quot;{{anyOf 'alpha' 'beta' 'gamma'}}&quot;, // returns randomly one of those 3 values
-      &quot;number&quot;: &quot;{{anyNumber}}&quot;, // integer or float 
-      &quot;integer&quot;: &quot;{{anyI32}}&quot;, // also all Rust int types (u32, u8, i64 etc..)
-      &quot;float&quot;: &quot;{{anyFloat}}&quot;,
-      &quot;anyDate&quot;: &quot;{{anyDate}}&quot; // or 'anyTime', 'anyDatetime', 'anyIso8601'
+      "regex": "{{anyRegex '[a-z]{4}'}}", // generate a random string matching regex
+      "string": "{{anyNonEmptyString}}", // or '{{anyNonEmptyString}}'
+      "alphanum": "{{anyAlphaNumeric}}",
+      "boolean": "{{anyBoolean}}",
+      "uuid": "{{anyUuid}}",
+      "ip": "{{anyIpAddress}}", // e.g. '127.0.0.1'
+      "host": "{{anyHostname}}", // e.g. 'https://github.com'
+      "email": "{{anyEmail}}", // e.g. 'john.doe@gmail.com'
+      "enum": "{{anyOf 'alpha' 'beta' 'gamma'}}", // returns randomly one of those 3 values
+      "number": "{{anyNumber}}", // integer or float 
+      "integer": "{{anyI32}}", // also all Rust int types (u32, u8, i64 etc..)
+      "float": "{{anyFloat}}",
+      "anyDate": "{{anyDate}}" // or 'anyTime', 'anyDatetime', 'anyIso8601'
     }
   }
 }
@@ -276,7 +284,7 @@ as possible.</p>
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next" href="../stubs/request.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../stubs/request.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -290,7 +298,7 @@ as possible.</p>
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="../stubs/request.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../stubs/request.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
