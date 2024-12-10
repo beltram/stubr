@@ -29,3 +29,19 @@ pain when writing json from scratch.
 ```
 
 </details>
+
+
+<details>
+<summary><b>Emacs</b></summary>
+
+* Install the language server: `npm i -g vscode-json-languageserver`
+* Enable the language server in init file: `(add-hook 'js-mode-hook 'lsp-deferred)`
+* Recommended: for example `company-mode` for completion, `flycheck` for error highlighting
+* Configure schema file:
+```bash
+(with-eval-after-load 'lsp-mode
+  (setq lsp-json-schemas
+    `[(:fileMatch ["stubs/*.json", "mappings/*.json"] :url "https://raw.githubusercontent.com/beltram/stubr/main/schemas/stubr.schema.json")]))
+```
+
+</details>
